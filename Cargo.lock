@@ -2872,6 +2872,7 @@ dependencies = [
  "attest_host",
  "attest_inclusion",
  "borsh",
+ "common",
  "consumer_erc20_program",
  "e2e_chain",
  "hex",

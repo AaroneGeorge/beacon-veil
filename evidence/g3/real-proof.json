@@ -1,0 +1,72 @@
+{
+  "gate": "G3 (real proof, private placement)",
+  "dev_mode": false,
+  "accepted": true,
+  "label": "measured",
+  "what": "private Attest (mainnet USDT Transfer, block 26397891, tx 1 log 2) proven for real in a private account, Statement delivered to public consumer_erc20 in the same tx; identical tx again refused",
+  "tx": "e682b7fef80ce69cb3947ef47064dcf85ab907ae6d33372d7573585840a51ec5",
+  "block_id": 1949,
+  "instance": "5kWLCgG7nT8tMdT47nnbQGH2czDuada2CrnSesjG1GGw",
+  "consumer_instance": "3ypQ9TD1RCQ6xzZAZ7SCaLH7yfnj1mAfejwUUYzeTkMX",
+  "consumer_init_tx": "c0c2f2f2264ade83451c8116ebfcb0fb4e70fa39d726d185ba57bb564aefaad4",
+  "statement_id": "6c0ec6f0fcfa09c75134f0129d64d35b424079ab1129d0526f05c14aa9bb81ed",
+  "nullifier": "691GWpN1Ma4G8yNVnmmCZMjgTHPwBDVo3xh2WzTKcjdV",
+  "consumer_count_before": 0,
+  "consumer_count_after": 1,
+  "replay": {
+    "accepted": false,
+    "code": "E11_ALREADY_CONSUMED",
+    "consumer_state_unchanged": true,
+    "error": "attest (private, replay): Failed to build transaction: Failed to execute program: Guest panicked: ESA:E11: E11_ALREADY_CONSUMED",
+    "seconds": 0.435069148
+  },
+  "prove_and_submit_seconds": 2120.599719166,
+  "job_wall_seconds": 2151.45,
+  "peak_rss_gib": 9.207,
+  "swap_used_kib_max": 98588,
+  "tx_wire_bytes": 255657,
+  "witness_set_bytes": 239367,
+  "programs": {
+    "attest": {
+      "id": "2TXRshgszyS8soS6jTm3j5FcEJZTe2TUT8rpaxbDx3cB",
+      "bin_sha256": "4f59c574791bc06fb7b6b3b284726b04cc6276bfe486eb44c9af864bf0176849",
+      "image_id": "9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d"
+    },
+    "lc_verify": {
+      "id": "D4ieSbPKLW26qLnCWizkjUir7uosKf9m4AGNxUEG5U3d",
+      "bin_sha256": "31a3ff1d3eaa291566dd988d6c120a5d1eba1d99f37f6ab8d1e95e3ebb6b01e9",
+      "image_id": "c7b5f2191f133026017c09072e883217dfe3785450d40d081718b0fd204878ba"
+    },
+    "consumer_erc20": {
+      "id": "95W1TbwkzjVp1ciszPnMiQ7cM9he6xNgQ4TYwftcPDpb",
+      "bin_sha256": "a86e69e70745bb7aab3b4f8d094d9a1ddecd764a6dd7d326e152900de77181fc",
+      "image_id": "3f86d4c96631191e94edb5377fa559c0b24fd2409815c5f97ca752eaa7df0794"
+    }
+  },
+  "release": {
+    "dir": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2",
+    "commit": "bf95e359a4a6dd85836be6e33609be778fa17bc2",
+    "image": "docker.io/risczero/risc0-guest-builder:r0.1.91.1@sha256:fafb377a44e1cfca415577c48d2f7012bda99ed36f2fae27f9a663b9fe6048f0"
+  },
+  "consumer_image_check_on_chain": [
+    "consumer_erc20: header 95W1TbwkzjVp1ciszPnMiQ7cM9he6xNgQ4TYwftcPDpb state 66 bytes, image id 3f86d4c96631191e94edb5377fa559c0b24fd2409815c5f97ca752eaa7df0794: MATCH"
+  ],
+  "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
+  "command": "nice -n 19 ionice -c3 /home/lechuuu/hackathons/logos-rfp/build/target/debug/g3_real --instance 5kWLCgG7nT8tMdT47nnbQGH2czDuada2CrnSesjG1GGw",
+  "start_utc": "2026-11-12T20:22:59Z",
+  "end_utc": "2026-11-12T20:58:51Z",
+  "repo_commit": "d379b17 dirty=11",
+  "sequencer": "seq-real (standalone rc3, RISC0_DEV_MODE unset in its environment)",
+  "sequencer_log_excerpt": [
+    "[2026-11-12T20:58:18Z INFO  sequencer_core] Publishing block 1949 on pin 6f6e1f56f63c2f6dc68611b15533e442578301b28718d8e76a3c1568e6be8fbe",
+    "[2026-11-12T20:58:19Z INFO  sequencer_executor_actor::actor] Block with id 1949 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1"
+  ],
+  "raw": {
+    "job_record": "evidence/prove/g3-real-consumer/20261112T202259Z/record.json",
+    "output": "evidence/prove/g3-real-consumer/20261112T202259Z/output.log",
+    "time": "evidence/prove/g3-real-consumer/20261112T202259Z/time.txt",
+    "rss_samples": "evidence/prove/g3-real-consumer/20261112T202259Z/samples.csv",
+    "sequencer_log": "evidence/prove/g3-real-consumer/20261112T202259Z/seq-real.log",
+    "image_check": "evidence/prove/g3-real-consumer/20261112T202259Z/image-check.log"
+  }
+}

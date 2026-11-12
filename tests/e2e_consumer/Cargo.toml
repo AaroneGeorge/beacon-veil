@@ -13,9 +13,16 @@ workspace = true
 name = "attest_exec"
 path = "src/bin/attest_exec.rs"
 
+[[bin]]
+name = "g3_real"
+path = "src/bin/g3_real.rs"
+
 [dependencies]
 anyhow.workspace = true
 attest_core.workspace = true
+attest_host.workspace = true
+common.workspace = true
+tokio.workspace = true
 attest_inclusion.workspace = true
 borsh.workspace = true
 consumer_erc20_program = { path = "../../programs/consumer_erc20" }
@@ -27,7 +34,5 @@ risc0-zkos-v1compat = "=2.2.2"
 serde_json.workspace = true
 
 [dev-dependencies]
-attest_host.workspace = true
 e2e_chain = { path = "../e2e_chain" }
-tokio.workspace = true
 toml.workspace = true

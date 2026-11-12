@@ -1,0 +1,4 @@
+Note on evidence/g3/real-proof.json (2026-11-12):
+The "sequencer excerpt" field was empty when the script wrote it, because the script matched on the replay, which never reaches the sequencer.
+The two block-1949 lines were then copied by hand from the raw sequencer slice in evidence/prove/g3-real-consumer/20261112T202259Z/.
+The script matcher has since been fixed. No other field was edited.
