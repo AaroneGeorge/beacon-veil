@@ -1,0 +1,12 @@
+[package]
+name = "burn_methods_r31"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[build-dependencies]
+risc0-build = "=3.1.0"
+
+[package.metadata.risc0]
+methods = ["guest"]

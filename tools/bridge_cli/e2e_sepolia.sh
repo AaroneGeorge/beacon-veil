@@ -24,6 +24,11 @@ S="$B/run/w5/sepolia"; mkdir -p "$S"; F="$S/flow.env"; touch "$F"; source "$F"
 CLI="${BV_BRIDGE_CLI:-$CARGO_TARGET_DIR/debug/bridge_cli}"
 LOG="$S/flow-$(date -u +%Y%m%dT%H%M%SZ)-${1:-none}.log"
 exec > >(tee "$LOG") 2>&1
+# RISC Zero 3.1.0 prover for burn_proof (GHSA-g6qg-9j8p-7j87): separate rzup home, workspace and target dir.
+R31_ENV=(RISC0_HOME="$B/run/w5/risc0-31" CARGO_TARGET_DIR="$B/target-w5-r31"
+  RISC0_SERVER_PATH="$B/run/w5/risc0-31/extensions/v3.1.0-cargo-risczero-x86_64-unknown-linux-gnu/r0vm")
+R31_BIN="$B/target-w5-r31/release/burn_prover_r31"
+VERIFIER_31_ESTOP=0xA1DCB16cb765b3CA71605339F0C37Bfe0F60bA29   # wraps verifier 3.1.0 0x8c915b50...aB3b
 label_id() { wallet account list 2>/dev/null | grep "\[$1\]" | grep -o '\(Public\|Private\)/[A-Za-z0-9]*' | cut -d/ -f2; }
 export BV_PAYER="${BV_PAYER:-$(label_id w5-payer)}"
 CLAIMER="$(label_id w5-claimer)"
@@ -45,8 +50,9 @@ ATTEST=$(grep -E '^attest *=' "$IDS" | cut -d'"' -f2)
 
 case "${1:-}" in
 vault)
-  IMAGE=$("$CLI" image-id)
-  out=$(cd "$R/contracts" && PRIVATE_KEY="$(key)" VERIFIER=0x2a098988600d87650Fb061FfAff08B97149Fa84D \
+  IMAGE=$(env "${R31_ENV[@]}" "$R31_BIN" image-id)
+  echo "burn_proof image id (risc0 3.1.0): $IMAGE"
+  out=$(cd "$R/contracts" && PRIVATE_KEY="$(key)" VERIFIER=$VERIFIER_31_ESTOP \
     BURN_IMAGE_ID=$IMAGE LEZ_PROGRAM=$(b58hex "$BRIDGE") ANCHOR_DELAY=600 nice -n 15 forge script \
     script/Deploy.s.sol:Deploy --rpc-url "$BV_ETH_RPC" --broadcast --slow 2>&1 | grep -o '{"admin".*}')
   echo "$out" | tee "$S/deploy-v2.json"
@@ -89,10 +95,12 @@ burn)
   save BURN_INDEX "$J"; echo "STUB anchor delay: release possible 600 s after the post" ;;
 prove)
   export BV_BRIDGE_CONFIG="$S/config.json"
-  M="${MODE:-execute}"
+  M="${MODE:-execute}"; W="$S/burn-$BURN_INDEX-witness"
+  "$CLI" prove --index "$BURN_INDEX" --out "$W" --mode witness >/dev/null
   if [ "$M" = groth16 ]; then unset RISC0_DEV_MODE; fi
-  /usr/bin/time -v nice -n 19 ionice -c3 "$CLI" prove --index "$BURN_INDEX" --out "$S/burn-$BURN_INDEX-$M" --mode "$M" \
-    2> "$S/burn-$BURN_INDEX-$M.time.txt"
+  /usr/bin/time -v env "${R31_ENV[@]}" nice -n 19 ionice -c3 "$R31_BIN" prove --witness "$W/witness.borsh" \
+    --out "$S/burn-$BURN_INDEX-$M" --mode "$M" 2> "$S/burn-$BURN_INDEX-$M.time.txt"
+  rm -f "$W/witness.borsh"
   grep -E 'Maximum resident|Elapsed' "$S/burn-$BURN_INDEX-$M.time.txt" ;;
 release)
   D="$S/burn-$BURN_INDEX-groth16"

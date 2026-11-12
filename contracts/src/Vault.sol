@@ -18,7 +18,8 @@ import {ILezAnchor} from "./ILezAnchor.sol";
 /// commitment hides the LEZ destination (F2); nothing in the call, the event or the state names it.
 ///
 /// Outbound: `release(seal, journal)` pays out against a RISC Zero proof (guest `burn_proof`) that a burn note is in a
-/// LEZ burn-accumulator root, and an `ILezAnchor` that says that root is final. In the sprint the anchor is
+/// LEZ burn-accumulator root, and an `ILezAnchor` that says that root is final. `releaseOpen` (failsafe L2) checks
+/// the same statement in plain SHA-256 for when the proof system is stopped; it reveals the owner's own link. In the sprint the anchor is
 /// `StubLezAnchor`, an owner-posted stub (TRUST.md).
 ///
 /// Caps and freeze are minimal stubs (F11, F14): per-token fixed-window caps, global and per-token freeze flags.
@@ -76,6 +77,9 @@ contract Vault is ReentrancyGuard, AccessControl {
 
     // ------------------------------------------------------------------ immutables
 
+    /// @notice The RISC Zero Groth16 verifier, held through its `RiscZeroVerifierEmergencyStop` wrapper (failsafe
+    /// L1). The wrapper can only stop verification, never change it (Security #8). Sepolia v3: estop
+    /// 0xA1DCB16cb765b3CA71605339F0C37Bfe0F60bA29 around verifier 3.1.0 0x8c915b5071206C6E328BC18529586c513408aB3b.
     IRiscZeroVerifier public immutable verifier;
     ILezAnchor public immutable anchor;
     bytes32 public immutable burnImageId;
@@ -92,6 +96,9 @@ contract Vault is ReentrancyGuard, AccessControl {
     uint256 public capWindow;
     bool public globalDepositFrozen;
     bool public globalReleaseFrozen;
+    /// @notice Per-route freeze (failsafe): the zero-knowledge route `release` and the open route `releaseOpen`.
+    bool public zkRouteFrozen;
+    bool public openRouteFrozen;
 
     uint256 public depositCount;
     bytes32[TREE_DEPTH] private branch;
@@ -109,6 +116,7 @@ contract Vault is ReentrancyGuard, AccessControl {
     event TokenDeregistered(address indexed token);
     event LezInstanceBound(bytes32 lezInstance);
     event FreezeChanged(address indexed token, bool deposits, bool releases);
+    event RouteFreezeChanged(bool zkRoute, bool openRoute);
 
     error UnsupportedToken();
     error InvalidDenomination();
@@ -125,6 +133,7 @@ contract Vault is ReentrancyGuard, AccessControl {
     error InstanceAlreadyBound();
     error InstanceNotBound();
     error EthTransferFailed();
+    error RouteFrozen();
 
     constructor(
         IRiscZeroVerifier verifier_,
@@ -191,6 +200,12 @@ contract Vault is ReentrancyGuard, AccessControl {
         emit FreezeChanged(address(type(uint160).max), deposits, releases);
     }
 
+    function setRouteFreeze(bool zkRoute, bool openRoute) external onlyRole(FREEZER_ROLE) {
+        zkRouteFrozen = zkRoute;
+        openRouteFrozen = openRoute;
+        emit RouteFreezeChanged(zkRoute, openRoute);
+    }
+
     function setTokenFreeze(address token, bool deposits, bool releases) external onlyRole(FREEZER_ROLE) {
         tokens[token].depositFrozen = deposits;
         tokens[token].releaseFrozen = releases;
@@ -246,33 +261,85 @@ contract Vault is ReentrancyGuard, AccessControl {
     /// @notice Pays out one burn. `journal` is the 352-byte public output of guest `burn_proof`; `seal` its proof.
     /// The fee goes to the caller (a permissionless relayer); the recipient is bound in the proof.
     function release(bytes calldata seal, bytes calldata journal) external nonReentrant {
+        if (zkRouteFrozen) revert RouteFrozen();
         if (journal.length != JOURNAL_LENGTH) revert BadJournal();
         BurnJournal memory j = abi.decode(journal, (BurnJournal));
         if (j.version != JOURNAL_VERSION) revert BadJournal();
         if (lezInstance == bytes32(0)) revert InstanceNotBound();
-        if (
-            j.chainId != block.chainid || j.vault != address(this) || j.lezProgram != lezProgram
-                || j.lezInstance != lezInstance
-        ) revert WrongPairing();
+        if (j.chainId != block.chainid || j.vault != address(this) || j.lezProgram != lezProgram) {
+            revert WrongPairing();
+        }
+        if (j.lezInstance != lezInstance) revert WrongPairing();
+        _checkRelease(j.token, j.denom, j.fee, j.nullifier, j.accumulatorRoot);
 
-        TokenConfig storage t = tokens[j.token];
-        if (!t.releasable) revert UnsupportedToken();
-        if (globalReleaseFrozen || t.releaseFrozen) revert ReleasesFrozen();
-        if (!_isDenom(t, j.denom) || j.fee >= j.denom) revert InvalidDenomination();
-        if (burnNullifierSpent[j.nullifier]) revert AlreadyReleased();
-        if (!anchor.isFinal(j.lezInstance, j.accumulatorRoot)) revert RootNotFinal();
-
-        // Reverts on an invalid seal.
+        // Reverts on an invalid seal, or when the emergency stop has stopped the verifier.
         verifier.verify(seal, burnImageId, sha256(journal));
 
-        _rollWindow(t);
-        if (t.releasedInWindow + j.denom > t.releaseCap) revert CapExceeded();
-        t.releasedInWindow += j.denom;
-        burnNullifierSpent[j.nullifier] = true;
+        _settle(j.token, j.denom, j.fee, j.nullifier, j.recipient);
+    }
 
-        _pay(j.token, j.recipient, j.denom - j.fee);
-        if (j.fee != 0) _pay(j.token, msg.sender, j.fee);
-        emit Release(j.token, j.denom, j.nullifier, j.recipient, j.fee);
+    /// @notice Failsafe L2 (docs/bridge/TRUST.md section 6): the open release route. Checks the same statement as guest
+    /// `burn_proof` in plain SHA-256, so holders can exit if the proof system breaks. The owner reveals the burn secret,
+    /// which links this release to its burn: opt-in. Shares the nullifier map with `release`, so a burn pays once.
+    /// @param path Sibling hashes, leaf level first; `leafIndex` below 2^32.
+    function releaseOpen(
+        bytes32 burnSecret,
+        address recipient,
+        uint256 fee,
+        address token,
+        uint256 denom,
+        uint256 leafIndex,
+        bytes32[TREE_DEPTH] calldata path
+    ) external nonReentrant {
+        if (openRouteFrozen) revert RouteFrozen();
+        (bytes32 root, bytes32 nullifier) = burnStatement(burnSecret, recipient, fee, token, denom, leafIndex, path);
+        _checkRelease(token, denom, fee, nullifier, root);
+        _settle(token, denom, fee, nullifier, recipient);
+    }
+
+    /// @notice The `burn_proof` statement: the accumulator root implied by the burn note's leaf and path, and the
+    /// release nullifier. Same hashes as `programs/bridge/src/{hash,tree,journal}.rs`.
+    function burnStatement(
+        bytes32 burnSecret,
+        address recipient,
+        uint256 fee,
+        address token,
+        uint256 denom,
+        uint256 leafIndex,
+        bytes32[TREE_DEPTH] calldata path
+    ) public pure returns (bytes32 root, bytes32 nullifier) {
+        if (leafIndex >= (uint256(1) << TREE_DEPTH)) revert BadJournal();
+        bytes32 note = sha256(abi.encodePacked(bytes7("wb/b/v1"), burnSecret, recipient, fee));
+        root = sha256(abi.encodePacked(bytes11("wb/bleaf/v1"), token, denom, note));
+        for (uint256 h = 0; h < TREE_DEPTH; h++) {
+            root = ((leafIndex >> h) & 1) == 1
+                ? sha256(abi.encodePacked(path[h], root))
+                : sha256(abi.encodePacked(root, path[h]));
+        }
+        nullifier = sha256(abi.encodePacked(bytes8("wb/bn/v1"), burnSecret));
+    }
+
+    /// Checks shared by both release routes. The pairing (chain, vault, program, instance) is the anchor's: it
+    /// accepts roots per instance, and the instance is this vault's bound one.
+    function _checkRelease(address token, uint256 denom, uint256 fee, bytes32 nullifier, bytes32 root) private view {
+        if (lezInstance == bytes32(0)) revert InstanceNotBound();
+        TokenConfig storage t = tokens[token];
+        if (!t.releasable) revert UnsupportedToken();
+        if (globalReleaseFrozen || t.releaseFrozen) revert ReleasesFrozen();
+        if (!_isDenom(t, denom) || fee >= denom) revert InvalidDenomination();
+        if (burnNullifierSpent[nullifier]) revert AlreadyReleased();
+        if (!anchor.isFinal(lezInstance, root)) revert RootNotFinal();
+    }
+
+    function _settle(address token, uint256 denom, uint256 fee, bytes32 nullifier, address recipient) private {
+        TokenConfig storage t = tokens[token];
+        _rollWindow(t);
+        if (t.releasedInWindow + denom > t.releaseCap) revert CapExceeded();
+        t.releasedInWindow += denom;
+        burnNullifierSpent[nullifier] = true;
+        _pay(token, recipient, denom - fee);
+        if (fee != 0) _pay(token, msg.sender, fee);
+        emit Release(token, denom, nullifier, recipient, fee);
     }
 
     // ------------------------------------------------------------------ views

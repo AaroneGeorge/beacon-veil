@@ -495,4 +495,87 @@ contract VaultTest is Test {
         vm.expectRevert();
         anchor.post(LEZ_INSTANCE, keccak256("r"));
     }
+
+    // ---------------------------------------------------------------- failsafe L2: open release route
+
+    bytes32 constant BURN_SECRET = keccak256("burn-secret");
+
+    function _zeroPath() internal view returns (bytes32[32] memory path) {
+        for (uint256 h = 0; h < 32; h++) {
+            path[h] = vault.zeroHash(h);
+        }
+    }
+
+    /// One burn leaf at index 0; returns its root (posted to the STUB anchor) and nullifier.
+    function _openBurn(uint256 fee) internal returns (bytes32 root, bytes32 nullifier) {
+        _fundVaultEth();
+        (root, nullifier) = vault.burnStatement(BURN_SECRET, recipient, fee, address(0), 0.1 ether, 0, _zeroPath());
+        _postRoot(root);
+    }
+
+    function test_openRoutePaysAndThenZkRouteRefuses() public {
+        _fundVaultEth();
+        (bytes32 root, bytes32 n) = _openBurn(0.001 ether);
+        bytes32[32] memory path = _zeroPath();
+        vm.prank(relayer);
+        vault.releaseOpen(BURN_SECRET, recipient, 0.001 ether, address(0), 0.1 ether, 0, path);
+        assertEq(recipient.balance, 0.099 ether);
+        assertEq(relayer.balance, 0.001 ether);
+        assertTrue(vault.burnNullifierSpent(n));
+        // the same burn through the zero-knowledge route: refused
+        bytes memory journal = abi.encode(_journal(address(0), 0.1 ether, n, 0.001 ether, root));
+        bytes memory seal = _seal(journal);
+        vm.expectRevert(Vault.AlreadyReleased.selector);
+        vault.release(seal, journal);
+    }
+
+    function test_zkRoutePaysAndThenOpenRouteRefuses() public {
+        _fundVaultEth();
+        (bytes32 root, bytes32 n) = _openBurn(0);
+        bytes memory journal = abi.encode(_journal(address(0), 0.1 ether, n, 0, root));
+        vault.release(_seal(journal), journal);
+        bytes32[32] memory path = _zeroPath();
+        vm.expectRevert(Vault.AlreadyReleased.selector);
+        vault.releaseOpen(BURN_SECRET, recipient, 0, address(0), 0.1 ether, 0, path);
+    }
+
+    /// The recipient is inside the note: another recipient gives another root, which the anchor never posted.
+    function test_openRouteRefusesOtherRecipientOrFee() public {
+        _openBurn(0.001 ether);
+        bytes32[32] memory path = _zeroPath();
+        vm.expectRevert(Vault.RootNotFinal.selector);
+        vault.releaseOpen(BURN_SECRET, payable(address(0xBAD)), 0.001 ether, address(0), 0.1 ether, 0, path);
+        vm.expectRevert(Vault.RootNotFinal.selector);
+        vault.releaseOpen(BURN_SECRET, recipient, 0.002 ether, address(0), 0.1 ether, 0, path);
+        vm.expectRevert(Vault.RootNotFinal.selector);
+        vault.releaseOpen(keccak256("other"), recipient, 0.001 ether, address(0), 0.1 ether, 0, path);
+    }
+
+    function test_openRouteRefusesUnanchoredRoot() public {
+        _fundVaultEth();
+        bytes32[32] memory path = _zeroPath();
+        vm.expectRevert(Vault.RootNotFinal.selector);
+        vault.releaseOpen(BURN_SECRET, recipient, 0, address(0), 0.1 ether, 0, path);
+    }
+
+    function test_openRouteWorksWhileZkRouteFrozen() public {
+        (bytes32 root, bytes32 n) = _openBurn(0);
+        vm.prank(admin);
+        vault.setRouteFreeze(true, false);
+        bytes memory journal = abi.encode(_journal(address(0), 0.1 ether, n, 0, root));
+        bytes memory seal = _seal(journal);
+        vm.expectRevert(Vault.RouteFrozen.selector);
+        vault.release(seal, journal);
+        vault.releaseOpen(BURN_SECRET, recipient, 0, address(0), 0.1 ether, 0, _zeroPath());
+        assertEq(recipient.balance, 0.1 ether);
+    }
+
+    function test_openRouteCanBeFrozenSeparately() public {
+        _openBurn(0);
+        vm.prank(admin);
+        vault.setRouteFreeze(false, true);
+        bytes32[32] memory path = _zeroPath();
+        vm.expectRevert(Vault.RouteFrozen.selector);
+        vault.releaseOpen(BURN_SECRET, recipient, 0, address(0), 0.1 ether, 0, path);
+    }
 }

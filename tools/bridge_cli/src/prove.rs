@@ -28,7 +28,15 @@ pub fn run(witness: &BurnWitness, out: &Path, mode: &str) -> Result<()> {
         "leaf_index": witness.leaf_index,
         "nullifier": hex0x(&burn_nullifier(&witness.burn_secret)),
     });
-    if mode != "none" {
+    if mode == "witness" {
+        // For the separate RISC Zero 3.1.0 prover (guests/burn_proof/r31). Holds the burn secret: owner-only file.
+        use std::os::unix::fs::OpenOptionsExt as _;
+        let p = out.join("witness.borsh");
+        let mut f = std::fs::OpenOptions::new().write(true).create(true).truncate(true).mode(0o600).open(&p)?;
+        std::io::Write::write_all(&mut f, &borsh::to_vec(witness)?)?;
+        meta["witness_file"] = json!(p.display().to_string());
+        meta["note"] = json!("witness.borsh holds the burn secret; delete it after proving");
+    } else if mode != "none" {
         let elf = std::fs::read(attest_host::guests_dir().join("burn_proof.bin")).context("burn_proof.bin")?;
         let image_id = risc0_zkvm::compute_image_id(&elf)?;
         meta["image_id"] = json!(hex0x(image_id.as_bytes()));
@@ -70,7 +78,7 @@ pub fn run(witness: &BurnWitness, out: &Path, mode: &str) -> Result<()> {
                 meta["cycles_total"] = json!(info.stats.total_cycles);
                 meta["segments"] = json!(info.stats.segments);
             }
-            other => bail!("--mode none|execute|groth16, not {other}"),
+            other => bail!("--mode none|witness|execute|groth16, not {other}"),
         }
         meta["seconds"] = json!(started.elapsed().as_secs_f64());
     }

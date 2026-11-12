@@ -1,0 +1,14 @@
+# Separate workspace on RISC Zero 3.1.0 (GHSA-g6qg-9j8p-7j87). Not a member of the root workspace (pinned 3.0.5).
+[workspace]
+resolver = "3"
+members = ["host", "methods"]
+exclude = ["methods/guest"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+publish = false
+
+[profile.release]
+opt-level = 3

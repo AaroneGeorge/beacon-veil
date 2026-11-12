@@ -147,7 +147,9 @@ enum Cmd {
         index: u64,
         #[arg(long)]
         out: PathBuf,
-        /// `none` (native check only), `execute` (executor, cycles), `groth16` (real proof: proving windows only).
+        /// `none` (native check only), `witness` (write witness.borsh, 0600, for the RISC Zero 3.1.0 prover in
+        /// guests/burn_proof/r31), `execute` (3.0.5 executor, cycles), `groth16` (3.0.5 real proof: superseded, see
+        /// GHSA-g6qg-9j8p-7j87).
         #[arg(long, default_value = "execute")]
         mode: String,
     },

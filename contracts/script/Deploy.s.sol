@@ -152,3 +152,15 @@ contract ReleaseOne is Script {
         vm.stopBroadcast();
     }
 }
+
+/// @notice Freezer: stop deposits and releases on a vault (global flags). Env: PRIVATE_KEY, VAULT.
+/// Used 2026-11-12 on vaults v1 and v2 after RISC Zero GHSA-g6qg-9j8p-7j87 (their verifier 3.0.0 is affected).
+contract FreezeAll is Script {
+    function run() external {
+        uint256 pk = vm.envUint("PRIVATE_KEY");
+        Vault vault = Vault(payable(vm.envAddress("VAULT")));
+        vm.startBroadcast(pk);
+        vault.setGlobalFreeze(true, true);
+        vm.stopBroadcast();
+    }
+}

@@ -59,6 +59,25 @@ contract BridgeVectorsTest is Test {
         assertEq(d.fee, 5);
     }
 
+    /// Failsafe L2: the vault's plain-SHA-256 burn statement equals the Rust guest statement.
+    function test_openRouteStatementMatchesRust() public view {
+        bytes32[32] memory path;
+        for (uint256 h = 0; h < 32; h++) {
+            path[h] = vault.zeroHash(h);
+        }
+        (bytes32 root, bytes32 nullifier) = vault.burnStatement(
+            bytes32(0x0909090909090909090909090909090909090909090909090909090909090909),
+            address(0x2222222222222222222222222222222222222222),
+            5,
+            token,
+            denom,
+            0,
+            path
+        );
+        assertEq(root, vm.parseJsonBytes32(json, ".journal_root"));
+        assertEq(nullifier, vm.parseJsonBytes32(json, ".journal_nullifier"));
+    }
+
     function test_rootSlotConstantMatchesRust() public view {
         assertEq(vault.DEPOSIT_ROOT_SLOT(), 0xc48ce8c9c69c089f8e403bb82c6c6a3b0b082f197e29f63d5843b5b37b73a200);
     }
