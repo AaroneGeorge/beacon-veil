@@ -5,7 +5,7 @@ SHELL := /usr/bin/env bash
 .SHELLFLAGS := -eu -o pipefail -c
 ENV := source scripts/env.sh &&
 NICE := nice -n 15
-GUESTS := attest lc_verify consumer_erc20 bridge burn_proof
+GUESTS := attest lc_verify consumer_erc20 bridge bridge_dev_source burn_proof
 
 .PHONY: help fmt fmt-check clippy test test-host guests guests-docker forge-test ci seq-dev-start seq-dev-stop \
         deploy-local cost-exec cost-prove gate clean-guests
@@ -50,11 +50,11 @@ seq-dev-stop: ## Stop the dev-mode sequencer
 deploy-local: guests ## Deploy attest and lc_verify to seq-dev, write deploy/ids.toml
 	scripts/deploy_local.sh dev
 
-cost-exec: ## (W6) deterministic cycles and gas table
-	@echo "cost-exec: not implemented yet (W6)"; exit 2
+cost-exec: ## (W6) deterministic cycles and gas (executor, real fixtures) -> evidence/cost/cost.{json,md}
+	tools/cost/cost_exec.sh
 
-cost-prove: ## (W6) proof-window jobs: seconds, peak RSS, receipt bytes
-	@echo "cost-prove: not implemented yet (W6)"; exit 2
+cost-prove: ## (W6) proof-window job, JOB=calib-seg20|calib-ppe|g1-real (needs BV_PROOF_WINDOW_OK=1); no JOB: summary
+	tools/cost/cost_prove.sh $(JOB) $(ARGS)
 
-gate: ## (W6) run gate checks G1 to G5
-	@echo "gate: not implemented yet (W6)"; exit 2
+gate: ## (W6) gate checks G1 to G5 -> evidence/gate/summary.json (GATE_ARGS=--quick re-checks evidence only)
+	scripts/gate/gate.sh $(GATE_ARGS)

@@ -7,3 +7,7 @@ deploy/*.tmp
 *.log
 deploy/*.lock
 deploy/ids.toml.??????
+__pycache__/
+contracts/broadcast/*/31337/
+# evidence logs are committed on purpose
+!evidence/**/*.log

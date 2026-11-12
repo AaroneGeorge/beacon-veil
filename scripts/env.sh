@@ -21,7 +21,7 @@ export RISC0_DEV_MODE=1
 export RISC0_DOCKER_CONTAINER_TAG=r0.1.91.1
 
 # LEZ wallet home for the dev sequencer (seq-dev).
-export LEE_WALLET_HOME_DIR="$B/run/wallet-dev"
+export LEE_WALLET_HOME_DIR="${LEE_WALLET_HOME_DIR:-$B/run/wallet-dev}"
 
 # Tools: rzup (cargo-risczero, r0vm 3.0.5), cargo bins (just, nextest), Foundry, LEZ release binaries, logosctl, Nix.
 for _p in "$HOME/.risc0/bin" "$HOME/.cargo/bin" "$HOME/.foundry/bin" "$B/vendor/lez/target/release" "$B/tools/logosctl" \
