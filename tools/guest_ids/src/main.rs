@@ -9,6 +9,11 @@ fn main() -> anyhow::Result<()> {
     let bin = risc0_binfmt::ProgramBinary::new(&elf, risc0_zkos_v1compat::V1COMPAT_ELF).encode();
     std::fs::write(&a[2], &bin)?;
     let id = risc0_binfmt::compute_image_id(&bin).map_err(|e| anyhow::anyhow!("{e}"))?;
-    println!("{}: user ELF {} bytes, bin {} bytes, image id {id}", a[2], elf.len(), bin.len());
+    println!(
+        "{}: user ELF {} bytes, bin {} bytes, image id {id}",
+        a[2],
+        elf.len(),
+        bin.len()
+    );
     Ok(())
 }
