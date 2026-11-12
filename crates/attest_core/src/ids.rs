@@ -39,7 +39,13 @@ pub fn record_id(attest_program: &AccountId, instance: &AccountId, slot: u64) ->
 /// Log statement id: `sha256("esa/stmt/v1" || chain_id || exec_hash || tx_index || log_index || keccak(log))`.
 /// Integers little-endian; `log_keccak` is computed by the caller (W3).
 #[must_use]
-pub fn statement_id_log(chain_id: u64, exec_hash: &Bytes32, tx_index: u64, log_index: u64, log_keccak: &Bytes32) -> Bytes32 {
+pub fn statement_id_log(
+    chain_id: u64,
+    exec_hash: &Bytes32,
+    tx_index: u64,
+    log_index: u64,
+    log_keccak: &Bytes32,
+) -> Bytes32 {
     let mut h = Sha256::new();
     h.update(domain::STATEMENT);
     h.update(chain_id.to_le_bytes());

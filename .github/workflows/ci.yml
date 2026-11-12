@@ -1,0 +1,90 @@
+# CI for beacon-veil. Actions are pinned by commit SHA (tag in the comment). Reused: Swatinem/rust-cache,
+# foundry-rs/foundry-toolchain, taiki-e/install-action (Code Garage: engineering.ci.caching-and-speed, web3.evm.foundry,
+# security.supplychain.github-actions-hardening).
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  RISC0_DEV_MODE: "1"
+  RISC0_DOCKER_CONTAINER_TAG: r0.1.91.1
+
+jobs:
+  rust:
+    name: fmt, clippy, nextest (dev mode)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: System packages
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends clang libclang-dev libpcsclite-dev pkg-config cmake
+      - name: Toolchain from rust-toolchain.toml
+        run: rustup show active-toolchain || rustup toolchain install
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+      - uses: taiki-e/install-action@cfdb7ed4ccc7c7dce37759eae89dc5674b469b39 # v2.90.3
+        with:
+          tool: cargo-nextest@0.9.151
+      - name: fmt
+        run: cargo fmt --all -- --check
+      - name: clippy
+        env:
+          RISC0_SKIP_BUILD: "1"
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings
+      - name: nextest (host, guests skipped)
+        env:
+          RISC0_SKIP_BUILD: "1"
+        run: cargo nextest run --workspace --locked --no-fail-fast
+
+  guests:
+    name: guest build (docker r0.1.91.1)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: System packages
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends clang libclang-dev pkg-config
+      - name: Toolchain from rust-toolchain.toml
+        run: rustup show active-toolchain || rustup toolchain install
+      - name: Build guests in the pinned image
+        env:
+          BV_GUEST_DOCKER: "1"
+        run: cargo build -p guest_methods --locked
+      - name: ELF sizes (cap 1,966,080 bytes)
+        run: |
+          find target -type f -name '*.bin' -path '*riscv32im-risc0-zkvm-elf*' -exec ls -l {} \; | tee guest-sizes.txt
+          awk '$5 > 1966080 { print "over the deployed-ELF cap: " $9; bad=1 } END { exit bad }' guest-sizes.txt
+
+  contracts:
+    name: forge test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          submodules: true
+      - uses: foundry-rs/foundry-toolchain@dba66c27052e63476d886f22216e119ba7e615bf # v1.9.2
+        with:
+          version: v1.9.0
+      - name: forge fmt
+        working-directory: contracts
+        run: forge fmt --check
+      - name: forge test
+        working-directory: contracts
+        run: forge test -vvv

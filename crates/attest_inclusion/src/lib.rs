@@ -39,7 +39,12 @@ pub fn verify_storage(storage_root: &Bytes32, slot_key: &Bytes32, proof: &[Vec<u
 }
 
 /// Verifies log `log_index` of receipt `tx_index` under `receipts_root`.
-pub fn verify_log(receipts_root: &Bytes32, tx_index: u64, proof: &[Vec<u8>], log_index: u64) -> Result<LogValue, EsaError> {
+pub fn verify_log(
+    receipts_root: &Bytes32,
+    tx_index: u64,
+    proof: &[Vec<u8>],
+    log_index: u64,
+) -> Result<LogValue, EsaError> {
     let _ = (receipts_root, tx_index, proof, log_index);
     Err(EsaError::E07InclusionInvalid)
 }

@@ -41,13 +41,22 @@ fn not_implemented<T>(what: &str) -> anyhow::Result<T> {
 }
 
 /// Sends `Init{config, bootstrap}` to `instance_id(config)`; returns the instance id and the outcome.
-pub async fn init(ids: &DeployedIds, config: &InstanceConfig, bootstrap_ssz: &[u8]) -> anyhow::Result<(AccountId, TxOutcome)> {
+pub async fn init(
+    ids: &DeployedIds,
+    config: &InstanceConfig,
+    bootstrap_ssz: &[u8],
+) -> anyhow::Result<(AccountId, TxOutcome)> {
     let _ = (ids, config, bootstrap_ssz);
     not_implemented("init")
 }
 
 /// Submits one light-client update to `instance`.
-pub async fn submit_update(ids: &DeployedIds, instance: &AccountId, update_ssz: &[u8], mode: SubmitMode) -> anyhow::Result<TxOutcome> {
+pub async fn submit_update(
+    ids: &DeployedIds,
+    instance: &AccountId,
+    update_ssz: &[u8],
+    mode: SubmitMode,
+) -> anyhow::Result<TxOutcome> {
     let _ = (ids, instance, update_ssz, mode);
     not_implemented("submit_update")
 }
@@ -65,7 +74,13 @@ pub async fn read_record(ids: &DeployedIds, instance: &AccountId, slot: u64) -> 
 }
 
 /// Sends `Attest` and returns the delivered statement.
-pub async fn attest(ids: &DeployedIds, record: &HeaderRecord, claim: &[u8], predicate: &Predicate, deliver_to: &AccountId) -> anyhow::Result<(Statement, TxOutcome)> {
+pub async fn attest(
+    ids: &DeployedIds,
+    record: &HeaderRecord,
+    claim: &[u8],
+    predicate: &Predicate,
+    deliver_to: &AccountId,
+) -> anyhow::Result<(Statement, TxOutcome)> {
     let _ = (ids, record, claim, predicate, deliver_to);
     not_implemented("attest")
 }

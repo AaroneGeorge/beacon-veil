@@ -16,7 +16,11 @@ pub enum BeaconSourceKind {
 pub trait BeaconSource {
     fn kind(&self) -> BeaconSourceKind;
     fn bootstrap(&self, block_root: &[u8; 32]) -> impl std::future::Future<Output = anyhow::Result<Vec<u8>>> + Send;
-    fn updates_by_range(&self, start_period: u64, count: u64) -> impl std::future::Future<Output = anyhow::Result<Vec<Vec<u8>>>> + Send;
+    fn updates_by_range(
+        &self,
+        start_period: u64,
+        count: u64,
+    ) -> impl std::future::Future<Output = anyhow::Result<Vec<Vec<u8>>>> + Send;
     fn finality_update(&self) -> impl std::future::Future<Output = anyhow::Result<Vec<u8>>> + Send;
 }
 

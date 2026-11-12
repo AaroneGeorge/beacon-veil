@@ -13,7 +13,12 @@ pub enum AttestMessage {
     Init { config: InstanceConfig, bootstrap: Vec<u8> },
     /// Only if `from.program_account_id` is in `config.verifiers`; `pre_store` must equal state (E13/E14);
     /// `head.slot` must increase; then sync `WriteRecord` to `record_id`.
-    Apply { pre_store: Bytes32, post_store: Bytes32, head: Head, record: HeaderRecord },
+    Apply {
+        pre_store: Bytes32,
+        post_store: Bytes32,
+        head: Head,
+        record: HeaderRecord,
+    },
     /// Only `from_own_program()`; state must be empty.
     WriteRecord { record: HeaderRecord },
     /// Anyone; panics E15/E02 unless `sha256(state) == record_hash`.
@@ -21,7 +26,12 @@ pub enum AttestMessage {
     /// On any account, public or private: verify inclusion under the record roots, evaluate the predicate, sync
     /// `CheckHeader` to `record_id`, sync the `Statement` to `deliver_to`. `claim` is the encoded inclusion claim
     /// (layout owned by W3 in `attest_inclusion`).
-    Attest { record: HeaderRecord, claim: Vec<u8>, predicate: Predicate, deliver_to: AccountId },
+    Attest {
+        record: HeaderRecord,
+        claim: Vec<u8>,
+        predicate: Predicate,
+        deliver_to: AccountId,
+    },
 }
 
 /// Message of program `lc_verify`.

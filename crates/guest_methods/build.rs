@@ -7,7 +7,13 @@
 
 use std::collections::HashMap;
 
-const GUESTS: [&str; 5] = ["attest_program", "lc_verify_program", "consumer_erc20_program", "bridge_program", "burn_proof_guest"];
+const GUESTS: [&str; 5] = [
+    "attest_program",
+    "lc_verify_program",
+    "consumer_erc20_program",
+    "bridge_program",
+    "burn_proof_guest",
+];
 const DOCKER_TAG: &str = "r0.1.91.1";
 
 fn main() {

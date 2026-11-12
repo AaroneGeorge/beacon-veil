@@ -45,7 +45,9 @@ fn main() -> anyhow::Result<()> {
         Cmd::Status => "status",
         Cmd::Config => "config",
         Cmd::Attest { .. } => "attest",
-        Cmd::Checkpoint { cmd: CheckpointCmd::Verify } => "checkpoint verify",
+        Cmd::Checkpoint {
+            cmd: CheckpointCmd::Verify,
+        } => "checkpoint verify",
     };
     anyhow::bail!("attest {name}: not implemented (freeze-1 stub)")
 }
