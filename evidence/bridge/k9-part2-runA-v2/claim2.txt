@@ -1,0 +1,9 @@
+Latest block is 832
+
+thread 'main' (1) panicked at crates/attest_core/src/error.rs:120:9:
+ESA:E11
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Error: claim: Failed to build transaction: Failed to execute program: Guest panicked: ESA:E11
+
+Caused by:
+    E11_ALREADY_CONSUMED

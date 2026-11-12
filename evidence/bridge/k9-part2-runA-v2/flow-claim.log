@@ -1,0 +1,28 @@
+claim stage start UTC 2026-11-12T13:01:22Z
+Latest block is 830
+Syncing to block 830. Blocks to sync: 175
+Synced to block 830 in 1.912773355s
+WARNING: proving in dev mode. This will not generate valid, secure proofs.
+WARNING: Proving in dev mode does not generate a valid receipt. Receipts generated from this process are invalid and should never be used in production.
+WARNING: proving in dev mode. This will not generate valid, secure proofs.
+WARNING: Proving in dev mode does not generate a valid receipt. Receipts generated from this process are invalid and should never be used in production.
+Latest block is 832
+Syncing to block 832. Blocks to sync: 2
+Synced to block 832 in 51.497966ms
+{
+  "denom": "1000000000000000",
+  "dest": "Coyt1q7HXnJQVZgzbEduWjK9h2Awq2erZF5iF87wnUM",
+  "dest_kind": "private (default)",
+  "dev_mode": true,
+  "nullifier_pda": "5JYC94W1WtR2AWoV2FMTU49afcpmRpPuoU4a8KUoqXZk",
+  "public_on_lez": "the root used and a fresh nullifier; not the destination, not which deposit",
+  "root": "0x3cc3c4cb41932a2c71c106d13de3f6987fac98332d2573414a6a895fa45f98e5",
+  "seconds": 34.128204131,
+  "token": "0x0000000000000000000000000000000000000000",
+  "tx": "8886086636485960cf11ececfd8429776a516c19399af1abdc09b0c1b2d1fbef"
+}
+ESA:E11
+Error: claim: Failed to build transaction: Failed to execute program: Guest panicked: ESA:E11
+    E11_ALREADY_CONSUMED
+K9 part 2: second claim refused OK
+claim stage end UTC 2026-11-12T13:02:31Z
