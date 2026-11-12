@@ -39,8 +39,9 @@ b58hex() { python3 -c 'import sys
 a="123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";n=0
 for c in sys.argv[1]: n=n*58+a.index(c)
 print("0x%064x"%n)' "$1"; }
-BRIDGE=$(grep -E '^bridge *=' "$R/deploy/ids.toml" | cut -d'"' -f2)
-ATTEST=$(grep -E '^attest *=' "$R/deploy/ids.toml" | cut -d'"' -f2)
+IDS="${BV_IDS:-$R/deploy/ids.toml}"; export BV_IDS="$IDS"
+BRIDGE=$(grep -E '^bridge *=' "$IDS" | cut -d'"' -f2)
+ATTEST=$(grep -E '^attest *=' "$IDS" | cut -d'"' -f2)
 
 case "${1:-}" in
 vault)

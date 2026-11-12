@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
-# Run A (G4): one attest-followerd process following Sepolia for 24 h into an instance on seq-dev.
+# Run A or B (G4): one attest-followerd process following Sepolia for 24 h into an instance on seq-dev.
+# Run B: RUN_DIR=$B/run/w4/run-b crates/follower/scripts/run_a.sh start (its own wallet.env, ids.toml, instance.json).
 #
 #   crates/follower/scripts/run_a.sh start   # preflight, then start detached (setsid); prints the pid
 #   crates/follower/scripts/run_a.sh status  # alive?, last line, G4 check so far
 #   crates/follower/scripts/run_a.sh stop    # SIGTERM (clean stop line), only after the 24 h
-#   crates/follower/scripts/run_a.sh collect # copy the log + G4 summary into evidence/g4/
+#   crates/follower/scripts/run_a.sh collect # copy the log + G4 summary into evidence/g4/<run>/ (PRIMARY=1: also
+#                                            # evidence/g4/follower.jsonl, the file the gate names)
 #
 # Env: INSTANCE (base58; default: "instance" from $RUN_DIR/instance.json written by `attest init --out`),
 #      SOURCE_KIND (logos_module | direct_http; default logos_module), RUN_DIR (default $B/run/w4/run-a),
@@ -60,12 +62,12 @@ start)
   sleep 5
   kill -0 "$pid" 2>/dev/null || { echo "follower died at start:"; tail -20 "$RUN_DIR/followerd.stdout"; exit 1; }
   python3 -I - "$RUN_DIR/run.json" "$pid" "$BIN" "$sha" "$CFG" "$INSTANCE" "$SOURCE_KIND" "$R" <<'PY'
-import json, subprocess, sys, datetime, hashlib, platform
+import json, subprocess, sys, datetime, hashlib, platform, os
 out, pid, binp, sha, cfg, inst, src, repo = sys.argv[1:9]
 def sh(*a):
     try: return subprocess.run(a, capture_output=True, text=True, check=False).stdout.strip()
     except OSError: return None
-json.dump({"run": "A", "started_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(), "pid": int(pid),
+json.dump({"run": os.path.basename(os.path.dirname(out)), "started_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(), "pid": int(pid),
            "binary": binp, "binary_sha256": sha, "config": cfg,
            "config_sha256": hashlib.sha256(open(cfg, "rb").read()).hexdigest(), "instance": inst, "beacon_source": src,
            "repo_commit": sh("git", "-C", repo, "rev-parse", "HEAD"), "repo_dirty": bool(sh("git", "-C", repo, "status", "--porcelain")),
@@ -84,11 +86,16 @@ stop)
   kill -TERM "$(cat "$RUN_DIR/followerd.pid")"; echo "SIGTERM sent"
   ;;
 collect)
-  mkdir -p "$R/evidence/g4"
-  cp -f "$LOG" "$R/evidence/g4/follower.jsonl"; cp -f "$RUN_DIR/run.json" "$R/evidence/g4/run.json"
-  sed 's|^instance = .*|&|' "$CFG" > "$R/evidence/g4/followerd.toml"
-  rc=0; python3 -I "$R/scripts/gate/g4_check.py" "$R/evidence/g4/follower.jsonl" --summary-out "$R/evidence/g4/g4-summary.json" >/dev/null || rc=$?
-  echo "G4 check exit $rc; summary in evidence/g4/g4-summary.json"; exit $rc
+  # evidence/g4/<run>/ for every run; PRIMARY=1 also makes it evidence/g4/follower.jsonl, the file G4 names.
+  run="$(basename "$RUN_DIR")"; E="$R/evidence/g4/$run"
+  mkdir -p "$E"
+  cp -f "$LOG" "$E/follower.jsonl"; cp -f "$RUN_DIR/run.json" "$E/run.json"; cp -f "$CFG" "$E/followerd.toml"
+  cp -f "$RUN_DIR/instance.json" "$E/instance.json" 2>/dev/null || true
+  rc=0; python3 -I "$R/scripts/gate/g4_check.py" "$E/follower.jsonl" --summary-out "$E/g4-summary.json" >/dev/null || rc=$?
+  if [ "${PRIMARY:-0}" = 1 ]; then
+    cp -f "$E/follower.jsonl" "$R/evidence/g4/follower.jsonl"; cp -f "$E/g4-summary.json" "$R/evidence/g4/g4-summary.json"
+  fi
+  echo "G4 check exit $rc; summary in $E/g4-summary.json"; exit $rc
   ;;
 *) echo "usage: $0 start|status|stop|collect" >&2; exit 2 ;;
 esac

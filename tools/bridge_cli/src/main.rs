@@ -165,6 +165,8 @@ enum Cmd {
     /// DEV ONLY (anvil, chain 31337): deliver "vault root = current root" through the dev statement source, which the
     /// config must name as `attest_program`. Stands in for `attest-root` where no light client follows the chain.
     DevAttestRoot,
+    /// Read only: the attest instance's head and the Ethereum block its record proves.
+    InstanceHead,
     /// Prints the image id of guest burn_proof (`$BV_GUESTS/burn_proof.bin`).
     ImageId,
     /// Cross-language test vectors for contracts/test/BridgeVectors.t.sol.
@@ -401,6 +403,10 @@ async fn main() -> Result<()> {
         Cmd::DevAttestRoot => {
             let cf = ConfigFile::load(cli.config.as_ref())?;
             lezops::dev_attest_root(&cf, &Rpc::new(&cli.rpc)).await?;
+        }
+        Cmd::InstanceHead => {
+            let cf = ConfigFile::load(cli.config.as_ref())?;
+            lezops::instance_head(&cf, &Rpc::new(&cli.rpc)).await?;
         }
         Cmd::ImageId => {
             let elf = std::fs::read(attest_host::guests_dir().join("burn_proof.bin"))?;

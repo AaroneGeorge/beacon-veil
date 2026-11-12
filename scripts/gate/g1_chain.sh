@@ -41,7 +41,7 @@ def sh(c):
     except Exception:
         return ""
 init = re.search(r"^init: instance (\S+) tx (\S+)", txt, re.M)
-ups = [{"step": m[1], "tx": m[2], "head_slot": int(m[3]), "period": int(m[4]), "handoff": m[6] == "true"}
+ups = [{"step": m[0], "tx": m[1], "head_slot": int(m[2]), "period": int(m[3]), "handoff": m[5] == "true"}
        for m in re.findall(r"^(update\[\d\]): tx (\S+) -> head slot (\d+) period (\d+) next known (\w+) \(handoff (\w+)\)", txt, re.M)]
 f11 = re.search(r"^F11: fresh account (\S+) submitted (update\[\d\]): tx (\S+) -> period (\d+)", txt, re.M)
 e14 = re.search(r"^replayed Apply: rejected with Some\((\w+)\)", txt, re.M)

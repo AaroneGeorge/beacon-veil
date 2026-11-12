@@ -199,6 +199,23 @@ pub async fn dev_attest_root(cf: &ConfigFile, rpc: &Rpc) -> Result<()> {
     Ok(())
 }
 
+/// Read only: head of the configured attest instance, and the execution block number its record proves.
+pub async fn instance_head(cf: &ConfigFile, rpc: &Rpc) -> Result<()> {
+    let ids = DeployedIds::from_env()?;
+    let head = attest_host::read_head(&ids, &cf.config.attest_instance)
+        .await?
+        .context("attest instance not found on this sequencer")?;
+    let record = attest_host::read_record(&ids, &cf.config.attest_instance, head.slot).await?;
+    let hash = record.as_ref().map_or(head.exec_hash, |r| r.exec_hash);
+    let number = quantity(&rpc.block_by_hash(&hash).await?["number"])?;
+    println!(
+        "{}",
+        json!({"slot": head.slot, "period": head.period, "exec_hash": hex0x(&hash), "eth_block": number,
+               "record_present": record.is_some()})
+    );
+    Ok(())
+}
+
 fn run_proofgen(cf: &ConfigFile, rpc: &Rpc, number: u64, proofgen: Option<PathBuf>) -> Result<Value> {
     let bin = proofgen.unwrap_or_else(|| {
         PathBuf::from(std::env::var("CARGO_TARGET_DIR").unwrap_or_else(|_| "target".into())).join("debug/proofgen")

@@ -9,8 +9,8 @@
 //!   label `bv-payer` that `scripts/deploy_local.sh` imports.
 //! - `BV_SUBMITTER`: private account (base58, owned by the wallet, funded) that submits Path A updates and pays
 //!   their in-proof fee; default: the wallet label `bv-submitter`.
-//! - `BV_GUESTS`: directory with `attest.bin` and `lc_verify.bin` (needed to prove Path A); default: `bins` in the
-//!   ids file, else `$CARGO_TARGET_DIR/guests`.
+//! - `BV_GUESTS`: directory with the programs' `.bin` files (needed to prove Path A); overrides the ids file's
+//!   `[bins]` table (see [`guest_dir_for`]).
 //! - `BV_GAS_LIMIT`: execution gas limit declared on public transactions (default [`MAX_GAS`], the rc3 cap).
 //! - `BV_ALLOW_REVERT=1`: send a public transaction even when its simulation reverts (to show the sequencer
 //!   rejecting it); default: refuse locally with the same `ESA:Exx` code.
@@ -128,21 +128,64 @@ pub fn store_dir() -> PathBuf {
     )
 }
 
-/// Directory of the guest `.bin` files.
+/// Directory holding program `name`'s `.bin` (`<dir>/<name>.bin`). Precedence:
+/// 1. `$BV_GUESTS`, when set explicitly (overrides everything, for local experiments);
+/// 2. `[bins].<name>` of the ids file (`$BV_IDS`, else `$BV_REPO/deploy/ids.toml`), written per program by
+///    `scripts/deploy_local.sh`;
+/// 3. `[deploy].bins` of the ids file (legacy, one directory for all programs);
+/// 4. `$CARGO_TARGET_DIR/guests` (`make guests`).
 #[must_use]
-pub fn guests_dir() -> PathBuf {
+pub fn guest_dir_for(name: &str) -> PathBuf {
     if let Ok(p) = std::env::var("BV_GUESTS") {
         return PathBuf::from(p);
     }
-    if let Ok(doc) = read_ids_toml(&ids_path())
-        && let Some(b) = doc
+    if let Ok(doc) = read_ids_toml(&ids_path()) {
+        let per_program = doc.get("bins").and_then(|b| b.get(name)).and_then(toml::Value::as_str);
+        let legacy = doc
             .get("deploy")
             .and_then(|d| d.get("bins"))
-            .and_then(toml::Value::as_str)
-    {
-        return PathBuf::from(b);
+            .and_then(toml::Value::as_str);
+        if let Some(dir) = per_program.or(legacy) {
+            return PathBuf::from(dir);
+        }
     }
     std::env::var("CARGO_TARGET_DIR").map_or_else(|_| PathBuf::from("target/guests"), |t| Path::new(&t).join("guests"))
+}
+
+/// [`guest_dir_for`] of `lc_verify` (kept for callers that predate per-program bins).
+#[must_use]
+pub fn guests_dir() -> PathBuf {
+    guest_dir_for("lc_verify")
+}
+
+/// The `[programs]` name under which `id` is deployed in the ids file (for example `lc_verify_v2`), if any.
+#[must_use]
+pub fn program_name(id: &AccountId) -> Option<String> {
+    let doc = read_ids_toml(&ids_path()).ok()?;
+    let programs = doc.get("programs")?.as_table()?;
+    let want = id.to_string();
+    programs
+        .iter()
+        .find(|(_, v)| v.as_str() == Some(want.as_str()))
+        .map(|(k, _)| k.clone())
+}
+
+/// The account id deployed under `[programs].<name>` in the ids file (for example `lc_verify_v2`, the second
+/// verifier; [`DeployedIds`] carries only `attest` and `lc_verify`).
+pub fn deployed_program(name: &str) -> anyhow::Result<AccountId> {
+    let path = ids_path();
+    read_ids_toml(&path)?
+        .get("programs")
+        .and_then(|p| p.get(name))
+        .and_then(toml::Value::as_str)
+        .ok_or_else(|| anyhow!("{}: [programs] {name} missing", path.display()))?
+        .parse::<AccountId>()
+        .map_err(|e| anyhow!("{}: [programs] {name}: {e:?}", path.display()))
+}
+
+/// Loads program `name` from `guest_dir_for(name)/<name>.bin`.
+pub fn load_program(name: &str) -> anyhow::Result<Program> {
+    program_from(&guest_dir_for(name), name)
 }
 
 /// What the verified local store says about an instance (decision 3). Only returned after the local store file was
@@ -625,10 +668,12 @@ pub async fn submit_verify_as(
                 Some(s) => s,
                 None => account_from_env_or_label(&w, "BV_SUBMITTER", "bv-submitter")?,
             };
-            let dir = guests_dir();
+            // The verifier may be lc_verify (V1) or a second verifier such as lc_verify_v2: load the binary by the
+            // name it is deployed under.
+            let verifier_name = program_name(&verifier).unwrap_or_else(|| "lc_verify".to_owned());
             let programs = ProgramCatalog::from([
-                (ids.attest, program_from(&dir, "attest")?),
-                (verifier, program_from(&dir, "lc_verify")?),
+                (ids.attest, load_program("attest")?),
+                (verifier, load_program(&verifier_name)?),
             ]);
             let accounts = vec![
                 AccountIdentity::PrivateOwned(submitter).select_program_actor_state(verifier),

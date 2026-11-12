@@ -27,8 +27,12 @@ Two traps, both found on 2026-11-12:
 - The logosctl daemon's local endpoint lives under the daemon's `TMPDIR`. env.sh sets `TMPDIR=$B/.tmp`, so every
   client (and the follower: `logosctl_tmpdir` in its TOML) must use that same `TMPDIR`. Otherwise it reports
   `NO_DAEMON`.
-- env.sh sets `LEE_WALLET_HOME_DIR` to the shared `wallet-dev`. Load the W4 wallet env after env.sh, never before:
-  `source <(grep '^export' $B/run/w4/wallet-w4.env)` (dev) or `$B/run/w4/run-a/wallet.env` (run A).
+- Each follower uses its own wallet home, never the shared `wallet-dev`. Concurrent writers corrupt the wallet
+  storage, and a shared payer collides on nonces. `crates/follower/scripts/wallet_home.sh <name>` creates the home.
+  It funds `<name>-payer` from `bv-payer` under the deploy lock, creates a funded private `bv-submitter`, and prints
+  the env lines (`LEE_WALLET_HOME_DIR`, `BV_PAYER`, `BV_SUBMITTER`). Add `BV_GUESTS` (deployed guest bins) and
+  `BV_IDS` (a frozen copy of deploy/ids.toml) to that env file. Since 2026-11-12, env.sh keeps an existing
+  `LEE_WALLET_HOME_DIR`; the W4 scripts still load the env file after env.sh.
 
 ## 1. Build
 
@@ -88,7 +92,10 @@ $LOGOSCTL --config-dir $S call attest_follower_module status
 $LOGOSCTL --config-dir $S call attest_follower_module stop
 ```
 
-For the 24 h G4 run, `crates/follower/scripts/run_a.sh start` starts the daemon directly with `setsid`. The daemon
+For a 24 h G4 run, `crates/follower/scripts/run_a.sh start|status|stop|collect` starts the daemon directly with
+`setsid` (`RUN_DIR` selects the run: `$B/run/w4/run-a`, `$B/run/w4/run-b`). The run dir holds `wallet.env`,
+a frozen `ids.toml` and `instance.json` (from `attest init --out`); start refuses `wallet-dev`, an unverified store
+or a failed module probe. The daemon
 does not depend on the logosctl session staying alive, apart from its beacon source. The module path above is the
 packaging that PLAN.md 2.6 promises, and it is shown working separately (TRACK-W4-NOTES.md records the evidence).
 
