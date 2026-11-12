@@ -1,0 +1,10 @@
+{
+  "eth_block": 12119301,
+  "gas": 10000000,
+  "public_on_lez": "the vault root and which header record proved it; no deposit is named",
+  "receipt": "99w5dkqNWCRowntRfcFDce2Mpo86fkt7Wa9L2aBefwPD",
+  "record_slot": 11563200,
+  "root": "0x4d92152ebaec5d12c6a0e4f8845ac1b0ec2b85c1856ff40e18567431d8075407",
+  "statement_id": "0xcb6cc908ab4415f0c17cdca26b746f915186ff91e2c31e8648267445d5e05311",
+  "tx": "0bdf64966160d3047b30399c662379fb597ce19feb94e20db6fd42f3f367ce2a"
+}
