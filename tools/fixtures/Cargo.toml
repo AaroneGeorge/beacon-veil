@@ -9,6 +9,34 @@ publish.workspace = true
 [lints]
 workspace = true
 
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "fixtures"
+path = "src/main.rs"
+
 [dependencies]
 anyhow.workspace = true
-attest_core.workspace = true
+clap.workspace = true
+attest_core = { workspace = true, features = ["lc"] }
+hex.workspace = true
+serde_json.workspace = true
+sha2 = { workspace = true, features = ["std"] }
+
+# Helios 0.12.0 types, unmodified (PLAN.md 2.5). The fabricated chain is built from Helios's own containers so
+# Helios's own tree hashing defines every root.
+helios-consensus-core.workspace = true
+# Same versions as Helios 0.12.0's workspace (Cargo.toml:34-40); `bls12_381` resolves to the RISC Zero fork via
+# [patch.crates-io]. Signing needs `experimental` (hash_to_curve), which Helios enables too.
+bls12_381 = { version = "0.8.0", features = ["experimental"] }
+sha2-v0-9 = { package = "sha2", version = "0.9" }
+ethereum_ssz = "0.9"
+ssz_types = "0.11"
+tree_hash = "0.10"
+typenum = "1"
+
+# Execution-side proofs for the fabricated state: alloy-trie's HashBuilder + ProofRetainer, alloy-rlp.
+alloy-primitives = { workspace = true, features = ["std", "serde", "rlp"] }
+alloy-rlp = { workspace = true, features = ["std"] }
+alloy-trie = { workspace = true, features = ["std"] }

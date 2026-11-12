@@ -10,4 +10,16 @@ publish.workspace = true
 workspace = true
 
 [dependencies]
-attest_core.workspace = true
+anyhow.workspace = true
+attest_core = { workspace = true, features = ["lc"] }
+attest_inclusion.workspace = true
+borsh.workspace = true
+consumer_erc20_program = { path = "../../programs/consumer_erc20" }
+fixtures = { path = "../../tools/fixtures" }
+helios-consensus-core.workspace = true
+alloy-primitives = { workspace = true, features = ["std"] }
+
+[dev-dependencies]
+# On-chain legs (BV_G2_ONCHAIN=1, seq-dev): the same cases through attest_host.
+attest_host.workspace = true
+tokio.workspace = true

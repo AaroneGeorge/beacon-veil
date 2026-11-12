@@ -1,0 +1,237 @@
+{
+  "chain": "mainnet",
+  "chain_id": 1,
+  "files": {
+    "bootstrap_15605760.json": {
+      "accept": "application/json",
+      "block_root": "0xd56afee8fc171452dca06d815bf36db37442f975a1472b6e1902e8fecbc0bef7",
+      "block_root_from": "http://unstable.mainnet.beacon-api.nimbus.team/eth/v1/beacon/headers/15605760",
+      "bytes": 54406,
+      "content_type": "application/json; charset=utf-8",
+      "cross_check": {
+        "equal_after_hex_lowercase": true,
+        "provider": "nimbus-unstable"
+      },
+      "eth_consensus_version": "fulu",
+      "fetched_at_utc": "2026-11-12T09:29:55Z",
+      "http_status": 200,
+      "pair": "bootstrap_15605760.ssz",
+      "period": 1905,
+      "provider": "lodestar",
+      "sha256": "0f8583b1e8352dab604ddfad0c5b2d2ceffaeaf38d75c326271367cead9953e8",
+      "slot": 15605760,
+      "url": "https://lodestar-mainnet.chainsafe.io/eth/v1/beacon/light_client/bootstrap/0xd56afee8fc171452dca06d815bf36db37442f975a1472b6e1902e8fecbc0bef7"
+    },
+    "bootstrap_15605760.ssz": {
+      "accept": "application/octet-stream",
+      "block_root": "0xd56afee8fc171452dca06d815bf36db37442f975a1472b6e1902e8fecbc0bef7",
+      "block_root_from": "http://unstable.mainnet.beacon-api.nimbus.team/eth/v1/beacon/headers/15605760",
+      "bytes": 25675,
+      "content_type": "application/octet-stream",
+      "eth_consensus_version": "fulu",
+      "fetched_at_utc": "2026-11-12T09:29:55Z",
+      "http_status": 200,
+      "pair": "bootstrap_15605760.json",
+      "period": 1905,
+      "provider": "lodestar",
+      "sha256": "eb726159945e29e2d9a30e8ec2835b94cf9204e8861ffa5855f4ae33e0080dc8",
+      "slot": 15605760,
+      "url": "https://lodestar-mainnet.chainsafe.io/eth/v1/beacon/light_client/bootstrap/0xd56afee8fc171452dca06d815bf36db37442f975a1472b6e1902e8fecbc0bef7"
+    },
+    "finality_update_15637621.json": {
+      "accept": "application/json",
+      "attested_slot": 15637621,
+      "bytes": 5087,
+      "content_type": "application/json; charset=utf-8",
+      "eth_consensus_version": "fulu",
+      "fetched_at_utc": "2026-11-12T09:25:15Z",
+      "finalized_slot": 15637536,
+      "http_status": 200,
+      "provider": "lodestar",
+      "sha256": "8d64e41758e52f9f57e6a75552ba28869994a9e8e66923bf84a9c271302fb787",
+      "signature_slot": 15637622,
+      "url": "https://lodestar-mainnet.chainsafe.io/eth/v1/beacon/light_client/finality_update"
+    },
+    "finality_update_15637644.json": {
+      "accept": "application/json",
+      "attested_slot": 15637644,
+      "bytes": 5093,
+      "content_type": "application/json; charset=utf-8",
+      "eth_consensus_version": "fulu",
+      "fetched_at_utc": "2026-11-12T09:29:51Z",
+      "finalized_slot": 15637568,
+      "http_status": 200,
+      "pair": "finality_update_15637644.ssz",
+      "pair_check": "ssz fetched before and after the json, identical",
+      "participants": 512,
+      "provider": "lodestar",
+      "sha256": "07e431391e4ba7f871ea8420604ebeee07c10fb90429c4c3f6c40775b8382708",
+      "signature_slot": 15637645,
+      "url": "https://lodestar-mainnet.chainsafe.io/eth/v1/beacon/light_client/finality_update"
+    },
+    "finality_update_15637644.ssz": {
+      "accept": "application/octet-stream",
+      "attested_slot": 15637644,
+      "bytes": 2109,
+      "content_type": "application/octet-stream",
+      "eth_consensus_version": "fulu",
+      "fetched_at_utc": "2026-11-12T09:29:51Z",
+      "finalized_slot": 15637568,
+      "http_status": 200,
+      "pair": "finality_update_15637644.json",
+      "pair_check": "ssz fetched before and after the json, identical",
+      "participants": 512,
+      "provider": "lodestar",
+      "sha256": "4c053adccab6145444bcd99d3ca59d87acf4a326667921c0aac4a2d9b9c30091",
+      "signature_slot": 15637645,
+      "url": "https://lodestar-mainnet.chainsafe.io/eth/v1/beacon/light_client/finality_update"
+    },
+    "fork_schedule.json": {
+      "accept": "application/json",
+      "bytes": 770,
+      "content_type": "application/json; charset=utf-8",
+      "cross_check": {
+        "equal_after_hex_lowercase": false,
+        "provider": "nimbus-unstable"
+      },
+      "eth_consensus_version": null,
+      "fetched_at_utc": "2026-11-12T09:25:18Z",
+      "http_status": 200,
+      "provider": "lodestar",
+      "sha256": "11dfadbd151d94bc3d46a50d45a191e5d60ada9cb3b7d1e742773f7c968a64f2",
+      "url": "https://lodestar-mainnet.chainsafe.io/eth/v1/config/fork_schedule"
+    },
+    "genesis.json": {
+      "accept": "application/json",
+      "bytes": 169,
+      "content_type": "application/json; charset=utf-8",
+      "cross_check": {
+        "equal_after_hex_lowercase": true,
+        "provider": "nimbus-unstable"
+      },
+      "eth_consensus_version": null,
+      "fetched_at_utc": "2026-11-12T09:25:17Z",
+      "http_status": 200,
+      "provider": "lodestar",
+      "sha256": "8d6d303164a1e8f637f7bc94d201b503c63a02be2d00900032cea289c672a4a8",
+      "url": "https://lodestar-mainnet.chainsafe.io/eth/v1/beacon/genesis"
+    },
+    "optimistic_update_15637623.json": {
+      "accept": "application/json",
+      "attested_slot": 15637623,
+      "bytes": 2489,
+      "content_type": "application/json; charset=utf-8",
+      "eth_consensus_version": "fulu",
+      "fetched_at_utc": "2026-11-12T09:25:16Z",
+      "http_status": 200,
+      "provider": "lodestar",
+      "sha256": "bf2d85573123f03b574adb81adc5d90ffdf3572d5046521252f8a59dda15e2d0",
+      "signature_slot": 15637624,
+      "url": "https://lodestar-mainnet.chainsafe.io/eth/v1/beacon/light_client/optimistic_update"
+    },
+    "optimistic_update_15637646.json": {
+      "accept": "application/json",
+      "attested_slot": 15637646,
+      "bytes": 2510,
+      "content_type": "application/json; charset=utf-8",
+      "eth_consensus_version": "fulu",
+      "fetched_at_utc": "2026-11-12T09:29:53Z",
+      "http_status": 200,
+      "pair": "optimistic_update_15637646.ssz",
+      "pair_check": "ssz fetched before and after the json, identical",
+      "participants": 511,
+      "provider": "lodestar",
+      "sha256": "aff21f5c916b60dd2a4a4ff4e9f958861b2bb7145a8b595565a89e0210c0130a",
+      "signature_slot": 15637647,
+      "url": "https://lodestar-mainnet.chainsafe.io/eth/v1/beacon/light_client/optimistic_update"
+    },
+    "optimistic_update_15637646.ssz": {
+      "accept": "application/octet-stream",
+      "attested_slot": 15637646,
+      "bytes": 1024,
+      "content_type": "application/octet-stream",
+      "eth_consensus_version": "fulu",
+      "fetched_at_utc": "2026-11-12T09:29:53Z",
+      "http_status": 200,
+      "pair": "optimistic_update_15637646.json",
+      "pair_check": "ssz fetched before and after the json, identical",
+      "participants": 511,
+      "provider": "lodestar",
+      "sha256": "e8304c1234cc0cccd19b75a3fd5ef07b6a385e23ea7bcc39b2ff1ff38dfece27",
+      "signature_slot": 15637647,
+      "url": "https://lodestar-mainnet.chainsafe.io/eth/v1/beacon/light_client/optimistic_update"
+    },
+    "spec.json": {
+      "accept": "application/json",
+      "bytes": 8792,
+      "content_type": "application/json; charset=utf-8",
+      "eth_consensus_version": null,
+      "fetched_at_utc": "2026-11-12T09:25:19Z",
+      "http_status": 200,
+      "provider": "lodestar",
+      "sha256": "96d955538b0ad8289018ec94b46a488f49d6e09ac06f4f3b01f106015d25c81c",
+      "url": "https://lodestar-mainnet.chainsafe.io/eth/v1/config/spec"
+    },
+    "updates_1905_4.json": {
+      "accept": "application/json",
+      "bytes": 229586,
+      "content_type": "application/json; charset=utf-8",
+      "count": 4,
+      "cross_check": {
+        "equal_after_hex_lowercase": true,
+        "provider": "nimbus-unstable"
+      },
+      "eth_consensus_version": "fulu,fulu,fulu,fulu",
+      "fetched_at_utc": "2026-11-12T09:25:21Z",
+      "http_status": 200,
+      "note": "the last period is the current one; its best update can still improve",
+      "provider": "lodestar",
+      "sha256": "216c7ee60cfa64d64b9900c68e54b3b4cfdf8cc67809aab051fd54bd19c3f3a5",
+      "start_period": 1905,
+      "updates": [
+        {
+          "attested_slot": 15605912,
+          "finalized_slot": 15605824,
+          "participants": 511,
+          "signature_slot": 15605913
+        },
+        {
+          "attested_slot": 15614020,
+          "finalized_slot": 15613952,
+          "participants": 512,
+          "signature_slot": 15614021
+        },
+        {
+          "attested_slot": 15622208,
+          "finalized_slot": 15622144,
+          "participants": 511,
+          "signature_slot": 15622209
+        },
+        {
+          "attested_slot": 15631887,
+          "finalized_slot": 15631808,
+          "participants": 512,
+          "signature_slot": 15631888
+        }
+      ],
+      "url": "https://lodestar-mainnet.chainsafe.io/eth/v1/beacon/light_client/updates?start_period=1905&count=4"
+    },
+    "updates_1905_4.ssz": {
+      "accept": "application/octet-stream",
+      "bytes": 107730,
+      "content_type": "application/octet-stream",
+      "count": 4,
+      "eth_consensus_version": "fulu,fulu,fulu,fulu",
+      "fetched_at_utc": "2026-11-12T09:25:24Z",
+      "format": "Beacon API SSZ response chunks: u64-le length, 4-byte fork digest, SSZ LightClientUpdate",
+      "http_status": 200,
+      "provider": "lodestar",
+      "sha256": "af73e54b8ba8d68e5724ebebb13c7f3a0327a9e00c7501892c79176e720b3306",
+      "start_period": 1905,
+      "url": "https://lodestar-mainnet.chainsafe.io/eth/v1/beacon/light_client/updates?start_period=1905&count=4"
+    }
+  },
+  "note": "Bodies stored exactly as received. sha256 is over the stored file bytes.",
+  "tool": "tools/fixtures (fetch.py / fixtures fetch)",
+  "updated_at_utc": "2026-11-12T09:29:56Z"
+}

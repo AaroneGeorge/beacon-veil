@@ -1,0 +1,46 @@
+{
+  "chain_id": 1,
+  "checkpoint_root": "0x116ca48d98875e67ad7545553cc572ebea8d64a8324482a5af79c7e19ccc114b",
+  "checkpoint_slot": 15605760,
+  "committee_roots": [
+    {
+      "period": 1905,
+      "root": "0xe3f9c71f0a405fa8223f6b531098f85e0ce2dec6a538b4e66f92a62e4adddc8e"
+    },
+    {
+      "period": 1906,
+      "root": "0x63ff1a718f891f12105adb1ddd715a779b3fc1c39ed22ecb02e95fb3d4850c75"
+    },
+    {
+      "period": 1907,
+      "root": "0xf249f3efd677220af8665552406ab9300f7cebce249ed1ff2dcd3b9f94b07762"
+    }
+  ],
+  "files": {
+    "0_update_15605824.ssz": {
+      "bytes": 26872,
+      "sha256": "b9822855dabf0ed568fc5c154343825f726211283c7e04134bb10e79d6507aaa"
+    },
+    "1_update_15614016.ssz": {
+      "bytes": 26872,
+      "sha256": "3a67b1eff6c111ba4f20a10379872bb5ce1835eee815e3dd17550eef48f94114"
+    },
+    "2_finality_update_15614080.ssz": {
+      "bytes": 2056,
+      "sha256": "af005bd90e47ce0a05b5eff350b2df1a60fa24f7e6d8dd2c64407ca6a6387384"
+    },
+    "bootstrap.ssz": {
+      "bytes": 25648,
+      "sha256": "a2462aaf90f0269c7ff2060e2c3a1964195310878194b9c9a233ae6ddcd30fc3"
+    },
+    "state.json": {
+      "bytes": 3396,
+      "sha256": "570955143b671ef8eb068ed6440a79bc3e42127cd04ac74b7d143c86b4de4e64"
+    }
+  },
+  "genesis_validators_root": "0x4b363db94e286120d76eb905340fdd4e54bfe9f06bf33ff6cf5ad27f511bfe95",
+  "impersonates": "mainnet",
+  "real_checkpoint_root": "0xd56afee8fc171452dca06d815bf36db37442f975a1472b6e1902e8fecbc0bef7",
+  "seed": "beacon-veil/vs1/v1",
+  "what": "fabricated chain (RFP-021 Verification Security 1): fresh BLS keys, self-consistent; NOT Ethereum"
+}
