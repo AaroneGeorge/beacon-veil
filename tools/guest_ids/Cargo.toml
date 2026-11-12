@@ -1,0 +1,20 @@
+[package]
+name = "guest_ids"
+description = "W0: wrap guest user ELFs with the v1compat kernel (risc0-build's ProgramBinary) and print image ids; small deps so CI can run it cheaply"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[[bin]]
+name = "guest-ids"
+path = "src/main.rs"
+
+[dependencies]
+anyhow.workspace = true
+# Same versions as LEZ rc3 and W1's tests/e2e_chain mkbin.
+risc0-binfmt = "=3.0.4"
+risc0-zkos-v1compat = "=2.2.2"

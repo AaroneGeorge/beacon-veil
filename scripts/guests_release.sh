@@ -7,8 +7,11 @@
 # The Dockerfile is risc0-build 3.0.5's own (crates/guest_methods with BV_GUEST_DOCKER=1 generates the same one: same
 # image, ENV, workdir /src, CARGO_TARGET_DIR=target, `cargo +risc0 build --release --locked`), with one change: all
 # guests are built in ONE container after ONE `cargo fetch`, instead of one container and one fetch per guest
-# (about 15 min of git fetching each on this machine). ELFs are wrapped with the v1compat kernel by W1's `mkbin`
-# (tests/e2e_chain), as risc0-build does, which also prints the image id.
+# (about 15 min of git fetching each on this machine). ELFs are wrapped with the v1compat kernel by tools/guest_ids
+# (same logic as W1's tests/e2e_chain mkbin), as risc0-build does, which also prints the image id.
+#
+# BV_RELEASE_DIR overrides the output dir. CI runs this and then scripts/check_image_ids.sh against
+# guests/IMAGE_IDS.expected.
 #
 # Outputs: attest, lc_verify, lc_verify_v2 (lc_verify --features v2), consumer_erc20, bridge, bridge_dev_source,
 # burn_proof (.bin + user ELF), SHA256SUMS, IMAGE_IDS, BUILD_INFO.
@@ -19,7 +22,7 @@ source "$here/env.sh"
 
 commit="$(git -C "$BV_REPO" rev-parse "${1:-HEAD}")"
 tag="${RISC0_DOCKER_CONTAINER_TAG:-r0.1.91.1}"
-out="$B/guests-release/$commit"
+out="${BV_RELEASE_DIR:-$B/guests-release/$commit}"
 src="$B/.tmp/release-src-${commit:0:12}"
 work="$B/.tmp/release-docker-${commit:0:12}"
 [ -e "$out/SHA256SUMS" ] && { echo "$out already complete"; exit 0; }
@@ -58,10 +61,10 @@ echo "building guests of $commit in $tag (log: $work/docker.log)"
 docker build --output="$out/elf" -f "$work/Dockerfile" "$src" > "$work/docker.log" 2>&1 || { tail -30 "$work/docker.log" >&2; exit 1; }
 
 # Wrap with the v1compat kernel (risc0-build's ProgramBinary) and record image ids.
-(cd "$BV_REPO" && RISC0_SKIP_BUILD=1 nice -n 15 cargo build -q -p e2e_chain --bin mkbin)
+(cd "$BV_REPO" && RISC0_SKIP_BUILD=1 nice -n 15 cargo build -q --locked -p guest_ids)
 : > "$out/IMAGE_IDS"
 for g in attest lc_verify lc_verify_v2 consumer_erc20 bridge bridge_dev_source burn_proof; do
-  "$CARGO_TARGET_DIR/debug/mkbin" "$out/elf/$g" "$out/$g.bin" | sed "s#^$out/##" >> "$out/IMAGE_IDS"
+  "$CARGO_TARGET_DIR/debug/guest-ids" "$out/elf/$g" "$out/$g.bin" | sed "s#^$out/##" >> "$out/IMAGE_IDS"
 done
 (cd "$out" && sha256sum ./*.bin elf/* > SHA256SUMS)
 {

@@ -41,35 +41,39 @@ jobs:
       - name: fmt
         run: cargo fmt --all -- --check
       - name: clippy
+        if: success() || failure()
         env:
           RISC0_SKIP_BUILD: "1"
         run: cargo clippy --workspace --all-targets --locked -- -D warnings
       - name: nextest (host, guests skipped)
+        if: success() || failure()
         env:
           RISC0_SKIP_BUILD: "1"
         run: cargo nextest run --workspace --locked --no-fail-fast
 
   guests:
-    name: guest build (docker r0.1.91.1)
+    name: guest build (docker r0.1.91.1) + image-id check
     runs-on: ubuntu-24.04
-    # Each guest is a separate docker build that fetches the whole lock (LEZ and logos-blockchain git deps): slow.
-    timeout-minutes: 180
+    # scripts/guests_release.sh: every guest from the committed tree in ONE container with ONE cargo fetch (about
+    # 10 min of git fetching here), using risc0-build 3.0.5's own docker recipe, so no rzup toolchain is needed on the
+    # runner. The image ids must equal guests/IMAGE_IDS.expected: a CI-checked reproducibility proof.
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: System packages
-        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends clang libclang-dev pkg-config
       - name: Toolchain from rust-toolchain.toml
         run: rustup show active-toolchain || rustup toolchain install
-      - name: Build guests in the pinned image
+      - name: Build all guests in the pinned image
         env:
-          BV_GUEST_DOCKER: "1"
-        run: cargo build -p guest_methods --locked
-      - name: ELF sizes (cap 1,966,080 bytes)
+          BV_RELEASE_DIR: ${{ runner.temp }}/guests
+        run: scripts/guests_release.sh
+      - name: Image ids equal guests/IMAGE_IDS.expected
+        run: scripts/check_image_ids.sh "${{ runner.temp }}/guests"
+      - name: ELF sizes (deployed-ELF cap 1,966,080 bytes)
         run: |
-          find target -type f -name '*.bin' -path '*riscv32im-risc0-zkvm-elf*' -exec ls -l {} \; | tee guest-sizes.txt
-          awk '$5 > 1966080 { print "over the deployed-ELF cap: " $9; bad=1 } END { exit bad }' guest-sizes.txt
+          ls -l "${{ runner.temp }}/guests/elf" | tee guest-sizes.txt
+          awk 'NR>1 && $5 > 1966080 { print "over the deployed-ELF cap: " $9; bad=1 } END { exit bad }' guest-sizes.txt
 
   contracts:
     name: forge test

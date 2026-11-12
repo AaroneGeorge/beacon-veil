@@ -3755,6 +3755,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "guest_ids"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "risc0-binfmt",
+ "risc0-zkos-v1compat",
+]
+
+[[package]]
 name = "guest_methods"
 version = "0.1.0"
 dependencies = [
