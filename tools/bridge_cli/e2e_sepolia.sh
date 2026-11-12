@@ -78,13 +78,15 @@ deposit)
   save DEPOSIT_INDEX "$IDX"; save NEXT_DEPOSIT "$((IDX + 1))"
   save DEPOSIT_BLOCK "$(jq -r '.receipts[-1].blockNumber' "$R/contracts/broadcast/Deploy.s.sol/11155111/run-latest.json" | xargs printf '%d')" ;;
 claim)
+  echo "claim stage start UTC $(date -u +%FT%TZ)"
   export BV_BRIDGE_CONFIG="$S/config.json"
   A=$("$CLI" attest-root --min-eth-block "$DEPOSIT_BLOCK" | tee "$S/attest-root.json")
   ROOT=$(jq -r .root <<<"$A"); save ROOT "$ROOT"
   "$CLI" claim --index "$DEPOSIT_INDEX" --dest "$CLAIMER" --root "$ROOT" | tee "$S/claim1.json"
   if "$CLI" claim --index "$DEPOSIT_INDEX" --dest "$CLAIMER" --root "$ROOT" --force > "$S/claim2.txt" 2>&1; then
     echo "FAIL: second claim accepted"; exit 1; fi
-  grep -E 'E11' "$S/claim2.txt" && echo "K9 part 2: second claim refused OK" ;;
+  grep -E 'E11' "$S/claim2.txt" && echo "K9 part 2: second claim refused OK"
+  echo "claim stage end UTC $(date -u +%FT%TZ)" ;;
 burn)
   export BV_BRIDGE_CONFIG="$S/config.json"
   J="${BURN_INDEX:-0}"
