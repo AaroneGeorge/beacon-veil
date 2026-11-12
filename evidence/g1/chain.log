@@ -1,0 +1,70 @@
+   Compiling attest_host v0.1.0 (/home/lechuuu/hackathons/logos-rfp/build/repo/crates/attest_host)
+   Compiling e2e_chain v0.1.0 (/home/lechuuu/hackathons/logos-rfp/build/repo/tests/e2e_chain)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 13.58s
+warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+     Running tests/e2e_chain.rs (/home/lechuuu/hackathons/logos-rfp/build/target/debug/deps/e2e_chain-3a6392075419a862)
+
+running 1 test
+test mainnet_chain_init_three_updates_handoff_and_rejections ... 
+init: instance BG6pHgbT7C8uBnmKzs7uz637c11aNrMYNqPVWRAw2wQd tx 78d1d5a71796f4bd58ad0f6d1abf8fbb6ec7a89744ff2e5fd74e2f657e616c4d gas Some(10000000)
+Latest block is 511
+Syncing to block 511. Blocks to sync: 7
+Synced to block 511 in 210.297154ms
+WARNING: proving in dev mode. This will not generate valid, secure proofs.
+WARNING: Proving in dev mode does not generate a valid receipt. Receipts generated from this process are invalid and should never be used in production.
+WARNING: proving in dev mode. This will not generate valid, secure proofs.
+WARNING: Proving in dev mode does not generate a valid receipt. Receipts generated from this process are invalid and should never be used in production.
+Latest block is 514
+Syncing to block 514. Blocks to sync: 3
+Synced to block 514 in 109.695828ms
+update[0]: tx cdcaf78a04399bac8cb8cdb89ba88e1ca4b1ed723e3fd245a7b9a3bcc00ebfb7 -> head slot 15605824 period 1905 next known true (handoff false)
+Latest block is 514
+WARNING: proving in dev mode. This will not generate valid, secure proofs.
+WARNING: Proving in dev mode does not generate a valid receipt. Receipts generated from this process are invalid and should never be used in production.
+WARNING: proving in dev mode. This will not generate valid, secure proofs.
+WARNING: Proving in dev mode does not generate a valid receipt. Receipts generated from this process are invalid and should never be used in production.
+Latest block is 517
+Syncing to block 517. Blocks to sync: 3
+Synced to block 517 in 110.740506ms
+update[1]: tx 442c046d85cd25a9341f94947d38d8b18acc94fa21b61258b624ae9c963e03ae -> head slot 15613952 period 1906 next known true (handoff true)
+Latest block is 518
+Syncing to block 518. Blocks to sync: 1
+Synced to block 518 in 42.974525ms
+WARNING: proving in dev mode. This will not generate valid, secure proofs.
+WARNING: Proving in dev mode does not generate a valid receipt. Receipts generated from this process are invalid and should never be used in production.
+WARNING: proving in dev mode. This will not generate valid, secure proofs.
+WARNING: Proving in dev mode does not generate a valid receipt. Receipts generated from this process are invalid and should never be used in production.
+Latest block is 521
+Syncing to block 521. Blocks to sync: 3
+Synced to block 521 in 75.507785ms
+update[2]: tx 50dd8db63a215fd1fe14e91bd81d4eea0be3a0eba5b10cf34765f1c767b0da84 -> head slot 15622144 period 1907 next known true (handoff true)
+Latest block is 521
+
+thread 'main' (1) panicked at crates/attest_core/src/error.rs:120:9:
+ESA:E14
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+replayed Apply: rejected with Some(E14AlreadyApplied): verify (private): Failed to build transaction: Failed to execute program: Guest panicked: ESA:E14: E14_ALREADY_APPLIED
+Latest block is 523
+Syncing to block 523. Blocks to sync: 2
+Synced to block 523 in 55.708489ms
+
+thread 'main' (1) panicked at crates/attest_core/src/error.rs:120:9:
+ESA:E12
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+wrong verifier: rejected with Some(E12UnknownVerifier): verify (private): Failed to build transaction: Failed to execute program: Guest panicked: ESA:E12: E12_UNKNOWN_VERIFIER
+Latest block is 526
+Syncing to block 526. Blocks to sync: 3
+Synced to block 526 in 91.901734ms
+WARNING: proving in dev mode. This will not generate valid, secure proofs.
+WARNING: Proving in dev mode does not generate a valid receipt. Receipts generated from this process are invalid and should never be used in production.
+WARNING: proving in dev mode. This will not generate valid, secure proofs.
+WARNING: Proving in dev mode does not generate a valid receipt. Receipts generated from this process are invalid and should never be used in production.
+Latest block is 529
+Syncing to block 529. Blocks to sync: 3
+Synced to block 529 in 136.182897ms
+F11: fresh account G4F9JpkHY2stz6mD47WcLfntU69CvMrbhDoZSfVWoe4P submitted update[3]: tx a3cd34676d07c76e473ce29b9b6c30a06c6adcc3bdfd019cd8fe44bdf2946dd4 -> period 1908 (50.198596746s)
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 313.16s
+
