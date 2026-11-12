@@ -1,0 +1,15 @@
+# Pinned vendor clones under $B/vendor (scripts/bootstrap.sh). Format: dir  github-repo  ref  commit
+# Every clone is checked against the commit; a mismatch stops the bootstrap (PLAN.md 3.2).
+lez                           logos-blockchain/logos-execution-zone     v0.4.0-rc3                   bafd07be0701398f9bc435f73ab05e9a7936c301
+helios                        a16z/helios                               0.12.0                       2af9b41887e069144ee56cd710f3ddca195473f8
+zkcrypto-bls12_381            risc0/zkcrypto-bls12_381                  bls12_381/v0.8.0-risczero.1  a3192e1bc58921d42d03d99957abf3be55f9d435
+RustCrypto-hashes-sha2-0.9.9  risc0/RustCrypto-hashes                   sha2-v0.9.9-risczero.0       c2b5d71c687cbccf9235069732c050486a01b1b2
+RustCrypto-hashes-sha2-0.10.8 risc0/RustCrypto-hashes                   sha2-v0.10.8-risczero.0      244dc3b08788f7a4ccce14c66896ae3b4f24c166
+blst                          risc0/blst                                v0.3.16-risczero.0           7d1fc3e6d8cf0d52a291f52455233bf8d6432ed2
+sponges                       logos-blockchain/sponges                  -                            3a56e99771beedf04946eab21a4a62adc2951377
+risc0-ethereum                risc0/risc0-ethereum                      v3.0.1                       365e7b2db4f620fa256580c27558d2623362b9ae
+openzeppelin-contracts        OpenZeppelin/openzeppelin-contracts       v5.7.0                       cab19933c33c2ad1d4c7a84864a3601dddfd16f3
+logos-module-builder          logos-co/logos-module-builder             0.3.2                        4b7998272c5ec014bcac4bf1c7dbe7602c63a3c1
+logos-logoscore-cli           logos-co/logos-logoscore-cli              0.3.2                        ca70bcdd9fc20434d423669652966e7fdd6148f0
+logos-evm-beacon-api-module   logos-co/logos-evm-beacon-api-module      -                            aca138e5c211a370654700f4f8f2779ea5081c86
+logos-verified-proxy-module   logos-co/logos-verified-proxy-module      -                            fa984790c5c5d7b39f37ed42d7b66abfc9e72b67

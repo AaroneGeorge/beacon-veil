@@ -4,7 +4,8 @@
 
 _bv_repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 export BV_REPO="$_bv_repo"
-export B="${B:-$(cd "$_bv_repo/.." && pwd)}"
+# Build dir: BV_BUILD_DIR, else an exported B, else the repo's parent (layout: scripts/bootstrap.sh).
+export B="${BV_BUILD_DIR:-${B:-$(cd "$_bv_repo/.." && pwd)}}"
 export R="$BV_REPO"
 
 # One shared target dir: cargo's lock serialises builds across tracks.
