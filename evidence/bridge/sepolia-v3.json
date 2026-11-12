@@ -1,0 +1,105 @@
+{
+  "label": "Vault v3 on Sepolia (current): verifier 3.1.0 behind its emergency stop, open release route, burn_proof on RISC Zero 3.1.0 (measured)",
+  "date_utc": "2026-11-12",
+  "chain_id": 11155111,
+  "deployer": "0x523072A2aC5e5A3E51c107bc17995A3fa03dBD78",
+  "contracts": {
+    "vault_v3": "0x380be74d9F3dFeBAaFC5F911CD6A45bFbeE3aD27",
+    "anchor_STUB_owner_posted": "0x8455757D7CC28Fc5329c97A99e99B50b5F7fbB66",
+    "test_usdt_no_bool_return": "0x001B4d55B24a5ebF4e4E0d9cbf964E6170169E2B",
+    "verifier_estop_3_1_0": "0xA1DCB16cb765b3CA71605339F0C37Bfe0F60bA29",
+    "wrapped_verifier_3_1_0": "0x8c915b5071206C6E328BC18529586c513408aB3b (selector 0xe71e6620)"
+  },
+  "vault_immutables_checked_on_chain": {
+    "verifier": "0xA1DCB16cb765b3CA71605339F0C37Bfe0F60bA29",
+    "burnImageId": "0xf929f9f441d9aa652b9914b4ce6c6a7b445aa90d189c075af1e1e9fe3b1497cf (burn-proof-r31-guest.json)",
+    "lezProgram": "0x61c82e1d2abcd2a735763cfc988164881a5a22ebc0022e6af275ae99347be64e = bridge 7ahb3h5n3MTeq2JtYhLbQL75gRpL7xNAmV54SZjvJQ6y on seq-dev (release set bf95e35, image fa3bd9c3..., immutable, header read on chain)",
+    "lezInstance": "0x9b7354d99185285a50471440e4f21809ffe9fa18bbc0a605007b7b891b399349 (bound)"
+  },
+  "bridge_config": {
+    "attest_program": "D4EHJuxjYVFfTN47A6GbWxgPdYweb9QkC5DmzxbJboDF",
+    "attest_instance_run_B": "3YmV7VDujQF7zqtfMLf9VMKc4G9Vg1qYwYiTFXmJ8kBX",
+    "bridge_instance": "BTpCBokrFB8mvmPT6QukEXtiYUeWmgupHGpxpftvaXD2",
+    "file": "raw-v3/config.json"
+  },
+  "deploy_txs": [
+    {
+      "what": "StubLezAnchor create",
+      "tx": "0x8af0a8b6fc0b39f3049f0aa63609abab37bb6075928e07fc8ed06eb111ce2596",
+      "block": 12118866,
+      "gas_used": 2054313,
+      "status": "0x1"
+    },
+    {
+      "what": "Vault create",
+      "tx": "0x750baf82ae425b81df1a287ab332ae5596ad48623271436652e09ff99a9c4d51",
+      "block": 12118867,
+      "gas_used": 17983916,
+      "status": "0x1"
+    },
+    {
+      "what": "MockUsdt create",
+      "tx": "0xa7652f700a953fec50137287fc2c3c382e2d880d2aeb38843fcde77518315cab",
+      "block": 12118868,
+      "gas_used": 2555327,
+      "status": "0x1"
+    },
+    {
+      "what": "Vault registerToken(address,uint256[],uint256,uint256)",
+      "tx": "0x056da7b4d72b44e07e72071734a7b1619d0ef5da7e84876ba0c56d2a84b196c3",
+      "block": 12118869,
+      "gas_used": 683349,
+      "status": "0x1"
+    },
+    {
+      "what": "Vault registerToken(address,uint256[],uint256,uint256)",
+      "tx": "0x1d27382d10f878ad5b87c751d311be418dd199c0a79e8aa63843cad4240545ac",
+      "block": 12118872,
+      "gas_used": 683469,
+      "status": "0x1"
+    },
+    {
+      "what": "MockUsdt mint(address,uint256)",
+      "tx": "0x397c409183599b701da87ff560aaf2ccf359b77e51d7cf8edafb36757487c50b",
+      "block": 12118873,
+      "gas_used": 236464,
+      "status": "0x1"
+    }
+  ],
+  "deposit_eth_txs": [
+    {
+      "what": " deposit(address,uint256,bytes32)",
+      "tx": "0x8f7d5bd98436f83a0e1ad2eaa5fc3f66bfc108a812c114f71b6148652a775afb",
+      "block": 12118891,
+      "gas_used": 520928,
+      "status": "0x1"
+    }
+  ],
+  "deposit_usdt_txs": [
+    {
+      "what": " approve(address,uint256)",
+      "tx": "0x9bb82f264e32eb965b874bf3699c96bc6ee1bbf4c4e229b9ea158b2a6c61eb79",
+      "block": 12118894,
+      "gas_used": 19352,
+      "status": "0x1"
+    },
+    {
+      "what": " approve(address,uint256)",
+      "tx": "0x933df5c42abe4d5111a4b0f3b2565767f20c1903ecfa3ee10a6776ca8d406aeb",
+      "block": 12118895,
+      "gas_used": 126433,
+      "status": "0x1"
+    },
+    {
+      "what": " deposit(address,uint256,bytes32)",
+      "tx": "0xc613874d8a63487a81af032e471037efafe41b99c257de1150a7c625fe8381af",
+      "block": 12118896,
+      "gas_used": 550051,
+      "status": "0x1"
+    }
+  ],
+  "notes": [
+    "Deposits are bound to the private LEZ account w5-claimer under the bridge instance above, with secrets from the public TEST-ONLY mnemonic (testnet).",
+    "K9 part 2 claim on this vault: see k9-part2-v3.json once run B applies a record at or after block 12118896."
+  ]
+}

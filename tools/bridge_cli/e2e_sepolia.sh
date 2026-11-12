@@ -20,7 +20,7 @@ export LEE_WALLET_HOME_DIR="$B/run/wallet-w5" LEE_WALLET_PASSWORD=""
 export BV_GUESTS="${BV_GUESTS:-$B/run/w5/guests}"
 export BV_BRIDGE_MNEMONIC_FILE="${BV_BRIDGE_MNEMONIC_FILE:-$here/testdata/TEST-ONLY-mnemonic.txt}"
 export BV_ETH_RPC="${BV_ETH_RPC:-https://ethereum-sepolia-rpc.publicnode.com}"
-S="$B/run/w5/sepolia"; mkdir -p "$S"; F="$S/flow.env"; touch "$F"; source "$F"
+S="${BV_FLOW_DIR:-$B/run/w5/sepolia}"; mkdir -p "$S"; F="$S/flow.env"; touch "$F"; source "$F"
 CLI="${BV_BRIDGE_CLI:-$CARGO_TARGET_DIR/debug/bridge_cli}"
 LOG="$S/flow-$(date -u +%Y%m%dT%H%M%SZ)-${1:-none}.log"
 exec > >(tee "$LOG") 2>&1
@@ -45,8 +45,9 @@ a="123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";n=0
 for c in sys.argv[1]: n=n*58+a.index(c)
 print("0x%064x"%n)' "$1"; }
 IDS="${BV_IDS:-$R/deploy/ids.toml}"; export BV_IDS="$IDS"
-BRIDGE=$(grep -E '^bridge *=' "$IDS" | cut -d'"' -f2)
-ATTEST=$(grep -E '^attest *=' "$IDS" | cut -d'"' -f2)
+prog_id() { awk -v k="$1" '/^\[programs\]/{f=1; next} /^\[/{f=0} f && $1==k {split($0,a,"\""); print a[2]; exit}' "$IDS"; }
+BRIDGE=$(prog_id bridge)
+ATTEST=$(prog_id attest)
 
 case "${1:-}" in
 vault)

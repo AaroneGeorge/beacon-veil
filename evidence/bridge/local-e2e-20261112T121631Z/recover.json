@@ -1,0 +1,25 @@
+{
+  "burns": [
+    {
+      "burn_index": 0,
+      "denom": "10000000000000000",
+      "fee": "100000000000000",
+      "leaf_index": 0,
+      "recipient": "0x000000000000000000000000000000000000beef",
+      "released": true,
+      "token": "0x0000000000000000000000000000000000000000"
+    }
+  ],
+  "deposits": [
+    {
+      "claimed": true,
+      "denom": "10000000000000000",
+      "deposit_index": 0,
+      "dest": "Coyt1q7HXnJQVZgzbEduWjK9h2Awq2erZF5iF87wnUM",
+      "eth_block": 16,
+      "eth_tx": "0x6becf65cb2850c3440f54193c9dfa3aa50f4607377b3e87bccffb8fa982a18b4",
+      "leaf_index": 0,
+      "token": "0x0000000000000000000000000000000000000000"
+    }
+  ]
+}

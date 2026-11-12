@@ -17,7 +17,7 @@ What they still show (mechanics only, not security): fixed-denomination ETH and 
 
 ## Current: vault v3
 
-Verifier 3.1.0 behind its emergency-stop wrapper (failsafe L1), the open release route `releaseOpen` (failsafe L2), and `burn_proof` built on RISC Zero 3.1.0 (`guests/burn_proof/r31`). Addresses and transactions are added here when deployed.
+Verifier 3.1.0 behind its emergency-stop wrapper (failsafe L1), the open release route `releaseOpen` (failsafe L2), and `burn_proof` built on RISC Zero 3.1.0 (`guests/burn_proof/r31`). Vault v3 `0x380be74d9F3dFeBAaFC5F911CD6A45bFbeE3aD27`: `sepolia-v3.json` and `raw-v3/`. Guest build: `burn-proof-r31-guest.json`.
 
 ## Local round trip
 

@@ -1,0 +1,10 @@
+{
+  "commitment": "0x78aa9f9a723903f7951d8ffaf83a90520dbea17562d71cc2498f621a4c69eb77",
+  "denom": "10000000000000000",
+  "denom_index": 1,
+  "deposit_index": 0,
+  "hidden": "the LEZ destination (bound inside the commitment)",
+  "leaf": "0xefc1bc0b4149f0a5f9c5b6256e773e5c62d509161eb5fa467f48df55f90b2556",
+  "public_on_ethereum": "depositor address, token, amount, time, commitment (random-looking)",
+  "token": "0x0000000000000000000000000000000000000000"
+}

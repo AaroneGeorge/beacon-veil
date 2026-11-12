@@ -1,0 +1,9 @@
+{
+  "cycles_user": 211887,
+  "image_id": "0xc1a0babf6246c5f8988d55ea6e1599f7a6c11a0928c98721d63365b7dcb424b7",
+  "mode": "execute",
+  "risc0_zkvm": "3.1.0",
+  "seal": "mock (RiscZeroMockVerifier selector 0x00000000), not a proof",
+  "seconds": 0.054164252,
+  "segments": 1
+}

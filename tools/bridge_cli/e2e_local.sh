@@ -39,8 +39,9 @@ if [ "${BV_REDEPLOY:-0}" = 1 ] || ! grep -qE '^bridge_dev_source *=' "$R/deploy/
   step "deploy bridge + DEV statement source on seq-dev"
   "$R/scripts/deploy_local.sh" dev --bins "$BV_GUESTS" --programs "bridge bridge_dev_source"
 fi
-BRIDGE=$(grep -E '^bridge *=' "$R/deploy/ids.toml" | cut -d'"' -f2)
-DEVSRC=$(grep -E '^bridge_dev_source *=' "$R/deploy/ids.toml" | cut -d'"' -f2)
+prog_id() { awk -v k="$1" '/^\[programs\]/{f=1; next} /^\[/{f=0} f && $1==k {split($0,a,"\""); print a[2]; exit}' "$R/deploy/ids.toml"; }
+BRIDGE=$(prog_id bridge)
+DEVSRC=$(prog_id bridge_dev_source)
 # burn_proof on RISC Zero 3.1.0 (GHSA-g6qg-9j8p-7j87), separate workspace guests/burn_proof/r31.
 R31=(env RISC0_HOME="$B/run/w5/risc0-31"
   RISC0_SERVER_PATH="$B/run/w5/risc0-31/extensions/v3.1.0-cargo-risczero-x86_64-unknown-linux-gnu/r0vm"

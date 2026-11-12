@@ -1,0 +1,28 @@
+No files changed, compilation skipped
+Script ran successfully.
+
+## Setting up 1 EVM.
+
+==========================
+
+Chain 31337
+
+Estimated max fee per gas: 0.269780631 gwei
+Estimated base fee per gas: 0.134890315 gwei
+Estimated max priority fee per gas: 0.000000001 gwei
+
+Estimated total gas used for script: 186806
+
+Estimated amount required: 0.000050396640554586 ETH
+
+==========================
+
+
+==========================
+
+ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.
+
+Transactions saved to: /home/lechuuu/hackathons/logos-rfp/build/repo/contracts/broadcast/Deploy.s.sol/31337/run-latest.json
+
+Sensitive values saved to: /home/lechuuu/hackathons/logos-rfp/build/repo/contracts/cache/Deploy.s.sol/31337/run-latest.json
+

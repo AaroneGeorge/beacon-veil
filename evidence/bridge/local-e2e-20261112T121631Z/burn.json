@@ -1,0 +1,11 @@
+Latest block is 653
+Latest block is 655
+Syncing to block 655. Blocks to sync: 2
+Synced to block 655 in 41.191316ms
+{
+  "burn_index": 0,
+  "hidden": "the Ethereum recipient and the relayer fee",
+  "leaf": "0xf53d512b33352cdf9348564de453fd6caa0f3565fe3d20b4f7e1b2518a0209c1",
+  "note": "0xc8f1b8a470d8c623ee073ceaa06d5d0eaf8993503da38f5a5e2708712bd928bc",
+  "public_on_lez": "token, amount, time, note and memo (both random-looking)"
+}
