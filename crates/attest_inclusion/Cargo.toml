@@ -1,0 +1,13 @@
+[package]
+name = "attest_inclusion"
+description = "Inclusion proofs (account, storage, receipt log) and predicates under a header record's roots. Pure, no I/O, native and in-guest (W3)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+attest_core.workspace = true

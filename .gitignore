@@ -1,0 +1,7 @@
+/target/
+**/*.rs.bk
+.tmp/
+contracts/out/
+contracts/cache/
+deploy/*.tmp
+*.log

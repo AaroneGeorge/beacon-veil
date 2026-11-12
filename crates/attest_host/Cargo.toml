@@ -1,0 +1,20 @@
+[package]
+name = "attest_host"
+description = "Host library: init, submit updates, read head and records, attest and dry-run attest against a LEZ sequencer (W1)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+anyhow.workspace = true
+attest_core.workspace = true
+common.workspace = true
+lee.workspace = true
+lee_core.workspace = true
+program_loader_core.workspace = true
+sequencer_service_rpc = { workspace = true, features = ["client"] }
+wallet.workspace = true

@@ -1,0 +1,23 @@
+[package]
+name = "bridge_program"
+description = "LEZ program bridge: Claim against an attested vault root, Burn into a burn accumulator (W5)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[[bin]]
+name = "bridge"
+path = "src/bin/bridge.rs"
+
+[dependencies]
+attest_core.workspace = true
+borsh.workspace = true
+lee_core.workspace = true
+risc0-zkvm.workspace = true
+
+[package.metadata.cargo-machete]
+ignored = ["risc0-zkvm"]

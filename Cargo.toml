@@ -1,0 +1,143 @@
+# beacon-veil: Ethereum state attestation (RFP-021) and a privacy-preserving bridge spike (RFP-022) on LEZ v0.4.0-rc3.
+# Shared file, owned by W0. Changes go to the coordinator as a request (PLAN.md section 0 rule 1).
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/agent-lechuuu/beacon-veil-staging"
+publish = false
+
+[workspace]
+resolver = "3"
+members = [
+  "crates/attest_core",
+  "crates/attest_inclusion",
+  "crates/attest_host",
+  "crates/follower",
+  "crates/attest_cli",
+  "crates/guest_methods",
+
+  # Guests (built for riscv32im-risc0-zkvm-elf by crates/guest_methods or `make guests`; they also compile natively so
+  # fmt, clippy and unit tests cover them).
+  "programs/attest",
+  "programs/lc_verify",
+  "programs/consumer_erc20",
+  "programs/bridge",
+  "guests/burn_proof",
+
+  "tools/fixtures",
+  "tools/proofgen",
+  "tools/cost",
+  "tools/bridge_cli",
+
+  "tests/e2e_chain",
+  "tests/adversarial",
+  "tests/e2e_consumer",
+]
+
+[workspace.dependencies]
+# ---- our crates ----
+attest_core = { path = "crates/attest_core" }
+attest_inclusion = { path = "crates/attest_inclusion" }
+attest_host = { path = "crates/attest_host" }
+follower = { path = "crates/follower" }
+guest_methods = { path = "crates/guest_methods" }
+
+# ---- LEZ v0.4.0-rc3 (commit bafd07be0701398f9bc435f73ab05e9a7936c301) ----
+lee_core = { git = "https://github.com/logos-blockchain/logos-execution-zone", tag = "v0.4.0-rc3" }
+lee = { git = "https://github.com/logos-blockchain/logos-execution-zone", tag = "v0.4.0-rc3" }
+wallet = { git = "https://github.com/logos-blockchain/logos-execution-zone", tag = "v0.4.0-rc3" }
+common = { git = "https://github.com/logos-blockchain/logos-execution-zone", tag = "v0.4.0-rc3" }
+sequencer_service_rpc = { git = "https://github.com/logos-blockchain/logos-execution-zone", tag = "v0.4.0-rc3" }
+program_loader_core = { git = "https://github.com/logos-blockchain/logos-execution-zone", tag = "v0.4.0-rc3" }
+
+# ---- RISC Zero 3.0.5 (exact: 3.1.0 is semver-compatible and must not be picked up) ----
+risc0-zkvm = { version = "=3.0.5", default-features = false, features = ["std"] }
+risc0-build = "=3.0.5"
+
+# ---- Ethereum light client: a16z Helios 0.12.0 (commit 2af9b41887e069144ee56cd710f3ddca195473f8), unmodified ----
+helios-consensus-core = { git = "https://github.com/a16z/helios", tag = "0.12.0" }
+
+# ---- Ethereum data structures (same majors as Helios 0.12.0) ----
+alloy-primitives = { version = "1", default-features = false }
+alloy-rlp = { version = "0.3.12", default-features = false }
+alloy-trie = { version = "0.9.1", default-features = false }
+
+# ---- general (versions as LEZ rc3 where LEZ uses them) ----
+anyhow = "1.0.98"
+borsh = { version = "1.5.7", features = ["derive"] }
+clap = { version = "4.5.42", features = ["derive", "env"] }
+hex = "0.4.3"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+serde = { version = "1.0.60", default-features = false, features = ["derive"] }
+serde_json = "1.0.81"
+sha2 = { version = "0.10.8", default-features = false }
+thiserror = "2.0"
+tokio = { version = "1.50", features = ["macros", "rt-multi-thread", "signal", "time", "fs", "net", "sync"] }
+toml = "0.9.8"
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter", "fmt", "json"] }
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+
+# ---- Guest patches (PLAN.md 2.1). Patches apply to every member, host and guest. ----
+[patch.crates-io]
+# Same keccak patch as LEZ rc3 Cargo.toml:284-285 (in-guest ML-KEM speedup); required for LEZ crates to match.
+keccak = { git = "https://github.com/logos-blockchain/sponges", rev = "3a56e99771beedf04946eab21a4a62adc2951377" }
+# RISC Zero accelerated BLS12-381 (Helios uses bls12_381 0.8).
+bls12_381 = { git = "https://github.com/risc0/zkcrypto-bls12_381", tag = "bls12_381/v0.8.0-risczero.1" }
+# RISC Zero accelerated SHA-256: sha2 0.9 (Helios) and sha2 0.10 (LEZ, ours). Two majors need two patch names.
+sha2 = { git = "https://github.com/risc0/RustCrypto-hashes", tag = "sha2-v0.10.8-risczero.0" }
+sha2-v0-9 = { package = "sha2", git = "https://github.com/risc0/RustCrypto-hashes", tag = "sha2-v0.9.9-risczero.0" }
+
+# ---- Profiles ----
+# `release` is the GUEST profile: risc0-build always builds guests with `--release` against this workspace root.
+# Small ELF (deployed-ELF cap 1,966,080 bytes), with the hot crypto crates at opt-level 3 (PLAN.md W1 scope).
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+
+[profile.release.package.bls12_381]
+opt-level = 3
+
+[profile.release.package.sha2]
+opt-level = 3
+
+# Host binaries for long runs (follower, CLI, cost tool): `cargo build --profile host`.
+[profile.host]
+inherits = "release"
+opt-level = 3
+lto = false
+codegen-units = 16
+
+# Dev and tests: keep link memory low (LEZ does the same) and make the RISC Zero executor fast in dev mode.
+[profile.dev]
+debug = "line-tables-only"
+
+[profile.test]
+debug = "line-tables-only"
+
+[profile.dev.package.risc0-zkvm]
+opt-level = 3
+[profile.dev.package.risc0-circuit-rv32im]
+opt-level = 3
+[profile.dev.package.risc0-zkp]
+opt-level = 3
+[profile.dev.package.risc0-binfmt]
+opt-level = 3
+[profile.dev.package.risc0-core]
+opt-level = 3
+[profile.dev.package.argon2]
+opt-level = 3
+[profile.dev.package.blake2]
+opt-level = 3
+[profile.dev.package.bls12_381]
+opt-level = 3
+[profile.dev.package.sha2]
+opt-level = 3

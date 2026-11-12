@@ -1,0 +1,20 @@
+# Foundry project for the RFP-022 vault (owner W5). Libraries are git submodules pinned by tag:
+# forge-std v1.17.0, OpenZeppelin Contracts v5.7.0, risc0-ethereum v3.0.1.
+[profile.default]
+src = "src"
+test = "test"
+script = "script"
+out = "out"
+libs = ["lib"]
+solc_version = "0.8.30"
+evm_version = "prague"
+optimizer = true
+optimizer_runs = 200
+fs_permissions = [{ access = "read", path = "./" }]
+
+[profile.ci]
+fuzz = { runs = 1000 }
+verbosity = 3
+
+[fmt]
+line_length = 120

@@ -1,0 +1,17 @@
+[package]
+name = "burn_proof_guest"
+description = "RISC Zero guest burn_proof: membership of a burn note in the LEZ burn accumulator, journal for Vault.release (W5)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[[bin]]
+name = "burn_proof"
+path = "src/bin/burn_proof.rs"
+
+[dependencies]
+risc0-zkvm.workspace = true

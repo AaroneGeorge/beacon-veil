@@ -1,0 +1,20 @@
+[package]
+name = "attest_cli"
+description = "CLI attest: init, update, status, config, attest --dry-run, checkpoint verify (W4)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[[bin]]
+name = "attest"
+path = "src/main.rs"
+
+[dependencies]
+anyhow.workspace = true
+attest_core.workspace = true
+attest_host.workspace = true
+clap.workspace = true

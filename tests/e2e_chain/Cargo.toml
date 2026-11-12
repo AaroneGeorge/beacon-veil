@@ -1,0 +1,13 @@
+[package]
+name = "e2e_chain"
+description = "End-to-end light-client chain on seq-dev: Init, 3 updates, 1 handoff (W1)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+attest_core.workspace = true

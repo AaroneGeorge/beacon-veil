@@ -1,0 +1,13 @@
+[package]
+name = "adversarial"
+description = "G2 adversarial suite: fabricated chain and six negative cases, each asserting an error code (W2)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+attest_core.workspace = true

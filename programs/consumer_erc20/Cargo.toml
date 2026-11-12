@@ -1,0 +1,23 @@
+[package]
+name = "consumer_erc20_program"
+description = "LEZ program consumer_erc20: reference consumer of an attested ERC-20 Transfer, nullifier on the statement id (W3)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[[bin]]
+name = "consumer_erc20"
+path = "src/bin/consumer_erc20.rs"
+
+[dependencies]
+attest_core.workspace = true
+borsh.workspace = true
+lee_core.workspace = true
+risc0-zkvm.workspace = true
+
+[package.metadata.cargo-machete]
+ignored = ["risc0-zkvm"]
