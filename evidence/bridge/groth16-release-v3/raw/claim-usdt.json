@@ -1,0 +1,12 @@
+{
+  "denom": "100000000",
+  "dest": "Coyt1q7HXnJQVZgzbEduWjK9h2Awq2erZF5iF87wnUM",
+  "dest_kind": "private (default)",
+  "dev_mode": true,
+  "nullifier_pda": "2SL9QsQL8jSwgzR7gCm45QRkvoYx7obkGQWqowu9tb4V",
+  "public_on_lez": "the root used and a fresh nullifier; not the destination, not which deposit",
+  "root": "0x4d92152ebaec5d12c6a0e4f8845ac1b0ec2b85c1856ff40e18567431d8075407",
+  "seconds": 50.906903149,
+  "token": "0x001b4d55b24a5ebf4e4e0d9cbf964e6170169e2b",
+  "tx": "a87aaf9edc65e4a4e371c5aa270b387a4cc35578352fb7133ca05c2b4f187da3"
+}

@@ -1,0 +1,8 @@
+burn tx d5a06127811fe2f478b1a560c53c7a2d03ecd8948ff08b2e016d3774b71e59c8 (leaf index 1)
+{
+  "burn_index": 1,
+  "hidden": "the Ethereum recipient and the relayer fee",
+  "leaf": "0x1686670efb040a8c064d39a20212a88d1c18562366dba79a4652c0fe9d1f8a54",
+  "note": "0x34a49463d904527cf9ddf685ee6e94efa97b8596dbeffef8f83f3b0239aac090",
+  "public_on_lez": "token, amount, time, note and memo (both random-looking)"
+}

@@ -1,0 +1,12 @@
+{
+  "denom": "1000000000000000",
+  "fee": "10000000000000",
+  "journal_sha256": "0x0dcd59dae94a28e3db2b20f79dd98372c8a1b7c98eaee187c2bd76b251e39a0d",
+  "leaf_index": 0,
+  "mode": "witness",
+  "note": "witness.borsh holds the burn secret; delete it after proving",
+  "nullifier": "0xaf50e2ac017a36b467fe49ec4922a43391cc0d258ef23b055531d0690ec751e0",
+  "recipient": "0x523072a2ac5e5a3e51c107bc17995a3fa03dbd78",
+  "token": "0x0000000000000000000000000000000000000000",
+  "witness_file": "/home/lechuuu/hackathons/logos-rfp/build/run/w5/sepolia-v3/burn-0-w/witness.borsh"
+}

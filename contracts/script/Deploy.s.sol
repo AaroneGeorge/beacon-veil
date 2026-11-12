@@ -164,3 +164,28 @@ contract FreezeAll is Script {
         vm.stopBroadcast();
     }
 }
+
+/// @notice Failsafe L2: release through the open route. Env: PRIVATE_KEY (caller, receives the fee), VAULT, and the
+/// lines of `bridge_cli prove --mode open` (BURN_SECRET, RECIPIENT, FEE, TOKEN, DENOM, LEAF_INDEX, BURN_PATH as 32
+/// comma-separated bytes32). Reveals the burn secret, so the burn-to-release link: opt-in only.
+contract ReleaseOpenOne is Script {
+    function run() external {
+        uint256 pk = vm.envUint("PRIVATE_KEY");
+        Vault vault = Vault(payable(vm.envAddress("VAULT")));
+        bytes32[] memory p = vm.envBytes32("BURN_PATH", ",");
+        require(p.length == 32, "BURN_PATH must have 32 entries");
+        bytes32[32] memory path;
+        for (uint256 i = 0; i < 32; i++) {
+            path[i] = p[i];
+        }
+        bytes32 secret = vm.envBytes32("BURN_SECRET");
+        address recipient = vm.envAddress("RECIPIENT");
+        uint256 fee = vm.envUint("FEE");
+        address token = vm.envAddress("TOKEN");
+        uint256 denom = vm.envUint("DENOM");
+        uint256 leafIndex = vm.envUint("LEAF_INDEX");
+        vm.startBroadcast(pk);
+        vault.releaseOpen(secret, recipient, fee, token, denom, leafIndex, path);
+        vm.stopBroadcast();
+    }
+}
