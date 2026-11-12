@@ -1,0 +1,162 @@
+{
+  "calibration": {
+    "intercept_ms": 41.64499111772488,
+    "n": 6,
+    "r2": 0.9866276259282197,
+    "slope_ms_per_cycle": 0.00011924751794041249,
+    "throughput_cycles_per_ms": 8385.91877861723
+  },
+  "ppe": [],
+  "standalone": [
+    {
+      "calibrated_ms": 0.9235720264484947,
+      "exec_stats": {
+        "best_ms": 37.184684000000004,
+        "mean_ms": 37.184684000000004,
+        "n": 1,
+        "stdev_ms": 0.0
+      },
+      "instruction": "Tick",
+      "net_compute_ms": -4.460307117724874,
+      "phase": "handle_message",
+      "program_name": "clock",
+      "prove_paging_cycles": 26883,
+      "prove_segments": 1,
+      "prove_stats": {
+        "best_ms": 19493.448004,
+        "mean_ms": 19493.448004,
+        "n": 1,
+        "stdev_ms": 0.0
+      },
+      "prove_total_cycles": 65536,
+      "prove_user_cycles": 7745,
+      "segments": 1,
+      "user_cycles": 7745
+    },
+    {
+      "calibrated_ms": 3.3671921640834275,
+      "exec_stats": {
+        "best_ms": 46.910875,
+        "mean_ms": 46.910875,
+        "n": 1,
+        "stdev_ms": 0.0
+      },
+      "instruction": "Distribute",
+      "net_compute_ms": 5.265883882275119,
+      "phase": "handle_message",
+      "program_name": "fee",
+      "prove_paging_cycles": 42680,
+      "prove_segments": 1,
+      "prove_stats": {
+        "best_ms": 38517.272225,
+        "mean_ms": 38517.272225,
+        "n": 1,
+        "stdev_ms": 0.0
+      },
+      "prove_total_cycles": 131072,
+      "prove_user_cycles": 28237,
+      "segments": 1,
+      "user_cycles": 28237
+    },
+    {
+      "calibrated_ms": 4.081365549028558,
+      "exec_stats": {
+        "best_ms": 48.05627,
+        "mean_ms": 48.05627,
+        "n": 1,
+        "stdev_ms": 0.0
+      },
+      "instruction": "Distribute",
+      "net_compute_ms": 6.41127888227512,
+      "phase": "handle_message",
+      "program_name": "fee",
+      "prove_paging_cycles": 45965,
+      "prove_segments": 1,
+      "prove_stats": {
+        "best_ms": 38589.423765,
+        "mean_ms": 38589.423765,
+        "n": 1,
+        "stdev_ms": 0.0
+      },
+      "prove_total_cycles": 131072,
+      "prove_user_cycles": 34226,
+      "segments": 1,
+      "user_cycles": 34226
+    },
+    {
+      "calibrated_ms": 1.8686086061262637,
+      "exec_stats": {
+        "best_ms": 45.831603,
+        "mean_ms": 45.831603,
+        "n": 1,
+        "stdev_ms": 0.0
+      },
+      "instruction": "Refund",
+      "net_compute_ms": 4.186611882275123,
+      "phase": "handle_message",
+      "program_name": "fee",
+      "prove_paging_cycles": 36598,
+      "prove_segments": 1,
+      "prove_stats": {
+        "best_ms": 19167.734699,
+        "mean_ms": 19167.734699,
+        "n": 1,
+        "stdev_ms": 0.0
+      },
+      "prove_total_cycles": 65536,
+      "prove_user_cycles": 15670,
+      "segments": 1,
+      "user_cycles": 15670
+    },
+    {
+      "calibrated_ms": 5.080302006815393,
+      "exec_stats": {
+        "best_ms": 45.716933000000004,
+        "mean_ms": 45.716933000000004,
+        "n": 1,
+        "stdev_ms": 0.0
+      },
+      "instruction": "Write 4 KiB",
+      "net_compute_ms": 4.0719418822751265,
+      "phase": "handle_message",
+      "program_name": "scripted",
+      "prove_paging_cycles": 43672,
+      "prove_segments": 1,
+      "prove_stats": {
+        "best_ms": 38749.634598,
+        "mean_ms": 38749.634598,
+        "n": 1,
+        "stdev_ms": 0.0
+      },
+      "prove_total_cycles": 131072,
+      "prove_user_cycles": 42603,
+      "segments": 1,
+      "user_cycles": 42603
+    },
+    {
+      "calibrated_ms": 65.67867094114862,
+      "exec_stats": {
+        "best_ms": 107.169293,
+        "mean_ms": 107.169293,
+        "n": 1,
+        "stdev_ms": 0.0
+      },
+      "instruction": "Write 64 KiB",
+      "net_compute_ms": 65.52430188227513,
+      "phase": "handle_message",
+      "program_name": "scripted",
+      "prove_paging_cycles": 244594,
+      "prove_segments": 1,
+      "prove_stats": {
+        "best_ms": 358693.78855,
+        "mean_ms": 358693.78855,
+        "n": 1,
+        "stdev_ms": 0.0
+      },
+      "prove_total_cycles": 1048576,
+      "prove_user_cycles": 550776,
+      "segments": 1,
+      "user_cycles": 550776
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "samples": 69,
+  "interval_s": 1.0,
+  "peak_tree_rss_kib": 1440528,
+  "peak_tree_rss_gib": 1.374,
+  "peak_single_process_rss_kib": 1438804,
+  "peak_single_process": "r0vm",
+  "min_mem_available_kib": 12070600,
+  "swap_used_by_run_kib_max": 0,
+  "load1_mean": 8.4,
+  "load1_max": 8.47
+}

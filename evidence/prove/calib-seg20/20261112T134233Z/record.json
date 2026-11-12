@@ -1,0 +1,87 @@
+{
+  "name": "calib-seg20",
+  "label": "measured",
+  "dev_mode": false,
+  "exit": 0,
+  "start_utc": "2026-11-12T13:42:33Z",
+  "end_utc": "2026-11-12T13:51:08Z",
+  "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
+  "command": "nice -n 19 ionice -c3 /home/lechuuu/hackathons/logos-rfp/build/.tmp/w6/lez-target/release/cycle_bench --prove --exec-iters 1",
+  "loadavg_start": "8.69 8.85 9.82 1/719 1170325",
+  "loadavg_end": "8.52 8.45 9.16 1/723 1177780",
+  "mem_start": "total 15823 MiB, available 13165 MiB; swap used 768 MiB of 12147",
+  "risc0": "unset risc0_prover=ipc",
+  "repo_commit": "72cf5f4 dirty=2",
+  "note": "LEZ v0.4.0-rc3 tools/cycle_bench (pinned, unmodified), RISC0_PROVER=ipc (r0vm 3.0.5)",
+  "raw": {
+    "meta.txt": "evidence/prove/calib-seg20/20261112T134233Z/meta.txt",
+    "time.txt": "evidence/prove/calib-seg20/20261112T134233Z/time.txt",
+    "output.log": "evidence/prove/calib-seg20/20261112T134233Z/output.log",
+    "samples.csv": "evidence/prove/calib-seg20/20261112T134233Z/samples.csv",
+    "sampler.json": "evidence/prove/calib-seg20/20261112T134233Z/sampler.json"
+  },
+  "wall_s": 513.88,
+  "max_rss_kib_time_v": 9574240,
+  "user_s": 3885.3,
+  "sys_s": 6.75,
+  "cpu_pct": 757,
+  "major_faults": 0,
+  "exit_status_time_v": 0,
+  "sampler": {
+    "samples": 509,
+    "interval_s": 1.0,
+    "peak_tree_rss_kib": 9593892,
+    "peak_tree_rss_gib": 9.149,
+    "peak_single_process_rss_kib": 9575244,
+    "peak_single_process": "r0vm",
+    "min_mem_available_kib": 3921504,
+    "swap_used_by_run_kib_max": 0,
+    "load1_mean": 8.32,
+    "load1_max": 8.81
+  },
+  "peak_rss_gib": 9.149,
+  "cycle_bench_prove_rows": [
+    {
+      "program": "clock",
+      "instruction": "Tick",
+      "prove_s": 19.49,
+      "total_cycles": 65536,
+      "segments": 1
+    },
+    {
+      "program": "fee",
+      "instruction": "Distribute",
+      "prove_s": 38.52,
+      "total_cycles": 131072,
+      "segments": 1
+    },
+    {
+      "program": "fee",
+      "instruction": "Distribute",
+      "prove_s": 38.59,
+      "total_cycles": 131072,
+      "segments": 1
+    },
+    {
+      "program": "fee",
+      "instruction": "Refund",
+      "prove_s": 19.17,
+      "total_cycles": 65536,
+      "segments": 1
+    },
+    {
+      "program": "scripted",
+      "instruction": "Write 4 KiB",
+      "prove_s": 38.75,
+      "total_cycles": 131072,
+      "segments": 1
+    },
+    {
+      "program": "scripted",
+      "instruction": "Write 64 KiB",
+      "prove_s": 358.69,
+      "total_cycles": 1048576,
+      "segments": 1
+    }
+  ]
+}

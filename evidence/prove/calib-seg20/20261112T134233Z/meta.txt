@@ -1,0 +1,13 @@
+name=calib-seg20
+start_utc=2026-11-12T13:42:33Z
+machine=Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5
+loadavg_start=8.69 8.85 9.82 1/719 1170325
+mem_start=total 15823 MiB, available 13165 MiB; swap used 768 MiB of 12147
+risc0_dev_mode=unset risc0_prover=ipc
+repo_commit=72cf5f4 dirty=2
+cmd=nice -n 19 ionice -c3 /home/lechuuu/hackathons/logos-rfp/build/.tmp/w6/lez-target/release/cycle_bench --prove --exec-iters 1
+cwd=/home/lechuuu/hackathons/logos-rfp/build/repo
+note=LEZ v0.4.0-rc3 tools/cycle_bench (pinned, unmodified), RISC0_PROVER=ipc (r0vm 3.0.5)
+end_utc=2026-11-12T13:51:08Z
+loadavg_end=8.52 8.45 9.16 1/723 1177780
+exit=0

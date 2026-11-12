@@ -1,0 +1,313 @@
+{
+  "what": "K4 projection: real-proof wall time and peak RSS for lc_verify V1 updates on this machine",
+  "generated_utc": "2026-11-12T13:53:26Z",
+  "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
+  "inputs": {
+    "calibration_records": [
+      "evidence/prove/calib-seg20/20261112T132508Z/record.json",
+      "evidence/prove/calib-seg20/20261112T133351Z/record.json",
+      "evidence/prove/calib-seg20/20261112T134233Z/record.json",
+      "evidence/prove/calib-recursion-composite/20261112T135108Z/record.json",
+      "evidence/prove/calib-recursion-succinct/20261112T135148Z/record.json"
+    ],
+    "cost_json": "evidence/cost/cost.json"
+  },
+  "measured": {
+    "po2_20_segment_prove_s": [
+      364.66,
+      365.79,
+      358.69
+    ],
+    "mean_s": 363.0,
+    "stdev_s": 3.8,
+    "us_per_padded_cycle": 346.2,
+    "small_rows": [
+      {
+        "program": "clock",
+        "instruction": "Tick",
+        "prove_s": 19.35,
+        "total_cycles": 65536,
+        "segments": 1
+      },
+      {
+        "program": "fee",
+        "instruction": "Distribute",
+        "prove_s": 38.93,
+        "total_cycles": 131072,
+        "segments": 1
+      },
+      {
+        "program": "fee",
+        "instruction": "Distribute",
+        "prove_s": 40.52,
+        "total_cycles": 131072,
+        "segments": 1
+      },
+      {
+        "program": "fee",
+        "instruction": "Refund",
+        "prove_s": 19.33,
+        "total_cycles": 65536,
+        "segments": 1
+      },
+      {
+        "program": "scripted",
+        "instruction": "Write 4 KiB",
+        "prove_s": 38.7,
+        "total_cycles": 131072,
+        "segments": 1
+      },
+      {
+        "program": "clock",
+        "instruction": "Tick",
+        "prove_s": 19.33,
+        "total_cycles": 65536,
+        "segments": 1
+      },
+      {
+        "program": "fee",
+        "instruction": "Distribute",
+        "prove_s": 38.54,
+        "total_cycles": 131072,
+        "segments": 1
+      },
+      {
+        "program": "fee",
+        "instruction": "Distribute",
+        "prove_s": 39.11,
+        "total_cycles": 131072,
+        "segments": 1
+      },
+      {
+        "program": "fee",
+        "instruction": "Refund",
+        "prove_s": 19.18,
+        "total_cycles": 65536,
+        "segments": 1
+      },
+      {
+        "program": "scripted",
+        "instruction": "Write 4 KiB",
+        "prove_s": 38.9,
+        "total_cycles": 131072,
+        "segments": 1
+      },
+      {
+        "program": "clock",
+        "instruction": "Tick",
+        "prove_s": 19.49,
+        "total_cycles": 65536,
+        "segments": 1
+      },
+      {
+        "program": "fee",
+        "instruction": "Distribute",
+        "prove_s": 38.52,
+        "total_cycles": 131072,
+        "segments": 1
+      },
+      {
+        "program": "fee",
+        "instruction": "Distribute",
+        "prove_s": 38.59,
+        "total_cycles": 131072,
+        "segments": 1
+      },
+      {
+        "program": "fee",
+        "instruction": "Refund",
+        "prove_s": 19.17,
+        "total_cycles": 65536,
+        "segments": 1
+      },
+      {
+        "program": "scripted",
+        "instruction": "Write 4 KiB",
+        "prove_s": 38.75,
+        "total_cycles": 131072,
+        "segments": 1
+      }
+    ],
+    "peak_rss_gib_calibration": 9.149,
+    "peak_rss_gib_ppe": null,
+    "load1_mean_during_runs": [
+      8.93,
+      8.06,
+      8.32
+    ],
+    "recursion_s_per_lift_or_join": 31.12
+  },
+  "model": "T = padded_cycles / 2^20 x t_seg20 (segment proofs, one at a time; measured per-segment rate) + (2n - 1) x r x t_seg20 (lift each segment, join n - 1 times; r in [0.1, 0.35] is an ESTIMATE) + privacy-circuit wrap (measured if --ppe given, else an estimate). Peak RSS: segments are proven one at a time and spilled to $TMPDIR on disk (risc0-zkvm 3.0.5 ExecutorImpl::run), so the peak is that of one po2-20 segment proof, independent of segment count (measured).",
+  "projection": [
+    {
+      "step": "attest.init",
+      "source": "cost.json",
+      "segments": 6,
+      "padded_cycles": 5505024,
+      "segment_proving_h": 0.53,
+      "recursion_h_range_est": [
+        0.1,
+        0.19
+      ],
+      "circuit_wrap_s": [
+        1932.0,
+        2400.0
+      ],
+      "circuit_wrap_label": "measured (--wrap-s or cycle_bench --ppe)",
+      "total_h_range": [
+        1.16,
+        1.39
+      ],
+      "fits_8h_window": true
+    },
+    {
+      "step": "finality_update_15637644",
+      "source": "cost.json",
+      "segments": 47,
+      "padded_cycles": 49283072,
+      "segment_proving_h": 4.74,
+      "recursion_h_range_est": [
+        0.8,
+        1.61
+      ],
+      "circuit_wrap_s": [
+        1932.0,
+        2400.0
+      ],
+      "circuit_wrap_label": "measured (--wrap-s or cycle_bench --ppe)",
+      "total_h_range": [
+        6.08,
+        7.01
+      ],
+      "fits_8h_window": true
+    },
+    {
+      "step": "update[0]",
+      "source": "cost.json",
+      "segments": 63,
+      "padded_cycles": 65273856,
+      "segment_proving_h": 6.28,
+      "recursion_h_range_est": [
+        1.08,
+        2.16
+      ],
+      "circuit_wrap_s": [
+        1932.0,
+        2400.0
+      ],
+      "circuit_wrap_label": "measured (--wrap-s or cycle_bench --ppe)",
+      "total_h_range": [
+        7.89,
+        9.11
+      ],
+      "fits_8h_window": false
+    },
+    {
+      "step": "update[1]",
+      "source": "cost.json",
+      "segments": 66,
+      "padded_cycles": 69206016,
+      "segment_proving_h": 6.66,
+      "recursion_h_range_est": [
+        1.13,
+        2.26
+      ],
+      "circuit_wrap_s": [
+        1932.0,
+        2400.0
+      ],
+      "circuit_wrap_label": "measured (--wrap-s or cycle_bench --ppe)",
+      "total_h_range": [
+        8.32,
+        9.59
+      ],
+      "fits_8h_window": false
+    },
+    {
+      "step": "update[2]",
+      "source": "cost.json",
+      "segments": 67,
+      "padded_cycles": 70254592,
+      "segment_proving_h": 6.76,
+      "recursion_h_range_est": [
+        1.15,
+        2.3
+      ],
+      "circuit_wrap_s": [
+        1932.0,
+        2400.0
+      ],
+      "circuit_wrap_label": "measured (--wrap-s or cycle_bench --ppe)",
+      "total_h_range": [
+        8.44,
+        9.72
+      ],
+      "fits_8h_window": false
+    },
+    {
+      "step": "update[3]",
+      "source": "cost.json",
+      "segments": 66,
+      "padded_cycles": 69206016,
+      "segment_proving_h": 6.66,
+      "recursion_h_range_est": [
+        1.13,
+        2.26
+      ],
+      "circuit_wrap_s": [
+        1932.0,
+        2400.0
+      ],
+      "circuit_wrap_label": "measured (--wrap-s or cycle_bench --ppe)",
+      "total_h_range": [
+        8.32,
+        9.59
+      ],
+      "fits_8h_window": false
+    },
+    {
+      "step": "V2 finality_update_15637644",
+      "source": "B/.tmp/w1/v2-exec.json",
+      "segments": 38,
+      "padded_cycles": 39845888,
+      "segment_proving_h": 3.83,
+      "recursion_h_range_est": [
+        0.65,
+        1.3
+      ],
+      "circuit_wrap_s": [
+        1932.0,
+        2400.0
+      ],
+      "circuit_wrap_label": "measured (--wrap-s or cycle_bench --ppe)",
+      "total_h_range": [
+        5.02,
+        5.8
+      ],
+      "fits_8h_window": true
+    },
+    {
+      "step": "V2 update[0]",
+      "source": "B/.tmp/w1/v2-exec.json",
+      "segments": 47,
+      "padded_cycles": 49283072,
+      "segment_proving_h": 4.74,
+      "recursion_h_range_est": [
+        0.8,
+        1.61
+      ],
+      "circuit_wrap_s": [
+        1932.0,
+        2400.0
+      ],
+      "circuit_wrap_label": "measured (--wrap-s or cycle_bench --ppe)",
+      "total_h_range": [
+        6.08,
+        7.01
+      ],
+      "fits_8h_window": true
+    }
+  ],
+  "peak_rss_projection_gib": 9.149,
+  "label": "estimate (built on measured per-segment time and peak RSS)"
+}

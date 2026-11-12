@@ -1,0 +1,34 @@
+cycle_bench: prove mode ON, this will be slow (~minutes per program)
+  prove(clock/Tick/handle_message): 19330.2 ms (19.3s), total_cycles=65536, segments=1
+  prove(fee/Distribute/handle_message): 38538.7 ms (38.5s), total_cycles=131072, segments=1
+  prove(fee/Distribute/handle_message): 39110.0 ms (39.1s), total_cycles=131072, segments=1
+  prove(fee/Refund/handle_message): 19175.2 ms (19.2s), total_cycles=65536, segments=1
+  prove(scripted/Write 4 KiB/handle_message): 38899.8 ms (38.9s), total_cycles=131072, segments=1
+  prove(scripted/Write 64 KiB/handle_message): 365791.0 ms (365.8s), total_cycles=1048576, segments=1
+program   instruction   phase   user_cycles  segments  exec_ms (best / mean ± stdev)     calib_ms      net_ms
+-------------------------------------------------------------------------------------------------------------
+clock     Tick          handle_message          7745         1  37.28 / 37.28 ± 0.00 (n=1)        0.89       -4.20
+fee       Distribute    handle_message         28237         1  46.82 / 46.82 ± 0.00 (n=1)        3.25        5.34
+fee       Distribute    handle_message         34226         1  47.71 / 47.71 ± 0.00 (n=1)        3.94        6.22
+fee       Refund        handle_message         15670         1  45.90 / 45.90 ± 0.00 (n=1)        1.80        4.41
+scripted  Write 4 KiB   handle_message         42603         1  44.60 / 44.60 ± 0.00 (n=1)        4.90        3.11
+scripted  Write 64 KiB  handle_message        550776         1  104.70 / 104.70 ± 0.00 (n=1)       63.33       63.22
+
+prove():
+program   instruction   phase   prove_total_c              prove_ms (s)  prove_segs
+-----------------------------------------------------------------------------------
+clock     Tick          handle_message           65536           19330.2 (19.3s)           1
+fee       Distribute    handle_message          131072           38538.7 (38.5s)           1
+fee       Distribute    handle_message          131072           39110.0 (39.1s)           1
+fee       Refund        handle_message           65536           19175.2 (19.2s)           1
+scripted  Write 4 KiB   handle_message          131072           38899.8 (38.9s)           1
+scripted  Write 64 KiB  handle_message         1048576         365791.0 (365.8s)           1
+
+public-execution ms calibration (pinned hardware):
+  fit: best_ms = 41.4831 + 1.150e-4 * user_cycles  (n=6, R²=0.9853)
+  throughput:    8697 cycles/ms
+  fixed overhead: 41.483 ms host-side per call (ELF parse + env build, off-cycle)
+  calib_ms = user_cycles / throughput  (compute only, overhead excluded)
+  net_ms   = best exec_ms - fixed overhead  (measured compute, overhead stripped)
+
+JSON written to /home/lechuuu/hackathons/logos-rfp/build/vendor/lez/target/cycle_bench.json
