@@ -32,7 +32,12 @@ pub fn run(witness: &BurnWitness, out: &Path, mode: &str) -> Result<()> {
         // For the separate RISC Zero 3.1.0 prover (guests/burn_proof/r31). Holds the burn secret: owner-only file.
         use std::os::unix::fs::OpenOptionsExt as _;
         let p = out.join("witness.borsh");
-        let mut f = std::fs::OpenOptions::new().write(true).create(true).truncate(true).mode(0o600).open(&p)?;
+        let mut f = std::fs::OpenOptions::new()
+            .write(true)
+            .create(true)
+            .truncate(true)
+            .mode(0o600)
+            .open(&p)?;
         std::io::Write::write_all(&mut f, &borsh::to_vec(witness)?)?;
         meta["witness_file"] = json!(p.display().to_string());
         meta["note"] = json!("witness.borsh holds the burn secret; delete it after proving");

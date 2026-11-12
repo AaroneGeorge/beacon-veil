@@ -41,7 +41,11 @@ if [ "${BV_REDEPLOY:-0}" = 1 ] || ! grep -qE '^bridge_dev_source *=' "$R/deploy/
 fi
 BRIDGE=$(grep -E '^bridge *=' "$R/deploy/ids.toml" | cut -d'"' -f2)
 DEVSRC=$(grep -E '^bridge_dev_source *=' "$R/deploy/ids.toml" | cut -d'"' -f2)
-IMAGE=$("$CLI" image-id)
+# burn_proof on RISC Zero 3.1.0 (GHSA-g6qg-9j8p-7j87), separate workspace guests/burn_proof/r31.
+R31=(env RISC0_HOME="$B/run/w5/risc0-31"
+  RISC0_SERVER_PATH="$B/run/w5/risc0-31/extensions/v3.1.0-cargo-risczero-x86_64-unknown-linux-gnu/r0vm"
+  "$B/target-w5-r31/release/burn_prover_r31")
+IMAGE=$("${R31[@]}" image-id)
 echo "bridge=$BRIDGE dev_source=$DEVSRC burn_image_id=$IMAGE"
 
 step "deploy vault on anvil (mock verifier, STUB anchor delay 0)"
@@ -90,8 +94,10 @@ ANCHOR=$ANCHOR LEZ_INSTANCE=$INSTANCE_HEX ROOT=$(jq -r .root <<<"$ACC") \
   forge script script/Deploy.s.sol:PostRoot --rpc-url "$ANVIL_RPC" --broadcast >/dev/null
 cd "$R"
 
-step "burn_proof in the executor (dev mode, mock seal)"
-"$CLI" prove --index 0 --out "$RUN/burn0" --mode execute
+step "burn_proof (risc0 3.1.0) in the executor (dev mode, mock seal)"
+"$CLI" prove --index 0 --out "$RUN/burn0w" --mode witness > /dev/null
+"${R31[@]}" prove --witness "$RUN/burn0w/witness.borsh" --out "$RUN/burn0" --mode execute
+rm -f "$RUN/burn0w/witness.borsh"
 
 step "release on anvil"
 before=$(cast balance 0x000000000000000000000000000000000000bEEF --rpc-url "$ANVIL_RPC")

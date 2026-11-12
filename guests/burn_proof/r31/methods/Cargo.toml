@@ -6,7 +6,8 @@ license.workspace = true
 publish.workspace = true
 
 [build-dependencies]
-risc0-build = "=3.1.0"
+# risc0 v3.1.0 ships risc0-build 3.0.7 (risc0 workspace Cargo.toml at tag v3.1.0).
+risc0-build = "=3.0.7"
 
 [package.metadata.risc0]
 methods = ["guest"]

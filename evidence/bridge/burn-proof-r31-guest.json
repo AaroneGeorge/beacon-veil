@@ -1,0 +1,27 @@
+{
+  "label": "guest burn_proof on RISC Zero 3.1.0, reproducible docker build (GHSA-g6qg-9j8p-7j87 response)",
+  "date_utc": "2026-11-12",
+  "image_id": "0xf929f9f441d9aa652b9914b4ce6c6a7b445aa90d189c075af1e1e9fe3b1497cf",
+  "elf": "burn_proof.bin (risc0 ProgramBinary)",
+  "elf_sha256": "72d99268cbd872e76ace8530f22fef1da18ed19801c0e3f29b823ef7db308626",
+  "elf_bytes": 256036,
+  "reproducibility": "two clean docker builds (riscv-guest dir and burn_methods_r31 removed in between) gave the same ELF sha256 and image id",
+  "docker_image": "risczero/risc0-guest-builder:r0.1.97.0",
+  "docker_image_digest": "sha256:7ae0a27fa72b10fb5c1066005bd949ae43dc4ead8a284f2d6572b99c82ab4468",
+  "docker_tag_source": "risc0-build 3.0.7 src/lib.rs DEFAULT_DOCKER_TAG = r0.1.97.0 (risc0 v3.1.0 ships risc0-build 3.0.7)",
+  "docker_context": "repository root (the guest includes programs/bridge/src/{hash,tree,journal}.rs by path)",
+  "versions": {
+    "guest risc0-zkvm": "3.1.0",
+    "host risc0-zkvm": "3.1.0",
+    "risc0-circuit-recursion": "4.1.0",
+    "risc0-groth16": "3.0.6",
+    "risc0-build": "3.0.7",
+    "rzup r0vm": "3.1.0",
+    "rzup risc0-groth16 component": "0.2.0"
+  },
+  "source": "guests/burn_proof/r31 (separate workspace), statement source programs/bridge/src/{hash,tree,journal}.rs at HEAD bf95e35",
+  "superseded_local_build_image_id": "0xc1a0babf6246c5f8988d55ea6e1599f7a6c11a0928c98721d63365b7dcb424b7 (rzup rust 1.91.1, not used by any vault)",
+  "cross_check": "executor journal of the 3.1.0 guest is byte-identical to the 3.0.5 guest journal for the same burn (local e2e)",
+  "command": "cd $R && unset RISC0_DOCKER_CONTAINER_TAG && RISC0_HOME=$B/run/w5/risc0-31 CARGO_TARGET_DIR=$B/target-w5-r31 BV_GUEST_DOCKER=1 cargo build --release --manifest-path guests/burn_proof/r31/Cargo.toml -p burn_prover_r31",
+  "machine": "lechu 8 cpus\nDocker version 29.9.2, build a82e528"
+}
