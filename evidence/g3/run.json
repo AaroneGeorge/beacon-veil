@@ -1,0 +1,48 @@
+{
+  "gate": "G3",
+  "pass": true,
+  "test_exit_code": 0,
+  "started_utc": "2026-11-12T11:08:15Z",
+  "finished_utc": "2026-11-12T11:10:03Z",
+  "command": "nice -n 15 cargo test -p e2e_consumer --test e2e_consumer -- --ignored --nocapture --test-threads 1 g3_consumer_accepts_once_and_refuses_replay",
+  "risc0_dev_mode": "1",
+  "lez": "v0.4.0-rc3",
+  "sequencer": "seq-dev (standalone)",
+  "machine": "Linux 7.0.0-43-generic x86_64; Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz; 15 GiB RAM",
+  "repo_commit": "7156113",
+  "result": {
+    "attest_program": "CvWQWXteVtA67suCS32ovZZ4CxbwK7YcQT1fSfpMnR43",
+    "consumer_instance": "52zHjQCHVJPrL6p5sgdfAPQEeLF2Bwp1FpuKvfYx76Dy",
+    "consumer_program": "8kvsH5D1XVRkoY7z5JoXowT7hq5NM2p3s9uwTGZ9h4Dg",
+    "exec_hash": "5a500b1d7ec30eb2859694f9e26616ef7693921bccc6b2ef0da87e998587b410",
+    "exec_number": 26397891,
+    "instance": "3uFZPqUY74dtbfWYWeY2Jawjmos7zPCbWf4Vgvu8XQvt",
+    "nullifier": "AjZELpV999c4yYyWhaFe8ABkHesrwdHr5jt6SjRYV3K5",
+    "record_slot": 15637568,
+    "statement_id": "6c0ec6f0fcfa09c75134f0129d64d35b424079ab1129d0526f05c14aa9bb81ed",
+    "tx1": {
+      "accepted": true,
+      "consumer_count_after": 1,
+      "consumer_count_before": 0,
+      "consumer_total_after": "0000000000000000000000000000000000000000000000000000000006520467",
+      "gas_limit_declared": 10000000,
+      "tx": "e012fd36571f47d26abbbc98078f897fa81312b1acfc565b527b48e52d693cef"
+    },
+    "tx2_sent": {
+      "accepted": false,
+      "consumer_state_unchanged": true,
+      "error": "attest (allow revert): tx a3a5c11ea75377bfcc6bea5f743b5534f0871df7886f84d2e6218cdc5fbc8f5d reverted in block 382 (the panic code is in the sequencer log)"
+    },
+    "tx2_simulated": {
+      "accepted": false,
+      "code": "E11_ALREADY_CONSUMED"
+    }
+  },
+  "sequencer_log_excerpt": [
+    "thread 'main' (1) panicked at crates/attest_core/src/error.rs:120:9:",
+    "ESA:E11",
+    "thread 'main' (1) panicked at crates/attest_core/src/error.rs:120:9:",
+    "ESA:E11"
+  ],
+  "raw_log": "evidence/g3/run.log"
+}

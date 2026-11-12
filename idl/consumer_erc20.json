@@ -1,0 +1,208 @@
+{
+  "version": "0.1.0",
+  "name": "consumer_erc20",
+  "instructions": [
+    {
+      "name": "init",
+      "accounts": [
+        {
+          "name": "consumer_instance",
+          "writable": true,
+          "signer": false,
+          "init": true
+        }
+      ],
+      "args": [
+        {
+          "name": "config",
+          "type": {
+            "defined": "ConsumerConfig"
+          }
+        }
+      ]
+    },
+    {
+      "name": "mark_consumed",
+      "accounts": [
+        {
+          "name": "nullifier",
+          "writable": true,
+          "signer": false,
+          "init": true
+        }
+      ],
+      "args": [
+        {
+          "name": "consumer_instance",
+          "type": "account_id"
+        },
+        {
+          "name": "statement_id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "ConsumerState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "config",
+            "type": {
+              "defined": "ConsumerConfig"
+            }
+          },
+          {
+            "name": "count",
+            "type": "u64"
+          },
+          {
+            "name": "total",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "last",
+            "type": {
+              "option": {
+                "defined": "Credit"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "ConsumerConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "attest_program",
+          "type": "account_id"
+        },
+        {
+          "name": "instance",
+          "type": "account_id"
+        },
+        {
+          "name": "chain_id",
+          "type": "u64"
+        },
+        {
+          "name": "token",
+          "type": {
+            "array": [
+              "u8",
+              20
+            ]
+          }
+        },
+        {
+          "name": "recipient",
+          "type": {
+            "array": [
+              "u8",
+              20
+            ]
+          }
+        },
+        {
+          "name": "salt",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "Credit",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "statement_id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "from",
+          "type": {
+            "array": [
+              "u8",
+              20
+            ]
+          }
+        },
+        {
+          "name": "amount",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "exec_number",
+          "type": "u64"
+        },
+        {
+          "name": "subject",
+          "type": "bytes"
+        }
+      ]
+    }
+  ],
+  "instruction_type": "consumer_erc20_program::ConsumerMessage",
+  "errors": [
+    {
+      "code": 1,
+      "name": "E01_MALFORMED"
+    },
+    {
+      "code": 8,
+      "name": "E08_PREDICATE_FALSE"
+    },
+    {
+      "code": 9,
+      "name": "E09_CHAIN_MISMATCH"
+    },
+    {
+      "code": 10,
+      "name": "E10_PREDICATE_NOT_COVERED"
+    },
+    {
+      "code": 11,
+      "name": "E11_ALREADY_CONSUMED"
+    },
+    {
+      "code": 12,
+      "name": "E12_UNKNOWN_VERIFIER"
+    }
+  ],
+  "events": [
+    {
+      "name": "Credited",
+      "selector": "sha256(\"consumer_erc20::Credited\")[..8]",
+      "type": {
+        "defined": "Credit"
+      }
+    }
+  ],
+  "notes": "Hand-kept in the SPEL IDL JSON shape (SPEL has no LEZ 0.4 release). Messages are borsh; panic text ESA:Exx. A Statement from the attest program arrives as a bare borsh attest_core::Statement (dispatch by sender, not by message tag). PDAs: consumer_instance = PDA(consumer, sha256(\"c20/config/v1\" || borsh(config))); nullifier = PDA(consumer, sha256(\"c20/null/v1\" || consumer_instance || statement_id))."
+}

@@ -12,3 +12,15 @@ workspace = true
 [dependencies]
 anyhow.workspace = true
 attest_core.workspace = true
+attest_inclusion.workspace = true
+borsh.workspace = true
+clap.workspace = true
+hex.workspace = true
+reqwest.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
+# Reuse (PLAN.md 2.5): receipt trie and proof via alloy-trie `HashBuilder` + `ProofRetainer`, the same construction
+# as Helios 0.12.0 `create_receipt_proof` (core/src/execution/proof.rs, MIT).
+alloy-primitives.workspace = true
+alloy-rlp.workspace = true
+alloy-trie.workspace = true

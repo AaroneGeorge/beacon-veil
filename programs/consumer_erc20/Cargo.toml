@@ -9,15 +9,25 @@ publish.workspace = true
 [lints]
 workspace = true
 
+# Library: message, state and id types shared by the guest and host code (tests, CLI, attest_host callers).
+[lib]
+path = "src/lib.rs"
+
 [[bin]]
 name = "consumer_erc20"
 path = "src/bin/consumer_erc20.rs"
 
 [dependencies]
 attest_core.workspace = true
+attest_inclusion.workspace = true
 borsh.workspace = true
 lee_core.workspace = true
 risc0-zkvm.workspace = true
+sha2.workspace = true
 
 [package.metadata.cargo-machete]
 ignored = ["risc0-zkvm"]
+
+[dev-dependencies]
+hex.workspace = true
+serde_json.workspace = true

@@ -11,3 +11,13 @@ workspace = true
 
 [dependencies]
 attest_core.workspace = true
+borsh.workspace = true
+# Reuse (PLAN.md 2.5): MPT proof verification is alloy-trie's `verify_proof`, the same call Helios 0.12.0 uses
+# (core/src/execution/proof.rs, MIT). RLP decoding is alloy-rlp.
+alloy-primitives.workspace = true
+alloy-rlp.workspace = true
+alloy-trie.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true
+hex.workspace = true
