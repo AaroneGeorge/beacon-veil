@@ -1,0 +1,51 @@
+config: chain_id 1 checkpoint slot 15605760 root 0xd56afee8fc171452dca06d815bf36db37442f975a1472b6e1902e8fecbc0bef7 forks 8
+native init: slot 15605760 period 1905 store 0x8359724baa22a682d3e34f7830086b103b8c37dc1615ac5e36dbb944ac6e360f (139 ms)
+native update[0]: 26914 bytes, sig slot 15605913 participation 511 -> head slot 15605824 period 1905 new_slot true handoff false exec #26366249 (157 ms)
+native update[1]: 26926 bytes, sig slot 15614021 participation 512 -> head slot 15613952 period 1906 new_slot true handoff true exec #26374354 (284 ms)
+native update[2]: 26920 bytes, sig slot 15622209 participation 511 -> head slot 15622144 period 1907 new_slot true handoff true exec #26382519 (209 ms)
+native update[3]: 26922 bytes, sig slot 15631888 participation 512 -> head slot 15631808 period 1908 new_slot true handoff true exec #26392149 (223 ms)
+native finality_update_15637644: 2109 bytes, sig slot 15637645 participation 512 -> head slot 15637568 period 1908 new_slot true handoff false exec #26397891 (117 ms)
+native replay of finality_update_15637644: refused E14_ALREADY_APPLIED
+elf: .tmp/w1/trace-target/riscv32im-risc0-zkvm-elf/release/lc_verify
+lc_verify user ELF (deployed bytes): 758336 bytes = 8 segments of 96 KiB; cap 1966080: UNDER
+lc_verify program binary (with kernel): 790760 bytes; image id 26a5544abcc4aad8812a2b4ce09b61cdf69c2c46859d85a294ba84763df3b39a
+R0VM[180561] cycle-trace start at 179846
+R0VM[12968564] cycle-trace witness load + pre-store commitment (decode and hash the committees): 12787292
+R0VM[14735841] cycle-trace decode update + pre-checks: 1766011
+R0VM[63728044] cycle-trace phases (duplicate computation): committee_root 11013221, key_aggregation 2274221 (1 non-signers), sig_decompress 1599037, g2_subgroup_check 8767621, hash_to_curve 3083859, miller_loop_2 9856680, final_exponentiation 12383570
+R0VM[63729417] cycle-trace (probe itself, not part of Verify): 48992241
+R0VM[114041260] cycle-trace Helios verify_* + apply_*: 50310574
+R0VM[125101088] cycle-trace post-store commitment + head: 11058484
+executor update[0]: user cycles 125290300, padded total 133169152, segments 127, exit Halted(0), 12894 ms; Apply matches native (head slot 15605824, period 1905, exec #26366249 0xd3773a8dd9857eac07acbdb495d1d0fb537fd0f0faa65b202c936d725efa7e26)
+R0VM[294060] cycle-trace start at 293345
+R0VM[25741278] cycle-trace witness load + pre-store commitment (decode and hash the committees): 25446507
+R0VM[27509628] cycle-trace decode update + pre-checks: 1767084
+R0VM[75378053] cycle-trace phases (duplicate computation): committee_root 11013221, key_aggregation 1150440 (0 non-signers), sig_decompress 1599041, g2_subgroup_check 8767621, hash_to_curve 3083859, miller_loop_2 9856680, final_exponentiation 12383570
+R0VM[75379426] cycle-trace (probe itself, not part of Verify): 47868463
+R0VM[124693139] cycle-trace Helios verify_* + apply_*: 49312444
+R0VM[135753034] cycle-trace post-store commitment + head: 11058551
+executor update[1]: user cycles 136006080, padded total 144703488, segments 138, exit Halted(0), 13211 ms; Apply matches native (head slot 15613952, period 1906, exec #26374354 0xcf57fcba540cb3ce99df5cecf4de66424121ea9a85c853895a19f6946a2b91d0)
+R0VM[294074] cycle-trace start at 293359
+R0VM[25741292] cycle-trace witness load + pre-store commitment (decode and hash the committees): 25446507
+R0VM[27508900] cycle-trace decode update + pre-checks: 1766342
+R0VM[76501107] cycle-trace phases (duplicate computation): committee_root 11013221, key_aggregation 2274221 (1 non-signers), sig_decompress 1599041, g2_subgroup_check 8767621, hash_to_curve 3083859, miller_loop_2 9856680, final_exponentiation 12383570
+R0VM[76502480] cycle-trace (probe itself, not part of Verify): 48992245
+R0VM[126934798] cycle-trace Helios verify_* + apply_*: 50431049
+R0VM[137994684] cycle-trace post-store commitment + head: 11058542
+executor update[2]: user cycles 138247692, padded total 146800640, segments 140, exit Halted(0), 9611 ms; Apply matches native (head slot 15622144, period 1907, exec #26382519 0xc6ebfa43a3bb076c979bb6790584fab014e987762f668ea33171f6b41bd22955)
+R0VM[294045] cycle-trace start at 293330
+R0VM[25741263] cycle-trace witness load + pre-store commitment (decode and hash the committees): 25446507
+R0VM[27509539] cycle-trace decode update + pre-checks: 1767010
+R0VM[75377964] cycle-trace phases (duplicate computation): committee_root 11013221, key_aggregation 1150440 (0 non-signers), sig_decompress 1599041, g2_subgroup_check 8767621, hash_to_curve 3083859, miller_loop_2 9856680, final_exponentiation 12383570
+R0VM[75379337] cycle-trace (probe itself, not part of Verify): 47868463
+R0VM[124692234] cycle-trace Helios verify_* + apply_*: 49311628
+R0VM[135752120] cycle-trace post-store commitment + head: 11058542
+executor update[3]: user cycles 136005164, padded total 144703488, segments 138, exit Halted(0), 9609 ms; Apply matches native (head slot 15631808, period 1908, exec #26392149 0x0d121a707b23a927b4800c036f0a3d09fb78a5ad4b36f4a93c9bfe43b0039edc)
+R0VM[235992] cycle-trace start at 235277
+R0VM[25683210] cycle-trace witness load + pre-store commitment (decode and hash the committees): 25446507
+R0VM[25804008] cycle-trace decode update + pre-checks: 119551
+R0VM[73672434] cycle-trace phases (duplicate computation): committee_root 11013221, key_aggregation 1150440 (0 non-signers), sig_decompress 1599037, g2_subgroup_check 8767621, hash_to_curve 3083859, miller_loop_2 9856680, final_exponentiation 12383570
+R0VM[73673807] cycle-trace (probe itself, not part of Verify): 47868464
+R0VM[111003765] cycle-trace Helios verify_* + apply_*: 37328689
+R0VM[122063604] cycle-trace post-store commitment + head: 11058495
+executor finality_update_15637644: user cycles 122240463, padded total 129499136, segments 124, exit Halted(0), 9523 ms; Apply matches native (head slot 15637568, period 1908, exec #26397891 0x5a500b1d7ec30eb2859694f9e26616ef7693921bccc6b2ef0da87e998587b410)

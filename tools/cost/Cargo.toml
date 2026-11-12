@@ -9,6 +9,19 @@ publish.workspace = true
 [lints]
 workspace = true
 
+# Executor only (risc0-zkvm `client`, no `prove` feature): turning on `prove` here would unify into every host
+# crate built with this one and switch LEZ's default prover from the external r0vm to the in-process one.
 [dependencies]
 anyhow.workspace = true
-attest_core.workspace = true
+attest_core = { workspace = true, features = ["lc"] }
+borsh.workspace = true
+e2e_chain = { path = "../../tests/e2e_chain" }
+lee_core.workspace = true
+risc0-zkvm = { workspace = true, features = ["client"] }
+risc0-binfmt = "=3.0.4"
+risc0-zkos-v1compat = "=2.2.2"
+serde_json.workspace = true
+# g1_real_proof only (host, wallet to seq-real).
+attest_host.workspace = true
+common.workspace = true
+tokio.workspace = true

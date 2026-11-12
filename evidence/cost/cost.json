@@ -1,0 +1,912 @@
+{
+  "what": "beacon-veil cost table (make cost-exec). Cycles are deterministic for the recorded guest image ids.",
+  "generated_utc": "2026-11-12T10:31:38Z",
+  "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
+  "run": {
+    "command": "make cost-exec (tools/cost/cost_exec.sh)",
+    "started_utc": "2026-11-12T10:13:32Z",
+    "guest_build": "prebuilt (COST_NO_GUEST_BUILD)",
+    "guests": {
+      "lc_verify": "/home/lechuuu/hackathons/logos-rfp/build/target/riscv-guest/guest_methods/lc_verify_program/riscv32im-risc0-zkvm-elf/release/lc_verify",
+      "attest": "/home/lechuuu/hackathons/logos-rfp/build/target/riscv-guest/guest_methods/attest_program/riscv32im-risc0-zkvm-elf/release/attest",
+      "consumer_erc20": "/home/lechuuu/hackathons/logos-rfp/build/target/riscv-guest/guest_methods/consumer_erc20_program/riscv32im-risc0-zkvm-elf/release/consumer_erc20"
+    },
+    "repo_commit": "ed52102 (dirty)",
+    "risc0_dev_mode": "1",
+    "r0vm": "risc0-r0vm 3.0.5"
+  },
+  "guests": {
+    "attest": {
+      "elf_bytes": 408128,
+      "image_id": "cf14f765246d1b71895f2e0b49a5d01c5eef2af90903ff6fb3ea84752c82441d",
+      "path": "/home/lechuuu/hackathons/logos-rfp/build/target/riscv-guest/guest_methods/attest_program/riscv32im-risc0-zkvm-elf/release/attest",
+      "program_binary_bytes": 440552
+    },
+    "lc_verify": {
+      "elf_bytes": 755980,
+      "image_id": "8d4f7fbbadc0a9cbc7918161ac57b9e0e66ddc5f3f7ee2e0c3b86818d65853ca",
+      "path": "/home/lechuuu/hackathons/logos-rfp/build/target/riscv-guest/guest_methods/lc_verify_program/riscv32im-risc0-zkvm-elf/release/lc_verify",
+      "program_binary_bytes": 788404
+    }
+  },
+  "raw_files": [
+    "cost/raw/b0-phases.json",
+    "cost/raw/exec-lc.json",
+    "cost/raw/sizes.json"
+  ],
+  "sizes": {
+    "bootstrap_bytes": 25675,
+    "header_record_bytes": 152,
+    "instance_state_bytes_mainnet": 410,
+    "measured": true,
+    "store_witness_bytes": 24757,
+    "tool": "tools/cost sizes",
+    "update_bytes": [
+      {
+        "bytes": 26914,
+        "step": "update[0]"
+      },
+      {
+        "bytes": 26926,
+        "step": "update[1]"
+      },
+      {
+        "bytes": 26920,
+        "step": "update[2]"
+      },
+      {
+        "bytes": 26922,
+        "step": "update[3]"
+      },
+      {
+        "bytes": 2109,
+        "step": "finality_update_15637644"
+      }
+    ],
+    "what": "borsh sizes (bytes) of stored states and inputs"
+  },
+  "rows": [
+    {
+      "id": "attest.apply.finality_update_15637644",
+      "program": "attest",
+      "message": "Apply",
+      "step": "finality_update_15637644",
+      "user_cycles": 54965,
+      "total_cycles_padded": 131072,
+      "segments": 1,
+      "message_bytes": 401,
+      "gas_exec": 54965,
+      "label": "measured",
+      "raw": "exec-lc.json",
+      "extra": {
+        "path": "public (sync from the private Verify)",
+        "segment_po2_last": 17,
+        "segment_po2_max": 17,
+        "writes_record": true
+      }
+    },
+    {
+      "id": "attest.apply.update[0]",
+      "program": "attest",
+      "message": "Apply",
+      "step": "update[0]",
+      "user_cycles": 54965,
+      "total_cycles_padded": 131072,
+      "segments": 1,
+      "message_bytes": 401,
+      "gas_exec": 54965,
+      "label": "measured",
+      "raw": "exec-lc.json",
+      "extra": {
+        "path": "public (sync from the private Verify)",
+        "segment_po2_last": 17,
+        "segment_po2_max": 17,
+        "writes_record": true
+      }
+    },
+    {
+      "id": "attest.apply.update[1]",
+      "program": "attest",
+      "message": "Apply",
+      "step": "update[1]",
+      "user_cycles": 54965,
+      "total_cycles_padded": 131072,
+      "segments": 1,
+      "message_bytes": 401,
+      "gas_exec": 54965,
+      "label": "measured",
+      "raw": "exec-lc.json",
+      "extra": {
+        "path": "public (sync from the private Verify)",
+        "segment_po2_last": 17,
+        "segment_po2_max": 17,
+        "writes_record": true
+      }
+    },
+    {
+      "id": "attest.apply.update[2]",
+      "program": "attest",
+      "message": "Apply",
+      "step": "update[2]",
+      "user_cycles": 54965,
+      "total_cycles_padded": 131072,
+      "segments": 1,
+      "message_bytes": 401,
+      "gas_exec": 54965,
+      "label": "measured",
+      "raw": "exec-lc.json",
+      "extra": {
+        "path": "public (sync from the private Verify)",
+        "segment_po2_last": 17,
+        "segment_po2_max": 17,
+        "writes_record": true
+      }
+    },
+    {
+      "id": "attest.apply.update[3]",
+      "program": "attest",
+      "message": "Apply",
+      "step": "update[3]",
+      "user_cycles": 54965,
+      "total_cycles_padded": 131072,
+      "segments": 1,
+      "message_bytes": 401,
+      "gas_exec": 54965,
+      "label": "measured",
+      "raw": "exec-lc.json",
+      "extra": {
+        "path": "public (sync from the private Verify)",
+        "segment_po2_last": 17,
+        "segment_po2_max": 17,
+        "writes_record": true
+      }
+    },
+    {
+      "id": "attest.check_header",
+      "program": "attest",
+      "message": "CheckHeader",
+      "step": "finality_update_15637644",
+      "user_cycles": 18585,
+      "total_cycles_padded": 65536,
+      "segments": 1,
+      "message_bytes": 33,
+      "gas_exec": 18585,
+      "label": "measured",
+      "raw": "exec-lc.json",
+      "extra": {
+        "path": "public (sync from Attest)",
+        "segment_po2_last": 16,
+        "segment_po2_max": 16
+      }
+    },
+    {
+      "id": "attest.init",
+      "program": "attest",
+      "message": "Init",
+      "step": "bootstrap_15605760",
+      "user_cycles": 4928793,
+      "total_cycles_padded": 5505024,
+      "segments": 6,
+      "message_bytes": 25906,
+      "gas_exec": 4928793,
+      "label": "measured",
+      "raw": "exec-lc.json",
+      "extra": {
+        "bootstrap_bytes": 25675,
+        "instance_state_bytes": 410,
+        "path": "public",
+        "segment_po2_last": 18,
+        "segment_po2_max": 20
+      }
+    },
+    {
+      "id": "attest.write_record.checkpoint",
+      "program": "attest",
+      "message": "WriteRecord",
+      "step": "bootstrap_15605760",
+      "user_cycles": 24047,
+      "total_cycles_padded": 131072,
+      "segments": 1,
+      "message_bytes": 153,
+      "gas_exec": 24047,
+      "label": "measured",
+      "raw": "exec-lc.json",
+      "extra": {
+        "path": "public (sync from Init)",
+        "record_state_bytes": 152,
+        "segment_po2_last": 17,
+        "segment_po2_max": 17
+      }
+    },
+    {
+      "id": "attest.write_record.finality_update_15637644",
+      "program": "attest",
+      "message": "WriteRecord",
+      "step": "finality_update_15637644",
+      "user_cycles": 24047,
+      "total_cycles_padded": 131072,
+      "segments": 1,
+      "message_bytes": 153,
+      "gas_exec": 24047,
+      "label": "measured",
+      "raw": "exec-lc.json",
+      "extra": {
+        "path": "public (sync from Apply)",
+        "record_state_bytes": 152,
+        "segment_po2_last": 17,
+        "segment_po2_max": 17
+      }
+    },
+    {
+      "id": "attest.write_record.update[0]",
+      "program": "attest",
+      "message": "WriteRecord",
+      "step": "update[0]",
+      "user_cycles": 24047,
+      "total_cycles_padded": 131072,
+      "segments": 1,
+      "message_bytes": 153,
+      "gas_exec": 24047,
+      "label": "measured",
+      "raw": "exec-lc.json",
+      "extra": {
+        "path": "public (sync from Apply)",
+        "record_state_bytes": 152,
+        "segment_po2_last": 17,
+        "segment_po2_max": 17
+      }
+    },
+    {
+      "id": "attest.write_record.update[1]",
+      "program": "attest",
+      "message": "WriteRecord",
+      "step": "update[1]",
+      "user_cycles": 24047,
+      "total_cycles_padded": 131072,
+      "segments": 1,
+      "message_bytes": 153,
+      "gas_exec": 24047,
+      "label": "measured",
+      "raw": "exec-lc.json",
+      "extra": {
+        "path": "public (sync from Apply)",
+        "record_state_bytes": 152,
+        "segment_po2_last": 17,
+        "segment_po2_max": 17
+      }
+    },
+    {
+      "id": "attest.write_record.update[2]",
+      "program": "attest",
+      "message": "WriteRecord",
+      "step": "update[2]",
+      "user_cycles": 24047,
+      "total_cycles_padded": 131072,
+      "segments": 1,
+      "message_bytes": 153,
+      "gas_exec": 24047,
+      "label": "measured",
+      "raw": "exec-lc.json",
+      "extra": {
+        "path": "public (sync from Apply)",
+        "record_state_bytes": 152,
+        "segment_po2_last": 17,
+        "segment_po2_max": 17
+      }
+    },
+    {
+      "id": "attest.write_record.update[3]",
+      "program": "attest",
+      "message": "WriteRecord",
+      "step": "update[3]",
+      "user_cycles": 24047,
+      "total_cycles_padded": 131072,
+      "segments": 1,
+      "message_bytes": 153,
+      "gas_exec": 24047,
+      "label": "measured",
+      "raw": "exec-lc.json",
+      "extra": {
+        "path": "public (sync from Apply)",
+        "record_state_bytes": 152,
+        "segment_po2_last": 17,
+        "segment_po2_max": 17
+      }
+    },
+    {
+      "id": "lc_verify.v1.verify.finality_update_15637644",
+      "program": "lc_verify",
+      "message": "Verify (V1)",
+      "step": "finality_update_15637644",
+      "user_cycles": 46099256,
+      "total_cycles_padded": 49283072,
+      "segments": 47,
+      "message_bytes": 51793,
+      "gas_exec": null,
+      "label": "measured",
+      "raw": "exec-lc.json",
+      "extra": {
+        "handoff": false,
+        "head_slot": 15637568,
+        "new_slot": true,
+        "participation": 512,
+        "path": "private on Path A; public on B0 (over the cap)",
+        "period": 1908,
+        "segment_po2_last": 20,
+        "segment_po2_max": 20,
+        "update_bytes": 2109,
+        "variant": "V1"
+      }
+    },
+    {
+      "id": "lc_verify.v1.verify.update[0]",
+      "program": "lc_verify",
+      "message": "Verify (V1)",
+      "step": "update[0]",
+      "user_cycles": 61178234,
+      "total_cycles_padded": 65273856,
+      "segments": 63,
+      "message_bytes": 51970,
+      "gas_exec": null,
+      "label": "measured",
+      "raw": "exec-lc.json",
+      "extra": {
+        "handoff": false,
+        "head_slot": 15605824,
+        "new_slot": true,
+        "participation": 511,
+        "path": "private on Path A; public on B0 (over the cap)",
+        "period": 1905,
+        "segment_po2_last": 18,
+        "segment_po2_max": 20,
+        "update_bytes": 26914,
+        "variant": "V1"
+      }
+    },
+    {
+      "id": "lc_verify.v1.verify.update[1]",
+      "program": "lc_verify",
+      "message": "Verify (V1)",
+      "step": "update[1]",
+      "user_cycles": 64339205,
+      "total_cycles_padded": 69206016,
+      "segments": 66,
+      "message_bytes": 76610,
+      "gas_exec": null,
+      "label": "measured",
+      "raw": "exec-lc.json",
+      "extra": {
+        "handoff": true,
+        "head_slot": 15613952,
+        "new_slot": true,
+        "participation": 512,
+        "path": "private on Path A; public on B0 (over the cap)",
+        "period": 1906,
+        "segment_po2_last": 20,
+        "segment_po2_max": 20,
+        "update_bytes": 26926,
+        "variant": "V1"
+      }
+    },
+    {
+      "id": "lc_verify.v1.verify.update[2]",
+      "program": "lc_verify",
+      "message": "Verify (V1)",
+      "step": "update[2]",
+      "user_cycles": 65467587,
+      "total_cycles_padded": 70254592,
+      "segments": 67,
+      "message_bytes": 76604,
+      "gas_exec": null,
+      "label": "measured",
+      "raw": "exec-lc.json",
+      "extra": {
+        "handoff": true,
+        "head_slot": 15622144,
+        "new_slot": true,
+        "participation": 511,
+        "path": "private on Path A; public on B0 (over the cap)",
+        "period": 1907,
+        "segment_po2_last": 20,
+        "segment_po2_max": 20,
+        "update_bytes": 26920,
+        "variant": "V1"
+      }
+    },
+    {
+      "id": "lc_verify.v1.verify.update[3]",
+      "program": "lc_verify",
+      "message": "Verify (V1)",
+      "step": "update[3]",
+      "user_cycles": 64338286,
+      "total_cycles_padded": 69206016,
+      "segments": 66,
+      "message_bytes": 76606,
+      "gas_exec": null,
+      "label": "measured",
+      "raw": "exec-lc.json",
+      "extra": {
+        "handoff": true,
+        "head_slot": 15631808,
+        "new_slot": true,
+        "participation": 512,
+        "path": "private on Path A; public on B0 (over the cap)",
+        "period": 1908,
+        "segment_po2_last": 20,
+        "segment_po2_max": 20,
+        "update_bytes": 26922,
+        "variant": "V1"
+      }
+    }
+  ],
+  "derived": {
+    "constants": {
+      "values": {
+        "MAX_GAS_EXEC": 10000000,
+        "TARGET_GAS_EXEC": 5000000,
+        "MAX_GAS_STOR": 1000000,
+        "TARGET_GAS_STOR": 500000,
+        "PRIVATE_VERIFY_GAS": 409764,
+        "PROOF_BYTES": 223551,
+        "PRIVATE_PAD_BYTES": 512,
+        "PRIVATE_GAS_STOR": 224063,
+        "MAX_PRIVATE_ACTIONS": 8,
+        "BLOCK_S_STANDALONE": 15,
+        "BLOCK_S_TESTNET": 10,
+        "BLOCK_S_DEVNET": 30
+      },
+      "source": "LEZ v0.4.0-rc3 lez/programs/fee/core/src/market.rs (constants marked FIXME: Provisional), lez/programs/fee/core/src/assess.rs (private fee = (PRIVATE_VERIFY_GAS + effect cycles) exec + PRIVATE_GAS_STOR stor; public = cycles exec + wire bytes stor), lez/sequencer/service/networks/*.json"
+    },
+    "path_a_gas_per_update": {
+      "rows": [
+        {
+          "step": "finality_update_15637644",
+          "handoff": false,
+          "verify_cycles_private": 46099256,
+          "apply_cycles": 54965,
+          "write_record_cycles": 24047,
+          "gas_exec": 488776,
+          "gas_exec_pct_of_cap": 4.89,
+          "gas_stor": 224063,
+          "gas_stor_pct_of_block": 22.41,
+          "label": "derived"
+        },
+        {
+          "step": "update[0]",
+          "handoff": false,
+          "verify_cycles_private": 61178234,
+          "apply_cycles": 54965,
+          "write_record_cycles": 24047,
+          "gas_exec": 488776,
+          "gas_exec_pct_of_cap": 4.89,
+          "gas_stor": 224063,
+          "gas_stor_pct_of_block": 22.41,
+          "label": "derived"
+        },
+        {
+          "step": "update[1]",
+          "handoff": true,
+          "verify_cycles_private": 64339205,
+          "apply_cycles": 54965,
+          "write_record_cycles": 24047,
+          "gas_exec": 488776,
+          "gas_exec_pct_of_cap": 4.89,
+          "gas_stor": 224063,
+          "gas_stor_pct_of_block": 22.41,
+          "label": "derived"
+        },
+        {
+          "step": "update[2]",
+          "handoff": true,
+          "verify_cycles_private": 65467587,
+          "apply_cycles": 54965,
+          "write_record_cycles": 24047,
+          "gas_exec": 488776,
+          "gas_exec_pct_of_cap": 4.89,
+          "gas_stor": 224063,
+          "gas_stor_pct_of_block": 22.41,
+          "label": "derived"
+        },
+        {
+          "step": "update[3]",
+          "handoff": true,
+          "verify_cycles_private": 64338286,
+          "apply_cycles": 54965,
+          "write_record_cycles": 24047,
+          "gas_exec": 488776,
+          "gas_exec_pct_of_cap": 4.89,
+          "gas_stor": 224063,
+          "gas_stor_pct_of_block": 22.41,
+          "label": "derived"
+        }
+      ],
+      "formula": "gas_exec = PRIVATE_VERIFY_GAS + cycles(Apply) + cycles(WriteRecord); gas_stor = PRIVATE_GAS_STOR (assess.rs private_fee_required). The private Verify cycles are paid in proving time, not gas.",
+      "label": "derived (measured cycles + LEZ constants)"
+    },
+    "b0_public_verify_vs_cap": {
+      "rows": [
+        {
+          "step": "finality_update_15637644",
+          "cycles": 46099256,
+          "x_cap": 4.61,
+          "min_public_txs_if_split_evenly": 5,
+          "fits_one_tx": false
+        },
+        {
+          "step": "update[0]",
+          "cycles": 61178234,
+          "x_cap": 6.12,
+          "min_public_txs_if_split_evenly": 7,
+          "fits_one_tx": false
+        },
+        {
+          "step": "update[1]",
+          "cycles": 64339205,
+          "x_cap": 6.43,
+          "min_public_txs_if_split_evenly": 7,
+          "fits_one_tx": false
+        },
+        {
+          "step": "update[2]",
+          "cycles": 65467587,
+          "x_cap": 6.55,
+          "min_public_txs_if_split_evenly": 7,
+          "fits_one_tx": false
+        },
+        {
+          "step": "update[3]",
+          "cycles": 64338286,
+          "x_cap": 6.43,
+          "min_public_txs_if_split_evenly": 7,
+          "fits_one_tx": false
+        }
+      ],
+      "label": "measured cycles; split count is a lower bound (estimate)",
+      "note": "Same guest and input as the private leg, so the executor's cycle count is what the sequencer would meter; it is above MAX_GAS_EXEC, so the sequencer refuses it as one transaction (OutOfGas). The split count assumes perfectly even phases and no split overhead."
+    },
+    "chain_capacity_per_day": {
+      "rows": [
+        {
+          "block_time": "standalone 15 s",
+          "cadence": "every finality update (1 per epoch, 6.4 min)",
+          "updates_per_day": 225.0,
+          "path_a_exec_gas_per_day": 109974600,
+          "path_a_pct_daily_exec_cap": 0.1909,
+          "path_a_pct_daily_stor_cap": 0.8752,
+          "path_a_private_slots_per_day": 225.0,
+          "path_b_exec_gas_per_day": 14730207075,
+          "path_b_pct_daily_exec_cap": 25.5733,
+          "path_b_pct_daily_exec_target": 51.1466
+        },
+        {
+          "block_time": "standalone 15 s",
+          "cadence": "every 16 epochs (1.7 h, the G4 run cadence)",
+          "updates_per_day": 14.06,
+          "path_a_exec_gas_per_day": 6873412,
+          "path_a_pct_daily_exec_cap": 0.0119,
+          "path_a_pct_daily_stor_cap": 0.0547,
+          "path_a_private_slots_per_day": 14.06,
+          "path_b_exec_gas_per_day": 920637942,
+          "path_b_pct_daily_exec_cap": 1.5983,
+          "path_b_pct_daily_exec_target": 3.1967
+        },
+        {
+          "block_time": "standalone 15 s",
+          "cadence": "one per sync-committee period (27.3 h, keep-alive minimum)",
+          "updates_per_day": 0.88,
+          "path_a_exec_gas_per_day": 429588,
+          "path_a_pct_daily_exec_cap": 0.0007,
+          "path_a_pct_daily_stor_cap": 0.0034,
+          "path_a_private_slots_per_day": 0.88,
+          "path_b_exec_gas_per_day": 57539871,
+          "path_b_pct_daily_exec_cap": 0.0999,
+          "path_b_pct_daily_exec_target": 0.1998
+        },
+        {
+          "block_time": "standalone 15 s",
+          "cadence": "chain maximum",
+          "path_a_updates_per_block_max": 4,
+          "path_a_updates_per_day_max": 23040,
+          "path_b_blocks_per_update_min": 7,
+          "path_b_updates_per_day_max": 823
+        },
+        {
+          "block_time": "testnet 10 s",
+          "cadence": "every finality update (1 per epoch, 6.4 min)",
+          "updates_per_day": 225.0,
+          "path_a_exec_gas_per_day": 109974600,
+          "path_a_pct_daily_exec_cap": 0.1273,
+          "path_a_pct_daily_stor_cap": 0.5835,
+          "path_a_private_slots_per_day": 225.0,
+          "path_b_exec_gas_per_day": 14730207075,
+          "path_b_pct_daily_exec_cap": 17.0489,
+          "path_b_pct_daily_exec_target": 34.0977
+        },
+        {
+          "block_time": "testnet 10 s",
+          "cadence": "every 16 epochs (1.7 h, the G4 run cadence)",
+          "updates_per_day": 14.06,
+          "path_a_exec_gas_per_day": 6873412,
+          "path_a_pct_daily_exec_cap": 0.008,
+          "path_a_pct_daily_stor_cap": 0.0365,
+          "path_a_private_slots_per_day": 14.06,
+          "path_b_exec_gas_per_day": 920637942,
+          "path_b_pct_daily_exec_cap": 1.0656,
+          "path_b_pct_daily_exec_target": 2.1311
+        },
+        {
+          "block_time": "testnet 10 s",
+          "cadence": "one per sync-committee period (27.3 h, keep-alive minimum)",
+          "updates_per_day": 0.88,
+          "path_a_exec_gas_per_day": 429588,
+          "path_a_pct_daily_exec_cap": 0.0005,
+          "path_a_pct_daily_stor_cap": 0.0023,
+          "path_a_private_slots_per_day": 0.88,
+          "path_b_exec_gas_per_day": 57539871,
+          "path_b_pct_daily_exec_cap": 0.0666,
+          "path_b_pct_daily_exec_target": 0.1332
+        },
+        {
+          "block_time": "testnet 10 s",
+          "cadence": "chain maximum",
+          "path_a_updates_per_block_max": 4,
+          "path_a_updates_per_day_max": 34560,
+          "path_b_blocks_per_update_min": 7,
+          "path_b_updates_per_day_max": 1234
+        }
+      ],
+      "label": "derived (worst measured update; Path B as if splittable with no overhead: estimate)",
+      "formula": "blocks/day = 86400 / block time; Path A: private tx = PRIVATE_GAS_STOR storage gas against MAX_GAS_STOR per block (floor(1e6/224063) = 4 per block) and PRIVATE_VERIFY_GAS + effect cycles execution gas; Path B: Verify cycles of execution gas per update."
+    },
+    "amortised_cost_per_attestation": {
+      "rows": [],
+      "label": "derived (measured cycles); amortisation is arithmetic",
+      "formula": "public placement: cycles(Attest) + cycles(CheckHeader) + consumer cycles (Statement + MarkConsumed for the ERC-20 consumer), plus Path A update gas / k attestations per header. Storage gas (wire bytes of the public tx) is not included here. Private placement: PRIVATE_VERIFY_GAS + public effects + PRIVATE_GAS_STOR, the Attest cycles move to the user's prover."
+    },
+    "state_growth": {
+      "rows": [
+        {
+          "cadence": "every finality update (1 per epoch, 6.4 min)",
+          "years": 1,
+          "records": 82125,
+          "payload_bytes": 12483000,
+          "with_account_overhead_bytes_est": 18396000
+        },
+        {
+          "cadence": "every finality update (1 per epoch, 6.4 min)",
+          "years": 5,
+          "records": 410625,
+          "payload_bytes": 62415000,
+          "with_account_overhead_bytes_est": 91980000
+        },
+        {
+          "cadence": "every 16 epochs (1.7 h, the G4 run cadence)",
+          "years": 1,
+          "records": 5133,
+          "payload_bytes": 780188,
+          "with_account_overhead_bytes_est": 1149750
+        },
+        {
+          "cadence": "every 16 epochs (1.7 h, the G4 run cadence)",
+          "years": 5,
+          "records": 25664,
+          "payload_bytes": 3900938,
+          "with_account_overhead_bytes_est": 5748750
+        },
+        {
+          "cadence": "one per sync-committee period (27.3 h, keep-alive minimum)",
+          "years": 1,
+          "records": 321,
+          "payload_bytes": 48762,
+          "with_account_overhead_bytes_est": 71859
+        },
+        {
+          "cadence": "one per sync-committee period (27.3 h, keep-alive minimum)",
+          "years": 5,
+          "records": 1604,
+          "payload_bytes": 243809,
+          "with_account_overhead_bytes_est": 359297
+        }
+      ],
+      "header_record_bytes": 152,
+      "instance_state_bytes": 410,
+      "label": "derived (measured borsh sizes); per-account overhead is an estimate",
+      "assumption": "one write-once header record per update that moves the finalized slot; account overhead 72 bytes per account (estimate, LEZ storage layout not measured). Consumer nullifiers add one account per accepted statement and are not included."
+    },
+    "precompile_delta": {
+      "label": "estimate",
+      "rows": [
+        {
+          "step": "update[0]",
+          "verify_cycles_now": 61178234,
+          "bls_cycles_removed": 37964988,
+          "pairing_and_subgroup": 31007871,
+          "precompile_charge": 0,
+          "update_gas_after": 23213246,
+          "x_cap_after": 2.32,
+          "fits_one_tx": false
+        },
+        {
+          "step": "update[0]",
+          "verify_cycles_now": 61178234,
+          "bls_cycles_removed": 37964988,
+          "pairing_and_subgroup": 31007871,
+          "precompile_charge": 1000000,
+          "update_gas_after": 24213246,
+          "x_cap_after": 2.42,
+          "fits_one_tx": false
+        },
+        {
+          "step": "update[1]",
+          "verify_cycles_now": 64339205,
+          "bls_cycles_removed": 36841211,
+          "pairing_and_subgroup": 31007871,
+          "precompile_charge": 0,
+          "update_gas_after": 27497994,
+          "x_cap_after": 2.75,
+          "fits_one_tx": false
+        },
+        {
+          "step": "update[1]",
+          "verify_cycles_now": 64339205,
+          "bls_cycles_removed": 36841211,
+          "pairing_and_subgroup": 31007871,
+          "precompile_charge": 1000000,
+          "update_gas_after": 28497994,
+          "x_cap_after": 2.85,
+          "fits_one_tx": false
+        },
+        {
+          "step": "update[2]",
+          "verify_cycles_now": 65467587,
+          "bls_cycles_removed": 37964992,
+          "pairing_and_subgroup": 31007871,
+          "precompile_charge": 0,
+          "update_gas_after": 27502595,
+          "x_cap_after": 2.75,
+          "fits_one_tx": false
+        },
+        {
+          "step": "update[2]",
+          "verify_cycles_now": 65467587,
+          "bls_cycles_removed": 37964992,
+          "pairing_and_subgroup": 31007871,
+          "precompile_charge": 1000000,
+          "update_gas_after": 28502595,
+          "x_cap_after": 2.85,
+          "fits_one_tx": false
+        },
+        {
+          "step": "update[3]",
+          "verify_cycles_now": 64338286,
+          "bls_cycles_removed": 36841211,
+          "pairing_and_subgroup": 31007871,
+          "precompile_charge": 0,
+          "update_gas_after": 27497075,
+          "x_cap_after": 2.75,
+          "fits_one_tx": false
+        },
+        {
+          "step": "update[3]",
+          "verify_cycles_now": 64338286,
+          "bls_cycles_removed": 36841211,
+          "pairing_and_subgroup": 31007871,
+          "precompile_charge": 1000000,
+          "update_gas_after": 28497075,
+          "x_cap_after": 2.85,
+          "fits_one_tx": false
+        },
+        {
+          "step": "finality_update_15637644",
+          "verify_cycles_now": 46099256,
+          "bls_cycles_removed": 36841207,
+          "pairing_and_subgroup": 31007871,
+          "precompile_charge": 0,
+          "update_gas_after": 9258049,
+          "x_cap_after": 0.93,
+          "fits_one_tx": true
+        },
+        {
+          "step": "finality_update_15637644",
+          "verify_cycles_now": 46099256,
+          "bls_cycles_removed": 36841207,
+          "pairing_and_subgroup": 31007871,
+          "precompile_charge": 1000000,
+          "update_gas_after": 10258049,
+          "x_cap_after": 1.03,
+          "fits_one_tx": false
+        }
+      ],
+      "assumption": "A BLS12-381 precompile would replace the in-guest BLS work (key aggregation with non-signer decompression, hash-to-curve, pairing) by a fixed charge P. Phase cycles come from W1's cycle-trace build when its raw file is present (raw/b0-phases.json); P is unknown: shown at 0 (lower bound) and 1,000,000 gas (illustrative)."
+    },
+    "b0_phases": {
+      "what": "B0 per-phase cycles of lc_verify V1 (W1 cycle-trace build: Helios's BLS steps run once more on the same inputs and timed with env::cycle_count; Helios itself unmodified)",
+      "label": "measured by duplicate computation",
+      "source_log": "w1-v1-trace.log",
+      "trace_image_id": "26a5544abcc4aad8812a2b4ce09b61cdf69c2c46859d85a294ba84763df3b39a",
+      "note": "The trace ELF predates W1's glue fix (committee root via accelerated sha2, no re-hash of an unchanged next committee). That fix changes witness_load_and_pre_store and post_store_and_head, not the BLS phases or the Helios call.",
+      "steps": [
+        {
+          "committee_root": 11013221,
+          "key_aggregation": 2274221,
+          "sig_decompress": 1599037,
+          "g2_subgroup_check": 8767621,
+          "hash_to_curve": 3083859,
+          "miller_loop_2": 9856680,
+          "final_exponentiation": 12383570,
+          "non_signers": 1,
+          "witness_load_and_pre_store": 12787292,
+          "decode_and_prechecks": 1766011,
+          "helios_verify_and_apply": 50310574,
+          "post_store_and_head": 11058484,
+          "step": "update[0]",
+          "bls_sum": 37964988
+        },
+        {
+          "committee_root": 11013221,
+          "key_aggregation": 1150440,
+          "sig_decompress": 1599041,
+          "g2_subgroup_check": 8767621,
+          "hash_to_curve": 3083859,
+          "miller_loop_2": 9856680,
+          "final_exponentiation": 12383570,
+          "non_signers": 0,
+          "witness_load_and_pre_store": 25446507,
+          "decode_and_prechecks": 1767084,
+          "helios_verify_and_apply": 49312444,
+          "post_store_and_head": 11058551,
+          "step": "update[1]",
+          "bls_sum": 36841211
+        },
+        {
+          "committee_root": 11013221,
+          "key_aggregation": 2274221,
+          "sig_decompress": 1599041,
+          "g2_subgroup_check": 8767621,
+          "hash_to_curve": 3083859,
+          "miller_loop_2": 9856680,
+          "final_exponentiation": 12383570,
+          "non_signers": 1,
+          "witness_load_and_pre_store": 25446507,
+          "decode_and_prechecks": 1766342,
+          "helios_verify_and_apply": 50431049,
+          "post_store_and_head": 11058542,
+          "step": "update[2]",
+          "bls_sum": 37964992
+        },
+        {
+          "committee_root": 11013221,
+          "key_aggregation": 1150440,
+          "sig_decompress": 1599041,
+          "g2_subgroup_check": 8767621,
+          "hash_to_curve": 3083859,
+          "miller_loop_2": 9856680,
+          "final_exponentiation": 12383570,
+          "non_signers": 0,
+          "witness_load_and_pre_store": 25446507,
+          "decode_and_prechecks": 1767010,
+          "helios_verify_and_apply": 49311628,
+          "post_store_and_head": 11058542,
+          "step": "update[3]",
+          "bls_sum": 36841211
+        },
+        {
+          "committee_root": 11013221,
+          "key_aggregation": 1150440,
+          "sig_decompress": 1599037,
+          "g2_subgroup_check": 8767621,
+          "hash_to_curve": 3083859,
+          "miller_loop_2": 9856680,
+          "final_exponentiation": 12383570,
+          "non_signers": 0,
+          "witness_load_and_pre_store": 25446507,
+          "decode_and_prechecks": 119551,
+          "helios_verify_and_apply": 37328689,
+          "post_store_and_head": 11058495,
+          "step": "finality_update_15637644",
+          "bls_sum": 36841207
+        }
+      ]
+    }
+  }
+}

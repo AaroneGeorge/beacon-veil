@@ -1,0 +1,31 @@
+{
+  "bootstrap_bytes": 25675,
+  "header_record_bytes": 152,
+  "instance_state_bytes_mainnet": 410,
+  "measured": true,
+  "store_witness_bytes": 24757,
+  "tool": "tools/cost sizes",
+  "update_bytes": [
+    {
+      "bytes": 26914,
+      "step": "update[0]"
+    },
+    {
+      "bytes": 26926,
+      "step": "update[1]"
+    },
+    {
+      "bytes": 26920,
+      "step": "update[2]"
+    },
+    {
+      "bytes": 26922,
+      "step": "update[3]"
+    },
+    {
+      "bytes": 2109,
+      "step": "finality_update_15637644"
+    }
+  ],
+  "what": "borsh sizes (bytes) of stored states and inputs"
+}

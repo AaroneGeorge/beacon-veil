@@ -1,0 +1,2 @@
+attest ELF /home/lechuuu/hackathons/logos-rfp/build/target/riscv-guest/guest_methods/attest_program/riscv32im-risc0-zkvm-elf/release/attest (Some(408128) bytes); consumer ELF /home/lechuuu/hackathons/logos-rfp/build/target/riscv-guest/guest_methods/consumer_erc20_program/riscv32im-risc0-zkvm-elf/release/consumer_erc20 (Some(258880) bytes)
+Error: Odd number of digits
