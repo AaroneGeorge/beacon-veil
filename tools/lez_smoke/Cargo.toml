@@ -1,0 +1,21 @@
+[package]
+name = "lez_smoke"
+description = "W0 smoke test: LEZ rc3 hello_world, public path, with the fee declaration rc3 requires (the rc3 example omits it)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[[bin]]
+name = "hello_public"
+path = "src/main.rs"
+
+[dependencies]
+anyhow.workspace = true
+lee.workspace = true
+program_loader_core.workspace = true
+tokio.workspace = true
+wallet.workspace = true
