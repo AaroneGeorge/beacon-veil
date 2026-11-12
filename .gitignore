@@ -5,3 +5,5 @@ contracts/out/
 contracts/cache/
 deploy/*.tmp
 *.log
+deploy/*.lock
+deploy/ids.toml.??????
