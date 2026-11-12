@@ -188,6 +188,19 @@ class Fetcher:
                 continue
         return {"provider": None, "equal_after_hex_lowercase": None, "note": "no second provider answered"}
 
+    def cross_check_ssz(self, path, body, used_pid):
+        """Fetch the same route as SSZ from one other provider and compare bytes."""
+        for pid, base in self.cfg["providers"]:
+            if pid == used_pid:
+                continue
+            try:
+                st, _, other = get(base + path, "application/octet-stream")
+                if st == 200:
+                    return {"provider": pid, "bytes_equal": other == body}
+            except Exception:
+                continue
+        return {"provider": None, "bytes_equal": None, "note": "no second provider answered"}
+
     def save(self, name, path, accept="application/json", cross=True, want=None, meta=None):
         pid, url, st, hd, body = self.try_providers(path, accept, want)
         fp = os.path.join(self.dir, name)
@@ -250,6 +263,8 @@ class Fetcher:
                         entry.update(meta(obj) if callable(meta) else meta)
                     if ext == ".json" and not live:
                         entry["cross_check"] = self.cross_check(path, js, pid)
+                    if ext == ".ssz" and not live:
+                        entry["cross_check"] = self.cross_check_ssz(path, ssz1, pid)
                     self.manifest["files"][name + ext] = entry
                 self.write_manifest()
                 print(f"  {name}.json+.ssz: {len(js)}/{len(ssz1)} bytes from {pid}", file=sys.stderr)
@@ -415,13 +430,31 @@ def run(chain, outdir, periods, finality_only):
         f.exec_headers(hashes)
 
 
+def fetch_bootstrap_at(chain, outdir, slot):
+    """Bootstrap (JSON + SSZ pair, both cross-checked) for the block at `slot`, which must be an epoch boundary."""
+    f = Fetcher(chain, outdir)
+    if slot % SLOTS_PER_EPOCH:
+        raise SystemExit(f"slot {slot} is not an epoch boundary")
+    _, url, _, _, hb = f.try_providers(f"/eth/v1/beacon/headers/{slot}")
+    h = json.loads(hb)["data"]
+    if int(h["header"]["message"]["slot"]) != slot:
+        raise SystemExit(f"no block at slot {slot}")
+    root = h["root"]
+    f.save_pair(f"bootstrap_{slot}", f"/eth/v1/beacon/light_client/bootstrap/{root}", live=False,
+                meta={"slot": slot, "block_root": root, "period": slot // SLOTS_PER_PERIOD, "block_root_from": url})
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--chain", required=True, choices=sorted(CHAINS))
     ap.add_argument("--out", default="fixtures")
     ap.add_argument("--periods", type=int, default=4, help="adjacent periods for updates_by_range (>=2)")
     ap.add_argument("--finality-only", action="store_true", help="only add the latest finality/optimistic update")
+    ap.add_argument("--bootstrap-slot", type=int, help="only fetch the bootstrap of the block at this epoch-boundary slot")
     a = ap.parse_args()
+    if a.bootstrap_slot is not None:
+        fetch_bootstrap_at(a.chain, a.out, a.bootstrap_slot)
+        return
     if a.periods < 2:
         ap.error("--periods must be >= 2 to contain a committee handoff")
     run(a.chain, a.out, a.periods, a.finality_only)

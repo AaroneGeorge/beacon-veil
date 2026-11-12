@@ -38,6 +38,46 @@
       "slot": 15605760,
       "url": "https://lodestar-mainnet.chainsafe.io/eth/v1/beacon/light_client/bootstrap/0xd56afee8fc171452dca06d815bf36db37442f975a1472b6e1902e8fecbc0bef7"
     },
+    "bootstrap_15631808.json": {
+      "accept": "application/json",
+      "block_root": "0x530599ec91a6ce70948d70d1066bb35a2a0cb999ad8e2cb6229452dcb7102328",
+      "block_root_from": "http://unstable.mainnet.beacon-api.nimbus.team/eth/v1/beacon/headers/15631808",
+      "bytes": 54401,
+      "content_type": "application/json; charset=utf-8",
+      "cross_check": {
+        "equal_after_hex_lowercase": true,
+        "provider": "nimbus-unstable"
+      },
+      "eth_consensus_version": "fulu",
+      "fetched_at_utc": "2026-11-12T13:54:31Z",
+      "http_status": 200,
+      "pair": "bootstrap_15631808.ssz",
+      "period": 1908,
+      "provider": "lodestar",
+      "sha256": "416a972b10c80e3f7b100f7b8d23ce2ce1203bcf24951537843a83d7b2fcf618",
+      "slot": 15631808,
+      "url": "https://lodestar-mainnet.chainsafe.io/eth/v1/beacon/light_client/bootstrap/0x530599ec91a6ce70948d70d1066bb35a2a0cb999ad8e2cb6229452dcb7102328"
+    },
+    "bootstrap_15631808.ssz": {
+      "accept": "application/octet-stream",
+      "block_root": "0x530599ec91a6ce70948d70d1066bb35a2a0cb999ad8e2cb6229452dcb7102328",
+      "block_root_from": "http://unstable.mainnet.beacon-api.nimbus.team/eth/v1/beacon/headers/15631808",
+      "bytes": 25672,
+      "content_type": "application/octet-stream",
+      "cross_check": {
+        "bytes_equal": true,
+        "provider": "nimbus-unstable"
+      },
+      "eth_consensus_version": "fulu",
+      "fetched_at_utc": "2026-11-12T13:54:31Z",
+      "http_status": 200,
+      "pair": "bootstrap_15631808.json",
+      "period": 1908,
+      "provider": "lodestar",
+      "sha256": "63df9ac5725c33b973939bc2e2fe99de1b821e90e70a58885c3bff1939ac976f",
+      "slot": 15631808,
+      "url": "https://lodestar-mainnet.chainsafe.io/eth/v1/beacon/light_client/bootstrap/0x530599ec91a6ce70948d70d1066bb35a2a0cb999ad8e2cb6229452dcb7102328"
+    },
     "finality_update_15637621.json": {
       "accept": "application/json",
       "attested_slot": 15637621,
@@ -233,5 +273,5 @@
   },
   "note": "Bodies stored exactly as received. sha256 is over the stored file bytes.",
   "tool": "tools/fixtures (fetch.py / fixtures fetch)",
-  "updated_at_utc": "2026-11-12T09:29:56Z"
+  "updated_at_utc": "2026-11-12T13:54:33Z"
 }

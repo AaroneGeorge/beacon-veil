@@ -120,3 +120,48 @@ pub fn load_from(dir: &Path, verifiers: Vec<AccountId>, min_participants: u16) -
         finality_attested_slot: num(&fentry["attested_slot"])?,
     })
 }
+
+#[cfg(test)]
+mod tests {
+    use attest_core::lc::{init_store, verify_and_apply};
+
+    use super::*;
+    use crate::ssz::{BootstrapParts, UpdateParts};
+
+    /// G1 real-proof input (coordinator 2026-11-12): a checkpoint at update[3]'s finalized header (slot 15631808,
+    /// period 1908), then `finality_update_15637644` as the FIRST update.
+    #[test]
+    fn mainnet_bootstrap_1908_then_finality_update() {
+        let dir = crate::fixtures_dir().join("mainnet");
+        let mut c = load_from(&dir, vec![AccountId::new([0x11; 32])], 0).expect("mainnet fixtures");
+        let manifest = json(&dir.join("manifest.json")).expect("manifest");
+        let e = &manifest["files"]["bootstrap_15631808.json"];
+        c.config.checkpoint_root = hex32(&e["block_root"]).expect("root");
+        c.config.checkpoint_slot = num(&e["slot"]).expect("slot");
+        let bootstrap = std::fs::read(dir.join("bootstrap_15631808.ssz")).expect("bootstrap ssz");
+
+        let b = BootstrapParts::from_ssz(&bootstrap).expect("decode bootstrap");
+        let u3 = UpdateParts::from_ssz(&c.updates[3]).expect("update[3]");
+        assert_eq!(
+            b.header.root(),
+            u3.finalized.root(),
+            "bootstrap header = update[3] finalized header"
+        );
+        assert_eq!(b.header.root().0, c.config.checkpoint_root);
+
+        let (w, head) = init_store(&c.config, &bootstrap).expect("init_store");
+        assert_eq!(head.slot, 15_631_808);
+        let fu = std::fs::read(dir.join("finality_update_15637644.ssz")).expect("finality ssz");
+        let out = verify_and_apply(&c.config, &w, &fu).expect("finality update applies first");
+        assert!(out.new_slot, "finalized slot advanced");
+        eprintln!(
+            "bootstrap 15631808 -> finality_update_15637644: head.slot {} period {} participation {} exec_number {} pre {} post {}",
+            out.head.slot,
+            out.head.period,
+            out.participation,
+            out.head.exec_number,
+            hex::encode(out.pre_store),
+            hex::encode(out.post_store)
+        );
+    }
+}
