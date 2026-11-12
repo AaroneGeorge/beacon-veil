@@ -17,6 +17,20 @@ set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=scripts/env.sh
 source "$here/../../scripts/env.sh"
+# Detach by default (coordinator 2026-11-12): a proof outlives the shell, SSH session or agent that started it. The job
+# re-executes itself under `setsid nohup` (new session, parent init, no tty), writes its PID to $B/run/<pidname>.pid
+# and returns at once. --foreground (or BV_FOREGROUND=1) runs attached; nested calls inherit BV_DETACHED=1.
+bv_detach() { # pidname, original args...
+  local pidname="$1"; shift
+  mkdir -p "$B/run"
+  local runlog; runlog="$B/run/$pidname.$(date -u +%Y%m%dT%H%M%SZ).log"
+  BV_DETACHED=1 setsid nohup "$0" "$@" > "$runlog" 2>&1 < /dev/null &
+  local pid=$!
+  echo "$pid" > "$B/run/$pidname.pid"
+  echo "detached: pid $pid (session leader, parent init), log $runlog, pid file $B/run/$pidname.pid"
+  exit 0
+}
+if [ -n "${1:-}" ] && [ "${BV_DETACHED:-0}" != 1 ] && [ "${BV_FOREGROUND:-0}" != 1 ]; then bv_detach "cost-prove-$1" "$@"; fi
 job="${1:-}"; [ $# -gt 0 ] && shift
 cb="${CYCLE_BENCH_BIN:-$B/.tmp/w6/lez-target/release/cycle_bench}"
 cb_json="$B/vendor/lez/target/cycle_bench.json"   # cycle_bench writes here (path fixed in its main.rs)

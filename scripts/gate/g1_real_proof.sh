@@ -6,22 +6,41 @@
 #
 #   scripts/gate/g1_real_proof.sh --build           # outside a window: build the host binary (no proving)
 #   scripts/gate/g1_real_proof.sh --check           # preconditions only (no proving)
-#   BV_PROOF_WINDOW_OK=1 scripts/gate/g1_real_proof.sh [--step update[0]] [--instance BASE58]
+#   BV_PROOF_WINDOW_OK=1 scripts/gate/g1_real_proof.sh --instance BASE58 [--step finality_update_15637644]
+#                       [--verifier lc_verify|lc_verify_v2] [--name real-proof|real-proof-2]
+#   (or --bootstrap bootstrap_15631808.ssz instead of --instance: Init first, in the same job)
 #   scripts/gate/g1_real_proof.sh --verify          # re-check an existing evidence/g1/real-proof.json (make gate)
 #
 # Preconditions (checked): seq-real running and its process environment has no RISC0_DEV_MODE; ids of the programs
 # deployed on seq-real in $BV_IDS_REAL (default deploy/ids-real.toml, so deploy/ids.toml of seq-dev is not touched);
-# wallet-real has bv-payer and a funded private submitter ($BV_SUBMITTER or label bv-submitter). Funding a private
+# the wallet ($BV_REAL_WALLET, default wallet-real) has bv-payer and a funded private submitter ($BV_SUBMITTER or label
+# bv-submitter). Init (public, no proof) can be done before with
+#   g1_real_proof --bootstrap bootstrap_15631808.ssz --init-only   (prints G1INIT {instance, init_tx, ...}). Funding a private
 # account on seq-real is itself a (small) real proof: do it inside the window, through tools/cost/prove_job.sh.
 # Real proving only in a window the coordinator confirmed: BV_PROOF_WINDOW_OK=1.
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=scripts/env.sh
 source "$here/../env.sh"
+
+# Detach by default (coordinator 2026-11-12): a proof outlives the shell, SSH session or agent that started it. The job
+# re-executes itself under `setsid nohup` (new session, parent init, no tty), writes its PID to $B/run/<pidname>.pid
+# and returns at once. --foreground (or BV_FOREGROUND=1) runs attached; nested calls inherit BV_DETACHED=1.
+bv_detach() { # pidname, original args...
+  local pidname="$1"; shift
+  mkdir -p "$B/run"
+  local runlog; runlog="$B/run/$pidname.$(date -u +%Y%m%dT%H%M%SZ).log"
+  BV_DETACHED=1 setsid nohup "$0" "$@" > "$runlog" 2>&1 < /dev/null &
+  local pid=$!
+  echo "$pid" > "$B/run/$pidname.pid"
+  echo "detached: pid $pid (session leader, parent init), log $runlog, pid file $B/run/$pidname.pid"
+  exit 0
+}
+orig_args=("$@")
 out="$BV_REPO/evidence/g1"
 mkdir -p "$out"
 bin="$CARGO_TARGET_DIR/debug/g1_real_proof"
-mode=run step="update[0]" instance=""
+mode=run step="finality_update_15637644" instance="" extra=() name="real-proof"
 while [ $# -gt 0 ]; do
   case "$1" in
     --build) mode=build; shift ;;
@@ -29,12 +48,14 @@ while [ $# -gt 0 ]; do
     --verify) mode=verify; shift ;;
     --step) step="$2"; shift 2 ;;
     --instance) instance="$2"; shift 2 ;;
+    --bootstrap|--verifier|--min-participants) extra+=("$1" "$2"); shift 2 ;;
+    --name) name="$2"; shift 2 ;;   # evidence/g1/<name>.json (default real-proof; real proof 2: real-proof-2)
     *) echo "g1_real_proof: unknown argument $1" >&2; exit 2 ;;
   esac
 done
 
 verify_json() {
-  python3 -I - "$out/real-proof.json" <<'EOF'
+  python3 -I - "$out/$name.json" <<'EOF'
 import json, os, sys
 p = sys.argv[1]
 if not os.path.exists(p):
@@ -70,24 +91,25 @@ fi
 export BV_IDS="${BV_IDS_REAL:-$BV_REPO/deploy/ids-real.toml}"
 [ -f "$BV_IDS" ] || { echo "G1 real: $BV_IDS missing (deploy attest + lc_verify to seq-real, ids into this file)" >&2; fail=1; }
 [ -x "$bin" ] || { echo "G1 real: $bin missing (run --build outside the window)" >&2; fail=1; }
-export LEE_WALLET_HOME_DIR="$B/run/wallet-real" LEE_WALLET_PASSWORD="${LEE_WALLET_PASSWORD:-}"
+export LEE_WALLET_HOME_DIR="${BV_REAL_WALLET:-$B/run/wallet-real}" LEE_WALLET_PASSWORD="${LEE_WALLET_PASSWORD:-}"
 [ -f "$LEE_WALLET_HOME_DIR/wallet_config.json" ] || { echo "G1 real: no wallet-real config" >&2; fail=1; }
 [ "$fail" = 0 ] || exit 1
 if [ "$mode" = check ]; then echo "G1 real: preconditions OK (ids $BV_IDS, step $step)"; exit 0; fi
+if [ "${BV_DETACHED:-0}" != 1 ] && [ "${BV_FOREGROUND:-0}" != 1 ]; then bv_detach "g1-$name" "${orig_args[@]}"; fi
 
 # ---- the proof (one job, nice 19, ionice 3, under the proving lock) ----
 seqlog="$B/run/seq-real.log"
 seq_before=$(wc -l < "$seqlog" 2>/dev/null || echo 0)
-jobdir="$BV_REPO/evidence/prove/g1-real/$(date -u +%Y%m%dT%H%M%SZ)"
-args=(--step "$step"); [ -n "$instance" ] && args+=(--instance "$instance")
+jobdir="$BV_REPO/evidence/prove/g1-$name/$(date -u +%Y%m%dT%H%M%SZ)"
+args=(--step "$step" "${extra[@]}"); [ -n "$instance" ] && args+=(--instance "$instance")
 set +e
-BV_REAL_PROOF=1 "$BV_REPO/tools/cost/prove_job.sh" --name g1-real --out "$jobdir" \
+BV_REAL_PROOF=1 "$BV_REPO/tools/cost/prove_job.sh" --name "g1-$name" --out "$jobdir" \
   --note "G1 real proof, lc_verify V1 $step, Path A on seq-real" -- "$bin" "${args[@]}"
 rc=$?
 set -e
 tail -n +"$((seq_before + 1))" "$seqlog" 2>/dev/null > "$jobdir/seq-real.log" || true
 
-python3 -I - "$jobdir" "$out/real-proof.json" "$rc" "$step" "$BV_REPO" <<'EOF'
+python3 -I - "$jobdir" "$out/$name.json" "$rc" "$step" "$BV_REPO" <<'EOF'
 import json, os, re, sys
 jobdir, dst, rc, step, repo = sys.argv[1:6]
 jobrel = os.path.relpath(jobdir, repo)
@@ -100,7 +122,7 @@ tx = res.get("tx") or ""
 excerpt = [l for l in seq if (tx and tx[:16] in l) or re.search(r"privacy|verif|block|ESA:E|revert|reject", l, re.I)][-40:]
 doc = {
     "gate": "G1 (real-proof half)", "dev_mode": rec.get("dev_mode"), "accepted": bool(res.get("accepted")) and rc == "0",
-    "step": step, "instance": res.get("instance"), "init_tx": res.get("init_tx"), "tx": res.get("tx"),
+    "step": step, "verifier": res.get("verifier"), "verifier_id": res.get("verifier_id"), "instance": res.get("instance"), "init_tx": res.get("init_tx"), "tx": res.get("tx"),
     "block_id": res.get("block_id"),
     "receipt_bytes": res.get("witness_set_bytes"),
     "receipt_bytes_note": "borsh size of the transaction's witness set (succinct receipt + signatures); LEZ prices the proof at PROOF_BYTES = 223,551",

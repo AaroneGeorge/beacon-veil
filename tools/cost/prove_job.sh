@@ -11,6 +11,7 @@
 #   --receipt-regex  or: a Python regex whose group 1 is the receipt byte count, searched in the command's output
 #   --cycles N       padded total cycles proven (for seconds per Mcycle); optional
 #   --wait           wait for the proving lock instead of failing when another job holds it
+#   --foreground     run attached (default: detach with setsid nohup, PID in $B/run/prove-NAME.pid)
 #   --allow-dev      allow RISC0_DEV_MODE (only to test this script: the record then says dev_mode true)
 #
 # Refuses to run unless BV_PROOF_WINDOW_OK=1 (the coordinator has confirmed the window with the owner), and unless
@@ -19,6 +20,21 @@ set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=scripts/env.sh
 source "$here/../../scripts/env.sh"
+
+# Detach by default (coordinator 2026-11-12): a proof outlives the shell, SSH session or agent that started it. The job
+# re-executes itself under `setsid nohup` (new session, parent init, no tty), writes its PID to $B/run/<pidname>.pid
+# and returns at once. --foreground (or BV_FOREGROUND=1) runs attached; nested calls inherit BV_DETACHED=1.
+bv_detach() { # pidname, original args...
+  local pidname="$1"; shift
+  mkdir -p "$B/run"
+  local runlog; runlog="$B/run/$pidname.$(date -u +%Y%m%dT%H%M%SZ).log"
+  BV_DETACHED=1 setsid nohup "$0" "$@" > "$runlog" 2>&1 < /dev/null &
+  local pid=$!
+  echo "$pid" > "$B/run/$pidname.pid"
+  echo "detached: pid $pid (session leader, parent init), log $runlog, pid file $B/run/$pidname.pid"
+  exit 0
+}
+orig_args=("$@")
 
 name="" receipt="" receipt_re="" cycles="" note="" outbase="" wait=0 allow_dev=0
 while [ $# -gt 0 ]; do
@@ -31,6 +47,7 @@ while [ $# -gt 0 ]; do
     --out) outbase="$2"; shift 2 ;;
     --wait) wait=1; shift ;;
     --allow-dev) allow_dev=1; shift ;;
+    --foreground) export BV_FOREGROUND=1; shift ;;
     --) shift; break ;;
     *) echo "prove_job: unknown option $1" >&2; exit 2 ;;
   esac
@@ -46,6 +63,7 @@ if [ "${BV_PROOF_WINDOW_OK:-0}" != 1 ] && [ "$allow_dev" != 1 ]; then
   echo "prove_job: refusing: real proving only in a PLAN.md 3.4 window confirmed by the coordinator (BV_PROOF_WINDOW_OK=1)." >&2
   exit 3
 fi
+if [ "${BV_DETACHED:-0}" != 1 ] && [ "${BV_FOREGROUND:-0}" != 1 ]; then bv_detach "prove-$name" "${orig_args[@]}"; fi
 dev_mode=false; [ -n "${RISC0_DEV_MODE:-}" ] && [ "${RISC0_DEV_MODE}" != 0 ] && dev_mode=true
 
 stamp="$(date -u +%Y%m%dT%H%M%SZ)"

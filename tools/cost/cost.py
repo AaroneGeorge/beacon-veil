@@ -574,7 +574,12 @@ def cmd_project(a):
         wrap_s = vals[0] if vals else None
 
     cost = load(a.exec)
-    verify = [r for r in cost["rows"] if r["id"].startswith("lc_verify.v1.verify.")]
+    verify = [r for r in cost["rows"] if r["id"].startswith("lc_verify.v1.verify.") or r["id"] == "attest.init"]
+    for c in a.case or []:
+        # label:padded_cycles:segments[:source], e.g. "V2 finality:39845888:38:.tmp/w1/v2-exec.json"
+        parts = c.split(":")
+        verify.append({"id": parts[0], "step": parts[0], "total_cycles_padded": int(parts[1]),
+                       "segments": int(parts[2]), "source": parts[3] if len(parts) > 3 else None})
     # Recursion overhead per segment (lift, and join for all but one): ESTIMATE, as a fraction of one po2-20 segment.
     rec_lo, rec_hi = a.recursion_lo, a.recursion_hi
     t_rec_measured = None
@@ -597,11 +602,12 @@ def cmd_project(a):
         if a.wrap_s is not None:
             wrap_s = a.wrap_s
         wrap = wrap_s if wrap_s is not None else a.wrap_s_est
-        lo, hi = t_prog + t_rec_lo + wrap, t_prog + t_rec_hi + wrap
-        proj.append({"step": v["step"], "segments": n, "padded_cycles": v["total_cycles_padded"],
+        wrap_hi = a.wrap_s_hi if a.wrap_s_hi else wrap
+        lo, hi = t_prog + t_rec_lo + wrap, t_prog + t_rec_hi + wrap_hi
+        proj.append({"step": v["id"] if v["id"] == "attest.init" else v["step"], "source": v.get("source", "cost.json"), "segments": n, "padded_cycles": v["total_cycles_padded"],
                      "segment_proving_h": round(t_prog / 3600, 2),
                      "recursion_h_range_est": [round(t_rec_lo / 3600, 2), round(t_rec_hi / 3600, 2)],
-                     "circuit_wrap_s": round(wrap, 1),
+                     "circuit_wrap_s": [round(wrap, 1), round(wrap_hi, 1)],
                      "circuit_wrap_label": ("measured (--wrap-s or cycle_bench --ppe)" if wrap_s is not None else "estimate"),
                      "total_h_range": [round(lo / 3600, 2), round(hi / 3600, 2)],
                      "fits_8h_window": hi <= 8 * 3600})
@@ -708,6 +714,8 @@ def main():
     j.add_argument("--rec-composite")
     j.add_argument("--rec-succinct")
     j.add_argument("--rec-segments", type=int)
+    j.add_argument("--case", action="append", help="extra case label:padded_cycles:segments[:source]")
+    j.add_argument("--wrap-s-hi", type=float, help="upper end of the circuit wrap (estimate)")
     t = sub.add_parser("import-trace")
     t.add_argument("--log", required=True)
     t.add_argument("--out", required=True)
