@@ -29,7 +29,7 @@ if ! wallet account get --account-id "$payer_label" >/dev/null 2>&1; then
   wallet account label --account-id "Public/$pid" --label "$payer_label" >/dev/null
 fi
 # The example runner takes a bare account id: the test key's public account id (same on every fresh wallet).
-payer="$(wallet account list | sed -n 's#^Public/\([1-9A-HJ-NP-Za-km-z]\{32,44\}\)$#\1#p' | head -1)"
+payer="$(wallet account list | sed -n "s#^Public/\([1-9A-HJ-NP-Za-km-z]\{32,44\}\) \[$payer_label\]\$#\1#p" | head -1)"
 priv="$(wallet account new private --label "calib-$stamp" | sed -n 's#.*Private/\([1-9A-HJ-NP-Za-km-z]\{32,44\}\).*#\1#p' | head -1)"
 [ -n "$payer" ] && [ -n "$priv" ] || { echo "could not resolve payer ($payer) or private account ($priv)" >&2; exit 1; }
 # rc3: the private transaction pays its fee reserve from the private account, so fund it first (this transfer is itself
