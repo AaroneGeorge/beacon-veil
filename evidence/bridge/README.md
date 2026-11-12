@@ -17,7 +17,7 @@ What they still show (mechanics only, not security): fixed-denomination ETH and 
 
 ## Current: vault v3
 
-Verifier 3.1.0 behind its emergency-stop wrapper (failsafe L1), the open release route `releaseOpen` (failsafe L2), and `burn_proof` built on RISC Zero 3.1.0 (`guests/burn_proof/r31`). Vault v3 `0x380be74d9F3dFeBAaFC5F911CD6A45bFbeE3aD27`: `sepolia-v3.json` and `raw-v3/`. Guest build: `burn-proof-r31-guest.json`.
+Verifier 3.1.0 behind its emergency-stop wrapper (failsafe L1), the open release route `releaseOpen` (failsafe L2), and `burn_proof` built on RISC Zero 3.1.0 (`guests/burn_proof/r31`). Vault v3 `0x380be74d9F3dFeBAaFC5F911CD6A45bFbeE3aD27`: `sepolia-v3.json` and `raw-v3/`. Guest build: `burn-proof-r31-guest.json`. K9 part 2 on v3 against run B: `k9-part2-runB-v3/`. Full spike outbound (real Groth16 release through the 3.1.0 estop, 527,859 gas; `releaseOpen`, 325,769 gas): `groth16-release-v3/`.
 
 ## Local round trip
 

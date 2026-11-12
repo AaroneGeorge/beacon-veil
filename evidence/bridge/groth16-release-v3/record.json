@@ -1,0 +1,72 @@
+{
+  "label": "Full spike outbound leg on Sepolia, vault v3: real Groth16 burn proof (RISC Zero 3.1.0) verified through the 3.1.0 emergency stop, and the open release route (measured)",
+  "date_utc": "2026-11-12",
+  "vault_v3": "0x380be74d9F3dFeBAaFC5F911CD6A45bFbeE3aD27",
+  "verifier_estop": "0xA1DCB16cb765b3CA71605339F0C37Bfe0F60bA29",
+  "verifier_3_1_0": "0x8c915b5071206C6E328BC18529586c513408aB3b",
+  "anchor": "StubLezAnchor 0x8455757D7CC28Fc5329c97A99e99B50b5F7fbB66 (STUB: owner-posted, 600 s delay)",
+  "lez": {
+    "sequencer": "seq-dev (dev mode)",
+    "bridge": "7ahb3h5n3MTeq2JtYhLbQL75gRpL7xNAmV54SZjvJQ6y",
+    "instance": "BTpCBokrFB8mvmPT6QukEXtiYUeWmgupHGpxpftvaXD2",
+    "claim_usdt_tx": "a87aaf9edc65e4a4e371c5aa270b387a4cc35578352fb7133ca05c2b4f187da3",
+    "burn0_eth_tx": "fa5e518963c6df641f6e42432f41fc0a20fbcea499f2c68c10619836006b3426",
+    "burn1_usdt_tx": "d5a06127811fe2f478b1a560c53c7a2d03ecd8948ff08b2e016d3774b71e59c8",
+    "accumulator_root": "0x8cdfcbe141f3a5eff05bc7914e1c62f1879805b2a772502ff7c926c7c12e63ad",
+    "accumulator_count": 2
+  },
+  "anchor_post": [
+    {
+      "function": "post(bytes32,bytes32)",
+      "tx": "0x348a2eeab2e335bcaabd830a0b9922f7ccf3635958228108fa9171d170387dd9",
+      "block": 12121188,
+      "gas_used": 130982,
+      "status": "0x1"
+    }
+  ],
+  "groth16_proof": {
+    "job": "evidence/prove/w5-groth16-burn/20261112T202300Z (prove_job.sh: meta.txt, time.txt, samples.csv, record.json)",
+    "start_utc": "2026-11-12T20:58:51Z",
+    "end_utc": "2026-11-12T21:06:43Z",
+    "prove_seconds": 471.289580697,
+    "wall_time_v": "7:51.31",
+    "peak_rss_kib_time_v": 2417572,
+    "peak_tree_rss_kib_sampler": 2419024,
+    "image_id": "0xf929f9f441d9aa652b9914b4ce6c6a7b445aa90d189c075af1e1e9fe3b1497cf",
+    "risc0_zkvm": "3.1.0 (isolated rzup home: r0vm 3.1.0, risc0-groth16 component 0.2.0)",
+    "cycles_user": 211726,
+    "cycles_total": 262144,
+    "segments": 1,
+    "seal_bytes": 260,
+    "selector": "0xe71e6620",
+    "journal_bytes": 352,
+    "journal_equals_native_statement": true,
+    "machine_note": "the job's machine line names risc0-r0vm 3.0.5 (system default); this proof ran on the isolated r0vm 3.1.0 (process list during the run)"
+  },
+  "release_groth16": [
+    {
+      "function": "release(bytes,bytes)",
+      "tx": "0x65412c390ad21f28b686ead8ec065774339229240a63a913a742b6777c221c12",
+      "block": 12121411,
+      "gas_used": 527859,
+      "status": "0x1"
+    }
+  ],
+  "release_groth16_effect": "vault ETH 0.001 -> 0; recipient 0x523072A2...BD78 got denom - fee, caller (the same address) got the fee 1e13; burnNullifierSpent(0xaf50e2ac...51e0) = true",
+  "verify_gas_estimates": {
+    "label": "estimated: eth_estimateGas of a standalone verify call at block ~12121411, includes 21,000 intrinsic",
+    "estop_verify": 260699,
+    "raw_verifier_verify": 250363
+  },
+  "release_open_L2": [
+    {
+      "function": "releaseOpen(bytes32,address,uint256,address,uint256,uint256,bytes32[32])",
+      "tx": "0x0f7e3da0dd63607ee2ec18e59d68794c67b040f8586c0d14dc5edf799166d565",
+      "block": 12121242,
+      "gas_used": 325769,
+      "status": "0x1"
+    }
+  ],
+  "release_open_effect": "recipient test-USDT 99,900,000,000 -> 100,000,000,000 (+100e6); burnNullifierSpent(0x7c61080b...a11c) = true",
+  "local_forge_comparison": "local EVM forge gas report: release <= 168,453 (mock verifier), releaseOpen <= 183,971; Sepolia figures above are higher"
+}
