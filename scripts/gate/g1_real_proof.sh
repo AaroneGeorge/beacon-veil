@@ -103,7 +103,7 @@ seq_before=$(wc -l < "$seqlog" 2>/dev/null || echo 0)
 jobdir="$BV_REPO/evidence/prove/g1-$name/$(date -u +%Y%m%dT%H%M%SZ)"
 args=(--step "$step" "${extra[@]}"); [ -n "$instance" ] && args+=(--instance "$instance")
 set +e
-BV_REAL_PROOF=1 "$BV_REPO/tools/cost/prove_job.sh" --name "g1-$name" --out "$jobdir" \
+BV_REAL_PROOF=1 "$BV_REPO/tools/cost/prove_job.sh" --wait --name "g1-$name" --out "$jobdir" \
   --note "G1 real proof, lc_verify V1 $step, Path A on seq-real" -- "$bin" "${args[@]}"
 rc=$?
 set -e
@@ -119,7 +119,10 @@ m = re.search(r"^G1REAL (\{.*\})$", log, re.M)
 res = json.loads(m.group(1)) if m else {}
 seq = open(f"{jobdir}/seq-real.log", errors="replace").read().splitlines()
 tx = res.get("tx") or ""
-excerpt = [l for l in seq if (tx and tx[:16] in l) or re.search(r"privacy|verif|block|ESA:E|revert|reject", l, re.I)][-40:]
+blk = res.get("block_id")
+idx = [i for i, l in enumerate(seq) if blk is not None and re.search(rf"\bblock {blk}\b|id {blk} ", l)]
+excerpt = seq[max(0, idx[0] - 4):idx[-1] + 3] if idx else []
+excerpt += [l for l in seq if (tx and tx[:16] in l) or re.search(r"ESA:E|revert|reject|panick", l, re.I)][-20:]
 doc = {
     "gate": "G1 (real-proof half)", "dev_mode": rec.get("dev_mode"), "accepted": bool(res.get("accepted")) and rc == "0",
     "step": step, "verifier": res.get("verifier"), "verifier_id": res.get("verifier_id"), "instance": res.get("instance"), "init_tx": res.get("init_tx"), "tx": res.get("tx"),

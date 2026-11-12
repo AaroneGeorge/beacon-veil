@@ -1,14 +1,8 @@
-    Blocking waiting for file lock on build directory
-   Compiling attest_core v0.1.0 (/home/lechuuu/hackathons/logos-rfp/build/repo/crates/attest_core)
-   Compiling attest_inclusion v0.1.0 (/home/lechuuu/hackathons/logos-rfp/build/repo/crates/attest_inclusion)
-   Compiling e2e_chain v0.1.0 (/home/lechuuu/hackathons/logos-rfp/build/repo/tests/e2e_chain)
-   Compiling attest_host v0.1.0 (/home/lechuuu/hackathons/logos-rfp/build/repo/crates/attest_host)
    Compiling cost v0.1.0 (/home/lechuuu/hackathons/logos-rfp/build/repo/tools/cost)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 13m 32s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.49s
 warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
 note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
-    Blocking waiting for file lock on package cache
-    Blocking waiting for file lock on package cache
-    Blocking waiting for file lock on package cache
-    Blocking waiting for file lock on build directory
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 4m 06s
+   Compiling e2e_consumer v0.1.0 (/home/lechuuu/hackathons/logos-rfp/build/repo/tests/e2e_consumer)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.37s
+warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`

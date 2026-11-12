@@ -117,6 +117,7 @@ fn exec_lc(args: &[String]) -> Result<()> {
     let out = arg("--json").context("--json OUT")?;
     let lcg = load(&lc_path)?;
     let atg = load(&attest_path)?;
+    let lc2 = arg("--lc2-elf").map(|p| load(&p)).transpose()?;
     println!(
         "lc_verify {} image {} ({:?} ELF bytes)",
         lcg.path, lcg.image_id, lcg.elf_bytes
@@ -249,6 +250,17 @@ fn exec_lc(args: &[String]) -> Result<()> {
                    "head_slot": head.slot, "path": "private on Path A; public on B0 (over the cap)"}),
         ));
 
+        if let Some(g2) = &lc2 {
+            let r2 = execute(g2, &input, &format!("lc_verify_v2.{label}"))?;
+            let sm2 = r2.transition.response.sync_messages.first().ok_or_else(|| anyhow!("{label}: V2 no Apply"))?;
+            if sm2.message != apply_bytes {
+                bail!("{label}: V2 Apply differs from V1");
+            }
+            println!("{label}: Verify V2 user cycles {} ({} segments)", r2.user_cycles, r2.segments);
+            rows.push(row(&format!("lc_verify.v2.verify.{label}"), "lc_verify_v2", "Verify (V2)", label, &r2,
+                vbytes.len(), json!({"variant": "V2", "update_bytes": update.len(), "participation": native.participation,
+                "handoff": native.handoff, "path": "private on Path A"})));
+        }
         // Apply, as the instance actor receives it: from the private lc_verify actor.
         let input = ReceiveInput {
             receiver: Actor::new(instance, attest_program),
@@ -315,6 +327,7 @@ fn exec_lc(args: &[String]) -> Result<()> {
         "fixtures": "fixtures/mainnet (W2): bootstrap_15605760, updates_1905_4, finality_update_15637644",
         "guests": {
             "lc_verify": {"path": lcg.path, "elf_bytes": lcg.elf_bytes, "program_binary_bytes": lcg.program.len(), "image_id": lcg.image_id},
+            "lc_verify_v2": lc2.as_ref().map(|g| json!({"path": g.path, "elf_bytes": g.elf_bytes, "program_binary_bytes": g.program.len(), "image_id": g.image_id})),
             "attest": {"path": atg.path, "elf_bytes": atg.elf_bytes, "program_binary_bytes": atg.program.len(), "image_id": atg.image_id},
         },
         "rows": rows,

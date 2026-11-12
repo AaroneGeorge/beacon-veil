@@ -3,23 +3,29 @@
   "fixtures": "fixtures/mainnet (W2): bootstrap_15605760, updates_1905_4, finality_update_15637644",
   "guests": {
     "attest": {
-      "elf_bytes": 408128,
-      "image_id": "cf14f765246d1b71895f2e0b49a5d01c5eef2af90903ff6fb3ea84752c82441d",
-      "path": "/home/lechuuu/hackathons/logos-rfp/build/target/riscv-guest/guest_methods/attest_program/riscv32im-risc0-zkvm-elf/release/attest",
-      "program_binary_bytes": 440552
+      "elf_bytes": 406700,
+      "image_id": "9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d",
+      "path": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2/elf/attest",
+      "program_binary_bytes": 439124
     },
     "lc_verify": {
-      "elf_bytes": 755980,
-      "image_id": "8d4f7fbbadc0a9cbc7918161ac57b9e0e66ddc5f3f7ee2e0c3b86818d65853ca",
-      "path": "/home/lechuuu/hackathons/logos-rfp/build/target/riscv-guest/guest_methods/lc_verify_program/riscv32im-risc0-zkvm-elf/release/lc_verify",
-      "program_binary_bytes": 788404
+      "elf_bytes": 754956,
+      "image_id": "c7b5f2191f133026017c09072e883217dfe3785450d40d081718b0fd204878ba",
+      "path": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2/elf/lc_verify",
+      "program_binary_bytes": 787380
+    },
+    "lc_verify_v2": {
+      "elf_bytes": 716792,
+      "image_id": "18684beee3e973a2f1391c9bdb9108743c71e6f216bb5fba88bc0443403e8230",
+      "path": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2/elf/lc_verify_v2",
+      "program_binary_bytes": 749216
     }
   },
   "measured": true,
   "rows": [
     {
       "bootstrap_bytes": 25675,
-      "executor_ms": 552,
+      "executor_ms": 268,
       "id": "attest.init",
       "instance_state_bytes": 410,
       "message": "Init",
@@ -31,10 +37,10 @@
       "segments": 6,
       "step": "bootstrap_15605760",
       "total_cycles_padded": 5505024,
-      "user_cycles": 4928793
+      "user_cycles": 4926875
     },
     {
-      "executor_ms": 140,
+      "executor_ms": 67,
       "id": "attest.write_record.checkpoint",
       "message": "WriteRecord",
       "message_bytes": 153,
@@ -49,7 +55,7 @@
       "user_cycles": 24047
     },
     {
-      "executor_ms": 4560,
+      "executor_ms": 2404,
       "handoff": false,
       "head_slot": 15605824,
       "id": "lc_verify.v1.verify.update[0]",
@@ -66,11 +72,29 @@
       "step": "update[0]",
       "total_cycles_padded": 65273856,
       "update_bytes": 26914,
-      "user_cycles": 61178234,
+      "user_cycles": 61174483,
       "variant": "V1"
     },
     {
-      "executor_ms": 79,
+      "executor_ms": 1896,
+      "handoff": false,
+      "id": "lc_verify.v2.verify.update[0]",
+      "message": "Verify (V2)",
+      "message_bytes": 51970,
+      "participation": 511,
+      "path": "private on Path A",
+      "program": "lc_verify_v2",
+      "segment_po2_last": 20,
+      "segment_po2_max": 20,
+      "segments": 47,
+      "step": "update[0]",
+      "total_cycles_padded": 49283072,
+      "update_bytes": 26914,
+      "user_cycles": 45573595,
+      "variant": "V2"
+    },
+    {
+      "executor_ms": 62,
       "id": "attest.apply.update[0]",
       "message": "Apply",
       "message_bytes": 401,
@@ -85,7 +109,7 @@
       "writes_record": true
     },
     {
-      "executor_ms": 149,
+      "executor_ms": 61,
       "id": "attest.write_record.update[0]",
       "message": "WriteRecord",
       "message_bytes": 153,
@@ -100,7 +124,7 @@
       "user_cycles": 24047
     },
     {
-      "executor_ms": 5448,
+      "executor_ms": 2540,
       "handoff": true,
       "head_slot": 15613952,
       "id": "lc_verify.v1.verify.update[1]",
@@ -117,11 +141,29 @@
       "step": "update[1]",
       "total_cycles_padded": 69206016,
       "update_bytes": 26926,
-      "user_cycles": 64339205,
+      "user_cycles": 64333601,
       "variant": "V1"
     },
     {
-      "executor_ms": 118,
+      "executor_ms": 1940,
+      "handoff": true,
+      "id": "lc_verify.v2.verify.update[1]",
+      "message": "Verify (V2)",
+      "message_bytes": 76610,
+      "participation": 512,
+      "path": "private on Path A",
+      "program": "lc_verify_v2",
+      "segment_po2_last": 20,
+      "segment_po2_max": 20,
+      "segments": 50,
+      "step": "update[1]",
+      "total_cycles_padded": 52428800,
+      "update_bytes": 26926,
+      "user_cycles": 48730919,
+      "variant": "V2"
+    },
+    {
+      "executor_ms": 64,
       "id": "attest.apply.update[1]",
       "message": "Apply",
       "message_bytes": 401,
@@ -136,7 +178,7 @@
       "writes_record": true
     },
     {
-      "executor_ms": 152,
+      "executor_ms": 61,
       "id": "attest.write_record.update[1]",
       "message": "WriteRecord",
       "message_bytes": 153,
@@ -151,7 +193,7 @@
       "user_cycles": 24047
     },
     {
-      "executor_ms": 5041,
+      "executor_ms": 2575,
       "handoff": true,
       "head_slot": 15622144,
       "id": "lc_verify.v1.verify.update[2]",
@@ -168,11 +210,29 @@
       "step": "update[2]",
       "total_cycles_padded": 70254592,
       "update_bytes": 26920,
-      "user_cycles": 65467587,
+      "user_cycles": 65461983,
       "variant": "V1"
     },
     {
-      "executor_ms": 111,
+      "executor_ms": 1972,
+      "handoff": true,
+      "id": "lc_verify.v2.verify.update[2]",
+      "message": "Verify (V2)",
+      "message_bytes": 76604,
+      "participation": 511,
+      "path": "private on Path A",
+      "program": "lc_verify_v2",
+      "segment_po2_last": 17,
+      "segment_po2_max": 20,
+      "segments": 52,
+      "step": "update[2]",
+      "total_cycles_padded": 53608448,
+      "update_bytes": 26920,
+      "user_cycles": 49864139,
+      "variant": "V2"
+    },
+    {
+      "executor_ms": 63,
       "id": "attest.apply.update[2]",
       "message": "Apply",
       "message_bytes": 401,
@@ -187,7 +247,7 @@
       "writes_record": true
     },
     {
-      "executor_ms": 176,
+      "executor_ms": 61,
       "id": "attest.write_record.update[2]",
       "message": "WriteRecord",
       "message_bytes": 153,
@@ -202,7 +262,7 @@
       "user_cycles": 24047
     },
     {
-      "executor_ms": 4912,
+      "executor_ms": 2514,
       "handoff": true,
       "head_slot": 15631808,
       "id": "lc_verify.v1.verify.update[3]",
@@ -219,11 +279,29 @@
       "step": "update[3]",
       "total_cycles_padded": 69206016,
       "update_bytes": 26922,
-      "user_cycles": 64338286,
+      "user_cycles": 64332682,
       "variant": "V1"
     },
     {
-      "executor_ms": 113,
+      "executor_ms": 2024,
+      "handoff": true,
+      "id": "lc_verify.v2.verify.update[3]",
+      "message": "Verify (V2)",
+      "message_bytes": 76606,
+      "participation": 512,
+      "path": "private on Path A",
+      "program": "lc_verify_v2",
+      "segment_po2_last": 20,
+      "segment_po2_max": 20,
+      "segments": 50,
+      "step": "update[3]",
+      "total_cycles_padded": 52428800,
+      "update_bytes": 26922,
+      "user_cycles": 48730021,
+      "variant": "V2"
+    },
+    {
+      "executor_ms": 63,
       "id": "attest.apply.update[3]",
       "message": "Apply",
       "message_bytes": 401,
@@ -238,7 +316,7 @@
       "writes_record": true
     },
     {
-      "executor_ms": 120,
+      "executor_ms": 61,
       "id": "attest.write_record.update[3]",
       "message": "WriteRecord",
       "message_bytes": 153,
@@ -253,7 +331,7 @@
       "user_cycles": 24047
     },
     {
-      "executor_ms": 3731,
+      "executor_ms": 1875,
       "handoff": false,
       "head_slot": 15637568,
       "id": "lc_verify.v1.verify.finality_update_15637644",
@@ -270,11 +348,29 @@
       "step": "finality_update_15637644",
       "total_cycles_padded": 49283072,
       "update_bytes": 2109,
-      "user_cycles": 46099256,
+      "user_cycles": 46095505,
       "variant": "V1"
     },
     {
-      "executor_ms": 103,
+      "executor_ms": 1537,
+      "handoff": false,
+      "id": "lc_verify.v2.verify.finality_update_15637644",
+      "message": "Verify (V2)",
+      "message_bytes": 51793,
+      "participation": 512,
+      "path": "private on Path A",
+      "program": "lc_verify_v2",
+      "segment_po2_last": 20,
+      "segment_po2_max": 20,
+      "segments": 38,
+      "step": "finality_update_15637644",
+      "total_cycles_padded": 39845888,
+      "update_bytes": 2109,
+      "user_cycles": 37032744,
+      "variant": "V2"
+    },
+    {
+      "executor_ms": 63,
       "id": "attest.apply.finality_update_15637644",
       "message": "Apply",
       "message_bytes": 401,
@@ -289,7 +385,7 @@
       "writes_record": true
     },
     {
-      "executor_ms": 110,
+      "executor_ms": 61,
       "id": "attest.write_record.finality_update_15637644",
       "message": "WriteRecord",
       "message_bytes": 153,
@@ -304,7 +400,7 @@
       "user_cycles": 24047
     },
     {
-      "executor_ms": 98,
+      "executor_ms": 67,
       "id": "attest.check_header",
       "message": "CheckHeader",
       "message_bytes": 33,

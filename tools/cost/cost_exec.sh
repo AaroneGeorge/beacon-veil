@@ -21,6 +21,12 @@ raw="$BV_REPO/evidence/cost/raw"
 mkdir -p "$raw"
 started="$(date -u +%FT%TZ)"
 
+# COST_BINS=DIR: measure a release set (scripts/guests_release.sh output: DIR/elf/<name> user ELFs, IMAGE_IDS) instead
+# of building; the image ids then equal the deployed ones.
+if [ -n "${COST_BINS:-}" ]; then
+  COST_NO_GUEST_BUILD=1
+  lc="$COST_BINS/elf/lc_verify"; at="$COST_BINS/elf/attest"; co="$COST_BINS/elf/consumer_erc20"; lc2="$COST_BINS/elf/lc_verify_v2"
+fi
 gdir() { echo "$CARGO_TARGET_DIR/riscv-guest/guest_methods/$1/riscv32im-risc0-zkvm-elf/release/$2"; }
 if [ "${COST_NO_GUEST_BUILD:-0}" != 1 ]; then
   echo "cost-exec: building guests (BV_GUEST_DOCKER=${BV_GUEST_DOCKER:-0})"
@@ -47,7 +53,7 @@ fi
 
 bin="$CARGO_TARGET_DIR/debug"
 echo "cost-exec: exec-lc"
-nice -n 15 "$bin/cost" exec-lc --lc-elf "$lc" --attest-elf "$at" --json "$raw/exec-lc.json" > "$raw/exec-lc.log" 2>&1 \
+nice -n 15 "$bin/cost" exec-lc --lc-elf "$lc" --attest-elf "$at" ${lc2:+--lc2-elf "$lc2"} --json "$raw/exec-lc.json" > "$raw/exec-lc.log" 2>&1 \
   || { tail -20 "$raw/exec-lc.log" >&2; exit 1; }
 nice -n 15 "$bin/cost" sizes --json "$raw/sizes.json" > "$raw/sizes.log" 2>&1
 if [ "$have_attest_exec" = 1 ] && [ -f "$co" ]; then
@@ -62,7 +68,7 @@ def sh(c):
     return subprocess.run(c, shell=True, capture_output=True, text=True).stdout.strip()
 json.dump({
     "command": "make cost-exec (tools/cost/cost_exec.sh)", "started_utc": sys.argv[2],
-    "guest_build": "docker r0.1.91.1" if "${BV_GUEST_DOCKER:-0}" == "1" else ("prebuilt (COST_NO_GUEST_BUILD)" if "${COST_NO_GUEST_BUILD:-0}" == "1" else "local rzup toolchain"),
+    "guest_build": "release bins ${COST_BINS:-}" if "${COST_BINS:-}" else "docker r0.1.91.1" if "${BV_GUEST_DOCKER:-0}" == "1" else ("prebuilt (COST_NO_GUEST_BUILD)" if "${COST_NO_GUEST_BUILD:-0}" == "1" else "local rzup toolchain"),
     "guests": {"lc_verify": "$lc", "attest": "$at", "consumer_erc20": "$co"},
     "repo_commit": sh("git -C $BV_REPO rev-parse --short HEAD") + (" (dirty)" if sh("git -C $BV_REPO status --porcelain") else ""),
     "risc0_dev_mode": "${RISC0_DEV_MODE:-unset}", "r0vm": sh("r0vm --version"),

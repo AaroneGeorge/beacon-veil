@@ -1,2 +1,10 @@
-attest ELF /home/lechuuu/hackathons/logos-rfp/build/target/riscv-guest/guest_methods/attest_program/riscv32im-risc0-zkvm-elf/release/attest (Some(408128) bytes); consumer ELF /home/lechuuu/hackathons/logos-rfp/build/target/riscv-guest/guest_methods/consumer_erc20_program/riscv32im-risc0-zkvm-elf/release/consumer_erc20 (Some(258880) bytes)
-Error: Odd number of digits
+attest ELF /home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2/elf/attest (Some(406700) bytes); consumer ELF /home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2/elf/consumer_erc20 (Some(258736) bytes)
+attest_log_mainnet_usdt_transfer: claim 2955 bytes, message 3318 bytes -> user cycles 190865 (total 524288 in 1 segments, 78 ms)
+consumer_erc20 Statement: user cycles 43440 (43 ms)
+consumer_erc20 MarkConsumed: user cycles 20063 (42 ms)
+attest_log_mainnet_tx374_log254_255logs: claim 41660 bytes, message 41918 bytes -> user cycles 1447957 (total 2097152 in 2 segments, 152 ms)
+attest_storage_mainnet_usdt_slot1: claim 7174 bytes, message 7461 bytes -> user cycles 508778 (total 1048576 in 1 segments, 89 ms)
+attest_account_mainnet_usdc: claim 3909 bytes, message 4167 bytes -> user cycles 299487 (total 524288 in 1 segments, 77 ms)
+attest_log_sepolia_gloas_with_header: claim 3229 bytes, message 3592 bytes -> user cycles 196981 (total 524288 in 1 segments, 72 ms)
+attest_storage_sepolia_gloas_with_header: claim 7076 bytes, message 7363 bytes -> user cycles 483333 (total 1048576 in 1 segments, 86 ms)
+wrote /home/lechuuu/hackathons/logos-rfp/build/repo/evidence/cost/raw/attest-exec.json

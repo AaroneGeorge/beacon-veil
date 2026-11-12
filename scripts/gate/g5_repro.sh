@@ -36,6 +36,9 @@ ref="${against:-$clean/evidence/cost/cost.json}"
 [ -f "$ref" ] || { echo "g5: reference $ref missing (commit evidence/cost/cost.json first)" | tee -a "$log" >&2; exit 1; }
 docker=0
 python3 -I -c 'import json,sys; sys.exit(0 if "docker" in (json.load(open(sys.argv[1])).get("run") or {}).get("guest_build","") else 1)' "$ref" && docker=1
+# A reference made from a release set (COST_BINS) is regenerated from the same set: the guests are then the
+# deployed, pinned-image ones (their reproducibility is CI's scripts/check_image_ids.sh), and G5 checks the harness.
+bins="$(python3 -I -c 'import json,sys; g=(json.load(open(sys.argv[1])).get("run") or {}).get("guest_build",""); print(g[len("release bins "):] if g.startswith("release bins ") else "")' "$ref")"
 
 mkdir -p "$g5home"
 set +e
@@ -43,6 +46,7 @@ set +e
   cd "$clean"
   export B="$g5home"            # env.sh keeps an exported B: separate target, tmp and run dirs for the clone
   export BV_GUEST_DOCKER="$docker"
+  [ -n "$bins" ] && export COST_BINS="$bins"
   if grep -q 'cost-exec:.*not implemented' Makefile 2>/dev/null || ! grep -q '^cost-exec:' Makefile; then
     echo "g5: the clone's Makefile has no cost-exec target yet; running tools/cost/cost_exec.sh" >&2
     tools/cost/cost_exec.sh
@@ -55,14 +59,14 @@ set -e
 echo "g5: cost-exec in the clone exited $rc" | tee -a "$log"
 
 set +e
-python3 -I - "$ref" "$clean/evidence/cost/cost.json" "$out/repro.json" "$rc" "$commit" "$started" "$clean" "$docker" <<'EOF'
+python3 -I - "$ref" "$clean/evidence/cost/cost.json" "$out/repro.json" "$rc" "$commit" "$started" "$clean" "$docker" "$bins" <<'EOF'
 import json, os, subprocess, sys
-ref_p, new_p, dst, rc, commit, started, clean, docker = sys.argv[1:9]
+ref_p, new_p, dst, rc, commit, started, clean, docker, bins = sys.argv[1:10]
 COLS = ("user_cycles", "total_cycles_padded", "segments", "gas_exec")
 def sh(c):
     return subprocess.run(c, shell=True, capture_output=True, text=True).stdout.strip()
 res = {"gate": "G5", "commit": commit, "started_utc": started, "reference": ref_p, "regenerated": new_p,
-       "cost_exec_exit": int(rc), "guest_build_docker": docker == "1",
+       "cost_exec_exit": int(rc), "guest_build_docker": docker == "1", "release_bins": bins or None,
        "machine": sh("lscpu | sed -n 's/^Model name: *//p'") + ", " + sh("uname -sr") + ", " + sh("r0vm --version")}
 fails = []
 if rc != "0" or not os.path.exists(new_p):

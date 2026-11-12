@@ -1,13 +1,13 @@
 {
   "command": "make cost-exec (tools/cost/cost_exec.sh)",
-  "started_utc": "2026-11-12T10:13:32Z",
-  "guest_build": "prebuilt (COST_NO_GUEST_BUILD)",
+  "started_utc": "2026-11-12T20:20:30Z",
+  "guest_build": "release bins /home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2",
   "guests": {
-    "lc_verify": "/home/lechuuu/hackathons/logos-rfp/build/target/riscv-guest/guest_methods/lc_verify_program/riscv32im-risc0-zkvm-elf/release/lc_verify",
-    "attest": "/home/lechuuu/hackathons/logos-rfp/build/target/riscv-guest/guest_methods/attest_program/riscv32im-risc0-zkvm-elf/release/attest",
-    "consumer_erc20": "/home/lechuuu/hackathons/logos-rfp/build/target/riscv-guest/guest_methods/consumer_erc20_program/riscv32im-risc0-zkvm-elf/release/consumer_erc20"
+    "lc_verify": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2/elf/lc_verify",
+    "attest": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2/elf/attest",
+    "consumer_erc20": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2/elf/consumer_erc20"
   },
-  "repo_commit": "ed52102 (dirty)",
+  "repo_commit": "ee8f2a1 (dirty)",
   "risc0_dev_mode": "1",
   "r0vm": "risc0-r0vm 3.0.5"
 }

@@ -1,38 +1,47 @@
 {
   "what": "beacon-veil cost table (make cost-exec). Cycles are deterministic for the recorded guest image ids.",
-  "generated_utc": "2026-11-12T10:31:38Z",
+  "generated_utc": "2026-11-12T20:20:57Z",
   "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
   "run": {
     "command": "make cost-exec (tools/cost/cost_exec.sh)",
-    "started_utc": "2026-11-12T10:13:32Z",
-    "guest_build": "prebuilt (COST_NO_GUEST_BUILD)",
+    "started_utc": "2026-11-12T20:20:30Z",
+    "guest_build": "release bins /home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2",
     "guests": {
-      "lc_verify": "/home/lechuuu/hackathons/logos-rfp/build/target/riscv-guest/guest_methods/lc_verify_program/riscv32im-risc0-zkvm-elf/release/lc_verify",
-      "attest": "/home/lechuuu/hackathons/logos-rfp/build/target/riscv-guest/guest_methods/attest_program/riscv32im-risc0-zkvm-elf/release/attest",
-      "consumer_erc20": "/home/lechuuu/hackathons/logos-rfp/build/target/riscv-guest/guest_methods/consumer_erc20_program/riscv32im-risc0-zkvm-elf/release/consumer_erc20"
+      "lc_verify": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2/elf/lc_verify",
+      "attest": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2/elf/attest",
+      "consumer_erc20": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2/elf/consumer_erc20"
     },
-    "repo_commit": "ed52102 (dirty)",
+    "repo_commit": "ee8f2a1 (dirty)",
     "risc0_dev_mode": "1",
     "r0vm": "risc0-r0vm 3.0.5"
   },
   "guests": {
     "attest": {
-      "elf_bytes": 408128,
-      "image_id": "cf14f765246d1b71895f2e0b49a5d01c5eef2af90903ff6fb3ea84752c82441d",
-      "path": "/home/lechuuu/hackathons/logos-rfp/build/target/riscv-guest/guest_methods/attest_program/riscv32im-risc0-zkvm-elf/release/attest",
-      "program_binary_bytes": 440552
+      "elf_bytes": 406700,
+      "image_id": "9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d",
+      "path": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2/elf/attest",
+      "program_binary_bytes": 439124
     },
     "lc_verify": {
-      "elf_bytes": 755980,
-      "image_id": "8d4f7fbbadc0a9cbc7918161ac57b9e0e66ddc5f3f7ee2e0c3b86818d65853ca",
-      "path": "/home/lechuuu/hackathons/logos-rfp/build/target/riscv-guest/guest_methods/lc_verify_program/riscv32im-risc0-zkvm-elf/release/lc_verify",
-      "program_binary_bytes": 788404
+      "elf_bytes": 754956,
+      "image_id": "c7b5f2191f133026017c09072e883217dfe3785450d40d081718b0fd204878ba",
+      "path": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2/elf/lc_verify",
+      "program_binary_bytes": 787380
+    },
+    "lc_verify_v2": {
+      "elf_bytes": 716792,
+      "image_id": "18684beee3e973a2f1391c9bdb9108743c71e6f216bb5fba88bc0443403e8230",
+      "path": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2/elf/lc_verify_v2",
+      "program_binary_bytes": 749216
     }
   },
   "raw_files": [
+    "cost/raw/attest-exec.json",
     "cost/raw/b0-phases.json",
     "cost/raw/exec-lc.json",
-    "cost/raw/sizes.json"
+    "cost/raw/sizes.json",
+    "cost/raw/v2-exec.json",
+    "cost/raw/w3-attest_exec.json"
   ],
   "sizes": {
     "bootstrap_bytes": 25675,
@@ -162,6 +171,102 @@
       }
     },
     {
+      "id": "attest.attest_account_mainnet_usdc",
+      "program": "attest",
+      "message": "Attest",
+      "step": "attest_account_mainnet_usdc",
+      "user_cycles": 299487,
+      "total_cycles_padded": 524288,
+      "segments": 1,
+      "message_bytes": 4167,
+      "gas_exec": 299487,
+      "label": "measured",
+      "raw": "attest-exec.json",
+      "extra": {
+        "claim_bytes": 3909
+      }
+    },
+    {
+      "id": "attest.attest_log_mainnet_tx374_log254_255logs",
+      "program": "attest",
+      "message": "Attest",
+      "step": "attest_log_mainnet_tx374_log254_255logs",
+      "user_cycles": 1447957,
+      "total_cycles_padded": 2097152,
+      "segments": 2,
+      "message_bytes": 41918,
+      "gas_exec": 1447957,
+      "label": "measured",
+      "raw": "attest-exec.json",
+      "extra": {
+        "claim_bytes": 41660
+      }
+    },
+    {
+      "id": "attest.attest_log_mainnet_usdt_transfer",
+      "program": "attest",
+      "message": "Attest",
+      "step": "attest_log_mainnet_usdt_transfer",
+      "user_cycles": 190865,
+      "total_cycles_padded": 524288,
+      "segments": 1,
+      "message_bytes": 3318,
+      "gas_exec": 190865,
+      "label": "measured",
+      "raw": "attest-exec.json",
+      "extra": {
+        "claim_bytes": 2955
+      }
+    },
+    {
+      "id": "attest.attest_log_sepolia_gloas_with_header",
+      "program": "attest",
+      "message": "Attest",
+      "step": "attest_log_sepolia_gloas_with_header",
+      "user_cycles": 196981,
+      "total_cycles_padded": 524288,
+      "segments": 1,
+      "message_bytes": 3592,
+      "gas_exec": 196981,
+      "label": "measured",
+      "raw": "attest-exec.json",
+      "extra": {
+        "claim_bytes": 3229
+      }
+    },
+    {
+      "id": "attest.attest_storage_mainnet_usdt_slot1",
+      "program": "attest",
+      "message": "Attest",
+      "step": "attest_storage_mainnet_usdt_slot1",
+      "user_cycles": 508778,
+      "total_cycles_padded": 1048576,
+      "segments": 1,
+      "message_bytes": 7461,
+      "gas_exec": 508778,
+      "label": "measured",
+      "raw": "attest-exec.json",
+      "extra": {
+        "claim_bytes": 7174
+      }
+    },
+    {
+      "id": "attest.attest_storage_sepolia_gloas_with_header",
+      "program": "attest",
+      "message": "Attest",
+      "step": "attest_storage_sepolia_gloas_with_header",
+      "user_cycles": 483333,
+      "total_cycles_padded": 1048576,
+      "segments": 1,
+      "message_bytes": 7363,
+      "gas_exec": 483333,
+      "label": "measured",
+      "raw": "attest-exec.json",
+      "extra": {
+        "claim_bytes": 7076
+      }
+    },
+    {
       "id": "attest.check_header",
       "program": "attest",
       "message": "CheckHeader",
@@ -184,11 +289,11 @@
       "program": "attest",
       "message": "Init",
       "step": "bootstrap_15605760",
-      "user_cycles": 4928793,
+      "user_cycles": 4926875,
       "total_cycles_padded": 5505024,
       "segments": 6,
       "message_bytes": 25906,
-      "gas_exec": 4928793,
+      "gas_exec": 4926875,
       "label": "measured",
       "raw": "exec-lc.json",
       "extra": {
@@ -314,11 +419,39 @@
       }
     },
     {
+      "id": "consumer_erc20.consumer_erc20_mark_consumed",
+      "program": "consumer_erc20",
+      "message": "MarkConsumed",
+      "step": "consumer_erc20_mark_consumed",
+      "user_cycles": 20063,
+      "total_cycles_padded": 65536,
+      "segments": 1,
+      "message_bytes": null,
+      "gas_exec": 20063,
+      "label": "measured",
+      "raw": "attest-exec.json",
+      "extra": {}
+    },
+    {
+      "id": "consumer_erc20.consumer_erc20_statement",
+      "program": "consumer_erc20",
+      "message": "Statement",
+      "step": "consumer_erc20_statement",
+      "user_cycles": 43440,
+      "total_cycles_padded": 131072,
+      "segments": 1,
+      "message_bytes": null,
+      "gas_exec": 43440,
+      "label": "measured",
+      "raw": "attest-exec.json",
+      "extra": {}
+    },
+    {
       "id": "lc_verify.v1.verify.finality_update_15637644",
       "program": "lc_verify",
       "message": "Verify (V1)",
       "step": "finality_update_15637644",
-      "user_cycles": 46099256,
+      "user_cycles": 46095505,
       "total_cycles_padded": 49283072,
       "segments": 47,
       "message_bytes": 51793,
@@ -343,7 +476,7 @@
       "program": "lc_verify",
       "message": "Verify (V1)",
       "step": "update[0]",
-      "user_cycles": 61178234,
+      "user_cycles": 61174483,
       "total_cycles_padded": 65273856,
       "segments": 63,
       "message_bytes": 51970,
@@ -368,7 +501,7 @@
       "program": "lc_verify",
       "message": "Verify (V1)",
       "step": "update[1]",
-      "user_cycles": 64339205,
+      "user_cycles": 64333601,
       "total_cycles_padded": 69206016,
       "segments": 66,
       "message_bytes": 76610,
@@ -393,7 +526,7 @@
       "program": "lc_verify",
       "message": "Verify (V1)",
       "step": "update[2]",
-      "user_cycles": 65467587,
+      "user_cycles": 65461983,
       "total_cycles_padded": 70254592,
       "segments": 67,
       "message_bytes": 76604,
@@ -418,7 +551,7 @@
       "program": "lc_verify",
       "message": "Verify (V1)",
       "step": "update[3]",
-      "user_cycles": 64338286,
+      "user_cycles": 64332682,
       "total_cycles_padded": 69206016,
       "segments": 66,
       "message_bytes": 76606,
@@ -436,6 +569,116 @@
         "segment_po2_max": 20,
         "update_bytes": 26922,
         "variant": "V1"
+      }
+    },
+    {
+      "id": "lc_verify.v2.verify.finality_update_15637644",
+      "program": "lc_verify_v2",
+      "message": "Verify (V2)",
+      "step": "finality_update_15637644",
+      "user_cycles": 37032744,
+      "total_cycles_padded": 39845888,
+      "segments": 38,
+      "message_bytes": 51793,
+      "gas_exec": null,
+      "label": "measured",
+      "raw": "exec-lc.json",
+      "extra": {
+        "handoff": false,
+        "participation": 512,
+        "path": "private on Path A",
+        "segment_po2_last": 20,
+        "segment_po2_max": 20,
+        "update_bytes": 2109,
+        "variant": "V2"
+      }
+    },
+    {
+      "id": "lc_verify.v2.verify.update[0]",
+      "program": "lc_verify_v2",
+      "message": "Verify (V2)",
+      "step": "update[0]",
+      "user_cycles": 45573595,
+      "total_cycles_padded": 49283072,
+      "segments": 47,
+      "message_bytes": 51970,
+      "gas_exec": null,
+      "label": "measured",
+      "raw": "exec-lc.json",
+      "extra": {
+        "handoff": false,
+        "participation": 511,
+        "path": "private on Path A",
+        "segment_po2_last": 20,
+        "segment_po2_max": 20,
+        "update_bytes": 26914,
+        "variant": "V2"
+      }
+    },
+    {
+      "id": "lc_verify.v2.verify.update[1]",
+      "program": "lc_verify_v2",
+      "message": "Verify (V2)",
+      "step": "update[1]",
+      "user_cycles": 48730919,
+      "total_cycles_padded": 52428800,
+      "segments": 50,
+      "message_bytes": 76610,
+      "gas_exec": null,
+      "label": "measured",
+      "raw": "exec-lc.json",
+      "extra": {
+        "handoff": true,
+        "participation": 512,
+        "path": "private on Path A",
+        "segment_po2_last": 20,
+        "segment_po2_max": 20,
+        "update_bytes": 26926,
+        "variant": "V2"
+      }
+    },
+    {
+      "id": "lc_verify.v2.verify.update[2]",
+      "program": "lc_verify_v2",
+      "message": "Verify (V2)",
+      "step": "update[2]",
+      "user_cycles": 49864139,
+      "total_cycles_padded": 53608448,
+      "segments": 52,
+      "message_bytes": 76604,
+      "gas_exec": null,
+      "label": "measured",
+      "raw": "exec-lc.json",
+      "extra": {
+        "handoff": true,
+        "participation": 511,
+        "path": "private on Path A",
+        "segment_po2_last": 17,
+        "segment_po2_max": 20,
+        "update_bytes": 26920,
+        "variant": "V2"
+      }
+    },
+    {
+      "id": "lc_verify.v2.verify.update[3]",
+      "program": "lc_verify_v2",
+      "message": "Verify (V2)",
+      "step": "update[3]",
+      "user_cycles": 48730021,
+      "total_cycles_padded": 52428800,
+      "segments": 50,
+      "message_bytes": 76606,
+      "gas_exec": null,
+      "label": "measured",
+      "raw": "exec-lc.json",
+      "extra": {
+        "handoff": true,
+        "participation": 512,
+        "path": "private on Path A",
+        "segment_po2_last": 20,
+        "segment_po2_max": 20,
+        "update_bytes": 26922,
+        "variant": "V2"
       }
     }
   ],
@@ -462,7 +705,7 @@
         {
           "step": "finality_update_15637644",
           "handoff": false,
-          "verify_cycles_private": 46099256,
+          "verify_cycles_private": 46095505,
           "apply_cycles": 54965,
           "write_record_cycles": 24047,
           "gas_exec": 488776,
@@ -474,7 +717,7 @@
         {
           "step": "update[0]",
           "handoff": false,
-          "verify_cycles_private": 61178234,
+          "verify_cycles_private": 61174483,
           "apply_cycles": 54965,
           "write_record_cycles": 24047,
           "gas_exec": 488776,
@@ -486,7 +729,7 @@
         {
           "step": "update[1]",
           "handoff": true,
-          "verify_cycles_private": 64339205,
+          "verify_cycles_private": 64333601,
           "apply_cycles": 54965,
           "write_record_cycles": 24047,
           "gas_exec": 488776,
@@ -498,7 +741,7 @@
         {
           "step": "update[2]",
           "handoff": true,
-          "verify_cycles_private": 65467587,
+          "verify_cycles_private": 65461983,
           "apply_cycles": 54965,
           "write_record_cycles": 24047,
           "gas_exec": 488776,
@@ -510,7 +753,7 @@
         {
           "step": "update[3]",
           "handoff": true,
-          "verify_cycles_private": 64338286,
+          "verify_cycles_private": 64332682,
           "apply_cycles": 54965,
           "write_record_cycles": 24047,
           "gas_exec": 488776,
@@ -527,35 +770,35 @@
       "rows": [
         {
           "step": "finality_update_15637644",
-          "cycles": 46099256,
+          "cycles": 46095505,
           "x_cap": 4.61,
           "min_public_txs_if_split_evenly": 5,
           "fits_one_tx": false
         },
         {
           "step": "update[0]",
-          "cycles": 61178234,
+          "cycles": 61174483,
           "x_cap": 6.12,
           "min_public_txs_if_split_evenly": 7,
           "fits_one_tx": false
         },
         {
           "step": "update[1]",
-          "cycles": 64339205,
+          "cycles": 64333601,
           "x_cap": 6.43,
           "min_public_txs_if_split_evenly": 7,
           "fits_one_tx": false
         },
         {
           "step": "update[2]",
-          "cycles": 65467587,
+          "cycles": 65461983,
           "x_cap": 6.55,
           "min_public_txs_if_split_evenly": 7,
           "fits_one_tx": false
         },
         {
           "step": "update[3]",
-          "cycles": 64338286,
+          "cycles": 64332682,
           "x_cap": 6.43,
           "min_public_txs_if_split_evenly": 7,
           "fits_one_tx": false
@@ -574,9 +817,9 @@
           "path_a_pct_daily_exec_cap": 0.1909,
           "path_a_pct_daily_stor_cap": 0.8752,
           "path_a_private_slots_per_day": 225.0,
-          "path_b_exec_gas_per_day": 14730207075,
-          "path_b_pct_daily_exec_cap": 25.5733,
-          "path_b_pct_daily_exec_target": 51.1466
+          "path_b_exec_gas_per_day": 14728946175,
+          "path_b_pct_daily_exec_cap": 25.5711,
+          "path_b_pct_daily_exec_target": 51.1422
         },
         {
           "block_time": "standalone 15 s",
@@ -586,9 +829,9 @@
           "path_a_pct_daily_exec_cap": 0.0119,
           "path_a_pct_daily_stor_cap": 0.0547,
           "path_a_private_slots_per_day": 14.06,
-          "path_b_exec_gas_per_day": 920637942,
-          "path_b_pct_daily_exec_cap": 1.5983,
-          "path_b_pct_daily_exec_target": 3.1967
+          "path_b_exec_gas_per_day": 920559136,
+          "path_b_pct_daily_exec_cap": 1.5982,
+          "path_b_pct_daily_exec_target": 3.1964
         },
         {
           "block_time": "standalone 15 s",
@@ -598,7 +841,7 @@
           "path_a_pct_daily_exec_cap": 0.0007,
           "path_a_pct_daily_stor_cap": 0.0034,
           "path_a_private_slots_per_day": 0.88,
-          "path_b_exec_gas_per_day": 57539871,
+          "path_b_exec_gas_per_day": 57534946,
           "path_b_pct_daily_exec_cap": 0.0999,
           "path_b_pct_daily_exec_target": 0.1998
         },
@@ -618,9 +861,9 @@
           "path_a_pct_daily_exec_cap": 0.1273,
           "path_a_pct_daily_stor_cap": 0.5835,
           "path_a_private_slots_per_day": 225.0,
-          "path_b_exec_gas_per_day": 14730207075,
-          "path_b_pct_daily_exec_cap": 17.0489,
-          "path_b_pct_daily_exec_target": 34.0977
+          "path_b_exec_gas_per_day": 14728946175,
+          "path_b_pct_daily_exec_cap": 17.0474,
+          "path_b_pct_daily_exec_target": 34.0948
         },
         {
           "block_time": "testnet 10 s",
@@ -630,9 +873,9 @@
           "path_a_pct_daily_exec_cap": 0.008,
           "path_a_pct_daily_stor_cap": 0.0365,
           "path_a_private_slots_per_day": 14.06,
-          "path_b_exec_gas_per_day": 920637942,
-          "path_b_pct_daily_exec_cap": 1.0656,
-          "path_b_pct_daily_exec_target": 2.1311
+          "path_b_exec_gas_per_day": 920559136,
+          "path_b_pct_daily_exec_cap": 1.0655,
+          "path_b_pct_daily_exec_target": 2.1309
         },
         {
           "block_time": "testnet 10 s",
@@ -642,7 +885,7 @@
           "path_a_pct_daily_exec_cap": 0.0005,
           "path_a_pct_daily_stor_cap": 0.0023,
           "path_a_private_slots_per_day": 0.88,
-          "path_b_exec_gas_per_day": 57539871,
+          "path_b_exec_gas_per_day": 57534946,
           "path_b_pct_daily_exec_cap": 0.0666,
           "path_b_pct_daily_exec_target": 0.1332
         },
@@ -659,7 +902,80 @@
       "formula": "blocks/day = 86400 / block time; Path A: private tx = PRIVATE_GAS_STOR storage gas against MAX_GAS_STOR per block (floor(1e6/224063) = 4 per block) and PRIVATE_VERIFY_GAS + effect cycles execution gas; Path B: Verify cycles of execution gas per update."
     },
     "amortised_cost_per_attestation": {
-      "rows": [],
+      "rows": [
+        {
+          "case": "attest_account_mainnet_usdc",
+          "attest_cycles": 299487,
+          "check_header_cycles": 18585,
+          "consumer_cycles": null,
+          "public_gas_exec": 318072,
+          "label": "derived",
+          "with_update_amortised_over_1": 806848,
+          "with_update_amortised_over_10": 366950,
+          "with_update_amortised_over_100": 322960,
+          "with_update_amortised_over_1000": 318561
+        },
+        {
+          "case": "attest_log_mainnet_tx374_log254_255logs",
+          "attest_cycles": 1447957,
+          "check_header_cycles": 18585,
+          "consumer_cycles": 63503,
+          "public_gas_exec": 1530045,
+          "label": "derived",
+          "with_update_amortised_over_1": 2018821,
+          "with_update_amortised_over_10": 1578923,
+          "with_update_amortised_over_100": 1534933,
+          "with_update_amortised_over_1000": 1530534
+        },
+        {
+          "case": "attest_log_mainnet_usdt_transfer",
+          "attest_cycles": 190865,
+          "check_header_cycles": 18585,
+          "consumer_cycles": 63503,
+          "public_gas_exec": 272953,
+          "label": "derived",
+          "with_update_amortised_over_1": 761729,
+          "with_update_amortised_over_10": 321831,
+          "with_update_amortised_over_100": 277841,
+          "with_update_amortised_over_1000": 273442
+        },
+        {
+          "case": "attest_log_sepolia_gloas_with_header",
+          "attest_cycles": 196981,
+          "check_header_cycles": 18585,
+          "consumer_cycles": 63503,
+          "public_gas_exec": 279069,
+          "label": "derived",
+          "with_update_amortised_over_1": 767845,
+          "with_update_amortised_over_10": 327947,
+          "with_update_amortised_over_100": 283957,
+          "with_update_amortised_over_1000": 279558
+        },
+        {
+          "case": "attest_storage_mainnet_usdt_slot1",
+          "attest_cycles": 508778,
+          "check_header_cycles": 18585,
+          "consumer_cycles": null,
+          "public_gas_exec": 527363,
+          "label": "derived",
+          "with_update_amortised_over_1": 1016139,
+          "with_update_amortised_over_10": 576241,
+          "with_update_amortised_over_100": 532251,
+          "with_update_amortised_over_1000": 527852
+        },
+        {
+          "case": "attest_storage_sepolia_gloas_with_header",
+          "attest_cycles": 483333,
+          "check_header_cycles": 18585,
+          "consumer_cycles": null,
+          "public_gas_exec": 501918,
+          "label": "derived",
+          "with_update_amortised_over_1": 990694,
+          "with_update_amortised_over_10": 550796,
+          "with_update_amortised_over_100": 506806,
+          "with_update_amortised_over_1000": 502407
+        }
+      ],
       "label": "derived (measured cycles); amortisation is arithmetic",
       "formula": "public placement: cycles(Attest) + cycles(CheckHeader) + consumer cycles (Statement + MarkConsumed for the ERC-20 consumer), plus Path A update gas / k attestations per header. Storage gas (wire bytes of the public tx) is not included here. Private placement: PRIVATE_VERIFY_GAS + public effects + PRIVATE_GAS_STOR, the Attest cycles move to the user's prover."
     },
@@ -718,101 +1034,101 @@
       "rows": [
         {
           "step": "update[0]",
-          "verify_cycles_now": 61178234,
+          "verify_cycles_now": 61174483,
           "bls_cycles_removed": 37964988,
           "pairing_and_subgroup": 31007871,
           "precompile_charge": 0,
-          "update_gas_after": 23213246,
+          "update_gas_after": 23209495,
           "x_cap_after": 2.32,
           "fits_one_tx": false
         },
         {
           "step": "update[0]",
-          "verify_cycles_now": 61178234,
+          "verify_cycles_now": 61174483,
           "bls_cycles_removed": 37964988,
           "pairing_and_subgroup": 31007871,
           "precompile_charge": 1000000,
-          "update_gas_after": 24213246,
+          "update_gas_after": 24209495,
           "x_cap_after": 2.42,
           "fits_one_tx": false
         },
         {
           "step": "update[1]",
-          "verify_cycles_now": 64339205,
+          "verify_cycles_now": 64333601,
           "bls_cycles_removed": 36841211,
           "pairing_and_subgroup": 31007871,
           "precompile_charge": 0,
-          "update_gas_after": 27497994,
+          "update_gas_after": 27492390,
           "x_cap_after": 2.75,
           "fits_one_tx": false
         },
         {
           "step": "update[1]",
-          "verify_cycles_now": 64339205,
+          "verify_cycles_now": 64333601,
           "bls_cycles_removed": 36841211,
           "pairing_and_subgroup": 31007871,
           "precompile_charge": 1000000,
-          "update_gas_after": 28497994,
+          "update_gas_after": 28492390,
           "x_cap_after": 2.85,
           "fits_one_tx": false
         },
         {
           "step": "update[2]",
-          "verify_cycles_now": 65467587,
+          "verify_cycles_now": 65461983,
           "bls_cycles_removed": 37964992,
           "pairing_and_subgroup": 31007871,
           "precompile_charge": 0,
-          "update_gas_after": 27502595,
+          "update_gas_after": 27496991,
           "x_cap_after": 2.75,
           "fits_one_tx": false
         },
         {
           "step": "update[2]",
-          "verify_cycles_now": 65467587,
+          "verify_cycles_now": 65461983,
           "bls_cycles_removed": 37964992,
           "pairing_and_subgroup": 31007871,
           "precompile_charge": 1000000,
-          "update_gas_after": 28502595,
+          "update_gas_after": 28496991,
           "x_cap_after": 2.85,
           "fits_one_tx": false
         },
         {
           "step": "update[3]",
-          "verify_cycles_now": 64338286,
+          "verify_cycles_now": 64332682,
           "bls_cycles_removed": 36841211,
           "pairing_and_subgroup": 31007871,
           "precompile_charge": 0,
-          "update_gas_after": 27497075,
+          "update_gas_after": 27491471,
           "x_cap_after": 2.75,
           "fits_one_tx": false
         },
         {
           "step": "update[3]",
-          "verify_cycles_now": 64338286,
+          "verify_cycles_now": 64332682,
           "bls_cycles_removed": 36841211,
           "pairing_and_subgroup": 31007871,
           "precompile_charge": 1000000,
-          "update_gas_after": 28497075,
+          "update_gas_after": 28491471,
           "x_cap_after": 2.85,
           "fits_one_tx": false
         },
         {
           "step": "finality_update_15637644",
-          "verify_cycles_now": 46099256,
+          "verify_cycles_now": 46095505,
           "bls_cycles_removed": 36841207,
           "pairing_and_subgroup": 31007871,
           "precompile_charge": 0,
-          "update_gas_after": 9258049,
+          "update_gas_after": 9254298,
           "x_cap_after": 0.93,
           "fits_one_tx": true
         },
         {
           "step": "finality_update_15637644",
-          "verify_cycles_now": 46099256,
+          "verify_cycles_now": 46095505,
           "bls_cycles_removed": 36841207,
           "pairing_and_subgroup": 31007871,
           "precompile_charge": 1000000,
-          "update_gas_after": 10258049,
+          "update_gas_after": 10254298,
           "x_cap_after": 1.03,
           "fits_one_tx": false
         }
