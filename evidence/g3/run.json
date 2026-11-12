@@ -2,22 +2,48 @@
   "gate": "G3",
   "pass": true,
   "test_exit_code": 0,
-  "started_utc": "2026-11-12T11:08:15Z",
-  "finished_utc": "2026-11-12T11:10:03Z",
+  "started_utc": "2026-11-12T12:41:23Z",
+  "finished_utc": "2026-11-12T12:46:44Z",
   "command": "nice -n 15 cargo test -p e2e_consumer --test e2e_consumer -- --ignored --nocapture --test-threads 1 g3_consumer_accepts_once_and_refuses_replay",
   "risc0_dev_mode": "1",
   "lez": "v0.4.0-rc3",
   "sequencer": "seq-dev (standalone)",
   "machine": "Linux 7.0.0-43-generic x86_64; Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz; 15 GiB RAM",
-  "repo_commit": "7156113",
+  "repo_commit": "0ab7c30",
+  "deployed": {
+    "attest": {
+      "id": "D4EHJuxjYVFfTN47A6GbWxgPdYweb9QkC5DmzxbJboDF",
+      "bin_sha256": "4f59c574791bc06fb7b6b3b284726b04cc6276bfe486eb44c9af864bf0176849",
+      "bins_dir": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2",
+      "image_id": "9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d",
+      "release_commit": "bf95e359a4a6dd85836be6e33609be778fa17bc2",
+      "release_image": "docker.io/risczero/risc0-guest-builder:r0.1.91.1@sha256:fafb377a44e1cfca415577c48d2f7012bda99ed36f2fae27f9a663b9fe6048f0"
+    },
+    "lc_verify": {
+      "id": "EiUE92eqy1LsmWrf68rNA5RbX3FWC9KzG2FakMVe5oWv",
+      "bin_sha256": "31a3ff1d3eaa291566dd988d6c120a5d1eba1d99f37f6ab8d1e95e3ebb6b01e9",
+      "bins_dir": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2",
+      "image_id": "c7b5f2191f133026017c09072e883217dfe3785450d40d081718b0fd204878ba",
+      "release_commit": "bf95e359a4a6dd85836be6e33609be778fa17bc2",
+      "release_image": "docker.io/risczero/risc0-guest-builder:r0.1.91.1@sha256:fafb377a44e1cfca415577c48d2f7012bda99ed36f2fae27f9a663b9fe6048f0"
+    },
+    "consumer_erc20": {
+      "id": "DKUgoD1vsVFxNUoAdshh23ndWpgZoWCK4X9Q4qHqw7YP",
+      "bin_sha256": "a86e69e70745bb7aab3b4f8d094d9a1ddecd764a6dd7d326e152900de77181fc",
+      "bins_dir": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2",
+      "image_id": "3f86d4c96631191e94edb5377fa559c0b24fd2409815c5f97ca752eaa7df0794",
+      "release_commit": "bf95e359a4a6dd85836be6e33609be778fa17bc2",
+      "release_image": "docker.io/risczero/risc0-guest-builder:r0.1.91.1@sha256:fafb377a44e1cfca415577c48d2f7012bda99ed36f2fae27f9a663b9fe6048f0"
+    }
+  },
   "result": {
-    "attest_program": "CvWQWXteVtA67suCS32ovZZ4CxbwK7YcQT1fSfpMnR43",
-    "consumer_instance": "52zHjQCHVJPrL6p5sgdfAPQEeLF2Bwp1FpuKvfYx76Dy",
-    "consumer_program": "8kvsH5D1XVRkoY7z5JoXowT7hq5NM2p3s9uwTGZ9h4Dg",
+    "attest_program": "D4EHJuxjYVFfTN47A6GbWxgPdYweb9QkC5DmzxbJboDF",
+    "consumer_instance": "7K6eqQ2pyEVxFbPsunZfATuFV3Gg5LekRV87cpZ8ijyh",
+    "consumer_program": "DKUgoD1vsVFxNUoAdshh23ndWpgZoWCK4X9Q4qHqw7YP",
     "exec_hash": "5a500b1d7ec30eb2859694f9e26616ef7693921bccc6b2ef0da87e998587b410",
     "exec_number": 26397891,
-    "instance": "3uFZPqUY74dtbfWYWeY2Jawjmos7zPCbWf4Vgvu8XQvt",
-    "nullifier": "AjZELpV999c4yYyWhaFe8ABkHesrwdHr5jt6SjRYV3K5",
+    "instance": "BYRbutiqUKPiUw4atjNSprJnyvo1UENiXuPJmcMfAEs7",
+    "nullifier": "7Rj7Zq4WeRHxsW5dHsBPYfVdcG9MtsqoPSdjR2VMzrmn",
     "record_slot": 15637568,
     "statement_id": "6c0ec6f0fcfa09c75134f0129d64d35b424079ab1129d0526f05c14aa9bb81ed",
     "tx1": {
@@ -26,12 +52,12 @@
       "consumer_count_before": 0,
       "consumer_total_after": "0000000000000000000000000000000000000000000000000000000006520467",
       "gas_limit_declared": 10000000,
-      "tx": "e012fd36571f47d26abbbc98078f897fa81312b1acfc565b527b48e52d693cef"
+      "tx": "d2166162fd66f521f3f54323dab3f18e7427787bfda54085d74cd8cb74ae2fc2"
     },
     "tx2_sent": {
       "accepted": false,
       "consumer_state_unchanged": true,
-      "error": "attest (allow revert): tx a3a5c11ea75377bfcc6bea5f743b5534f0871df7886f84d2e6218cdc5fbc8f5d reverted in block 382 (the panic code is in the sequencer log)"
+      "error": "attest (allow revert): tx 61057fd5784c92b2ab5253e156d23b2a1c7143a134f44d2b126c70bcb483510d reverted in block 768 (the panic code is in the sequencer log)"
     },
     "tx2_simulated": {
       "accepted": false,

@@ -37,13 +37,51 @@ set -e
 finished="$(date -u +%FT%TZ)"
 excerpt="$(tail -n +"$((seq_lines_before + 1))" "$seqlog" 2>/dev/null | grep -E 'ESA:E|revert|panick' | tail -20 || true)"
 
-python3 -I - "$log" "$out/run.json" "$rc" "$started" "$finished" "${cmd[*]}" "$excerpt" <<'EOF'
-import json, platform, subprocess, sys
-log, dst, rc, started, finished, cmd, excerpt = sys.argv[1:8]
+python3 -I - "$log" "$out/run.json" "$rc" "$started" "$finished" "${cmd[*]}" "$excerpt" "${BV_IDS:-$BV_REPO/deploy/ids.toml}" <<'EOF'
+import json, os, platform, re, subprocess, sys
+log, dst, rc, started, finished, cmd, excerpt, ids_path = sys.argv[1:9]
 res = None
 for line in open(log, errors="replace"):
     if line.startswith("G3RESULT "):
         res = json.loads(line[len("G3RESULT "):])
+def deployed(ids_path):
+    """Program ids, binary sha256 (from deploy_local.sh comments), bins dir and image id (IMAGE_IDS in that dir)."""
+    progs, bins, section = {}, {}, None
+    for line in open(ids_path):
+        m = re.match(r"\[(\w+)\]", line)
+        if m:
+            section = m.group(1)
+            continue
+        m = re.match(r'(\w+) = "([^"]+)"(.*)', line)
+        if not m:
+            continue
+        name, val, rest = m.groups()
+        if section == "programs":
+            sha = re.search(r"sha256 ([0-9a-f]{64})", rest)
+            progs[name] = {"id": val, "bin_sha256": sha.group(1) if sha else None}
+        elif section == "bins":
+            bins[name] = val
+    out = {}
+    for name in ("attest", "lc_verify", "consumer_erc20"):
+        if name not in progs:
+            continue
+        e = dict(progs[name])
+        d = bins.get(name)
+        e["bins_dir"] = d
+        image = None
+        if d and os.path.exists(os.path.join(d, "IMAGE_IDS")):
+            for l in open(os.path.join(d, "IMAGE_IDS")):
+                m = re.match(rf"{name}\.bin: .*image id ([0-9a-f]{{64}})", l)
+                if m:
+                    image = m.group(1)
+        e["image_id"] = image
+        if d and os.path.exists(os.path.join(d, "BUILD_INFO")):
+            for l in open(os.path.join(d, "BUILD_INFO")):
+                if l.startswith("commit=") or l.startswith("image="):
+                    k, v = l.strip().split("=", 1)
+                    e["release_" + k] = v
+        out[name] = e
+    return out
 def sh(c):
     try:
         return subprocess.run(c, shell=True, capture_output=True, text=True).stdout.strip()
@@ -57,6 +95,7 @@ doc = {
     "command": cmd, "risc0_dev_mode": "1", "lez": "v0.4.0-rc3", "sequencer": "seq-dev (standalone)",
     "machine": sh("uname -srm") + "; " + sh("lscpu | sed -n 's/^Model name: *//p'") + "; " + sh("free -g | awk '/Mem:/{print $2\" GiB RAM\"}'"),
     "repo_commit": sh("git -C \"$BV_REPO\" rev-parse --short HEAD 2>/dev/null"),
+    "deployed": deployed(ids_path),
     "result": res, "sequencer_log_excerpt": excerpt.splitlines(), "raw_log": "evidence/g3/run.log",
 }
 json.dump(doc, open(dst, "w"), indent=2)

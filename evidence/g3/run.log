@@ -1,16 +1,59 @@
-   Compiling attest_inclusion v0.1.0 (/home/lechuuu/hackathons/logos-rfp/build/repo/crates/attest_inclusion)
-   Compiling consumer_erc20_program v0.1.0 (/home/lechuuu/hackathons/logos-rfp/build/repo/programs/consumer_erc20)
-   Compiling attest_host v0.1.0 (/home/lechuuu/hackathons/logos-rfp/build/repo/crates/attest_host)
-   Compiling e2e_consumer v0.1.0 (/home/lechuuu/hackathons/logos-rfp/build/repo/tests/e2e_consumer)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 9.31s
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.76s
 warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
 note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
-     Running tests/e2e_consumer.rs (/home/lechuuu/hackathons/logos-rfp/build/target/debug/deps/e2e_consumer-dba6724d80d38a25)
+     Running tests/e2e_consumer.rs (/home/lechuuu/hackathons/logos-rfp/build/target/debug/deps/e2e_consumer-f97fea2d04a6b9e8)
 
 running 1 test
-test g3_consumer_accepts_once_and_refuses_replay ... reusing instance 3uFZPqUY74dtbfWYWeY2Jawjmos7zPCbWf4Vgvu8XQvt
-consumer instance 52zHjQCHVJPrL6p5sgdfAPQEeLF2Bwp1FpuKvfYx76Dy: init tx b3c9480a7cbf6526127e3983eebea988a4ee533ad84ed16508ec205b05930887 gas Some(10000000)
-tx 1 e012fd36571f47d26abbbc98078f897fa81312b1acfc565b527b48e52d693cef accepted: consumer count 1 total 0x0000000000000000000000000000000000000000000000000000000006520467
+test g3_consumer_accepts_once_and_refuses_replay ... init instance BYRbutiqUKPiUw4atjNSprJnyvo1UENiXuPJmcMfAEs7: tx 9befe2e34a5c205d243c31beb167f1e92b25682da3950c088f155d5b291e7897
+Latest block is 750
+Syncing to block 750. Blocks to sync: 11
+Synced to block 750 in 166.947292ms
+WARNING: proving in dev mode. This will not generate valid, secure proofs.
+WARNING: Proving in dev mode does not generate a valid receipt. Receipts generated from this process are invalid and should never be used in production.
+WARNING: proving in dev mode. This will not generate valid, secure proofs.
+WARNING: Proving in dev mode does not generate a valid receipt. Receipts generated from this process are invalid and should never be used in production.
+Latest block is 753
+Syncing to block 753. Blocks to sync: 3
+Synced to block 753 in 95.668112ms
+update[0]: tx 23e1d038c6887dfa559edb8529f278ac3736eab327da06d024fcdca6f645ac2f
+Latest block is 753
+WARNING: proving in dev mode. This will not generate valid, secure proofs.
+WARNING: Proving in dev mode does not generate a valid receipt. Receipts generated from this process are invalid and should never be used in production.
+WARNING: proving in dev mode. This will not generate valid, secure proofs.
+WARNING: Proving in dev mode does not generate a valid receipt. Receipts generated from this process are invalid and should never be used in production.
+Latest block is 755
+Syncing to block 755. Blocks to sync: 2
+Synced to block 755 in 58.811676ms
+update[1]: tx 77601847b19ff75fdaf17b18506449d50f0e70af019f878bd5a1fbeed165fc8f
+Latest block is 755
+WARNING: proving in dev mode. This will not generate valid, secure proofs.
+WARNING: Proving in dev mode does not generate a valid receipt. Receipts generated from this process are invalid and should never be used in production.
+WARNING: proving in dev mode. This will not generate valid, secure proofs.
+WARNING: Proving in dev mode does not generate a valid receipt. Receipts generated from this process are invalid and should never be used in production.
+Latest block is 758
+Syncing to block 758. Blocks to sync: 3
+Synced to block 758 in 72.64859ms
+update[2]: tx 69163b9da4551ba02ca146f3720712d31113722fb4cc2badb62809057b8c918c
+Latest block is 758
+WARNING: proving in dev mode. This will not generate valid, secure proofs.
+WARNING: Proving in dev mode does not generate a valid receipt. Receipts generated from this process are invalid and should never be used in production.
+WARNING: proving in dev mode. This will not generate valid, secure proofs.
+WARNING: Proving in dev mode does not generate a valid receipt. Receipts generated from this process are invalid and should never be used in production.
+Latest block is 761
+Syncing to block 761. Blocks to sync: 3
+Synced to block 761 in 69.202287ms
+update[3]: tx e54f1ef5deb09673c7533ade6de8f7ca76f0ea147bc3a44e1d4c3f05cac27904
+Latest block is 761
+WARNING: proving in dev mode. This will not generate valid, secure proofs.
+WARNING: Proving in dev mode does not generate a valid receipt. Receipts generated from this process are invalid and should never be used in production.
+WARNING: proving in dev mode. This will not generate valid, secure proofs.
+WARNING: Proving in dev mode does not generate a valid receipt. Receipts generated from this process are invalid and should never be used in production.
+Latest block is 763
+Syncing to block 763. Blocks to sync: 2
+Synced to block 763 in 51.141785ms
+finality_update_15637644: tx ffb0df833d77b3534b3d011bc1eb64cdb4b8f40db63be08dca78ea8b168c9295
+consumer instance 7K6eqQ2pyEVxFbPsunZfATuFV3Gg5LekRV87cpZ8ijyh: init tx b2f4c76d6beeeee037e171b83b4511dc47038f73be8a5710fb7c05c83a3d9c70 gas Some(10000000)
+tx 1 d2166162fd66f521f3f54323dab3f18e7427787bfda54085d74cd8cb74ae2fc2 accepted: consumer count 1 total 0x0000000000000000000000000000000000000000000000000000000006520467
 
 thread 'main' (1) panicked at crates/attest_core/src/error.rs:120:9:
 ESA:E11
@@ -20,9 +63,9 @@ tx 2 refused: attest: The transaction reverts when simulated and would still pay
 thread 'main' (1) panicked at crates/attest_core/src/error.rs:120:9:
 ESA:E11
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
-tx 2 sent with allow-revert: attest (allow revert): tx a3a5c11ea75377bfcc6bea5f743b5534f0871df7886f84d2e6218cdc5fbc8f5d reverted in block 382 (the panic code is in the sequencer log)
-G3RESULT {"attest_program":"CvWQWXteVtA67suCS32ovZZ4CxbwK7YcQT1fSfpMnR43","consumer_instance":"52zHjQCHVJPrL6p5sgdfAPQEeLF2Bwp1FpuKvfYx76Dy","consumer_program":"8kvsH5D1XVRkoY7z5JoXowT7hq5NM2p3s9uwTGZ9h4Dg","exec_hash":"5a500b1d7ec30eb2859694f9e26616ef7693921bccc6b2ef0da87e998587b410","exec_number":26397891,"instance":"3uFZPqUY74dtbfWYWeY2Jawjmos7zPCbWf4Vgvu8XQvt","nullifier":"AjZELpV999c4yYyWhaFe8ABkHesrwdHr5jt6SjRYV3K5","record_slot":15637568,"statement_id":"6c0ec6f0fcfa09c75134f0129d64d35b424079ab1129d0526f05c14aa9bb81ed","tx1":{"accepted":true,"consumer_count_after":1,"consumer_count_before":0,"consumer_total_after":"0000000000000000000000000000000000000000000000000000000006520467","gas_limit_declared":10000000,"tx":"e012fd36571f47d26abbbc98078f897fa81312b1acfc565b527b48e52d693cef"},"tx2_sent":{"accepted":false,"consumer_state_unchanged":true,"error":"attest (allow revert): tx a3a5c11ea75377bfcc6bea5f743b5534f0871df7886f84d2e6218cdc5fbc8f5d reverted in block 382 (the panic code is in the sequencer log)"},"tx2_simulated":{"accepted":false,"code":"E11_ALREADY_CONSUMED"}}
+tx 2 sent with allow-revert: attest (allow revert): tx 61057fd5784c92b2ab5253e156d23b2a1c7143a134f44d2b126c70bcb483510d reverted in block 768 (the panic code is in the sequencer log)
+G3RESULT {"attest_program":"D4EHJuxjYVFfTN47A6GbWxgPdYweb9QkC5DmzxbJboDF","consumer_instance":"7K6eqQ2pyEVxFbPsunZfATuFV3Gg5LekRV87cpZ8ijyh","consumer_program":"DKUgoD1vsVFxNUoAdshh23ndWpgZoWCK4X9Q4qHqw7YP","exec_hash":"5a500b1d7ec30eb2859694f9e26616ef7693921bccc6b2ef0da87e998587b410","exec_number":26397891,"instance":"BYRbutiqUKPiUw4atjNSprJnyvo1UENiXuPJmcMfAEs7","nullifier":"7Rj7Zq4WeRHxsW5dHsBPYfVdcG9MtsqoPSdjR2VMzrmn","record_slot":15637568,"statement_id":"6c0ec6f0fcfa09c75134f0129d64d35b424079ab1129d0526f05c14aa9bb81ed","tx1":{"accepted":true,"consumer_count_after":1,"consumer_count_before":0,"consumer_total_after":"0000000000000000000000000000000000000000000000000000000006520467","gas_limit_declared":10000000,"tx":"d2166162fd66f521f3f54323dab3f18e7427787bfda54085d74cd8cb74ae2fc2"},"tx2_sent":{"accepted":false,"consumer_state_unchanged":true,"error":"attest (allow revert): tx 61057fd5784c92b2ab5253e156d23b2a1c7143a134f44d2b126c70bcb483510d reverted in block 768 (the panic code is in the sequencer log)"},"tx2_simulated":{"accepted":false,"code":"E11_ALREADY_CONSUMED"}}
 ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 98.31s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 320.42s
 
