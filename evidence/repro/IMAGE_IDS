@@ -1,0 +1,7 @@
+attest.bin: user ELF 406700 bytes, bin 439124 bytes, image id 9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d
+lc_verify.bin: user ELF 754956 bytes, bin 787380 bytes, image id c7b5f2191f133026017c09072e883217dfe3785450d40d081718b0fd204878ba
+lc_verify_v2.bin: user ELF 716792 bytes, bin 749216 bytes, image id 18684beee3e973a2f1391c9bdb9108743c71e6f216bb5fba88bc0443403e8230
+consumer_erc20.bin: user ELF 258736 bytes, bin 291160 bytes, image id 3f86d4c96631191e94edb5377fa559c0b24fd2409815c5f97ca752eaa7df0794
+bridge.bin: user ELF 299436 bytes, bin 331860 bytes, image id fa3bd9c34fe6c82498396d99f9499688ec57e84463be2fc3abbe0bc944466fc5
+bridge_dev_source.bin: user ELF 225548 bytes, bin 257972 bytes, image id 9866d2346df2a2b3cd2214b07777182f5d1e75cac355d88ba45961543ecc3ca5
+burn_proof.bin: user ELF 237856 bytes, bin 270280 bytes, image id 0bf5772add481b578a470b044efb3fb6e9dfda4e32dd4e9828e7d7fa42a3a833

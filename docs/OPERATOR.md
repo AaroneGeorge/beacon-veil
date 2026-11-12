@@ -19,7 +19,7 @@ What an operator needs:
 - A machine that can prove one update. One Path A update takes about 40 s end to end in dev mode (follower track dev log), which measures the executor and not a real proof. The follower proves `Verify` (46.1M to 65.5M user cycles per update on real mainnet data, measured on the executor: `evidence/cost/cost.md`) and the privacy circuit's wrapper.
 - No standing on Ethereum. No validator, no Ethereum account.
 
-What it costs, per update. TODO-MEASURE: on-chain gas for `Apply` and storage, proving seconds and peak memory (`evidence/cost/cost.md`, `evidence/calibration/`). Derived from measured cycles and LEZ constants (`evidence/cost/cost.md` section 2): 409,764 gas for receipt verification plus 54,965 cycles for `Apply` plus 24,047 for `WriteRecord`, which is 488,776 execution gas, and 224,063 storage gas.
+What it costs, per update, measured. Proving one V1 finality update for real took 20,060 s (5.57 hours) and peaked at 9.259 GiB on the build laptop (`evidence/g1/real-proof.json`). TODO-MEASURE: the V2 real proof. Derived from measured cycles and LEZ constants (`evidence/cost/cost.md` section 2): 409,764 gas for receipt verification plus 54,965 cycles for `Apply` plus 24,047 for `WriteRecord`, which is 488,776 execution gas, and 224,063 storage gas.
 
 Sepolia account for the project's own runs. The project deploys the vault and sends test deposits and releases from one dedicated Sepolia key. Its address is `0x523072A2aC5e5A3E51c107bc17995A3fa03dBD78`, funded with 0.3 SepETH. It holds testnet funds only and is used for nothing else. The key is not in the repository, in the logs or in `evidence/`. An operator of the follower needs no Ethereum account. An operator of the bridge's root attester or relayer uses LEZ gas and, for release calls, an Ethereum account of their own.
 
@@ -28,7 +28,7 @@ Sepolia account for the project's own runs. The project deploys the vault and se
 | Resource | Figure | Source |
 |---|---|---|
 | Follower daemon, idle between ticks | TODO-MEASURE (CPU, RSS) | 24 h run log |
-| Proving one update, CPU only | TODO-MEASURE (seconds, peak RSS) on the build laptop: Intel i5-10300H, 4 cores, 15 GiB | `evidence/calibration/` |
+| Proving one V1 finality update, CPU only | 20,060 s (5.57 hours), peak 9.259 GiB, at most 92,700 KiB of swap, on an Intel i5-10300H with 15 GiB of RAM and 11 GiB of swap. Declared minimum for a user machine: 16 GB of RAM | `evidence/g1/real-proof.json` |
 | Disk | TODO-MEASURE (log growth per day, state cache size) | 24 h run |
 | Network | Mainnet (fulu): light-client update 2,109 bytes (finality) to 26,926 bytes (period) as SSZ. Sepolia (gloas): 1,448 bytes (finality) and 26,424 bytes (period) | `fixtures/*/manifest.json`, follower track notes |
 

@@ -49,6 +49,7 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 | D-39 | Measured cost of V1, and the glue fix that lowered it | build 2026-11-12 | decided |
 | D-40 | The vault holds the verifier's emergency-stop wrapper | build (bridge notes 4), revised 2026-11-12 | decided |
 | D-51 | RISC Zero advisory GHSA-g6qg-9j8p-7j87 | coordinator 2026-11-12 | decided, platform risk open |
+| D-52 | Reproducible guest builds: one release set | build 2026-11-12 | decided |
 | D-41 | Two-transaction claim | build (bridge notes 1) | decided |
 | D-42 | Root receipt address cannot be squatted; attest program id from config | build (bridge notes 2) | decided |
 | D-43 | Deposit root at a hand-fixed storage slot | build (bridge notes 5) | decided |
@@ -108,7 +109,7 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 - Context. A deployed ELF is capped at 20 segments of 96 KiB, 1,966,080 bytes (LEZ rc3 `program/mod.rs:32`, `program_loader/core/src/lib.rs:23`).
 - Options. One program with everything. Two programs.
 - Chosen. Two. `attest` is small and long-lived: instance state, `Apply`, write-once header records, `Attest`. `lc_verify` is large and replaceable per Ethereum fork: Helios verify and apply, nothing else, deployed immutable. An instance's config lists its accepted verifier program ids.
-- Rationale. LEZ's smallest guests are about 340 KB. Helios with alloy needs most of the budget. The measured `lc_verify` user ELF is 755,980 bytes (8 of 20 segments, `evidence/cost/cost.md`). A new Ethereum fork means a new verifier and a new instance under the same `attest` program id, so consumers keep one program id.
+- Rationale. LEZ's smallest guests are about 340 KB. Helios with alloy needs most of the budget. The measured `lc_verify` user ELF is 754,956 bytes (8 of 20 segments, `evidence/cost/cost.md`). A new Ethereum fork means a new verifier and a new instance under the same `attest` program id, so consumers keep one program id.
 - Fallback. One program gated by `from_own_program()`, the pattern LEZ's own programs use, if the cross-program check misbehaves. Not needed so far.
 
 ## D-07. Instance address is the PDA of the config hash
@@ -246,8 +247,9 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 
 ## D-31. Proving environment: CPU only, proving windows
 
-- Chosen. No local GPU build (4 GB VRAM is too small for large segments, estimate). Real proofs run only in agreed windows, niced, one at a time, with wall time and peak memory recorded. All other work uses `RISC0_DEV_MODE=1`.
-- Rationale. The build machine is shared and has 15 GiB of RAM. Calibration sets the real rate: TODO-MEASURE (`evidence/calibration/`).
+- Chosen. No local GPU build (4 GB VRAM is too small for large segments, estimate). Real proofs ran only in agreed windows, niced, one at a time, under `prove_job.sh` with wall time and peak memory recorded. All other work uses `RISC0_DEV_MODE=1`.
+- Measured. One po2-20 segment takes 363.0 s on average (358.7 s to 365.8 s, three runs), 346.2 microseconds per padded cycle, peak 9.149 GiB (`evidence/cost/k4-projection.json`, `evidence/cost/prove.md`). risc0-zkvm 3.0.5 proves segments one at a time and spills them to disk, so peak memory is set by the segment size and not by the cycle count. Both real proofs peaked near 9.3 GiB with under 100 MB of swap.
+- Rationale. The build machine is shared and has 15 GiB of RAM. We declare 16 GB of RAM as the minimum machine for users.
 
 ## D-32. RFP-022 inbound design
 
@@ -275,7 +277,7 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 - Chosen. (e). L1: the vault calls the RISC Zero verifier through its emergency-stop wrapper; anyone with a proof of exploit can stop it, and it never restarts. L2: an open release route checks the `burn_proof` statement with plain SHA-256 in the vault; it shares the nullifier map with `release`. L3: void on Ethereum and re-credit on LEZ for burns that cannot be released (RFP-021 only). L4: cancel an unclaimed deposit on LEZ into a release (anchor trust). L5: after a permanent mint latch, refund an unclaimed deposit on Ethereum against the anchored claimed-nullifier set (anchor trust). Each exit is claimed by the owner with the seed-derived secret and pays only the destination bound in it.
 - Not offered, with reasons. No exit for the escrow if the anchor fails. No exodus if LEZ halts. No refund of unclaimed deposits after an inbound-verification fault before L5 exists. These funds stay in the vault, frozen, and are not lost to an attacker beyond the caps.
 - Trade-offs. L2 reveals the user's own burn-to-release link, so it is opt-in. L1 lets RISC Zero's guardian halt the zero-knowledge route; L2 keeps exits open. L2 and L5 are new code on the payout path and go in the audit scope.
-- Status. L1 and the L2 stub in the sprint (vault v3). L3 and L4 at M4. L5 designed at M4, built at M6 only if the stage-1 anchor is agreed at M0. Confirm with Logos at M0. Full analysis: `research/10-failsafe-and-helios-audit.md`.
+- Status. L1 and L2 are in vault v3 on Sepolia and were exercised: a real release through the emergency stop (527,859 gas) and an open release (325,769 gas) (`evidence/bridge/groth16-release-v3/`). L3 and L4 at M4. L5 designed at M4, built at M6 only if the stage-1 anchor is agreed at M0. Confirm with Logos at M0. Full analysis: `research/10-failsafe-and-helios-audit.md`.
 
 ## D-36. Licence
 
@@ -293,8 +295,8 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 
 - Date. 2026-11-12. Measured on an i5-10300H, RISC Zero 3.0.5 executor, dev mode, five real mainnet updates. The first run (09:45 UTC) gave 74,446,829 to 89,340,805 user cycles per update, about three times the plan estimate of 28M (raw: `.tmp/w1/evidence/v1-exec.json` on the build machine). A cycle trace showed the cause was our glue and not Helios: `tree_hash` packs every byte of a 48-byte key separately (about 11M cycles per committee root), and the glue hashed committees three times per update.
 - Fix. Glue only, Helios unmodified: direct SSZ committee roots over the accelerated `sha2`, raw witness bytes, no rehash of an unchanged next committee. A native test checks equality with `tree_hash`. `Init` also stopped calling Helios `verify_bootstrap` (11M cycles for its committee hash, above the public cap) and runs the same three checks in `lc::bootstrap_valid`, cross-checked against Helios by a native test (W1 notes).
-- Result. 46,099,256 (finality update) to 65,467,587 (handoff with next committee) user cycles per update. `Init` 4,928,793. `Apply` 54,965 (`evidence/cost/cost.md`). The BLS phases are 36.84M of the 46.1M on the finality update, so most of the cost is Helios's own BLS work.
-- Consequences. A public single-transaction update cannot fit the 10M cap with V1 (4.6 to 6.5 times the cap). Path A remains the way to run Helios unmodified. V2 (D-10) saves 8.77M cycles per update. Real proving time is still TODO-MEASURE (`evidence/calibration/`).
+- Result. 46,095,505 (finality update) to 65,461,983 (handoff with next committee) user cycles per update on the reproducible release guests. `Init` 4,926,875. `Apply` 54,965 (`evidence/cost/cost.md`, regenerated 2026-11-12 20:20 UTC). The BLS phases are 36.84M of the 46.1M on the finality update, so most of the cost is Helios's own BLS work.
+- Consequences. A public single-transaction update cannot fit the 10M cap with V1 (4.6 to 6.5 times the cap). Path A remains the way to run Helios unmodified. V2 (D-10) saves 8.77M cycles per update. Real proving time, measured: 20,060 s (5.57 hours) and 9.259 GiB for the V1 finality update, accepted in block 1784 on a dev-mode-off sequencer (`evidence/g1/real-proof.json`). The K4 projection was 6.08 to 7.01 hours (`evidence/cost/k4-projection.json`). TODO-MEASURE: the V2 real proof, running.
 
 ## D-40. The vault holds the verifier's emergency-stop wrapper
 
@@ -359,4 +361,11 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 - Our pins. `risc0-zkvm` 3.0.5 in `Cargo.lock`. LEZ v0.4.0-rc3 pins the same, so the platform is affected.
 - Chosen. (1) Vault v3 uses verifier 3.1.0 through its emergency-stop wrapper (D-40). (2) `burn_proof` is proven with RISC Zero 3.1.0. (3) The LEZ-side programs stay on 3.0.5, because a different version gives different image ids that LEZ may not accept, and move to 3.1.0 when LEZ does. (4) Both proposals name the platform risk in one line. (5) Vaults v1 and v2 are deprecated testnet artefacts and say so in the evidence notes.
 - Trade-off. Until LEZ moves, inbound claims and RFP-021 Path A rely on receipt checks of an affected version. We cannot remove this risk.
-- Status. Platform risk open. TODO-REFRESH: vault v3 deployment and the 3.1.0 `burn_proof` build.
+- Status. Done on our side: vault v3 is deployed on Sepolia with verifier 3.1.0 behind its emergency stop, and `burn_proof` is built on 3.1.0 (image `0xf929f9f4...97cf`, two clean docker builds gave the same ELF hash) and proven for real (`evidence/bridge/sepolia-v3.json`, `evidence/bridge/burn-proof-r31-guest.json`). Vaults v1 and v2 are frozen. The platform risk (LEZ rc3 on 3.0.5) stays open.
+
+## D-52. Reproducible guest builds: one release set
+
+- Date. 2026-11-12. Context. Image ids must match on every machine, or a reviewer cannot check what is deployed.
+- Options. (a) Build each guest with the local rzup toolchain. (b) Build per guest in docker. (c) Build all guests from one commit in one container of the pinned image.
+- Chosen. (c). Release set `bf95e359` (`scripts/guests_release.sh`), image `risczero/risc0-guest-builder:r0.1.91.1@sha256:fafb377a44e1cfca415577c48d2f7012bda99ed36f2fae27f9a663b9fe6048f0`, using risc0-build 3.0.5's own docker recipe. The image ids are in `guests/IMAGE_IDS.expected`, and CI rebuilds the guests and fails if they differ (`evidence/g2/ci-run.txt`: guest build and image-id check success). The programs on the real-proof sequencers match these ids (`evidence/g1/seq-real-image-check.log`, `evidence/g3/seq-real-image-check.log`). `burn_proof` is excluded and built separately on RISC Zero 3.1.0 in image `r0.1.97.0` (D-51), where two clean builds gave the same ELF hash and image id.
+- Trade-off. A local rzup build embeds the checkout path and panic locations, so it gives different ids. Evidence that names an image id says which build it is.

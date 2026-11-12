@@ -1,0 +1,8 @@
+commit=bf95e359a4a6dd85836be6e33609be778fa17bc2
+image=docker.io/risczero/risc0-guest-builder:r0.1.91.1@sha256:fafb377a44e1cfca415577c48d2f7012bda99ed36f2fae27f9a663b9fe6048f0
+built_utc=2026-11-12T12:16:04Z
+machine=Linux 7.0.0-43-generic x86_64, Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz
+dockerfile=/home/lechuuu/hackathons/logos-rfp/build/.tmp/release-docker-bf95e359a4a6/Dockerfile
+fetch_s=622 (one cargo fetch for all guests); compile ~4 min for all seven
+note_burn_proof=burn_proof.bin here is built with risc0-zkvm 3.0.5 and is NOT the burn_proof the vault v3 uses: W5 moves burn_proof to a separate risc0 3.1.0 toolchain because of RISC Zero advisory GHSA-g6qg-9j8p-7j87 (2026-11-11). Do not deploy or verify this one.
+note_repro=ELFs come from risc0-build 3.0.5's own docker recipe (same image, ENV, rustflags, /src, CARGO_TARGET_DIR=target), built in one container; not yet cross-checked byte-for-byte against a per-guest BV_GUEST_DOCKER=1 build.

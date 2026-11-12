@@ -51,46 +51,60 @@ Gate status on 2026-11-12, from `evidence/`:
 
 | Gate | Result | Evidence |
 |---|---|---|
-| G1 chain (dev-mode half) | PASS: `Init`, three updates with committee handoffs, replay E14, wrong verifier E12, fresh-account submit. 2026-11-12 11:46 UTC | `evidence/g1/chain.json` |
-| G1 real proof | Open. TODO-MEASURE | `evidence/g1/real-proof.json` |
-| G2 adversarial suite | PASS on the sequencer: 7 of 7 tests, each asserting an exact error code. CI run URL still needed (`evidence/g2/ci-run.txt`, TODO-MEASURE) | `evidence/g2/onchain-20261112T115413Z.log` |
+| G1 chain (dev-mode half) | PASS: `Init`, three updates with committee handoffs, replay E14, wrong verifier E12, fresh-account submit | `evidence/g1/chain.json` |
+| G1 real proof | PASS: finality update 15637644, unmodified Helios (V1), proven for real on a dev-mode-off sequencer, block 1784. 20,060 s (5.57 h) on an i5-10300H, 9.259 GiB peak | `evidence/g1/real-proof.json` |
+| G2 adversarial suite | PASS: 7 of 7 tests on the sequencer, each asserting an exact error code, and green CI on the staging repository (commit 764acf9; the repository is private until the public one exists, and the run is repeated there) | `evidence/g2/onchain-20261112T115413Z.log`, `evidence/g2/ci-run.txt` |
 | G3 consumer | PASS: one transfer consumed, identical replay refused with E11 | `evidence/g3/run.json` |
-| G4 follower, 24 h | Run A running since 2026-11-12 11:11:59 UTC, `beacon_source` `logos_module`. Result TODO-MEASURE | `evidence/g4/` |
-| G5 clean-clone cost reproduction | Open. TODO-MEASURE | `scripts/gate/g5_repro.sh` |
+| G3 real proof | PASS: a private `Attest` of a mainnet USDT transfer proven for real, 2,120.6 s (35.3 min), 9.207 GiB, block 1949, replay refused with E11. The sequencer excerpt in the JSON was filled by hand from the raw log, see the note | `evidence/g3/real-proof.json`, `evidence/g3/NOTE-real-proof.txt` |
+| G4 follower, 24 h | Pending. Run B (primary) ends 2026-11-13 12:31 UTC, run A (backup) ends 11:12 UTC, both through `logos_module` | `evidence/g4/` |
+| G5 clean-clone cost reproduction | Pending | `scripts/gate/g5_repro.sh` |
 
 | Piece | What it is | Evidence | State |
 |---|---|---|---|
-| Light client in a LEZ guest | `programs/lc_verify` runs `helios-consensus-core` 0.12.0 unmodified. Pre-checks for quorum and finality in front of it (`docs/TRUST.md` section 7) | `evidence/cost/cost.md` | Measured on 5 real mainnet updates, native and executor results equal |
-| Instance program | `programs/attest`: init from a checkpoint, apply updates, write-once header records, attest a claim | `tests/e2e_chain`, `evidence/g1/chain.json` | Passed on `seq-dev` |
+| Light client in a LEZ guest | `programs/lc_verify` runs `helios-consensus-core` 0.12.0 unmodified. Pre-checks for quorum and finality in front of it (`docs/TRUST.md` section 7) | `evidence/cost/cost.md`, `evidence/g1/real-proof.json` | Measured on 5 real mainnet updates, native and executor results equal. One update proven for real |
+| Instance program | `programs/attest`: init from a checkpoint, apply updates, write-once header records, attest a claim | `evidence/g1/chain.json` | Passed on `seq-dev` |
 | Inclusion and predicates | `crates/attest_inclusion`: account, storage and log proofs under a record, predicates, statement ids | `crates/attest_inclusion/tests/real_proofs.rs` | In tree, on real mainnet and Sepolia proofs. The consumer track reports 22 tests green |
 | Adversarial suite | `tests/adversarial`: fabricated chain and six negative cases | `evidence/g2/` | 7 of 7 on the sequencer |
-| Reference consumer | `programs/consumer_erc20`: acts once per ERC-20 transfer, replay refused | `evidence/g3/run.json` | Passed in dev mode |
-| Follower daemon | `crates/follower` (`attest-followerd`) and the Logos module `modules/attest_follower_module` | `evidence/g4/` | Run A in progress |
+| Reference consumer | `programs/consumer_erc20`: acts once per ERC-20 transfer, replay refused | `evidence/g3/` | Passed in dev mode and with a real proof of the private `Attest` |
+| Follower daemon | `crates/follower` (`attest-followerd`) and the Logos module `modules/attest_follower_module` | `evidence/g4/` | Runs A and B in progress |
 | CLI | `crates/attest_cli`: `init`, `update`, `status`, `config`, `attest --dry-run`, `checkpoint verify` | | In tree |
-| Vault | `contracts/src/Vault.sol` with Foundry tests, fixed denominations, ETH and ERC-20, caps, freeze | `contracts/test`, `evidence/bridge/sepolia-k9-part1.json` | Vaults v1 and v2 deployed on Sepolia with deposits. TODO-MEASURE: vault v3 on the 3.1.0 verifier behind its emergency stop |
-| Bridge program and burn proof | `programs/bridge`, `guests/burn_proof`, `tools/bridge_cli` | `evidence/bridge/local-e2e-20261112T104701Z/`, `docs/bridge/` | Local round trip passed with the DEV-ONLY `bridge_dev_source`. TODO-MEASURE: claim against the followed Sepolia instance, Groth16 proof verified on Sepolia |
-| Cost table | Cycles, gas, state growth | `evidence/cost/cost.md` | Cycles and gas measured or derived. Proof time: TODO-MEASURE |
+| Vault v3 | `contracts/src/Vault.sol`: fixed denominations, ETH and ERC-20, caps, freeze, verifier 3.1.0 behind its emergency stop (L1), open release route (L2) | `evidence/bridge/sepolia-v3.json` | Deployed on Sepolia at `0x380be74d9F3dFeBAaFC5F911CD6A45bFbeE3aD27` with an ETH and a USDT-style deposit |
+| Bridge inbound | `programs/bridge` `Claim`, `tools/bridge_cli` | `evidence/bridge/k9-part2-runA-v2/`, `evidence/bridge/k9-part2-runB-v3/` | Shown in dev mode against both follower runs: real attestation of the vault root, private claim, repeat refused with E11. TODO-MEASURE: a real proof of a private claim, a public destination |
+| Bridge outbound | `guests/burn_proof` (RISC Zero 3.1.0), `Vault.release`, `releaseOpen` | `evidence/bridge/groth16-release-v3/` | Real Groth16 proof (471.3 s) verified on Sepolia through the emergency stop: release 527,859 gas, open release 325,769 gas. The anchor is the owner-posted stub and the burns ran in dev mode |
+| Reproducible guests | Release set `bf95e359` built in `risczero/risc0-guest-builder:r0.1.91.1@sha256:fafb377a...`; CI checks `guests/IMAGE_IDS.expected` | `evidence/g1/deployment.txt`, `evidence/g2/ci-run.txt` | The on-chain image ids match (`evidence/g1/seq-real-image-check.log`) |
+| Cost table | Cycles, gas, state growth, real proof times | `evidence/cost/cost.md` (31 rows), `evidence/cost/prove.md`, `evidence/cost/k4-projection.json` | Measured or derived. TODO-MEASURE: the V2 real proof |
 
-Deprecated testnet artefacts. Sepolia vaults v1 and v2 use the RISC Zero Groth16 verifier 3.0.0, which advisory GHSA-g6qg-9j8p-7j87 shows to be broken. They are evidence of the deposit path only and not of the release path. TODO-REFRESH: the same note belongs in `evidence/README.md`, which this draft does not edit.
+Deprecated testnet artefacts. Sepolia vaults v1 and v2 used the RISC Zero Groth16 verifier 3.0.0, which advisory GHSA-g6qg-9j8p-7j87 shows to be broken. Both were frozen on 2026-11-12 and are evidence of the deposit path only (`evidence/bridge/README.md`).
 
 ## 3. Measured so far
 
-Machine: Intel i5-10300H (4 cores, 8 threads), Linux 7.0.0-43, `r0vm` 3.0.5, dev mode (executor only, no proof). Generated by `make cost-exec` on 2026-11-12 10:31 UTC. Raw files: `evidence/cost/raw/exec-lc.json` and `exec-lc.log`; table: `evidence/cost/cost.md`.
+Machine: Intel i5-10300H (4 cores, 8 threads), 15 GiB RAM, 11 GiB swap, Linux 7.0.0-43, `r0vm` 3.0.5. The cycle table is executor-only, generated by `make cost-exec` on 2026-11-12 20:20 UTC from the reproducible guest set. Raw files: `evidence/cost/raw/exec-lc.json` and `exec-lc.log`; table: `evidence/cost/cost.md`.
 
 | Step | Update bytes | Signers (of 512) | Result | User cycles |
 |---|---|---|---|---|
-| period update, learns next committee | 26,914 | 511 | slot 15605824, period 1905 | 61,178,234 |
-| period update, handoff | 26,926 | 512 | slot 15613952, period 1906 | 64,339,205 |
-| period update, handoff | 26,920 | 511 | slot 15622144, period 1907 | 65,467,587 |
-| period update, handoff | 26,922 | 512 | slot 15631808, period 1908 | 64,338,286 |
-| finality update | 2,109 | 512 | slot 15637568 | 46,099,256 |
+| period update, learns next committee | 26,914 | 511 | slot 15605824, period 1905 | 61,174,483 |
+| period update, handoff | 26,926 | 512 | slot 15613952, period 1906 | 64,333,601 |
+| period update, handoff | 26,920 | 511 | slot 15622144, period 1907 | 65,461,983 |
+| period update, handoff | 26,922 | 512 | slot 15631808, period 1908 | 64,332,682 |
+| finality update | 2,109 | 512 | slot 15637568 | 46,095,505 |
 
 - The executor's `Apply` output (pre and post store, head, record, destination) equals the native result for every step.
-- Other handlers: `Init` 4,928,793 cycles, `Apply` 54,965, `WriteRecord` 24,047, `CheckHeader` 18,585.
-- The `lc_verify` user ELF is 755,980 bytes. The deployed-ELF cap is 1,966,080 bytes (20 segments of 96 KiB).
+- Other handlers: `Init` 4,926,875 cycles, `Apply` 54,965, `WriteRecord` 24,047, `CheckHeader` 18,585.
+- The `lc_verify` user ELF is 754,956 bytes. The deployed-ELF cap is 1,966,080 bytes (20 segments of 96 KiB).
 - The per-transaction execution cap on LEZ v0.4.0-rc3 is 10,000,000 gas, 1 gas per cycle. One update costs 4.6 to 6.5 times that cap with the unmodified library, so it runs as a privately proven transaction and is applied publicly (`docs/DECISIONS.md` D-08, D-39). Path A costs 488,776 execution gas per update, 4.9 percent of the cap.
-- On the finality update the BLS arithmetic is 36.84M of the 46.1M cycles (`evidence/cost/raw/w1-v1-trace.log`). Variant V2, which drops one repeated subgroup check, costs 37,032,744 cycles on that update. TODO-REFRESH: copy `v2-exec.json` into `evidence/cost/raw/`.
+- On the finality update the BLS arithmetic is 36.84M of the 46.1M cycles (`evidence/cost/raw/w1-v1-trace.log`). Variant V2, which drops one repeated subgroup check, costs 37,032,744 cycles on that update (`evidence/cost/cost.md`).
 - An earlier run gave 74M to 89M cycles. The cause was our glue code, which we fixed without touching Helios (`docs/DECISIONS.md` D-39).
+
+Real proofs on the same laptop:
+
+| Job | Result | Raw |
+|---|---|---|
+| V1 finality update, dev mode off (block 1784) | 20,060 s (5.57 h), peak 9.259 GiB, at most 92,700 KiB swap | `evidence/g1/real-proof.json` |
+| Private `Attest` of a USDT transfer (block 1949) | 2,120.6 s (35.3 min), peak 9.207 GiB | `evidence/g3/real-proof.json` |
+| `burn_proof` Groth16 on RISC Zero 3.1.0 | 471.3 s, peak 2,419,024 KiB, 211,726 user cycles, 260-byte seal | `evidence/bridge/groth16-release-v3/record.json` |
+| One po2-20 segment, 3 runs | mean 363.0 s, 346.2 microseconds per padded cycle | `evidence/cost/k4-projection.json` |
+
+The K4 projection for the V1 finality update was 6.08 to 7.01 hours, an estimate. The measured 5.57 hours is below it. TODO-MEASURE: the V2 real proof, running now.
 
 ## 4. Repository layout
 
@@ -138,7 +152,7 @@ These are listed here so that no reader has to find them.
 - The follower's beacon source is recorded in every log line. If the Logos `beacon_api_module` path did not run, the 24 h result says `direct_http`. TODO-MEASURE: state which ran.
 - LEZ access is through the `wallet` crate, not Logos's LEZ module, which does not target v0.4 yet.
 - The Logos `beacon_api_module` and `verified_proxy_module` have no LICENSE file. We use them only as installed runtime dependencies (`docs/REUSE.md` section 4).
-- Path B (sequencer-executed verification split over public transactions) is measured for the monolithic case only. The split is milestone work. TODO-MEASURE.
+- Path B (sequencer-executed verification split over public transactions) is measured for the monolithic case only. The split is milestone work.
 - Native-ETH consumer, registry and cap libraries on RFP-001/002, relayer, module catalog, release action, macOS, public testnet deployment and the audit are milestone work and are not shown here.
 - No code here has been through a third-party audit.
 - Before this work, none of the team had shipped a RISC Zero guest, a LEZ program or an Ethereum light client.
