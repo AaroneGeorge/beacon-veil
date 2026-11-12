@@ -1,0 +1,18 @@
+{
+  "name": "bridge_ui",
+  "display_name": "beacon-veil bridge",
+  "version": "0.1.0",
+  "type": "ui_qml",
+  "category": "wallet",
+  "description": "Skeleton mini-app for the beacon-veil ERC-20/ETH bridge spike: light-client instance status, and static deposit, claim and recover screens with the private path preselected.",
+  "view": "Main.qml",
+  "icon": "src/icons/icon.png",
+  "dependencies": [],
+  "provides": [],
+  "uses": [],
+  "nix": {
+    "packages": { "build": [], "runtime": [] },
+    "external_libraries": [],
+    "cmake": { "find_packages": [], "extra_sources": [], "extra_include_dirs": [], "extra_link_libraries": [] }
+  }
+}
