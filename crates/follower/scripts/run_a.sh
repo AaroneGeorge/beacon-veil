@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+# Run A (G4): one attest-followerd process following Sepolia for 24 h into an instance on seq-dev.
+#
+#   crates/follower/scripts/run_a.sh start   # preflight, then start detached (setsid); prints the pid
+#   crates/follower/scripts/run_a.sh status  # alive?, last line, G4 check so far
+#   crates/follower/scripts/run_a.sh stop    # SIGTERM (clean stop line), only after the 24 h
+#   crates/follower/scripts/run_a.sh collect # copy the log + G4 summary into evidence/g4/
+#
+# Env: INSTANCE (base58; default: "instance" from $RUN_DIR/instance.json written by `attest init --out`),
+#      SOURCE_KIND (logos_module | direct_http; default logos_module), RUN_DIR (default $B/run/w4/run-a),
+#      RUN_A_FORCE=1 to move an existing log aside. Never restart run A by hand: G4 needs one PID.
+set -euo pipefail
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=/dev/null
+source "$here/../../../scripts/env.sh"
+RUN_DIR="${RUN_DIR:-$B/run/w4/run-a}"
+SOURCE_KIND="${SOURCE_KIND:-logos_module}"
+LOG="$RUN_DIR/follower.jsonl"
+CFG="$RUN_DIR/followerd.toml"
+mkdir -p "$RUN_DIR"
+# Own wallet home and payer (W0-NOTES rules): wallet_home.sh w4-runA > $RUN_DIR/wallet.env
+if [ -f "$RUN_DIR/wallet.env" ]; then
+  # shellcheck source=/dev/null
+  source <(grep '^export ' "$RUN_DIR/wallet.env")
+fi
+
+pid_alive() { [ -f "$RUN_DIR/followerd.pid" ] && kill -0 "$(cat "$RUN_DIR/followerd.pid")" 2>/dev/null; }
+
+case "${1:-}" in
+start)
+  pid_alive && { echo "run A already running: pid $(cat "$RUN_DIR/followerd.pid")"; exit 1; }
+  if [ -s "$LOG" ]; then
+    [ "${RUN_A_FORCE:-0}" = 1 ] || { echo "$LOG exists; RUN_A_FORCE=1 moves it aside" >&2; exit 1; }
+    mv "$LOG" "$LOG.old-$(date -u +%Y%m%dT%H%M%SZ)"; rm -f "$RUN_DIR/follower-cache.json"
+  fi
+  INSTANCE="${INSTANCE:-$(python3 -I -c 'import json,sys; print(json.load(open(sys.argv[1]))["instance"])' "$RUN_DIR/instance.json" 2>/dev/null || true)}"
+  [ -n "$INSTANCE" ] || { echo "no INSTANCE and no $RUN_DIR/instance.json (attest init --out)" >&2; exit 1; }
+  case "$LEE_WALLET_HOME_DIR" in */wallet-dev) echo "run A needs its own wallet home: wallet_home.sh w4-runA > $RUN_DIR/wallet.env" >&2; exit 1 ;; esac
+  [ -n "${BV_PAYER:-}" ] || { echo "BV_PAYER not set ($RUN_DIR/wallet.env)" >&2; exit 1; }
+  "$R/scripts/seq.sh" dev status >/dev/null || { echo "seq-dev is not running" >&2; exit 1; }
+  ATTEST="$B/target/host/attest"; FD="$B/target/host/attest-followerd"
+  [ -x "$ATTEST" ] && [ -x "$FD" ] || { echo "build first: nice -n 15 cargo build --profile host -p follower -p attest_cli" >&2; exit 1; }
+  echo "preflight: instance status"; "$ATTEST" status --instance "$INSTANCE" | tee "$RUN_DIR/preflight-status.json"
+  python3 -I -c 'import json,sys; d=json.load(open(sys.argv[1])); sys.exit(0 if d["store"].get("verified") else 1)' \
+    "$RUN_DIR/preflight-status.json" || { echo "store not verified" >&2; exit 1; }
+  if [ "$SOURCE_KIND" = logos_module ]; then
+    echo "preflight: beacon_api_module probe"; "$here/logos_session.sh" probe | tee "$RUN_DIR/preflight-module.txt"
+    grep -q '^probe ok' "$RUN_DIR/preflight-module.txt" || { echo "module probe failed (K8: SOURCE_KIND=direct_http)" >&2; exit 1; }
+  fi
+  # Stable copy of the binary: later rebuilds in the shared target dir do not touch the running file.
+  sha=$(sha256sum "$FD" | cut -c1-64); BIN="$B/run/w4/bin/attest-followerd-${sha:0:12}"
+  mkdir -p "$B/run/w4/bin"; cp -f "$FD" "$BIN"
+  sed -e "s|^state_dir = .*|state_dir = \"$RUN_DIR\"|" -e "s|^instance = .*|instance = \"$INSTANCE\"|" \
+      -e "s|^kind = \"logos_module\".*|kind = \"$SOURCE_KIND\"|" -e "s|^echo = .*||" \
+      "$R/crates/follower/examples/followerd.sepolia.toml" > "$CFG"
+  grep -q "^echo" "$CFG" || sed -i 's|^\[follower\]|[follower]\necho = false|' "$CFG"
+  cd "$RUN_DIR"
+  setsid nohup nice -n 5 "$BIN" --config "$CFG" > "$RUN_DIR/followerd.stdout" 2>&1 < /dev/null &
+  pid=$!
+  sleep 5
+  kill -0 "$pid" 2>/dev/null || { echo "follower died at start:"; tail -20 "$RUN_DIR/followerd.stdout"; exit 1; }
+  python3 -I - "$RUN_DIR/run.json" "$pid" "$BIN" "$sha" "$CFG" "$INSTANCE" "$SOURCE_KIND" "$R" <<'PY'
+import json, subprocess, sys, datetime, hashlib, platform
+out, pid, binp, sha, cfg, inst, src, repo = sys.argv[1:9]
+def sh(*a):
+    try: return subprocess.run(a, capture_output=True, text=True, check=False).stdout.strip()
+    except OSError: return None
+json.dump({"run": "A", "started_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(), "pid": int(pid),
+           "binary": binp, "binary_sha256": sha, "config": cfg,
+           "config_sha256": hashlib.sha256(open(cfg, "rb").read()).hexdigest(), "instance": inst, "beacon_source": src,
+           "repo_commit": sh("git", "-C", repo, "rev-parse", "HEAD"), "repo_dirty": bool(sh("git", "-C", repo, "status", "--porcelain")),
+           "machine": platform.platform(), "cpu": sh("sh", "-c", "grep -m1 'model name' /proc/cpuinfo | cut -d: -f2")},
+          open(out, "w"), indent=2)
+PY
+  echo "run A started: pid $pid, log $LOG"; cat "$RUN_DIR/run.json"
+  ;;
+status)
+  if pid_alive; then echo "running: pid $(cat "$RUN_DIR/followerd.pid")"; else echo "NOT running"; fi
+  tail -1 "$LOG" 2>/dev/null || true
+  python3 -I "$R/scripts/gate/g4_check.py" "$LOG" --min-hours 0 | head -40 || true
+  ;;
+stop)
+  pid_alive || { echo "not running"; exit 0; }
+  kill -TERM "$(cat "$RUN_DIR/followerd.pid")"; echo "SIGTERM sent"
+  ;;
+collect)
+  mkdir -p "$R/evidence/g4"
+  cp -f "$LOG" "$R/evidence/g4/follower.jsonl"; cp -f "$RUN_DIR/run.json" "$R/evidence/g4/run.json"
+  sed 's|^instance = .*|&|' "$CFG" > "$R/evidence/g4/followerd.toml"
+  rc=0; python3 -I "$R/scripts/gate/g4_check.py" "$R/evidence/g4/follower.jsonl" --summary-out "$R/evidence/g4/g4-summary.json" >/dev/null || rc=$?
+  echo "G4 check exit $rc; summary in evidence/g4/g4-summary.json"; exit $rc
+  ;;
+*) echo "usage: $0 start|status|stop|collect" >&2; exit 2 ;;
+esac

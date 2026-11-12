@@ -1,0 +1,13 @@
+# Fetched 2026-11-12 09:26 UTC with curl from https://lodestar-{sepolia,mainnet}.chainsafe.io (Accept: application/json for .json, application/octet-stream for .ssz). Routes: /eth/v1/beacon/light_client/{finality_update, updates?start_period=P-1&count=1, bootstrap/<finalized root>}.
+29e5d77681be2b11af3be5019bd3218f4fa6daddc384b33178d5625a3d95a19e  mainnet-bootstrap.json
+8d64e41758e52f9f57e6a75552ba28869994a9e8e66923bf84a9c271302fb787  mainnet-finality_update.json
+d7b859fe0db24348b1ae80b6b425da9f96008a8d9e656ecc3d657557208cda24  mainnet-updates.json
+cfa8e0289ae6f8fcf8edd045290c60317e509e7a98232539841753bdd2fb87ab  sepolia-bootstrap.json
+25618feae11574197f434489cc87a5934cecc8be809fc3853c68f658c18442c3  sepolia-finality_update.json
+c329fe80c084c4fea64a4ea6ea63f1f76d60c0f8d22868951369214c1021421c  sepolia-updates.json
+53d54ac090be43de2d5bad21cd3ee21bc7d074bcedad2b3e65f6f96ffc441889  mainnet-bootstrap.ssz
+781b5e46c79937edea35c88e87310218bec96b98ea9f8d7ea05d1c52ae99a305  mainnet-finality_update.ssz
+4f6623bee3731b584237c3a70d21a7e6d1b0d034090fd988cd2f82bcb9c02ce2  mainnet-updates.ssz
+e6489979dfaa2fe35494e6057f7859151ba80b8bb02f4a853ca06e30766fca45  sepolia-bootstrap.ssz
+d0c51a16ad74d223e6f704b5470d606193d28b3172cd63fd410d344610b8cd01  sepolia-finality_update.ssz
+8e6c70613987ef8ba140bda0a478b822f1a03874fd6209e5dc946bea06ef5afe  sepolia-updates.ssz

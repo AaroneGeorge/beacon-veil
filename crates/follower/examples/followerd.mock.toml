@@ -1,0 +1,15 @@
+# attest-followerd against the file-backed mock chain (tests and the R4 kill/restart drill only; never G4 evidence).
+[follower]
+id = "mock"
+chain_id = 11155111
+state_dir = "/home/lechuuu/hackathons/logos-rfp/build/run/w4/mock"
+cadence_s = 120
+poll_s = 20
+jitter_max_s = 5
+
+[source]
+kind = "direct_http"
+endpoints = ["https://lodestar-sepolia.chainsafe.io", "http://unstable.sepolia.beacon-api.nimbus.team"]
+
+[chain]
+kind = "mock"
