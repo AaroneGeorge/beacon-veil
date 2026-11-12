@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
 # Deploys `attest` and `lc_verify` (immutable flag set) to a local sequencer and writes deploy/ids.toml.
 #
-#   scripts/deploy_local.sh [dev|real] [--bins DIR] [--programs "attest lc_verify ..."] [--replace]
+#   scripts/deploy_local.sh [dev|real] [--bins DIR] [--programs "attest lc_verify ..."] [--ids FILE] [--replace]
 #
-# deploy/ids.toml is MERGED by default: only the [programs] lines of the programs deployed now are replaced or added,
-# other lines are kept. `--replace` rewrites [programs] with only the programs deployed now. The write is atomic
-# (temp file + rename) under flock on deploy/ids.toml.lock, which also serialises wallet use between deploys.
+# --ids FILE: ids file to write, relative to the repo root unless absolute (default deploy/ids.toml; seq-real
+# deployments use e.g. deploy/ids-real.toml).
+# The ids file is MERGED by default: only the lines of the programs deployed now are replaced or added in [programs]
+# (name = "header id") and [bins] (name = "dir the .bin came from"); other lines are kept. [deploy] holds the
+# sequencer, rpc and LEZ version; its old single `bins` key is kept as written before (readers fall back to it when a
+# program has no [bins] line) and is only set on a fresh file or with --replace. `--replace` rewrites [programs] and
+# [bins] with only the programs deployed now. The write is atomic (temp file + rename) under flock on FILE.lock, which
+# also serialises wallet use between deploys.
 #
 # Bins: $B/target/guests/<name>.bin, produced by `make guests` (local rzup toolchain) or `make guests-docker`
 # (pinned image r0.1.91.1, reproducible image ids; use it for any deployment whose ids are recorded in evidence/).
@@ -17,13 +22,14 @@ here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=scripts/env.sh
 source "$here/env.sh"
 
-which_seq="dev"; bins="$B/target/guests"; programs="attest lc_verify"; replace=0
+which_seq="dev"; bins="$B/target/guests"; programs="attest lc_verify"; replace=0; out="$BV_REPO/deploy/ids.toml"
 while [ $# -gt 0 ]; do
   case "$1" in
     dev|real) which_seq="$1"; shift ;;
     --bins) bins="$2"; shift 2 ;;
     --programs) programs="$2"; shift 2 ;;
     --replace) replace=1; shift ;;
+    --ids) out="$2"; shift 2 ;;
     *) echo "unknown argument: $1" >&2; exit 2 ;;
   esac
 done
@@ -51,7 +57,8 @@ new_public() { # label -> prints account id
   wallet account new public --label "$1" | sed -n 's#.*Public/\([1-9A-HJ-NP-Za-km-z]\{32,44\}\).*#\1#p' | head -1
 }
 
-out="$BV_REPO/deploy/ids.toml"
+case "$out" in /*) ;; *) out="$BV_REPO/$out" ;; esac  # relative --ids paths are relative to the repo root
+bins="$(cd "$bins" && pwd)"
 stamp="$(date -u +%Y%m%dT%H%M%SZ)"
 
 # One deploy at a time per repo: serialises wallet storage use and the ids.toml update. The lock is a separate file
@@ -75,8 +82,22 @@ for p in $programs; do
   new_ids[$p]="$p = \"$header\"   # sha256 $(sha256sum "$bin" | cut -c1-64), $size bytes, $stamp"
 done
 
-# Merge (default): keep every [programs] line not redeployed now, replace or add the ones that were.
-# --replace: [programs] holds only what was deployed now.
+# Merge (default): keep every [programs]/[bins] line not redeployed now, replace or add the ones that were.
+# --replace: both tables hold only what was deployed now.
+section_lines() { # file section -> "key = value" lines of that table
+  awk -v sec="[$2]" '$0==sec{f=1; next} /^\[/{f=0} f && /^[A-Za-z0-9_]+ *=/' "$1"
+}
+kept_lines() { # file section: lines whose key was not deployed now
+  [ "$replace" = 0 ] && [ -f "$out" ] || return 0
+  section_lines "$out" "$1" | while IFS= read -r line; do
+    key="${line%%[ =]*}"
+    [ -n "${new_ids[$key]+x}" ] || printf '%s\n' "$line"
+  done
+}
+old_bins=""
+if [ "$replace" = 0 ] && [ -f "$out" ]; then
+  old_bins="$(section_lines "$out" deploy | sed -n 's/^bins *= *"\(.*\)".*/\1/p' | head -1)"
+fi
 tmp="$(mktemp "$out.XXXXXX")"
 {
   echo "# Written by scripts/deploy_local.sh (merge mode unless --replace). Last update $(date -u +%FT%TZ). Do not edit by hand."
@@ -84,16 +105,16 @@ tmp="$(mktemp "$out.XXXXXX")"
   echo "sequencer = \"seq-$which_seq\""
   echo "rpc = \"$(jq -r .sequencer.sequencer_addr "$LEE_WALLET_HOME_DIR/wallet_config.json")\""
   echo "lez = \"v0.4.0-rc3\""
-  echo "bins = \"$bins\""
+  echo "# Fallback only; per-program dirs are in [bins]."
+  echo "bins = \"${old_bins:-$bins}\""
   echo
   echo "[programs]"
-  if [ "$replace" = 0 ] && [ -f "$out" ]; then
-    awk '/^\[programs\]/{f=1; next} /^\[/{f=0} f && /^[A-Za-z0-9_]+ *=/' "$out" | while IFS= read -r line; do
-      key="${line%%[ =]*}"
-      [ -n "${new_ids[$key]+x}" ] || printf '%s\n' "$line"
-    done
-  fi
+  kept_lines programs
   for p in $programs; do printf '%s\n' "${new_ids[$p]}"; done
+  echo
+  echo "[bins]"
+  kept_lines bins
+  for p in $programs; do printf '%s = "%s"\n' "$p" "$bins"; done
 } > "$tmp"
 chmod 644 "$tmp"
 mv -f "$tmp" "$out"
