@@ -66,7 +66,8 @@ done
 (cd "$out" && sha256sum ./*.bin elf/* > SHA256SUMS)
 {
   echo "commit=$commit"
-  echo "image=risczero/risc0-guest-builder:$tag ($(docker image inspect --format '{{index .RepoDigests 0}}' "risczero/risc0-guest-builder:$tag" 2>/dev/null))"
+  echo "image=docker.io/risczero/$(grep -oE "risc0-guest-builder:$tag@sha256:[0-9a-f]{64}" "$work/docker.log" | head -1)"
+  echo "note_burn_proof=burn_proof.bin is built with risc0-zkvm 3.0.5 like the rest; W5 builds the deployed burn_proof with risc0 3.1.0 (advisory GHSA-g6qg-9j8p-7j87), so this one is NOT the vault's"
   echo "built_utc=$(date -u +%FT%TZ)"
   echo "machine=$(uname -srm), $(lscpu | sed -n 's/^Model name: *//p')"
   echo "dockerfile=$work/Dockerfile"
