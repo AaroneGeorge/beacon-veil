@@ -23,7 +23,10 @@ async fn fresh_config(ids: &DeployedIds, base: &InstanceConfig) -> Result<Instan
     let mut c = base.clone();
     for k in 0..1000u16 {
         c.min_participants = 342 + k;
-        if attest_host::read_head(ids, &attest_core::instance_id(&ids.attest, &c)).await?.is_none() {
+        if attest_host::read_head(ids, &attest_core::instance_id(&ids.attest, &c))
+            .await?
+            .is_none()
+        {
             return Ok(c);
         }
     }
@@ -41,7 +44,11 @@ async fn main() -> Result<()> {
 
     let ids = DeployedIds::from_env().context("deploy ids")?;
     let chain = e2e_chain::mainnet_chain(vec![ids.lc_verify])?;
-    let idx = chain.updates.iter().position(|(l, _)| *l == step).ok_or_else(|| anyhow!("unknown step {step}"))?;
+    let idx = chain
+        .updates
+        .iter()
+        .position(|(l, _)| *l == step)
+        .ok_or_else(|| anyhow!("unknown step {step}"))?;
     let t0 = std::time::Instant::now();
 
     let (instance, init_tx) = match arg("--instance") {
@@ -51,12 +58,16 @@ async fn main() -> Result<()> {
                 bail!("{step} needs the earlier steps applied: pass --instance of an instance that has them");
             }
             let config = fresh_config(&ids, &chain.config).await?;
-            let (instance, out) = attest_host::init(&ids, &config, &chain.bootstrap).await.context("init")?;
+            let (instance, out) = attest_host::init(&ids, &config, &chain.bootstrap)
+                .await
+                .context("init")?;
             println!("init: instance {instance} tx {}", out.tx);
             (instance, Some(out.tx))
         }
     };
-    let before = attest_host::read_head(&ids, &instance).await?.ok_or_else(|| anyhow!("instance missing"))?;
+    let before = attest_host::read_head(&ids, &instance)
+        .await?
+        .ok_or_else(|| anyhow!("instance missing"))?;
     println!("head before: slot {} period {}", before.slot, before.period);
 
     let t = std::time::Instant::now();
@@ -64,13 +75,23 @@ async fn main() -> Result<()> {
         .await
         .with_context(|| format!("submit {step}"))?;
     let prove_and_submit_s = t.elapsed().as_secs_f64();
-    let after = attest_host::read_head(&ids, &instance).await?.ok_or_else(|| anyhow!("instance missing"))?;
+    let after = attest_host::read_head(&ids, &instance)
+        .await?
+        .ok_or_else(|| anyhow!("instance missing"))?;
 
     let w = attest_host::open_wallet()?;
     let hash = common::HashType::from_str(&out.tx).map_err(|e| anyhow!("tx hash: {e:?}"))?;
     let block_id = attest_host::confirm(&w, hash, "g1").await?;
-    let block = w.get_block(block_id).await?.ok_or_else(|| anyhow!("block {block_id}"))?;
-    let tx = block.body.transactions.iter().find(|t| t.hash() == hash).ok_or_else(|| anyhow!("tx not in block"))?;
+    let block = w
+        .get_block(block_id)
+        .await?
+        .ok_or_else(|| anyhow!("block {block_id}"))?;
+    let tx = block
+        .body
+        .transactions
+        .iter()
+        .find(|t| t.hash() == hash)
+        .ok_or_else(|| anyhow!("tx not in block"))?;
     let tx_bytes = borsh::to_vec(tx)?.len();
     let witness_bytes = match tx {
         common::transaction::LeeTransaction::PrivacyPreserving(p) => Some(borsh::to_vec(&p.witness_set)?.len()),

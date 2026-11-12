@@ -20,9 +20,7 @@
 use std::time::Instant;
 
 use anyhow::{Context, Result, anyhow, bail};
-use attest_core::{
-    AccountId, AttestMessage, HeaderRecord, InstanceState, LcVerifyMessage, instance_id, lc, record_id,
-};
+use attest_core::{AccountId, AttestMessage, HeaderRecord, InstanceState, LcVerifyMessage, instance_id, lc, record_id};
 use lee_core::{
     account::{Actor, ActorState},
     program::{ReceiveInput, Transition},
@@ -47,10 +45,18 @@ fn load(path: &str) -> Result<Guest> {
     let (elf_bytes, program) = if path.ends_with(".bin") {
         (None, raw)
     } else {
-        (Some(raw.len()), risc0_binfmt::ProgramBinary::new(&raw, risc0_zkos_v1compat::V1COMPAT_ELF).encode())
+        (
+            Some(raw.len()),
+            risc0_binfmt::ProgramBinary::new(&raw, risc0_zkos_v1compat::V1COMPAT_ELF).encode(),
+        )
     };
     let image_id = risc0_binfmt::compute_image_id(&program).map_err(|e| anyhow!("image id of {path}: {e}"))?;
-    Ok(Guest { path: path.into(), elf_bytes, program, image_id: image_id.to_string() })
+    Ok(Guest {
+        path: path.into(),
+        elf_bytes,
+        program,
+        image_id: image_id.to_string(),
+    })
 }
 
 struct Run {
@@ -111,8 +117,14 @@ fn exec_lc(args: &[String]) -> Result<()> {
     let out = arg("--json").context("--json OUT")?;
     let lcg = load(&lc_path)?;
     let atg = load(&attest_path)?;
-    println!("lc_verify {} image {} ({:?} ELF bytes)", lcg.path, lcg.image_id, lcg.elf_bytes);
-    println!("attest    {} image {} ({:?} ELF bytes)", atg.path, atg.image_id, atg.elf_bytes);
+    println!(
+        "lc_verify {} image {} ({:?} ELF bytes)",
+        lcg.path, lcg.image_id, lcg.elf_bytes
+    );
+    println!(
+        "attest    {} image {} ({:?} ELF bytes)",
+        atg.path, atg.image_id, atg.elf_bytes
+    );
 
     // Placeholder program ids: the executor does not read chain state, and ids do not change cycle counts beyond
     // their fixed 32-byte encodings.
@@ -126,7 +138,10 @@ fn exec_lc(args: &[String]) -> Result<()> {
 
     // ---- Init (public) ----
     let (mut witness, head0) = lc::init_store(&config, &chain.bootstrap).map_err(|e| anyhow!("native init: {e}"))?;
-    let init_msg = AttestMessage::Init { config: config.clone(), bootstrap: chain.bootstrap.clone() };
+    let init_msg = AttestMessage::Init {
+        config: config.clone(),
+        bootstrap: chain.bootstrap.clone(),
+    };
     let init_bytes = borsh::to_vec(&init_msg)?;
     let input = ReceiveInput {
         receiver: Actor::new(instance, attest_program),
@@ -141,17 +156,42 @@ fn exec_lc(args: &[String]) -> Result<()> {
     if st.head != head0 {
         bail!("Init: executor head differs from native");
     }
-    let sm = r.transition.response.sync_messages.first().ok_or_else(|| anyhow!("Init sent no WriteRecord"))?;
+    let sm = r
+        .transition
+        .response
+        .sync_messages
+        .first()
+        .ok_or_else(|| anyhow!("Init sent no WriteRecord"))?;
     let AttestMessage::WriteRecord { record: cp_record } = borsh::from_slice(&sm.message)? else {
         bail!("Init: not WriteRecord")
     };
-    println!("Init: user cycles {} ({} segments, {} ms)", r.user_cycles, r.segments, r.ms);
-    rows.push(row("attest.init", "attest", "Init", "bootstrap_15605760", &r, init_bytes.len(), json!({
-        "bootstrap_bytes": chain.bootstrap.len(), "path": "public", "instance_state_bytes": state.len()})));
+    println!(
+        "Init: user cycles {} ({} segments, {} ms)",
+        r.user_cycles, r.segments, r.ms
+    );
+    rows.push(row(
+        "attest.init",
+        "attest",
+        "Init",
+        "bootstrap_15605760",
+        &r,
+        init_bytes.len(),
+        json!({
+        "bootstrap_bytes": chain.bootstrap.len(), "path": "public", "instance_state_bytes": state.len()}),
+    ));
     let r = write_record(&atg, attest_program, instance, &cp_record)?;
-    rows.push(row("attest.write_record.checkpoint", "attest", "WriteRecord", "bootstrap_15605760", &r,
-        borsh::to_vec(&AttestMessage::WriteRecord { record: cp_record.clone() })?.len(),
-        json!({"path": "public (sync from Init)", "record_state_bytes": borsh::to_vec(&cp_record)?.len()})));
+    rows.push(row(
+        "attest.write_record.checkpoint",
+        "attest",
+        "WriteRecord",
+        "bootstrap_15605760",
+        &r,
+        borsh::to_vec(&AttestMessage::WriteRecord {
+            record: cp_record.clone(),
+        })?
+        .len(),
+        json!({"path": "public (sync from Init)", "record_state_bytes": borsh::to_vec(&cp_record)?.len()}),
+    ));
 
     // ---- updates ----
     for (label, update) in &chain.updates {
@@ -172,20 +212,42 @@ fn exec_lc(args: &[String]) -> Result<()> {
             message: vbytes.clone(),
         };
         let r = execute(&lcg, &input, &format!("lc_verify.{label}"))?;
-        let sm = r.transition.response.sync_messages.first().ok_or_else(|| anyhow!("{label}: no Apply"))?;
+        let sm = r
+            .transition
+            .response
+            .sync_messages
+            .first()
+            .ok_or_else(|| anyhow!("{label}: no Apply"))?;
         let apply_bytes = sm.message.clone();
-        let AttestMessage::Apply { pre_store, post_store, head, record } = borsh::from_slice(&apply_bytes)? else {
+        let AttestMessage::Apply {
+            pre_store,
+            post_store,
+            head,
+            record,
+        } = borsh::from_slice(&apply_bytes)?
+        else {
             bail!("{label}: not Apply")
         };
-        if (pre_store, post_store, &head, &record) != (native.pre_store, native.post_store, &native.head, &native.record)
+        if (pre_store, post_store, &head, &record)
+            != (native.pre_store, native.post_store, &native.head, &native.record)
         {
             bail!("{label}: executor Apply differs from native");
         }
-        println!("{label}: Verify user cycles {} ({} segments, {} ms)", r.user_cycles, r.segments, r.ms);
-        rows.push(row(&format!("lc_verify.v1.verify.{label}"), "lc_verify", "Verify (V1)", label, &r, vbytes.len(),
+        println!(
+            "{label}: Verify user cycles {} ({} segments, {} ms)",
+            r.user_cycles, r.segments, r.ms
+        );
+        rows.push(row(
+            &format!("lc_verify.v1.verify.{label}"),
+            "lc_verify",
+            "Verify (V1)",
+            label,
+            &r,
+            vbytes.len(),
             json!({"variant": "V1", "update_bytes": update.len(), "participation": native.participation,
                    "handoff": native.handoff, "new_slot": native.new_slot, "period": head.period,
-                   "head_slot": head.slot, "path": "private on Path A; public on B0 (over the cap)"})));
+                   "head_slot": head.slot, "path": "private on Path A; public on B0 (over the cap)"}),
+        ));
 
         // Apply, as the instance actor receives it: from the private lc_verify actor.
         let input = ReceiveInput {
@@ -203,20 +265,45 @@ fn exec_lc(args: &[String]) -> Result<()> {
         }
         let wrote = r.transition.response.sync_messages.first().cloned();
         println!("{label}: Apply user cycles {} ({} ms)", r.user_cycles, r.ms);
-        rows.push(row(&format!("attest.apply.{label}"), "attest", "Apply", label, &r, apply_bytes.len(),
-            json!({"path": "public (sync from the private Verify)", "writes_record": wrote.is_some()})));
+        rows.push(row(
+            &format!("attest.apply.{label}"),
+            "attest",
+            "Apply",
+            label,
+            &r,
+            apply_bytes.len(),
+            json!({"path": "public (sync from the private Verify)", "writes_record": wrote.is_some()}),
+        ));
         state = new_state;
         if let Some(sm) = wrote {
-            let AttestMessage::WriteRecord { record } = borsh::from_slice(&sm.message)? else { bail!("not WriteRecord") };
+            let AttestMessage::WriteRecord { record } = borsh::from_slice(&sm.message)? else {
+                bail!("not WriteRecord")
+            };
             let r = write_record(&atg, attest_program, instance, &record)?;
-            rows.push(row(&format!("attest.write_record.{label}"), "attest", "WriteRecord", label, &r,
-                sm.message.len(), json!({"path": "public (sync from Apply)",
-                "record_state_bytes": borsh::to_vec(&record)?.len()})));
+            rows.push(row(
+                &format!("attest.write_record.{label}"),
+                "attest",
+                "WriteRecord",
+                label,
+                &r,
+                sm.message.len(),
+                json!({"path": "public (sync from Apply)",
+                "record_state_bytes": borsh::to_vec(&record)?.len()}),
+            ));
             if label.starts_with("finality") {
                 let r = check_header(&atg, attest_program, instance, &record)?;
-                rows.push(row("attest.check_header", "attest", "CheckHeader", label, &r,
-                    borsh::to_vec(&AttestMessage::CheckHeader { record_hash: record.hash() })?.len(),
-                    json!({"path": "public (sync from Attest)"})));
+                rows.push(row(
+                    "attest.check_header",
+                    "attest",
+                    "CheckHeader",
+                    label,
+                    &r,
+                    borsh::to_vec(&AttestMessage::CheckHeader {
+                        record_hash: record.hash(),
+                    })?
+                    .len(),
+                    json!({"path": "public (sync from Attest)"}),
+                ));
             }
         }
         witness = native.new_witness();
@@ -258,7 +345,9 @@ fn check_header(atg: &Guest, attest_program: AccountId, instance: AccountId, rec
         from: Some(Actor::new(AccountId::new([0x33; 32]), attest_program)),
         is_authorized: false,
         pre_state: ActorState::from(borsh::to_vec(record)?),
-        message: borsh::to_vec(&AttestMessage::CheckHeader { record_hash: record.hash() })?,
+        message: borsh::to_vec(&AttestMessage::CheckHeader {
+            record_hash: record.hash(),
+        })?,
     };
     execute(atg, &input, "attest.check_header")
 }
@@ -268,7 +357,10 @@ fn sizes(args: &[String]) -> Result<()> {
     let out = arg("--json").context("--json OUT")?;
     let chain = e2e_chain::mainnet_chain(vec![AccountId::new([0x1C; 32])])?;
     let (witness, head) = lc::init_store(&chain.config, &chain.bootstrap).map_err(|e| anyhow!("init: {e}"))?;
-    let state = InstanceState { config: chain.config.clone(), head };
+    let state = InstanceState {
+        config: chain.config.clone(),
+        head,
+    };
     let record = HeaderRecord {
         chain_id: 1,
         slot: 0,
