@@ -11,51 +11,46 @@
     "wrong_verifier_E12": true
   },
   "test_exit_code": 0,
-  "started_utc": "2026-11-12T11:41:18Z",
-  "finished_utc": "2026-11-12T11:46:46Z",
+  "started_utc": "2026-11-12T12:28:52Z",
+  "finished_utc": "2026-11-12T12:33:29Z",
   "command": "nice -n 15 cargo test -p e2e_chain --test e2e_chain -- --ignored --nocapture --test-threads 1 mainnet_chain_init_three_updates_handoff_and_rejections",
   "risc0_dev_mode": "1",
   "lez": "v0.4.0-rc3",
   "sequencer": "seq-dev (standalone, mock Bedrock, 15 s blocks)",
   "fixtures": "fixtures/mainnet: bootstrap_15605760 (period 1905), updates_1905_4",
-  "instance": "BG6pHgbT7C8uBnmKzs7uz637c11aNrMYNqPVWRAw2wQd",
-  "init_tx": "78d1d5a71796f4bd58ad0f6d1abf8fbb6ec7a89744ff2e5fd74e2f657e616c4d",
+  "instance": "C8DBtMKWZHhuaUva8CCSXkqXn3RPoQ15qAsqRhFKd7Df",
+  "init_tx": "d0a52338a158020b216a3cb679cb9969cc869bdf6677e560712f771ef462ca01",
   "updates": [
     {
       "step": "update[0]",
-      "tx": "cdcaf78a04399bac8cb8cdb89ba88e1ca4b1ed723e3fd245a7b9a3bcc00ebfb7",
+      "tx": "7241c96cd7591d04fa3bbe713e646764e48fad29b3ee67bf0b54d8bc4f53ca85",
       "head_slot": 15605824,
       "period": 1905,
       "handoff": false
     },
     {
       "step": "update[1]",
-      "tx": "442c046d85cd25a9341f94947d38d8b18acc94fa21b61258b624ae9c963e03ae",
+      "tx": "b62ab1e8dacf3e5078cde2bd60807f51b69f679f6b58ed17f5ae5d585c3b50b6",
       "head_slot": 15613952,
       "period": 1906,
       "handoff": true
     },
     {
       "step": "update[2]",
-      "tx": "50dd8db63a215fd1fe14e91bd81d4eea0be3a0eba5b10cf34765f1c767b0da84",
+      "tx": "35f16dd9ab5efc830722dd236279444690eb0a769e0c0cc87a22821efab18b32",
       "head_slot": 15622144,
       "period": 1907,
       "handoff": true
     }
   ],
   "f11": {
-    "account": "G4F9JpkHY2stz6mD47WcLfntU69CvMrbhDoZSfVWoe4P",
+    "account": "4amTp6fd6vSaigHNbQQcyXZ1JbbLv2u9QhbtGDPhhjQp",
     "step": "update[3]",
-    "tx": "a3cd34676d07c76e473ce29b9b6c30a06c6adcc3bdfd019cd8fe44bdf2946dd4",
+    "tx": "e8b4320501253c0c1f6679e5389ae9cd3b6c0d925de40b1099c6438cb7cdb534",
     "period": 1908
   },
   "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, Linux 7.0.0-43-generic",
-  "repo_commit": "3f8a8db",
+  "repo_commit": "57cff33",
   "raw_log": "evidence/g1/chain.log",
-  "sequencer_log_excerpt": [
-    "thread 'main' (1) panicked at crates/attest_core/src/error.rs:120:9:",
-    "ESA:E14",
-    "thread 'main' (1) panicked at crates/attest_core/src/error.rs:120:9:",
-    "ESA:E14"
-  ]
+  "sequencer_log_excerpt": []
 }

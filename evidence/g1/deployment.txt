@@ -1,0 +1,29 @@
+# Deployment used for evidence/g1/chain.json (seq-dev, 2026-11-12 12:28 UTC)
+# release set: guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2 (built from commit bf95e35)
+[programs]
+bridge_dev_source = "EetyxLidmSdFQ5WsWQY68vWT2jCSktAddjxir25MyTQR"   # sha256 9afec9265314633846cfad9708dde8e1ff5adb50c84c9ecc3b690216b933ed6a, 258100 bytes, 20261112T103136Z
+attest = "D4EHJuxjYVFfTN47A6GbWxgPdYweb9QkC5DmzxbJboDF"   # sha256 4f59c574791bc06fb7b6b3b284726b04cc6276bfe486eb44c9af864bf0176849, 439124 bytes, 20261112T121628Z
+lc_verify = "EiUE92eqy1LsmWrf68rNA5RbX3FWC9KzG2FakMVe5oWv"   # sha256 31a3ff1d3eaa291566dd988d6c120a5d1eba1d99f37f6ab8d1e95e3ebb6b01e9, 787380 bytes, 20261112T121628Z
+lc_verify_v2 = "GUErYDjgbbPRCWwpTHjhgYy19kedwsk8jBsmRdWFkTHj"   # sha256 0af0f788081748d51db358a45dfc12709f5138cd9dc79a04bc757377d2bf24f5, 749216 bytes, 20261112T121628Z
+bridge = "7ahb3h5n3MTeq2JtYhLbQL75gRpL7xNAmV54SZjvJQ6y"   # sha256 359933b97729ce40a7f8d611f4b51bc06be1da59fafa6fe1414d746be6aca109, 331860 bytes, 20261112T121758Z
+consumer_erc20 = "DKUgoD1vsVFxNUoAdshh23ndWpgZoWCK4X9Q4qHqw7YP"   # sha256 a86e69e70745bb7aab3b4f8d094d9a1ddecd764a6dd7d326e152900de77181fc, 291160 bytes, 20261112T122837Z
+
+
+# IMAGE_IDS
+attest.bin: user ELF 406700 bytes, bin 439124 bytes, image id 9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d
+lc_verify.bin: user ELF 754956 bytes, bin 787380 bytes, image id c7b5f2191f133026017c09072e883217dfe3785450d40d081718b0fd204878ba
+lc_verify_v2.bin: user ELF 716792 bytes, bin 749216 bytes, image id 18684beee3e973a2f1391c9bdb9108743c71e6f216bb5fba88bc0443403e8230
+consumer_erc20.bin: user ELF 258736 bytes, bin 291160 bytes, image id 3f86d4c96631191e94edb5377fa559c0b24fd2409815c5f97ca752eaa7df0794
+bridge.bin: user ELF 299436 bytes, bin 331860 bytes, image id fa3bd9c34fe6c82498396d99f9499688ec57e84463be2fc3abbe0bc944466fc5
+bridge_dev_source.bin: user ELF 225548 bytes, bin 257972 bytes, image id 9866d2346df2a2b3cd2214b07777182f5d1e75cac355d88ba45961543ecc3ca5
+burn_proof.bin: user ELF 237856 bytes, bin 270280 bytes, image id 0bf5772add481b578a470b044efb3fb6e9dfda4e32dd4e9828e7d7fa42a3a833
+
+# BUILD_INFO
+commit=bf95e359a4a6dd85836be6e33609be778fa17bc2
+image=docker.io/risczero/risc0-guest-builder:r0.1.91.1@sha256:fafb377a44e1cfca415577c48d2f7012bda99ed36f2fae27f9a663b9fe6048f0
+built_utc=2026-11-12T12:16:04Z
+machine=Linux 7.0.0-43-generic x86_64, Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz
+dockerfile=/home/lechuuu/hackathons/logos-rfp/build/.tmp/release-docker-bf95e359a4a6/Dockerfile
+fetch_s=622 (one cargo fetch for all guests); compile ~4 min for all seven
+note_burn_proof=burn_proof.bin here is built with risc0-zkvm 3.0.5 and is NOT the burn_proof the vault v3 uses: W5 moves burn_proof to a separate risc0 3.1.0 toolchain because of RISC Zero advisory GHSA-g6qg-9j8p-7j87 (2026-11-11). Do not deploy or verify this one.
+note_repro=ELFs come from risc0-build 3.0.5's own docker recipe (same image, ENV, rustflags, /src, CARGO_TARGET_DIR=target), built in one container; not yet cross-checked byte-for-byte against a per-guest BV_GUEST_DOCKER=1 build.
