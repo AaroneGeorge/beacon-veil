@@ -19,6 +19,11 @@ What they still show (mechanics only, not security): fixed-denomination ETH and 
 
 Verifier 3.1.0 behind its emergency-stop wrapper (failsafe L1), the open release route `releaseOpen` (failsafe L2), and `burn_proof` built on RISC Zero 3.1.0 (`guests/burn_proof/r31`). Vault v3 `0x380be74d9F3dFeBAaFC5F911CD6A45bFbeE3aD27`: `sepolia-v3.json` and `raw-v3/`. Guest build: `burn-proof-r31-guest.json`. K9 part 2 on v3 against run B: `k9-part2-runB-v3/`. Full spike outbound (real Groth16 release through the 3.1.0 estop, 527,859 gas; `releaseOpen`, 325,769 gas): `groth16-release-v3/`.
 
+## What is real and what is dev mode
+
+- Inbound claim: shown in dev mode on Sepolia data (`k9-part2-runA-v2/`, `k9-part2-runB-v3/`): real RFP-021 attestation of the vault root against followed Sepolia instances, private claim on seq-dev with `RISC0_DEV_MODE=1`, repeat refused with E11. No real proof of a private bridge claim was made. The private `Attest` mechanism the claim relies on was shown with a real proof in G3 (`../g3/real-proof.json`, about 35 min, 9.2 GiB).
+- Outbound release: real. Groth16 proof of `burn_proof` on RISC Zero 3.1.0, verified on Sepolia through the 3.1.0 emergency stop (`groth16-release-v3/`). The LEZ burn itself ran on seq-dev in dev mode, and the anchor is the owner-posted stub.
+
 ## Local round trip
 
 `local-e2e-20261112T104701Z/`: anvil vault (mock verifier) and seq-dev in dev mode, with the DEV statement source standing in for RFP-021. Mechanics only.

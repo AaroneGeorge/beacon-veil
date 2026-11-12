@@ -79,6 +79,12 @@ If a claim ran on a public account, the sequencer would see the secret and the p
 
 `programs/bridge/src/bin/bridge_dev_source.rs` forwards any statement unchecked. It exists only for the local round trip (`tools/bridge_cli/e2e_local.sh`) against an anvil vault, which no light client follows. It is safe to exist because of the receipt seed above: it can only write receipts keyed by its own program id. Only a config that names it as `attest_program` reads those, and the e2e config does so on purpose. A real deployment's config names the real `attest` program. The Sepolia run uses `attest-root` through RFP-021. Nothing selects it by default: a config must name its attest program explicitly. `bridge_cli` refuses any config on a chain other than 31337 whose attest program is the deployed dev source (`deploy/ids.toml` key `bridge_dev_source`). `dev-attest-root` runs only on chain 31337.
 
+## What was shown, and how (2026-11-12)
+
+- The claim was shown in dev mode on Sepolia data. Against W4's followed Sepolia instances (run A on vault v2, run B on vault v3), `attest-root` proved the vault's root slot through RFP-021. The private `Claim` then landed on seq-dev in dev mode (`RISC0_DEV_MODE=1`, no real proof), and a repeat claim was refused with `ESA:E11_ALREADY_CONSUMED`. Evidence: `evidence/bridge/k9-part2-runA-v2/`, `evidence/bridge/k9-part2-runB-v3/`.
+- No real proof of a private bridge claim was made. It would need a Sepolia light-client instance on the real-proof sequencer (seq-real), with its own update proven for real, which takes hours.
+- The mechanism the private claim relies on was shown with a real proof by G3: a private `Attest` against a light-client record that was itself proven for real (W3's consumer, about 35 min and 9.2 GiB peak on this laptop; `evidence/g3/real-proof.json`, raw files under `evidence/prove/g3-real-consumer/`). The bridge claim uses the same placement: a private actor, public PDAs reached by sync messages, and a statement checked against a record.
+
 ## Recovery (F9, R5)
 
 `bridge_cli recover --dest <own accounts>` needs only the mnemonic and chain state. For i = 0, 1, 2, ... it derives the deposit secret and tests every `Deposit` log's commitment against each of the wallet's own accounts as destination. It stops after 20 indexes with no match (gap limit). For each match it reads the nullifier account on LEZ to report claimed or open. No secret is generated at deposit time, and no local state is needed.
