@@ -14,7 +14,8 @@ name = "attest"
 path = "src/bin/attest.rs"
 
 [dependencies]
-attest_core.workspace = true
+attest_core = { workspace = true, features = ["lc"] }
+attest_inclusion.workspace = true
 borsh.workspace = true
 lee_core.workspace = true
 risc0-zkvm.workspace = true

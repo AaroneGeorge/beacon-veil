@@ -1,6 +1,6 @@
 [package]
 name = "e2e_chain"
-description = "End-to-end light-client chain on seq-dev: Init, 3 updates, 1 handoff (W1)"
+description = "End-to-end light-client chain on seq-dev: Init, 3 updates, 1 handoff (W1); fixture helpers and the V1 executor harness"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -9,5 +9,25 @@ publish.workspace = true
 [lints]
 workspace = true
 
+[[bin]]
+name = "v1_exec"
+path = "src/bin/v1_exec.rs"
+
+[[bin]]
+name = "mkbin"
+path = "src/bin/mkbin.rs"
+
 [dependencies]
-attest_core.workspace = true
+anyhow.workspace = true
+attest_core = { workspace = true, features = ["lc", "v2"] }
+borsh.workspace = true
+hex.workspace = true
+lee_core.workspace = true
+risc0-zkvm = { workspace = true, features = ["client"] }
+risc0-binfmt = "=3.0.4"
+risc0-zkos-v1compat = "=2.2.2"
+serde_json.workspace = true
+
+[dev-dependencies]
+attest_host.workspace = true
+tokio.workspace = true

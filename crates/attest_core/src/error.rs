@@ -4,6 +4,18 @@
 use borsh::{BorshDeserialize, BorshSerialize};
 
 /// Typed error of every beacon-veil check. The discriminant is the numeric code.
+///
+/// Light-client mapping (W1 `attest_core::lc`, approved 2026-11-12, asserted by the G2 suite):
+/// - `Verify`, in this order: SSZ decode fails -> E01; no or default finalized header (optimistic update) -> E02;
+///   participants < max(min_participants, 342) -> E04; then Helios: InvalidPeriod / InvalidNextSyncCommitteeProof ->
+///   E05, InvalidSignature or a bad committee key -> E03, InvalidFinalityProof -> E02, InvalidExecutionPayloadProof
+///   -> E15, NotRelevant -> E14, InvalidTimestamp -> E01; an update that moves nothing -> E14; config not the
+///   instance's -> E09.
+/// - `Init`: wrong receiver -> E09; instance exists -> E14; any Helios bootstrap rejection (root mismatch, bad
+///   committee branch, bad execution branch) or slot != checkpoint_slot -> E06.
+/// - `Apply`: sender not a verifier -> E12; pre-store differs -> E14 if post-store is the current one (replay), else
+///   E13; no change or older slot -> E14; record.chain_id != config.chain_id -> E09; head/record disagree -> E15.
+/// - `CheckHeader`: no record -> E02; hash differs -> E15. W3 also uses E15 for keccak(rlp header) != exec_hash.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, BorshSerialize, BorshDeserialize)]
 #[borsh(use_discriminant = true)]
 #[repr(u8)]

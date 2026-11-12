@@ -11,14 +11,22 @@ pub mod error;
 pub mod ids;
 pub mod messages;
 pub mod predicate;
+pub mod rules;
 pub mod types;
+
+#[cfg(feature = "lc")]
+pub mod lc;
+#[cfg(all(feature = "cycle-trace", target_os = "zkvm"))]
+pub mod lc_trace;
+#[cfg(feature = "v2")]
+pub mod lc_v2;
 
 pub use error::EsaError;
 pub use ids::{instance_id, instance_seed, record_id, record_seed, statement_id_log, statement_id_state};
-pub use lee_core::account::AccountId;
+pub use lee_core::account::{AccountId, Actor};
 pub use messages::{AttestMessage, LcVerifyMessage};
 pub use predicate::{Predicate, PredicateValue};
-pub use types::{ClaimKind, Head, HeaderRecord, InstanceConfig, Statement, StoreCommitmentInput};
+pub use types::{ClaimKind, Head, HeaderRecord, InstanceConfig, InstanceState, Statement, StoreCommitmentInput};
 
 /// A 32-byte hash or root.
 pub type Bytes32 = [u8; 32];

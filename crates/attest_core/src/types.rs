@@ -108,3 +108,11 @@ pub struct Statement {
     /// Statement id, see [`crate::ids`]. Consumers key their nullifier on it (F6).
     pub id: Bytes32,
 }
+
+/// Actor state of an instance under the `attest` program (account `instance_id(config)`), borsh-encoded. The config
+/// is stored so that `Apply` can check the sender against `config.verifiers`.
+#[derive(Debug, Clone, PartialEq, Eq, BorshSerialize, BorshDeserialize)]
+pub struct InstanceState {
+    pub config: InstanceConfig,
+    pub head: Head,
+}

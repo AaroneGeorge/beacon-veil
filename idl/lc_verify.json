@@ -1,0 +1,120 @@
+{
+  "version": "0.1.0",
+  "name": "lc_verify",
+  "instructions": [
+    {
+      "name": "verify",
+      "accounts": [
+        {
+          "name": "verifier_actor",
+          "writable": false,
+          "signer": false,
+          "init": false
+        },
+        {
+          "name": "instance",
+          "writable": true,
+          "signer": false,
+          "init": false
+        },
+        {
+          "name": "record",
+          "writable": true,
+          "signer": false,
+          "init": true
+        }
+      ],
+      "args": [
+        {
+          "name": "attest_program",
+          "type": "account_id"
+        },
+        {
+          "name": "instance",
+          "type": "account_id"
+        },
+        {
+          "name": "config",
+          "type": {
+            "defined": "InstanceConfig"
+          }
+        },
+        {
+          "name": "store_witness",
+          "type": "bytes"
+        },
+        {
+          "name": "update_ssz",
+          "type": "bytes"
+        }
+      ]
+    }
+  ],
+  "accounts": [],
+  "types": [
+    {
+      "name": "InstanceConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "chain_id",
+          "type": "u64"
+        },
+        {
+          "name": "genesis_validators_root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "genesis_time",
+          "type": "u64"
+        },
+        {
+          "name": "forks",
+          "type": {
+            "vec": {
+              "tuple": [
+                "u64",
+                {
+                  "array": [
+                    "u8",
+                    4
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "checkpoint_root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "checkpoint_slot",
+          "type": "u64"
+        },
+        {
+          "name": "verifiers",
+          "type": {
+            "vec": "account_id"
+          }
+        },
+        {
+          "name": "min_participants",
+          "type": "u16"
+        }
+      ]
+    }
+  ],
+  "instruction_type": "attest_core::LcVerifyMessage",
+  "notes": "store_witness = borsh(attest_core::lc::StoreWitness). Path A: run in a private actor; Path B0: public."
+}

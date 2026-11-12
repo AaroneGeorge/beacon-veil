@@ -14,10 +14,16 @@ name = "lc_verify"
 path = "src/bin/lc_verify.rs"
 
 [dependencies]
-attest_core.workspace = true
+attest_core = { workspace = true, features = ["lc"] }
 borsh.workspace = true
 lee_core.workspace = true
 risc0-zkvm.workspace = true
 
 [package.metadata.cargo-machete]
 ignored = ["risc0-zkvm"]
+
+[features]
+# Measurement-only build for the B0 per-phase table; never deployed.
+cycle-trace = ["attest_core/cycle-trace"]
+# V2 verifier (PLAN.md D4): a separate build and deployment, a second verifier id in an instance config.
+v2 = ["attest_core/v2"]

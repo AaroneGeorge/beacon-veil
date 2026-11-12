@@ -1,7 +1,7 @@
 //! Program messages (PLAN.md 2.3). Borsh-encoded `MessageData` of the `attest` and `lc_verify` programs.
 
 use borsh::{BorshDeserialize, BorshSerialize};
-use lee_core::account::AccountId;
+use lee_core::account::{AccountId, Actor};
 
 use crate::{Bytes32, Head, HeaderRecord, InstanceConfig, Predicate};
 
@@ -23,14 +23,16 @@ pub enum AttestMessage {
     WriteRecord { record: HeaderRecord },
     /// Anyone; panics E15/E02 unless `sha256(state) == record_hash`.
     CheckHeader { record_hash: Bytes32 },
-    /// On any account, public or private: verify inclusion under the record roots, evaluate the predicate, sync
-    /// `CheckHeader` to `record_id`, sync the `Statement` to `deliver_to`. `claim` is the encoded inclusion claim
-    /// (layout owned by W3 in `attest_inclusion`).
+    /// On any account, public or private: verify inclusion under the record roots, evaluate the predicate
+    /// (`attest_inclusion::verify_claim`), sync `CheckHeader` to `record_id(attest, instance, record.slot)`, then sync
+    /// the `Statement` (borsh, as the whole message) to the consumer actor `deliver_to`. `claim` is the encoded
+    /// inclusion claim (layout owned by W3 in `attest_inclusion`).
     Attest {
+        instance: AccountId,
         record: HeaderRecord,
         claim: Vec<u8>,
         predicate: Predicate,
-        deliver_to: AccountId,
+        deliver_to: Actor,
     },
 }
 

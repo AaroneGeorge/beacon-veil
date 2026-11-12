@@ -1,0 +1,710 @@
+{
+  "version": "0.1.0",
+  "name": "attest",
+  "instructions": [
+    {
+      "name": "init",
+      "accounts": [
+        {
+          "name": "instance",
+          "writable": true,
+          "signer": false,
+          "init": true
+        },
+        {
+          "name": "checkpoint_record",
+          "writable": true,
+          "signer": false,
+          "init": true
+        }
+      ],
+      "args": [
+        {
+          "name": "config",
+          "type": {
+            "defined": "InstanceConfig"
+          }
+        },
+        {
+          "name": "bootstrap",
+          "type": "bytes"
+        }
+      ]
+    },
+    {
+      "name": "apply",
+      "accounts": [
+        {
+          "name": "instance",
+          "writable": true,
+          "signer": false,
+          "init": false
+        },
+        {
+          "name": "record",
+          "writable": true,
+          "signer": false,
+          "init": true
+        }
+      ],
+      "args": [
+        {
+          "name": "pre_store",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "post_store",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "head",
+          "type": {
+            "defined": "Head"
+          }
+        },
+        {
+          "name": "record",
+          "type": {
+            "defined": "HeaderRecord"
+          }
+        }
+      ]
+    },
+    {
+      "name": "write_record",
+      "accounts": [
+        {
+          "name": "record",
+          "writable": true,
+          "signer": false,
+          "init": true
+        }
+      ],
+      "args": [
+        {
+          "name": "record",
+          "type": {
+            "defined": "HeaderRecord"
+          }
+        }
+      ]
+    },
+    {
+      "name": "check_header",
+      "accounts": [
+        {
+          "name": "record",
+          "writable": false,
+          "signer": false,
+          "init": false
+        }
+      ],
+      "args": [
+        {
+          "name": "record_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "attest",
+      "accounts": [
+        {
+          "name": "caller",
+          "writable": false,
+          "signer": false,
+          "init": false
+        },
+        {
+          "name": "record",
+          "writable": false,
+          "signer": false,
+          "init": false
+        },
+        {
+          "name": "deliver_to",
+          "writable": true,
+          "signer": false,
+          "init": false
+        }
+      ],
+      "args": [
+        {
+          "name": "instance",
+          "type": "account_id"
+        },
+        {
+          "name": "record",
+          "type": {
+            "defined": "HeaderRecord"
+          }
+        },
+        {
+          "name": "claim",
+          "type": "bytes"
+        },
+        {
+          "name": "predicate",
+          "type": {
+            "defined": "Predicate"
+          }
+        },
+        {
+          "name": "deliver_to",
+          "type": {
+            "defined": "Actor"
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "InstanceState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "config",
+            "type": {
+              "defined": "InstanceConfig"
+            }
+          },
+          {
+            "name": "head",
+            "type": {
+              "defined": "Head"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "HeaderRecord",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "chain_id",
+            "type": "u64"
+          },
+          {
+            "name": "slot",
+            "type": "u64"
+          },
+          {
+            "name": "beacon_root",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "exec_number",
+            "type": "u64"
+          },
+          {
+            "name": "exec_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "exec_state_root",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "exec_receipts_root",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "InstanceConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "chain_id",
+          "type": "u64"
+        },
+        {
+          "name": "genesis_validators_root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "genesis_time",
+          "type": "u64"
+        },
+        {
+          "name": "forks",
+          "type": {
+            "vec": {
+              "tuple": [
+                "u64",
+                {
+                  "array": [
+                    "u8",
+                    4
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "checkpoint_root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "checkpoint_slot",
+          "type": "u64"
+        },
+        {
+          "name": "verifiers",
+          "type": {
+            "vec": "account_id"
+          }
+        },
+        {
+          "name": "min_participants",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "Head",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "slot",
+          "type": "u64"
+        },
+        {
+          "name": "beacon_root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "exec_number",
+          "type": "u64"
+        },
+        {
+          "name": "exec_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "exec_state_root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "exec_receipts_root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "period",
+          "type": "u64"
+        },
+        {
+          "name": "store_commitment",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "HeaderRecord",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "chain_id",
+          "type": "u64"
+        },
+        {
+          "name": "slot",
+          "type": "u64"
+        },
+        {
+          "name": "beacon_root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "exec_number",
+          "type": "u64"
+        },
+        {
+          "name": "exec_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "exec_state_root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "exec_receipts_root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "PredicateValue",
+      "kind": "enum",
+      "variants": [
+        {
+          "name": "U256",
+          "fields": [
+            {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Bytes32",
+          "fields": [
+            {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Predicate",
+      "kind": "enum",
+      "variants": [
+        {
+          "name": "Eq",
+          "fields": [
+            {
+              "defined": "PredicateValue"
+            }
+          ]
+        },
+        {
+          "name": "Ne",
+          "fields": [
+            {
+              "defined": "PredicateValue"
+            }
+          ]
+        },
+        {
+          "name": "Lt",
+          "fields": [
+            {
+              "defined": "PredicateValue"
+            }
+          ]
+        },
+        {
+          "name": "Le",
+          "fields": [
+            {
+              "defined": "PredicateValue"
+            }
+          ]
+        },
+        {
+          "name": "Gt",
+          "fields": [
+            {
+              "defined": "PredicateValue"
+            }
+          ]
+        },
+        {
+          "name": "Ge",
+          "fields": [
+            {
+              "defined": "PredicateValue"
+            }
+          ]
+        },
+        {
+          "name": "LogTopicEq",
+          "fields": [
+            {
+              "name": "i",
+              "type": "u8"
+            },
+            {
+              "name": "v",
+              "type": {
+                "array": [
+                  "u8",
+                  32
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "LogDataWordEq",
+          "fields": [
+            {
+              "name": "offset",
+              "type": "u32"
+            },
+            {
+              "name": "v",
+              "type": {
+                "array": [
+                  "u8",
+                  32
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "All",
+          "fields": [
+            {
+              "vec": {
+                "defined": "Predicate"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ClaimKind",
+      "kind": "enum",
+      "variants": [
+        {
+          "name": "Account"
+        },
+        {
+          "name": "Storage"
+        },
+        {
+          "name": "Log"
+        }
+      ]
+    },
+    {
+      "name": "Actor",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "account_id",
+          "type": "account_id"
+        },
+        {
+          "name": "program_account_id",
+          "type": "account_id"
+        }
+      ]
+    },
+    {
+      "name": "Statement",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "instance",
+          "type": "account_id"
+        },
+        {
+          "name": "chain_id",
+          "type": "u64"
+        },
+        {
+          "name": "slot",
+          "type": "u64"
+        },
+        {
+          "name": "exec_number",
+          "type": "u64"
+        },
+        {
+          "name": "kind",
+          "type": {
+            "defined": "ClaimKind"
+          }
+        },
+        {
+          "name": "subject",
+          "type": "bytes"
+        },
+        {
+          "name": "value",
+          "type": "bytes"
+        },
+        {
+          "name": "predicate_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "instruction_type": "attest_core::AttestMessage",
+  "errors": [
+    {
+      "code": 1,
+      "name": "E01_MALFORMED"
+    },
+    {
+      "code": 2,
+      "name": "E02_NOT_FINALISED"
+    },
+    {
+      "code": 3,
+      "name": "E03_BAD_SIGNATURE"
+    },
+    {
+      "code": 4,
+      "name": "E04_LOW_PARTICIPATION"
+    },
+    {
+      "code": 5,
+      "name": "E05_HANDOFF_NOT_VERIFIED"
+    },
+    {
+      "code": 6,
+      "name": "E06_STALE_CHECKPOINT"
+    },
+    {
+      "code": 7,
+      "name": "E07_INCLUSION_INVALID"
+    },
+    {
+      "code": 8,
+      "name": "E08_PREDICATE_FALSE"
+    },
+    {
+      "code": 9,
+      "name": "E09_CHAIN_MISMATCH"
+    },
+    {
+      "code": 10,
+      "name": "E10_PREDICATE_NOT_COVERED"
+    },
+    {
+      "code": 11,
+      "name": "E11_ALREADY_CONSUMED"
+    },
+    {
+      "code": 12,
+      "name": "E12_UNKNOWN_VERIFIER"
+    },
+    {
+      "code": 13,
+      "name": "E13_STORE_MISMATCH"
+    },
+    {
+      "code": 14,
+      "name": "E14_ALREADY_APPLIED"
+    },
+    {
+      "code": 15,
+      "name": "E15_HEADER_MISMATCH"
+    }
+  ],
+  "notes": "Hand-kept in the SPEL IDL JSON shape (SPEL has no LEZ 0.4 release). Messages are borsh; panic text ESA:Exx. Drift test: tests/e2e_chain/tests/idl_drift.rs."
+}

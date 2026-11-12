@@ -13,3 +13,22 @@ workspace = true
 borsh.workspace = true
 lee_core.workspace = true
 sha2.workspace = true
+
+# Helios glue (src/lc.rs): enabled by the guests and by attest_host, not needed by consumers.
+alloy-primitives = { workspace = true, optional = true }
+helios-consensus-core = { workspace = true, optional = true }
+ethereum_ssz = { version = "0.9", optional = true }
+tree_hash = { version = "0.10", optional = true }
+eyre = { version = "0.6", optional = true }
+
+# Measurement-only (`cycle-trace`, src/lc_trace.rs): never enabled in a deployed build.
+bls12_381 = { version = "0.8", optional = true, features = ["experimental"] }
+sha2_v09 = { package = "sha2", version = "0.9", optional = true }
+risc0-zkvm = { workspace = true, optional = true }
+
+[features]
+default = []
+cycle-trace = ["lc", "dep:bls12_381", "dep:sha2_v09", "dep:risc0-zkvm"]
+# V2 verifier (PLAN.md D4): Helios rules with the signature check replaced (src/lc_v2.rs).
+v2 = ["lc", "dep:bls12_381", "dep:sha2_v09"]
+lc = ["dep:alloy-primitives", "dep:helios-consensus-core", "dep:ethereum_ssz", "dep:tree_hash", "dep:eyre"]
