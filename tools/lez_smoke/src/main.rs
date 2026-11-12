@@ -28,10 +28,13 @@ async fn main() -> anyhow::Result<()> {
         let user_len = risc0_user_len(&bytecode)?;
         let n = user_len.div_ceil(MAX_SEGMENT_DATA_LEN);
         let header = wallet_core.create_new_account_public(None).0;
-        let segments: Vec<AccountId> =
-            std::iter::repeat_with(|| wallet_core.create_new_account_public(None).0).take(n).collect();
+        let segments: Vec<AccountId> = std::iter::repeat_with(|| wallet_core.create_new_account_public(None).0)
+            .take(n)
+            .collect();
         wallet_core.store_persistent_data()?;
-        ProgramLoader(&wallet_core).deploy(header, &segments, bytecode, true, Some(payer)).await?
+        ProgramLoader(&wallet_core)
+            .deploy(header, &segments, bytecode, true, Some(payer))
+            .await?
     };
     println!("program header {program}");
 
