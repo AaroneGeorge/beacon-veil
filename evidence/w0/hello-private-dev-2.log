@@ -1,0 +1,42 @@
+# 2026-11-12T10:17:04Z seq-dev RISC0_DEV_MODE=1; LEZ run_hello_world_private (unmodified rc3 example); bin sha256 b82a6e87826f75921513b3b247b71098d14b5ec76ac6990836992a9830772e4b
+$ wallet auth-transfer send --from bv-payer --to Private/Fj3A1pnm3ENQyjZxqJLs75c7vDT2EXZ8DpeSTA28VScF --amount 1000000000   (fund the fee reserve; the first run failed: unfunded private payer)
+WARNING: proving in dev mode. This will not generate valid, secure proofs.
+WARNING: Proving in dev mode does not generate a valid receipt. Receipts generated from this process are invalid and should never be used in production.
+Transaction hash is e077b5850677b8dde39a26c60c0f3e88b24b9f97c8b69a95076e28b2aa51f313
+Transaction is included in block 172
+$ wallet account sync-private
+Synced to block 173 in 151.424257ms
+Label: hello-priv-1794478268
+Balance 994929384, nonce 336503708998154622259129490647213880119
+$ RISC0_INFO=1 run_hello_world_private /home/lechuuu/hackathons/logos-rfp/build/run/hello-target/riscv32im-risc0-zkvm-elf/docker/hello_world.bin Fj3A1pnm3ENQyjZxqJLs75c7vDT2EXZ8DpeSTA28VScF CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r
+Transaction hash is 189dd940528ff1cc7cbd7025eaeeef63d22bfb333004d086369f1cbc67bb3ac1
+Transaction is included in block 174
+Transaction hash is 246407b595ee6693ff37addcb5cbecb35171aa83aecbb89dfa20f1f9707485ad
+Transaction is included in block 176
+Transaction hash is 9bc119f15d1f4e6970c07182ca354a253cc180682c64bc8e6f110fcacfcc8ce5
+Transaction is included in block 178
+Transaction hash is 2bdd5c4c02c9b985f8d873af5f2119aa3ebf914ea2e9750f1c9941755cfe7dfc
+Transaction is included in block 180
+Transaction hash is 92cb6ff9fed5a469bf1c0694b338c662ecf5ec5e2049016e4f4448fd67ad05b7
+Transaction is included in block 182
+[2m2026-11-12T10:20:05.314381Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 65536 total cycles
+[2m2026-11-12T10:20:05.314385Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 7651 user cycles (11.67%)
+[2m2026-11-12T10:20:05.388433Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 65536 total cycles
+[2m2026-11-12T10:20:05.388436Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 7651 user cycles (11.67%)
+[2m2026-11-12T10:20:05.467435Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 65536 total cycles
+[2m2026-11-12T10:20:05.467464Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 7651 user cycles (11.67%)
+[2m2026-11-12T10:20:05.868446Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 3407872 total cycles
+[2m2026-11-12T10:20:05.868464Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 2849000 user cycles (83.60%)
+wall 151.05 s, maxrss 38428 KB
+rc=0
+$ wallet account sync-private
+Synced to block 184 in 91.419932ms
+$ wallet account get --raw --scope all --account-id Private/Fj3A1pnm3ENQyjZxqJLs75c7vDT2EXZ8DpeSTA28VScF
+Label: hello-priv-1794478268
+{
+  "actor_states": {
+    "11111111111111111111111111111111": "61b0cf3a000000000000000000000000",
+    "9VVcf89FgEvBA2F7wPRhXG6ZWyVLeZkqPt61pF1BNgs": "486f6c61206d756e646f21"
+  },
+  "nonce": 303244673179254548349434662559913709072
+}

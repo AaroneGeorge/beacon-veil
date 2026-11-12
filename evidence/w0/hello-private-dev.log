@@ -1,0 +1,41 @@
+# 2026-11-12T10:11:08Z seq-dev RISC0_DEV_MODE=1; bin /home/lechuuu/hackathons/logos-rfp/build/run/hello-target/riscv32im-risc0-zkvm-elf/docker/hello_world.bin sha256 b82a6e87826f75921513b3b247b71098d14b5ec76ac6990836992a9830772e4b
+private account Fj3A1pnm3ENQyjZxqJLs75c7vDT2EXZ8DpeSTA28VScF
+$ RISC0_INFO=1 run_hello_world_private /home/lechuuu/hackathons/logos-rfp/build/run/hello-target/riscv32im-risc0-zkvm-elf/docker/hello_world.bin Fj3A1pnm3ENQyjZxqJLs75c7vDT2EXZ8DpeSTA28VScF CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r
+[2m2026-11-12T10:13:38.769396Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 65536 total cycles
+[2m2026-11-12T10:13:38.769399Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 7651 user cycles (11.67%)
+[2m2026-11-12T10:13:38.769403Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 25774 paging cycles (39.33%)
+[2m2026-11-12T10:13:38.769406Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 32111 reserved cycles (49.00%)
+[2m2026-11-12T10:13:38.769409Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m ecalls
+[2m2026-11-12T10:13:38.769413Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 	6 Sha2 calls, 444 cycles, (0.68%)
+[2m2026-11-12T10:13:38.769421Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 	10 Read calls, 32 cycles, (0.05%)
+[2m2026-11-12T10:13:38.769424Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 	1 Terminate calls, 2 cycles, (0.00%)
+[2m2026-11-12T10:13:38.769427Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 	0 Write calls, 0 cycles, (0.00%)
+[2m2026-11-12T10:13:38.769429Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 	0 User calls, 0 cycles, (0.00%)
+[2m2026-11-12T10:13:38.769432Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 	0 Poseidon2 calls, 0 cycles, (0.00%)
+[2m2026-11-12T10:13:38.769434Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 	0 BigInt calls, 0 cycles, (0.00%)
+[2m2026-11-12T10:13:38.769437Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m syscalls
+[2m2026-11-12T10:13:38.769439Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 	2 Read calls
+[2m2026-11-12T10:13:38.769442Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 	1 Write calls
+[2m2026-11-12T10:13:38.769444Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 	0 VerifyIntegrity2 calls
+[2m2026-11-12T10:13:38.769447Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 	0 VerifyIntegrity calls
+[2m2026-11-12T10:13:38.769449Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 	0 ProveKeccak calls
+[2m2026-11-12T10:13:38.769451Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 	0 Keccak calls
+
+thread 'main' (649130) panicked at examples/program_deployment/src/bin/run_hello_world_private.rs:76:10:
+called `Result::unwrap()` on an `Err` value: TransactionBuildError(InvalidInput("Fee reserve of 5070616 from payer Fj3A1pnm3ENQyjZxqJLs75c7vDT2EXZ8DpeSTA28VScF fails, though the transaction runs without it: Invalid native transfer: sender Fj3A1pnm3ENQyjZxqJLs75c7vDT2EXZ8DpeSTA28VScF holds less than the transferred amount"))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Command exited with non-zero status 101
+wall 150.58 s, maxrss 16436 KB
+rc=101
+$ wallet account sync-private
+Latest block is 157
+Syncing to block 157. Blocks to sync: 75
+Synced to block 157 in 545.202859ms
+$ wallet account get --raw --account-id Private/Fj3A1pnm3ENQyjZxqJLs75c7vDT2EXZ8DpeSTA28VScF
+Label: hello-priv-1794478268
+{
+  "actor_states": {
+    "11111111111111111111111111111111": ""
+  },
+  "nonce": 0
+}
