@@ -1,0 +1,64 @@
+{
+  "pipeline_smoke": {
+    "kind": "pipeline_smoke",
+    "label": "measured",
+    "what": "LEZ v0.4.0-rc3 examples/program_deployment run_hello_world_private on seq-real (RISC0_DEV_MODE unset): deploy hello_world (public txs), then one privacy-preserving tx proven locally through r0vm 3.0.5 (succinct)",
+    "not_k4": "Not the K4 calibration: hello-world segments are small; W6 measures po2=20 segment cost with cycle_bench",
+    "date_utc": "2026-11-12T11:25:29Z",
+    "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, kernel 7.0.0-43-generic",
+    "r0vm": "risc0-r0vm 3.0.5",
+    "command": "/usr/bin/time -v nice -n 19 ionice -c3 env RISC0_INFO=1 RUST_LOG=info /home/lechuuu/hackathons/logos-rfp/build/vendor/lez/target/release/run_hello_world_private /home/lechuuu/hackathons/logos-rfp/build/run/hello-target/riscv32im-risc0-zkvm-elf/docker/hello_world.bin 8pgZh3hotW9ctFErXBeD7BwZVWQjA7swvosnn5vVSoz7 CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r",
+    "exit": 0,
+    "run": {
+      "user_s": 12054.2,
+      "sys_s": 32.27,
+      "wall_s": 2114.74,
+      "peak_rss_kib": 9603660,
+      "exit": 0
+    },
+    "fund_private_account_tx": {
+      "user_s": 8391.5,
+      "sys_s": 29.99,
+      "wall_s": 1670.84,
+      "peak_rss_kib": 8898852,
+      "exit": 0
+    },
+    "sessions_total_cycles": [
+      65536,
+      65536,
+      65536,
+      3407872
+    ],
+    "sessions_user_cycles": [
+      7651,
+      7651,
+      7651,
+      2851591
+    ],
+    "sum_total_cycles": 3604480,
+    "us_per_total_cycle_upper_bound": 586.7,
+    "note": "run.wall_s includes about 5 deployment transactions waiting for 15 s blocks; the three 65,536-cycle sessions are the hello program (two executor runs for simulation, then its proof)",
+    "raw": {
+      ".meta": "evidence/calibration/run-20261112T105738Z.meta",
+      ".time": "evidence/calibration/run-20261112T105738Z.time",
+      ".log": "evidence/calibration/run-20261112T105738Z.log"
+    },
+    "circuit_session": {
+      "segments": 4,
+      "total_cycles": 3407872,
+      "user_cycles": 2851591
+    },
+    "circuit_prove_s": 1932.0,
+    "circuit_us_per_total_cycle": 566.9,
+    "circuit_s_per_segment": 483.0,
+    "circuit_prove_note": "succinct receipt incl. lift/join and the inner hello receipt composition; no Groth16 wrap",
+    "load1_during_proof": {
+      "min": 7.5,
+      "median": 8.77,
+      "max": 9.58,
+      "samples": 34,
+      "raw": "evidence/calibration/load-20261112T105738Z.log",
+      "note": "other sprint tracks were building; sampler started during the run (first sample in the raw file)"
+    }
+  }
+}

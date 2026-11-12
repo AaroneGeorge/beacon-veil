@@ -37,7 +37,7 @@ def gtime(path):
             out["exit"] = int(l.rsplit(": ", 1)[1])
     return out
 
-log = open(prefix + ".log", errors="replace").read()
+log = re.sub(r"\x1b\[[0-9;]*m", "", open(prefix + ".log", errors="replace").read())
 totals = [int(x) for x in re.findall(r"(\d+) total cycles", log)]
 users = [int(x) for x in re.findall(r"(\d+) user cycles", log)]
 run = gtime(prefix + ".time")
@@ -59,9 +59,37 @@ entry = {
     "sessions_user_cycles": users,
     "sum_total_cycles": sum(totals),
     "us_per_total_cycle_upper_bound": round(run["wall_s"] * 1e6 / sum(totals), 2) if totals and "wall_s" in run else None,
-    "note": "run.wall_s includes about 5 deployment transactions waiting for 15 s blocks",
+    "note": "run.wall_s includes about 5 deployment transactions waiting for 15 s blocks; the three 65,536-cycle "
+            "sessions are the hello program (two executor runs for simulation, then its proof)",
     "raw": {k: os.path.relpath(prefix + k, os.getcwd()) for k in (".meta", ".time", ".log")},
 }
+# Circuit proof time: from the circuit session's executor summary (last "total cycles" line, printed before proving
+# starts) to the end of the run (date_utc + wall_s). The runner prints nothing after submitting.
+import datetime as _dt
+ts = re.findall(r"(\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d+)Z +INFO +risc0_zkvm::host::server::session: (\d+) total cycles", log)
+segs = [int(x) for x in re.findall(r"number of segments: (\d+)", log)]
+if ts and "wall_s" in run and meta.get("date_utc"):
+    start = _dt.datetime.fromisoformat(meta["date_utc"].replace("Z", "+00:00"))
+    end = start + _dt.timedelta(seconds=run["wall_s"])
+    last = _dt.datetime.fromisoformat(ts[-1][0][:26] + "+00:00")
+    circ_s = round((end - last).total_seconds(), 1)
+    entry_extra = {
+        "circuit_session": {"segments": segs[-1] if segs else None, "total_cycles": totals[-1], "user_cycles": users[-1]},
+        "circuit_prove_s": circ_s,
+        "circuit_us_per_total_cycle": round(circ_s * 1e6 / totals[-1], 1),
+        "circuit_s_per_segment": round(circ_s / segs[-1], 1) if segs else None,
+        "circuit_prove_note": "succinct receipt incl. lift/join and the inner hello receipt composition; no Groth16 wrap",
+    }
+else:
+    entry_extra = {}
+loadf = os.path.join(d, f"load-{stamp}.log")
+if os.path.exists(loadf):
+    xs = sorted(float(l.split()[1]) for l in open(loadf) if not l.startswith("#") and l.strip())
+    if xs:
+        entry_extra["load1_during_proof"] = {"min": xs[0], "median": xs[len(xs) // 2], "max": xs[-1], "samples": len(xs),
+                                             "raw": os.path.relpath(loadf, os.getcwd()),
+                                             "note": "other sprint tracks were building; sampler started during the run (first sample in the raw file)"}
+entry.update(entry_extra)
 out = "evidence/calibration.json"
 data = json.load(open(out)) if os.path.exists(out) else {}
 data["pipeline_smoke"] = entry
