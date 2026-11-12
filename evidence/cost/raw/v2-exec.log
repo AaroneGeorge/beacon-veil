@@ -1,0 +1,17 @@
+config: chain_id 1 checkpoint slot 15605760 root 0xd56afee8fc171452dca06d815bf36db37442f975a1472b6e1902e8fecbc0bef7 forks 8
+native init: slot 15605760 period 1905 store 0x8359724baa22a682d3e34f7830086b103b8c37dc1615ac5e36dbb944ac6e360f (23 ms)
+native update[0]: 26914 bytes, sig slot 15605913 participation 511 -> head slot 15605824 period 1905 new_slot true handoff false exec #26366249 (80 ms)
+native update[1]: 26926 bytes, sig slot 15614021 participation 512 -> head slot 15613952 period 1906 new_slot true handoff true exec #26374354 (83 ms)
+native update[2]: 26920 bytes, sig slot 15622209 participation 511 -> head slot 15622144 period 1907 new_slot true handoff true exec #26382519 (83 ms)
+native update[3]: 26922 bytes, sig slot 15631888 participation 512 -> head slot 15631808 period 1908 new_slot true handoff true exec #26392149 (85 ms)
+native finality_update_15637644: 2109 bytes, sig slot 15637645 participation 512 -> head slot 15637568 period 1908 new_slot true handoff false exec #26397891 (38 ms)
+native replay of finality_update_15637644: refused E14_ALREADY_APPLIED
+elf: .tmp/w1/v2-target/riscv32im-risc0-zkvm-elf/release/lc_verify
+lc_verify user ELF (deployed bytes): 717088 bytes = 8 segments of 96 KiB; cap 1966080: UNDER
+lc_verify program binary (with kernel): 749512 bytes; image id 401ce0caacf23bbed80977861ed1e90634421bdc02b142dc927368dd275c1e17
+executor update[0]: user cycles 45573595, padded total 49283072, segments 47, exit Halted(0), 3889 ms; Apply matches native (head slot 15605824, period 1905, exec #26366249 0xd3773a8dd9857eac07acbdb495d1d0fb537fd0f0faa65b202c936d725efa7e26)
+executor update[1]: user cycles 48730919, padded total 52428800, segments 50, exit Halted(0), 5287 ms; Apply matches native (head slot 15613952, period 1906, exec #26374354 0xcf57fcba540cb3ce99df5cecf4de66424121ea9a85c853895a19f6946a2b91d0)
+executor update[2]: user cycles 49864139, padded total 53608448, segments 52, exit Halted(0), 4096 ms; Apply matches native (head slot 15622144, period 1907, exec #26382519 0xc6ebfa43a3bb076c979bb6790584fab014e987762f668ea33171f6b41bd22955)
+executor update[3]: user cycles 48730021, padded total 52428800, segments 50, exit Halted(0), 4209 ms; Apply matches native (head slot 15631808, period 1908, exec #26392149 0x0d121a707b23a927b4800c036f0a3d09fb78a5ad4b36f4a93c9bfe43b0039edc)
+executor finality_update_15637644: user cycles 37032744, padded total 39845888, segments 38, exit Halted(0), 3714 ms; Apply matches native (head slot 15637568, period 1908, exec #26397891 0x5a500b1d7ec30eb2859694f9e26616ef7693921bccc6b2ef0da87e998587b410)
+wrote .tmp/w1/v2-exec.json

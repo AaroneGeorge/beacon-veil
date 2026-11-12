@@ -1,0 +1,10 @@
+start 2026-11-12T10:57:02Z
+
+running 1 test
+test b0_public_verify_hits_the_cap ... 
+B0 public Verify: refused: verify (public probe): tx 43902552992f118d3ff2159b802cb656b70748a870e62fb762d2ab85281ac38d reverted in block 334 (the panic code is in the sequencer log)
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 61.96s
+
+end 2026-11-12T10:58:04Z rc=0

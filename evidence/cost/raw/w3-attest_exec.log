@@ -1,0 +1,13 @@
+# 2026-11-12T10:57:53Z Linux 7.0.0-43-generic x86_64; Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz; RISC0_DEV_MODE=1
+# cmd: target/debug/attest_exec --attest-elf .tmp/w1/guests/attest.bin --consumer-elf run/w3-guests/consumer_erc20.bin --json run/w3-cost/attest_exec.json
+# attest.bin sha256 8e3386cd413f9dd8014e564a778fb271bdcd981712fd1b3172d21f5e4fa7b6bb; consumer_erc20.bin sha256 2fb35162c48f966e77514e837ad3e6fa636c57cc1b78e67aab8256b637aa16a1
+attest ELF .tmp/w1/guests/attest.bin (None bytes); consumer ELF run/w3-guests/consumer_erc20.bin (None bytes)
+attest_log_mainnet_usdt_transfer: claim 2955 bytes, message 3318 bytes -> user cycles 190865 (total 524288 in 1 segments, 162 ms)
+consumer_erc20 Statement: user cycles 43440 (94 ms)
+consumer_erc20 MarkConsumed: user cycles 20063 (92 ms)
+attest_log_mainnet_tx374_log254_255logs: claim 41660 bytes, message 41918 bytes -> user cycles 1447957 (total 2097152 in 2 segments, 334 ms)
+attest_storage_mainnet_usdt_slot1: claim 7174 bytes, message 7461 bytes -> user cycles 508778 (total 1048576 in 1 segments, 207 ms)
+attest_account_mainnet_usdc: claim 3909 bytes, message 4167 bytes -> user cycles 299487 (total 524288 in 1 segments, 149 ms)
+attest_log_sepolia_gloas_with_header: claim 3229 bytes, message 3592 bytes -> user cycles 196981 (total 524288 in 1 segments, 146 ms)
+attest_storage_sepolia_gloas_with_header: claim 7076 bytes, message 7363 bytes -> user cycles 483333 (total 1048576 in 1 segments, 194 ms)
+wrote run/w3-cost/attest_exec.json

@@ -15,11 +15,11 @@ No party is obliged to operate. Liveness rests on interested parties choosing to
 What an operator needs:
 
 - A beacon source: the Logos `beacon_api_module` (v0.2.0) on a `logosctl` daemon, or any Beacon API endpoint that serves the light-client routes (stated fallback).
-- A LEZ wallet with gas for the sequencer it submits to, and the instance id.
-- A machine that can prove one update. The follower proves `Verify` (about 74M to 89M user cycles per update on real mainnet data, measured on the executor: `evidence/v1/v1-exec.json`) and the privacy circuit's wrapper.
+- A LEZ wallet with gas for the sequencer it submits to, and the instance id. The follower needs a funded public payer (`BV_PAYER`) and, on Path A, a funded private submitter (`BV_SUBMITTER`). One private transaction reserves about 5.07e6 in fees.
+- A machine that can prove one update. One Path A update takes about 40 s end to end in dev mode (follower track dev log), which measures the executor and not a real proof. The follower proves `Verify` (46.1M to 65.5M user cycles per update on real mainnet data, measured on the executor: `evidence/cost/cost.md`) and the privacy circuit's wrapper.
 - No standing on Ethereum. No validator, no Ethereum account.
 
-What it costs, per update. TODO-MEASURE: on-chain gas for `Apply` and storage, proving seconds and peak memory (`evidence/cost/cost.md`, `evidence/calibration.json`). From the plan, as estimates and not measurements: 409,764 flat gas for receipt verification plus `Apply` cycles plus 224,063 storage gas.
+What it costs, per update. TODO-MEASURE: on-chain gas for `Apply` and storage, proving seconds and peak memory (`evidence/cost/cost.md`, `evidence/calibration/`). Derived from measured cycles and LEZ constants (`evidence/cost/cost.md` section 2): 409,764 gas for receipt verification plus 54,965 cycles for `Apply` plus 24,047 for `WriteRecord`, which is 488,776 execution gas, and 224,063 storage gas.
 
 Sepolia account for the project's own runs. The project deploys the vault and sends test deposits and releases from one dedicated Sepolia key. Its address is `0x523072A2aC5e5A3E51c107bc17995A3fa03dBD78`, funded with 0.3 SepETH. It holds testnet funds only and is used for nothing else. The key is not in the repository, in the logs or in `evidence/`. An operator of the follower needs no Ethereum account. An operator of the bridge's root attester or relayer uses LEZ gas and, for release calls, an Ethereum account of their own.
 
@@ -28,15 +28,15 @@ Sepolia account for the project's own runs. The project deploys the vault and se
 | Resource | Figure | Source |
 |---|---|---|
 | Follower daemon, idle between ticks | TODO-MEASURE (CPU, RSS) | 24 h run log |
-| Proving one update, CPU only | TODO-MEASURE (seconds, peak RSS) on the build laptop: Intel i5-10300H, 4 cores, 15 GiB | `evidence/calibration.json` |
+| Proving one update, CPU only | TODO-MEASURE (seconds, peak RSS) on the build laptop: Intel i5-10300H, 4 cores, 15 GiB | `evidence/calibration/` |
 | Disk | TODO-MEASURE (log growth per day, state cache size) | 24 h run |
-| Network | Light-client update 2,109 bytes (finality) to 26,926 bytes (period) on the wire as SSZ, measured on the fixtures | `fixtures/mainnet/manifest.json` |
+| Network | Mainnet (fulu): light-client update 2,109 bytes (finality) to 26,926 bytes (period) as SSZ. Sepolia (gloas): 1,448 bytes (finality) and 26,424 bytes (period) | `fixtures/*/manifest.json`, follower track notes |
 
 An operator who wants hourly headers needs a faster prover than this laptop. An operator who only keeps the instance alive needs one proof per sync-committee period plus the finality updates at the chosen cadence.
 
 ## 4. Cadence and deferral (R9, R10)
 
-Cadence. The default is one finality update every 16 epochs (6,144 s, about 1.7 hours). A period handoff is submitted at once, without waiting for the cadence. The follower polls every 300 s and writes one log line per poll. Updates below 342 participants (of 512) are not submitted, because the program would reject them.
+Cadence. The default is one finality update every 16 epochs (6,144 s, about 1.7 hours), measured from the last applied update of any kind. A period handoff is submitted at once, without waiting for the cadence. The follower polls every 300 s and writes one log line per poll. Updates below 342 participants (of 512) are not submitted, because the program would reject them.
 
 Check before submitting (R9). The follower reads the on-chain head before it decides, waits, and reads it again. If another party applied the update meanwhile, it logs `skip_not_needed` and spends nothing.
 
@@ -44,21 +44,23 @@ Deferral (R10). Before each submission the follower waits `d` seconds, where `d`
 
 Effect on latency. TODO-MEASURE: submission delay distribution from the 24 h run. The bound is `poll_s` plus `jitter_max_s` plus proving time.
 
-Contention. With several operators on one instance, the first valid submission wins and the others get E14 (already applied) or `skip_not_needed`. They lose proving time and, if they submitted, a transaction fee. The deferral makes that loss rotate. TODO-MEASURE: a one-week run with two operators, no double application (R9, M2 gate).
+Contention. With several operators on one instance, the first valid submission wins. A no-op update (E14) is refused by `attest_host` before it is sent, costs nothing, and is logged as `noop`. A lost race that does reach the chain is rejected there (E13 or E14) and costs the fee. The deferral rotates who pays it. TODO-MEASURE: a one-week run with two operators, no double application (R9, M2 gate).
 
 ## 5. Install, configure, run, monitor
 
 Paths below are relative to the repository root. Always run `source scripts/env.sh` first. The full command list, with the Nix build of the module, is in `modules/attest_follower_module/RUNBOOK.md`.
 
 1. Install. Build the daemon: `cargo build --profile host -p follower -p attest_cli`. Build and install the module and its dependency with `logosctl install` (RUNBOOK section 1 and 2). TODO-REFRESH: replace with the catalog install line once the catalog exists (S9).
-2. Configure. Copy `crates/follower/examples/followerd.sepolia.toml`. Set `follower.id` (unique per operator), `follower.chain_id`, `follower.state_dir`, the `[source]` section (`logos_module` or `direct_http` with `endpoints`), and `[chain] instance`. Consensus and execution endpoints are configuration values (U3). Wallet access comes from `LEE_WALLET_HOME_DIR`, `LEE_WALLET_PASSWORD` and `BV_STORE_DIR` in the environment.
+2. Configure. Use one wallet home per follower (helper: `crates/follower/scripts/wallet_home.sh`). Copy `crates/follower/examples/followerd.sepolia.toml`. Set `follower.id` (unique per operator), `follower.chain_id`, `follower.state_dir`, the `[source]` section (`logos_module` or `direct_http` with `endpoints`), and `[chain] instance`. Consensus and execution endpoints are configuration values (U3). Environment variables: `LEE_WALLET_HOME_DIR`, `LEE_WALLET_PASSWORD`, `BV_PAYER`, `BV_SUBMITTER`, `BV_GUESTS`, `BV_IDS`, `BV_STORE_DIR`. With `logos_module` also set `logosctl_config_dir` and `logosctl_tmpdir`. The client must use the same `TMPDIR` the `logosctl` daemon was started with.
 3. Create or find an instance. `attest init --checkpoint finalized --out instance.json` creates one. To follow an existing one, take its id from the consumer you serve and verify its checkpoint first: `attest checkpoint verify --instance-file instance.json`.
-4. Run. Standalone: `attest-followerd --config followerd.toml`. Under Logos: `logosctl call attest_follower_module configure @settings.json`, then `start`. Stop with SIGTERM (clean stop, up to 60 s for the step in progress) or `stop`.
-5. Monitor. The daemon writes one JSON line per step to `follower.jsonl` with the fields `ts, pid, event, slot, period, tx, beacon_source, uptime_s`. Events to watch: `tick` (every poll), `defer`, `submit`, `applied`, `skip_not_needed`, `skip_low_participation`, `source_error`, `chain_error`, `no_instance`. `logosctl watch attest_follower_module --json` streams the module events (`update_submitted`, `handoff_applied`, `follower_error`). `attest status --instance <id>` prints the head and store status.
+4. Run. Standalone: `attest-followerd --config followerd.toml`. Under Logos: `logosctl call attest_follower_module configure @settings.json`, then `start`. Stop: the module's `stop` sends SIGTERM, waits 60 s, then sends SIGKILL. A daemon run directly exits with 143 on a second signal.
+5. Monitor. The daemon writes one JSON line per step to `follower.jsonl` with the fields `ts, pid, event, slot, period, tx, beacon_source, uptime_s`. Events: `start`, `head`, `resume`, `tick`, `defer`, `skip_not_needed`, `skip_low_participation`, `submit`, `applied`, `noop`, `submit_failed`, `source_error`, `chain_error`, `no_instance`, `store_rebuilt`, `rebuild_error`, `stop`. A `tick` event's `kind` is one of `wait`, `period`, `finality`, `finality_handoff`. An `applied` event carries `extra.handoff`. `logosctl` 0.3.2 `watch` repeats each event once per earlier watch session that was killed, so de-duplicate on (`pid`, `n`). `logosctl watch attest_follower_module --json` streams the module events (`update_submitted`, `handoff_applied`, `follower_error`). `attest status --instance <id>` prints the head and store status.
 
-Restart (R4). After a crash or `kill -9`, restart with the same state directory. The follower logs one `resume` line at the pre-kill head, does not re-initialise, and does not submit anything older than the head. Its local store is checked against the on-chain `store_commitment`. Drill: `crates/follower/scripts/r4_drill.sh`.
+Restart (R4). After a crash or `kill -9`, restart with the same state directory. The follower logs one `resume` line at the pre-kill head, does not re-initialise, and does not submit anything older than the head. Its verified store is checked against the on-chain `store_commitment`. If the local store is missing or mismatched (E13), the follower rebuilds it with `attest_host::rebuild_store` from a bootstrap at the on-chain head plus that period's update, and logs `store_rebuilt`. Drill: `WALLET_ENV=<env> CHAIN=host INSTANCE=<id> crates/follower/scripts/r4_drill.sh`. The pass result of the host drill is in the follower run directory (`r4-result.json`).
 
 Failure of a source (R5). A beacon provider failure logs `source_error` and the next poll tries again, failing over across the configured endpoints. A LEZ failure logs `chain_error` and the follower recovers its store before the next step. Nothing is repeated that was already applied.
+
+G4 evidence. Each run writes to `evidence/g4/<run>/`. `PRIMARY=1` also writes `evidence/g4/follower.jsonl`. Run A has run since 2026-11-12 11:11:59 UTC and is the backup. Run B, built from the docker-reproducible guest images, is preferred for the gate.
 
 ## 6. Detect that an instance has stalled
 

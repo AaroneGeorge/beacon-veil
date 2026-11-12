@@ -1,0 +1,108 @@
+{
+  "attest_elf": ".tmp/w1/guests/attest.bin",
+  "attest_elf_bytes": null,
+  "consumer_elf": "run/w3-guests/consumer_erc20.bin",
+  "consumer_elf_bytes": null,
+  "risc0_dev_mode": "1",
+  "rows": [
+    {
+      "accepted": true,
+      "case": "attest_log_mainnet_usdt_transfer",
+      "claim_bytes": 2955,
+      "exec_ms": 162,
+      "message": "Attest",
+      "message_bytes": 3318,
+      "program": "attest",
+      "segments": 1,
+      "statement_id": "6c0ec6f0fcfa09c75134f0129d64d35b424079ab1129d0526f05c14aa9bb81ed",
+      "total_cycles": 524288,
+      "user_cycles": 190865
+    },
+    {
+      "accepted": true,
+      "case": "consumer_erc20_statement",
+      "exec_ms": 94,
+      "message": "Statement",
+      "program": "consumer_erc20",
+      "segments": 1,
+      "total_cycles": 131072,
+      "user_cycles": 43440
+    },
+    {
+      "accepted": true,
+      "case": "consumer_erc20_mark_consumed",
+      "exec_ms": 92,
+      "message": "MarkConsumed",
+      "program": "consumer_erc20",
+      "segments": 1,
+      "total_cycles": 65536,
+      "user_cycles": 20063
+    },
+    {
+      "accepted": true,
+      "case": "attest_log_mainnet_tx374_log254_255logs",
+      "claim_bytes": 41660,
+      "exec_ms": 334,
+      "message": "Attest",
+      "message_bytes": 41918,
+      "program": "attest",
+      "segments": 2,
+      "statement_id": "90c2a531a3b7b35aefb9f37602f3a8d06500f0a347317e5387457ac2836efff4",
+      "total_cycles": 2097152,
+      "user_cycles": 1447957
+    },
+    {
+      "accepted": true,
+      "case": "attest_storage_mainnet_usdt_slot1",
+      "claim_bytes": 7174,
+      "exec_ms": 207,
+      "message": "Attest",
+      "message_bytes": 7461,
+      "program": "attest",
+      "segments": 1,
+      "statement_id": "6754ae414ad05b76cf3cd2798fc25f4a6c86af0d5ee4dc06e5f3087d64b5088f",
+      "total_cycles": 1048576,
+      "user_cycles": 508778
+    },
+    {
+      "accepted": true,
+      "case": "attest_account_mainnet_usdc",
+      "claim_bytes": 3909,
+      "exec_ms": 149,
+      "message": "Attest",
+      "message_bytes": 4167,
+      "program": "attest",
+      "segments": 1,
+      "statement_id": "5e1fcf285a837206d769256abeb7ad04424354e54d5153869065d5ca28fafc67",
+      "total_cycles": 524288,
+      "user_cycles": 299487
+    },
+    {
+      "accepted": true,
+      "case": "attest_log_sepolia_gloas_with_header",
+      "claim_bytes": 3229,
+      "exec_ms": 146,
+      "message": "Attest",
+      "message_bytes": 3592,
+      "program": "attest",
+      "segments": 1,
+      "statement_id": "14e6f34dbd7078d63c404d02f01f90d47e7d500220b3a1327151d31e6e8a3c3c",
+      "total_cycles": 524288,
+      "user_cycles": 196981
+    },
+    {
+      "accepted": true,
+      "case": "attest_storage_sepolia_gloas_with_header",
+      "claim_bytes": 7076,
+      "exec_ms": 194,
+      "message": "Attest",
+      "message_bytes": 7363,
+      "program": "attest",
+      "segments": 1,
+      "statement_id": "532bc04639f1859a4bb06a80af04977bc8f0555014d85ee4535bf22e5306e70e",
+      "total_cycles": 1048576,
+      "user_cycles": 483333
+    }
+  ],
+  "tool": "e2e_consumer/attest_exec"
+}

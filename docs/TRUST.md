@@ -124,7 +124,7 @@ Our rule (approved 2026-11-12, `docs/DECISIONS.md` D-22). `lc_verify` checks, in
 4. Helios `verify` and `apply`, with Helios errors mapped to E01 to E06, E14 and E15.
 5. The store moved: a newer finalized slot or a newly known next committee (E14 otherwise).
 
-Tests: `vs2b_below_participation` and `vs2c_header_not_finalised` in `tests/adversarial`. Helios is used unmodified. The pre-checks are ours and sit in the audit surface.
+Tests: `vs2b_below_participation` and `vs2c_header_not_finalised` in `tests/adversarial`, both passing on the sequencer (`evidence/g2/onchain-20261112T115413Z.log`). Helios is used unmodified and is not audited by itself. The pre-checks are ours and sit in the audit surface.
 
 ## 8. Nullifier keying and griefing
 
@@ -148,7 +148,8 @@ State facts. The id of an account or storage statement does not depend on the bl
 - A wrong checkpoint.
 - An instance older than the weak-subjectivity period.
 - A change to the gloas rules that breaks the argument in section 3.
-- A bug in code we wrote (not yet audited) or in Helios.
+- A bug in code we wrote or in Helios (neither is audited yet; Helios has no audit of its own, `docs/REUSE.md` section 1).
+- RISC Zero advisory GHSA-g6qg-9j8p-7j87 (critical, 2026-11-11): an attacker who can produce one valid Groth16 receipt can have an arbitrary claim accepted. It affects `risc0-zkvm` below 3.1.0. LEZ v0.4.0-rc3 pins 3.0.5, so receipt checks on LEZ rest on an affected version until LEZ moves to 3.1.0.
 - LEZ itself: a bug in the sequencer's proof checking, or censorship of transactions.
 - A fork-change in Ethereum containers that our pinned Helios does not support. The follower then submits nothing, and the instance stalls until a new verifier is deployed (section 9).
 

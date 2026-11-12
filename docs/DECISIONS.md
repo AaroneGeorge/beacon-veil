@@ -2,7 +2,7 @@
 
 This log records each major design decision: the context, the options considered, the option chosen, and the rationale and trade-offs. It answers RFP-021 Supportability 11 (S11) and RFP-022 Supportability 4 (S4). It is updated when a decision is made and is current at each milestone delivery.
 
-Status of this draft: written 2026-11-12 from `PLAN.md` section 2 the coordinator notes (`W0-NOTES.md`) up to 11:40 UTC, and the bridge notes (decisions 1 to 11). Entries from section 2 of the plan are marked "plan". Entries from the build notes are marked "build" with a time. TODO-REFRESH: re-read the track notes on 2026-11-14 and 2026-11-15 and add or correct entries.
+Status of this draft: written 2026-11-12, corrected the same day for the Helios audit claim, the failsafe and the RISC Zero advisory. Written from `PLAN.md` section 2 the coordinator notes (`W0-NOTES.md`) up to 11:40 UTC, and the bridge notes (decisions 1 to 11). Entries from section 2 of the plan are marked "plan". Entries from the build notes are marked "build" with a time. TODO-REFRESH: re-read the track notes on 2026-11-14 and 2026-11-15 and add or correct entries.
 
 Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.0-rc3 is 1 per cycle, capped at 10,000,000 per transaction and per block (`MAX_GAS_EXEC` in `lez/programs/fee/core/src/market.rs`, read in the pinned tree on 2026-11-12). "Measured" means a raw output file exists in `evidence/`. "Estimate" means it does not.
 
@@ -17,7 +17,7 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 | D-07 | Instance address is the PDA of the config hash | plan | decided |
 | D-08 | Path A: prove privately, apply publicly, one transaction | plan (D2) | decided |
 | D-09 | Path B: public, sequencer-executed, measured now | plan (D3) | decided, B1 open |
-| D-10 | Three `Verify` variants | plan (D4) | V1 measured, V2 open |
+| D-10 | Three `Verify` variants | plan (D4) | V1 and V2 measured, V3 open |
 | D-11 | Interface contract and identifier derivations | plan | decided |
 | D-12 | `Attest` is a handler usable on public and private accounts | plan | decided |
 | D-13 | Typed error codes E01 to E15 | plan | decided |
@@ -42,12 +42,13 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 | D-32 | RFP-022 inbound design | plan | decided |
 | D-33 | Claim nullifier: per deposit and per bridge instance | plan, build | decided |
 | D-34 | RFP-022 outbound is staged | plan | decided, stage 1 in grant |
-| D-35 | Failsafe position | plan | open, TODO-OWNER |
+| D-35 | Failsafe: exits that avoid what broke | plan, revised 2026-11-12 | decided (L1, L2); milestone (L3 to L5); to confirm at M0 |
 | D-36 | Licence | plan | decided |
 | D-37 | Fresh codebase | plan | decided |
 | D-38 | Filing structure: two linked proposals | plan | decided, office hours may change it |
-| D-39 | Measured cost of V1 is about three times the plan estimate | build 2026-11-12 09:45 | open |
-| D-40 | The vault holds the RISC Zero verifier directly | build (bridge notes 4) | decided |
+| D-39 | Measured cost of V1, and the glue fix that lowered it | build 2026-11-12 | decided |
+| D-40 | The vault holds the verifier's emergency-stop wrapper | build (bridge notes 4), revised 2026-11-12 | decided |
+| D-51 | RISC Zero advisory GHSA-g6qg-9j8p-7j87 | coordinator 2026-11-12 | decided, platform risk open |
 | D-41 | Two-transaction claim | build (bridge notes 1) | decided |
 | D-42 | Root receipt address cannot be squatted; attest program id from config | build (bridge notes 2) | decided |
 | D-43 | Deposit root at a hand-fixed storage slot | build (bridge notes 5) | decided |
@@ -72,7 +73,7 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 - Chosen. Rust 1.98.1 (`rust-toolchain.toml`, same as LEZ rc3). `risc0-zkvm` and `risc0-build` pinned to `=3.0.5`. Guest builder image `RISC0_DOCKER_CONTAINER_TAG=r0.1.91.1`.
 - Options. Move to RISC Zero 3.1.0, released 2026-11-10.
 - Rationale. LEZ rc3 resolves to 3.0.5. A guest built with another version has a different image id and may not be accepted by the sequencer's verifier. 3.1.0 is semver-compatible and would be picked up silently, so the pin uses `=`.
-- Trade-off. We do not get 3.1.0 fixes until LEZ moves.
+- Trade-off. We do not get 3.1.0 fixes until LEZ moves. Revised 2026-11-12: advisory GHSA-g6qg-9j8p-7j87 makes 3.0.5 an affected version. See D-51.
 
 ## D-03. Guest dependency patches
 
@@ -94,19 +95,20 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 
 ## D-05. Light-client rules: Helios 0.12.0, unmodified
 
-- Context. RFP-021 R6 asks for mature, audited implementations and for a statement of what is reused and what is rewritten.
+- Context. RFP-021 R6 asks for mature, audited implementations and for a statement of what is reused and what is rewritten. Helios has no audit of its own (below).
 - Options. (a) Hand-written BLS pipeline sized for the 10M cap. (b) `r0vm-helios` (RISC Zero 2.0, Helios 0.8.3, no LICENSE file). (c) `helios-consensus-core` 0.12.0 from `a16z/helios`, unmodified.
 - Chosen. (c), tag `0.12.0` (commit `2af9b41887e069144ee56cd710f3ddca195473f8`), licence MIT. It supports Gloas and carries the 2026 committee-update fix.
-- Rationale. Only a private proof is free of the 10M cap (D-08), so the audited library can run as published. The audit surface shrinks to the instance program, the inclusion code and the glue. `r0vm-helios` is stale and has no licence file. We read `sp1-helios` and `r0vm-helios` for structure only and copy nothing.
-- Trade-off. Cost. Measured at 74.4M to 89.3M user cycles per update (D-39), more than the figures other applicants cite for hand-written code. V2 (D-10) is the planned mitigation.
-- Check. The first run on real mainnet data passed: Helios 0.12.0 runs unmodified inside a RISC Zero 3.0.5 guest, five consecutive updates, native and executor results byte-identical (`evidence/v1/v1-exec.json`). TODO-REFRESH: CI job that diffs the resolved Helios source against the tag.
+- Rationale. Only a private proof is free of the 10M cap (D-08), so the upstream library can run as published. The audit surface shrinks to the instance program, the inclusion code and the glue. `r0vm-helios` is stale and has no licence file. We read `sp1-helios` and `r0vm-helios` for structure only and copy nothing.
+- Trade-off. Cost. Measured at 46.1M to 65.5M user cycles per update (D-39), more than the figures other applicants cite for hand-written code. V2 (D-10) is the mitigation: 37.0M on the finality update.
+- Audit status, corrected 2026-11-12. Helios is not audited by itself. Its README at 0.12.0 (line 178) says "It has not been audited". The audits of SP1 Helios (Zellic, 2025-07, Helios 0.8.6) and R0VM Helios (zkSecurity, 2025-04, Helios 0.8.3, library out of scope) did not review it. What holds is that it is unmodified upstream code, maintained by a16z since 2022 and the core of both products. The audit scope must include the Helios functions we call. The `bls12_381` fork is not audited as a crate either (its README says so). Source: `research/10-failsafe-and-helios-audit.md` part B.
+- Check. Passed on real mainnet data: Helios 0.12.0 runs unmodified inside a RISC Zero 3.0.5 guest, five consecutive updates, native and executor results equal (`evidence/cost/raw/exec-lc.json`). TODO-REFRESH: CI job that diffs the resolved Helios source against the tag.
 
 ## D-06. Two programs: `attest` and `lc_verify`
 
 - Context. A deployed ELF is capped at 20 segments of 96 KiB, 1,966,080 bytes (LEZ rc3 `program/mod.rs:32`, `program_loader/core/src/lib.rs:23`).
 - Options. One program with everything. Two programs.
 - Chosen. Two. `attest` is small and long-lived: instance state, `Apply`, write-once header records, `Attest`. `lc_verify` is large and replaceable per Ethereum fork: Helios verify and apply, nothing else, deployed immutable. An instance's config lists its accepted verifier program ids.
-- Rationale. LEZ's smallest guests are about 340 KB. Helios with alloy needs most of the budget. The measured `lc_verify` user ELF is 750,844 bytes (8 of 20 segments, `evidence/v1/v1-exec.json`). A new Ethereum fork means a new verifier and a new instance under the same `attest` program id, so consumers keep one program id.
+- Rationale. LEZ's smallest guests are about 340 KB. Helios with alloy needs most of the budget. The measured `lc_verify` user ELF is 755,980 bytes (8 of 20 segments, `evidence/cost/cost.md`). A new Ethereum fork means a new verifier and a new instance under the same `attest` program id, so consumers keep one program id.
 - Fallback. One program gated by `from_own_program()`, the pattern LEZ's own programs use, if the cross-program check misbehaves. Not needed so far.
 
 ## D-07. Instance address is the PDA of the config hash
@@ -117,24 +119,24 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 
 ## D-08. Path A: prove privately, apply publicly, one transaction
 
-- Context. One update costs about 11M to 15M cycles hand-written and more with the audited library. The per-transaction cap is 10M.
+- Context. One update costs about 11M to 15M cycles hand-written and more with the unmodified Helios library. The per-transaction cap is 10M.
 - Chosen. `Verify` runs in a private actor of `lc_verify`. The privacy circuit composes its receipt with `env::verify`, so the cap does not apply to it. It sends a sync message `Apply` to the public instance actor, which checks the sender's program id against its config and the pre-state against its stored commitment. On chain: 409,764 verify gas, the `Apply` cycles, and 224,063 storage gas (`PRIVATE_VERIFY_GAS` = 409,764 and `PRIVATE_GAS_STOR` = 223,551 + 512 = 224,063 in `lez/programs/fee/core/src/market.rs`, read 2026-11-12; the source marks them provisional).
 - Rationale. A private sender keeps its program id (LEZ rc3 `execution_state.rs:1409-1428`), so the public side can trust the sender.
 - Trade-offs. Cost moves to the submitter's hardware. Each private update takes one of about four private slots in a block (storage gas is capped at 1,000,000 per block, so four transactions of 224,063 fit; our arithmetic). The RFP text expects tracking on the public path (021:366-373). D-09 answers that.
-- Check. T1.0 probe and the end-to-end test on `seq-dev`: TODO-REFRESH.
+- Check. Confirmed on `seq-dev` (T1.0): the private sender's program id reaches `Apply`. The chain test passed (`evidence/g1/chain.json`). Cost per update: 409,764 + 54,965 + 24,047 = 488,776 execution gas (4.9 percent of the cap) and 224,063 storage gas (`evidence/cost/cost.md` section 2).
 
 ## D-09. Path B: public, sequencer-executed, measured now
 
 - Context. The RFP calls in-program BLS12-381 verification the central feasibility question and asks for the cost of the public path.
 - Chosen. The tracked state is public and shared on both paths. Only where verification is paid differs. Path B is a second verifier id in the same config. B0 (sprint, required): run the monolithic `Verify` in the public executor on `seq-dev`, record cycles per phase and the cap rejection. B1 (milestone): split the pairing over three or more public transactions that end in the same `Apply`. Competitors' split figures are cited as theirs.
 - Rationale. It gives our own numbers for P8, and the proposal can lead with either path after the office-hours answer.
-- Status. B0: TODO-MEASURE.
+- Status. B0 measured: `Verify` is 4.6 to 6.5 times the cap (`evidence/cost/cost.md` section 3). Sent as a public transaction it is refused in the wallet's simulation, and when forced it is included and reverted (tx `43902552...c38d`, block 334; raw `b0-public-verify-2026-11-12.log`, TODO-REFRESH: copy into `evidence/cost/raw/`). B1 is milestone work.
 
 ## D-10. Three `Verify` variants
 
-- V1: Helios unmodified. V2: Helios rules with one function replaced, so non-signer keys arrive as witnessed affine points checked against their 48-byte encodings (estimated saving about 1M cycles per missing signer, from other applicants' figures). V3: hand-written `blst` pipeline, not built.
-- Rationale. V1 is the audit story. V2 is the likely operating variant. Each variant has the same interface, so the instance config can accept more than one.
-- Status. V1 measured. V2: TODO-MEASURE. V3 is milestone work if Logos prefers it.
+- V1: Helios unmodified. V2: the Helios rules transcribed from `verify_generic_update` (0.12.0, MIT) with one function replaced, the signature check. Helios decompresses the signature, which already rejects points outside the subgroup, then runs the subgroup check again (8.77M cycles). V2 drops the repeat. `apply_*` is still Helios's. (The plan's version of V2, witnessed non-signer keys, is not built.) V3: hand-written `blst` pipeline, not built.
+- Rationale. V1 is the audit story. V2 is the likely operating variant. Each variant has the same interface, so the instance config can accept more than one. V2 is not unmodified Helios, so it adds one short function to the audit surface.
+- Status. V1 and V2 measured. V2: 37,032,744 cycles on the finality update, 45.6M to 49.9M on the period updates, 717,088-byte user ELF (`v2-exec.json`, TODO-REFRESH: copy into `evidence/cost/raw/`). A differential test (`tests/e2e_chain/tests/v1_v2.rs`) gives V1 and V2 the same post-store or the same error code on the real chain and on 165 tampered updates. V3 is milestone work if Logos prefers it.
 
 ## D-11. Interface contract and identifier derivations
 
@@ -245,7 +247,7 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 ## D-31. Proving environment: CPU only, proving windows
 
 - Chosen. No local GPU build (4 GB VRAM is too small for large segments, estimate). Real proofs run only in agreed windows, niced, one at a time, with wall time and peak memory recorded. All other work uses `RISC0_DEV_MODE=1`.
-- Rationale. The build machine is shared and has 15 GiB of RAM. Calibration sets the real rate: TODO-MEASURE (`evidence/calibration.json`).
+- Rationale. The build machine is shared and has 15 GiB of RAM. Calibration sets the real rate: TODO-MEASURE (`evidence/calibration/`).
 
 ## D-32. RFP-022 inbound design
 
@@ -265,12 +267,15 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 - In the sprint the anchor is `StubLezAnchor`, an owner-posted stub, and every document names it as a stub. The milestone is worded "stage-1 anchor agreed at M0", never "trustless release".
 - Later. A dispute proof in the zkVM replaces the arbiter, then direct verification once LEZ headers commit to state.
 
-## D-35. Failsafe position
+## D-35. Failsafe: exits that avoid what broke
 
-- Context. 022 Security 9 asks for a failsafe that is not a backdoor, or a reasoned statement that none should exist.
-- Working position (plan, `07` section 4.3). No failsafe beyond the freeze authority, rolling caps and the release delay. A refund of unclaimed deposits would need a proof that they were not claimed on LEZ, which is the proof path that failed. The depositor-claims-own-entitlement rule rules out an admin-driven recovery.
-- Conflicting draft. `docs/bridge/TRUST.md` section 6 (2026-11-12) proposes that a depositor of a not-yet-claimed deposit proves the opening of their leaf to a recovery verifier and receives the asset back on Ethereum. That needs an argument for how the vault learns the deposit was not minted on LEZ. Without it the same deposit could be paid out on both chains.
-- Status. Open. TODO-OWNER: choose one position before filing. To be agreed with Logos at M0.
+- Context. 022 Sec9 asks for a failsafe that is not a backdoor, or a reasoned statement that none should exist. Sec8 forbids changing what the bridge accepts after deployment. The bridge has one trustless direction: LEZ reads finalised Ethereum state through RFP-021. Ethereum learns LEZ state only through the anchor (a stub now, optimistic with an arbiter at M4).
+- Options. (a) A depositor proves the opening on Ethereum and is refunded (draft in `docs/bridge/TRUST.md`, 2026-11-12). (b) A refund that needs a non-mint proof through the anchor. (c) A refund after a long "LEZ halted" timeout. (d) A freeze only, with no failsafe. (e) Layered exits that avoid the broken component.
+- Rejected. (a) pays a deposit twice: the vault cannot see that it was claimed on LEZ. (c) has the same flaw for claims made after the last anchored state, and the vault cannot tell a halted LEZ from a silent anchor. (d) leaves the whole escrow locked or drainable if the proof system breaks, as RISC Zero advisory GHSA-g6qg-9j8p-7j87 (2026-11-11) shows can happen.
+- Chosen. (e). L1: the vault calls the RISC Zero verifier through its emergency-stop wrapper; anyone with a proof of exploit can stop it, and it never restarts. L2: an open release route checks the `burn_proof` statement with plain SHA-256 in the vault; it shares the nullifier map with `release`. L3: void on Ethereum and re-credit on LEZ for burns that cannot be released (RFP-021 only). L4: cancel an unclaimed deposit on LEZ into a release (anchor trust). L5: after a permanent mint latch, refund an unclaimed deposit on Ethereum against the anchored claimed-nullifier set (anchor trust). Each exit is claimed by the owner with the seed-derived secret and pays only the destination bound in it.
+- Not offered, with reasons. No exit for the escrow if the anchor fails. No exodus if LEZ halts. No refund of unclaimed deposits after an inbound-verification fault before L5 exists. These funds stay in the vault, frozen, and are not lost to an attacker beyond the caps.
+- Trade-offs. L2 reveals the user's own burn-to-release link, so it is opt-in. L1 lets RISC Zero's guardian halt the zero-knowledge route; L2 keeps exits open. L2 and L5 are new code on the payout path and go in the audit scope.
+- Status. L1 and the L2 stub in the sprint (vault v3). L3 and L4 at M4. L5 designed at M4, built at M6 only if the stage-1 anchor is agreed at M0. Confirm with Logos at M0. Full analysis: `research/10-failsafe-and-helios-audit.md`.
 
 ## D-36. Licence
 
@@ -284,16 +289,18 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 
 - Chosen. Two issues, one per RFP, each stating the combined price in its first paragraph. Each submission under the Terms targets one RFP. Office hours of 2026-11-13 may change this: TODO-OWNER.
 
-## D-39. Measured cost of V1 is about three times the plan estimate
+## D-39. Measured cost of V1, and the glue fix that lowered it
 
-- Date. 2026-11-12 09:45 UTC. Measured on an i5-10300H, RISC Zero 3.0.5 executor, dev mode, five real mainnet updates: 74,446,829 to 89,340,805 user cycles per update (plan estimate: about 28M at full participation, from other applicants' figures). Raw: `evidence/v1/v1-exec.json`.
-- Consequences. A public single-transaction update cannot fit the 10M cap with V1 (an update is about 7.4 to 8.9 times the cap). Path A remains the way to run the audited code. Real proving time rises. V2 and phase-level measurement (B0) are the next steps. Risk K13 in the plan covers it.
-- Status. Open. TODO-MEASURE: phase breakdown, V2, calibration rate.
+- Date. 2026-11-12. Measured on an i5-10300H, RISC Zero 3.0.5 executor, dev mode, five real mainnet updates. The first run (09:45 UTC) gave 74,446,829 to 89,340,805 user cycles per update, about three times the plan estimate of 28M (raw: `.tmp/w1/evidence/v1-exec.json` on the build machine). A cycle trace showed the cause was our glue and not Helios: `tree_hash` packs every byte of a 48-byte key separately (about 11M cycles per committee root), and the glue hashed committees three times per update.
+- Fix. Glue only, Helios unmodified: direct SSZ committee roots over the accelerated `sha2`, raw witness bytes, no rehash of an unchanged next committee. A native test checks equality with `tree_hash`. `Init` also stopped calling Helios `verify_bootstrap` (11M cycles for its committee hash, above the public cap) and runs the same three checks in `lc::bootstrap_valid`, cross-checked against Helios by a native test (W1 notes).
+- Result. 46,099,256 (finality update) to 65,467,587 (handoff with next committee) user cycles per update. `Init` 4,928,793. `Apply` 54,965 (`evidence/cost/cost.md`). The BLS phases are 36.84M of the 46.1M on the finality update, so most of the cost is Helios's own BLS work.
+- Consequences. A public single-transaction update cannot fit the 10M cap with V1 (4.6 to 6.5 times the cap). Path A remains the way to run Helios unmodified. V2 (D-10) saves 8.77M cycles per update. Real proving time is still TODO-MEASURE (`evidence/calibration/`).
 
-## D-40. The vault holds the RISC Zero verifier directly
+## D-40. The vault holds the verifier's emergency-stop wrapper
 
-- Source. Bridge notes 4. `PLAN.md` 2.4 said router. Chosen: the vault holds the RISC Zero Groth16 verifier 3.0.0 (Sepolia `0x2a098988600d87650Fb061FfAff08B97149Fa84D`, from `risc0-ethereum` v3.0.1) as an immutable and does not use the `RiscZeroVerifierRouter`, whose owner can add or remove verifiers.
-- Rationale. 022 Security 8: no party may change what the bridge accepts after deployment. A new proof system means a new vault and a migration.
+- Source. Bridge notes 4, revised 2026-11-12. `PLAN.md` 2.4 said router. The first sprint decision was to hold the RISC Zero Groth16 verifier 3.0.0 directly, because the `RiscZeroVerifierRouter` has an owner who can add or remove verifiers.
+- Revised. The vault holds the verifier's emergency-stop wrapper, an immutable address, and not the raw verifier. The wrapper can only stop verification, never change it, so Sec8 holds. Advisory GHSA-g6qg-9j8p-7j87 affects verifier 3.0.0. Vault v3 uses verifier 3.1.0: Sepolia verifier `0x8c915b5071206C6E328BC18529586c513408aB3b`, emergency stop `0xA1DCB16cb765b3CA71605339F0C37Bfe0F60bA29`. Vaults v1 and v2 use 3.0.0 and are deprecated testnet artefacts.
+- Rationale. 022 Security 8: no party may change what the bridge accepts after deployment. A new proof system means a new vault and a migration. The stop-only wrapper also gives L1 of the failsafe (D-35).
 
 ## D-41. Two-transaction claim
 
@@ -345,3 +352,11 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 - Chosen. `programs/bridge/src/bin/bridge_dev_source.rs` forwards any statement unchecked. It exists only for the local round trip (`tools/bridge_cli/e2e_local.sh`) against an anvil vault that no light client follows.
 - Why it is safe to exist. By D-42 it can write only receipts keyed by its own program id. Only a config that names it as `attest_program` reads those, and the local config does so on purpose. A real deployment names the real `attest` program. The Sepolia run uses `attest-root` through RFP-021.
 - Rule. Every document that mentions a bridge run says which source it used. It is never part of a deployment that holds value.
+
+## D-51. RISC Zero advisory GHSA-g6qg-9j8p-7j87
+
+- Date. 2026-11-12. Critical, published 2026-11-11 (companion GHSA-mm6c-35cm-g4x2 for `risc0-ethereum`), verified by the coordinator with `gh api`. An attacker who can produce one valid Groth16 receipt can have an arbitrary claim accepted. Affected: `risc0-zkvm` below 3.1.0, and every Groth16 verifier up to 3.0.0. Fixed in 3.1.0 and verifier 3.1.0.
+- Our pins. `risc0-zkvm` 3.0.5 in `Cargo.lock`. LEZ v0.4.0-rc3 pins the same, so the platform is affected.
+- Chosen. (1) Vault v3 uses verifier 3.1.0 through its emergency-stop wrapper (D-40). (2) `burn_proof` is proven with RISC Zero 3.1.0. (3) The LEZ-side programs stay on 3.0.5, because a different version gives different image ids that LEZ may not accept, and move to 3.1.0 when LEZ does. (4) Both proposals name the platform risk in one line. (5) Vaults v1 and v2 are deprecated testnet artefacts and say so in the evidence notes.
+- Trade-off. Until LEZ moves, inbound claims and RFP-021 Path A rely on receipt checks of an affected version. We cannot remove this risk.
+- Status. Platform risk open. TODO-REFRESH: vault v3 deployment and the 3.1.0 `burn_proof` build.

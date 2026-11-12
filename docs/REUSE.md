@@ -8,17 +8,17 @@ Status of this draft: written 2026-11-12. TODO-REFRESH: re-count lines on 2026-1
 
 | Part | Source | Audit status of the reused code |
 |---|---|---|
-| Light-client rules: sync-committee signature check, committee handoff, finality branch, execution payload branch | `helios-consensus-core` 0.12.0 from `a16z/helios`, used unmodified (variant V1, `docs/DECISIONS.md` D-05) | The Helios consensus code has been audited. The audit reports are not ours and we have not re-read them. TODO-OWNER: link the report that covers the 0.12.0 consensus crate, or state the earlier version it covers |
-| BLS12-381 and SHA-256 inside the guest | RISC Zero accelerator forks, patched in by `[patch.crates-io]` | RISC Zero's own code. We make no claim about its audits |
+| Light-client rules: sync-committee signature check, committee handoff, finality branch, execution payload branch | `helios-consensus-core` 0.12.0 from `a16z/helios`, used unmodified (variant V1, `docs/DECISIONS.md` D-05) | **Not audited by itself.** Its README at 0.12.0 says "It has not been audited". Open source, maintained by a16z since 2022, and the core of SP1 Helios and R0VM Helios. The audits of those products (Zellic, 2025-07, Helios 0.8.6; zkSecurity, 2025-04, Helios 0.8.3, library out of scope) did not review it, and zkSecurity recommends a full audit. Used unmodified, so the auditor reads only the functions we call |
+| BLS12-381 and SHA-256 inside the guest | RISC Zero forks of `bls12_381` and `sha2`, patched in by `[patch.crates-io]` | Not audited as crates: the `bls12_381` fork's README says it has not been reviewed or audited. The accelerator circuits they call were audited by Veridise (2024), at earlier commits |
 | Merkle-Patricia proofs, RLP, keccak | `alloy-trie` 0.9.9, `alloy-rlp` 0.3.17, `alloy-primitives` 1.7.3: the same calls Helios makes in `core/src/execution/proof.rs` | Widely used. No audit claim by us |
 | LEZ SDK, wallet, sequencer | LEZ v0.4.0-rc3 crates | The platform |
 | Groth16 verification on Ethereum | `risc0-ethereum` v3.0.1 verifier contracts | RISC Zero's code |
 | Vault safe transfers, reentrancy guard, roles | OpenZeppelin Contracts v5.7.0 | OpenZeppelin's audits |
-| Instance program `attest`, the glue around Helios, header records, inclusion verification entry point, predicates, statement ids, reference consumer, follower, CLI, bridge program, burn guest, vault | Ours | **Not audited. This is the audit surface** |
+| Instance program `attest`, the glue around Helios, header records, inclusion verification entry point, predicates, statement ids, reference consumer, follower, CLI, bridge program, burn guest, vault | Ours | **Not audited. This is the audit surface, together with the Helios functions we call** |
 
 Consequence. We do not rewrite the signature, committee and finality code. The audit covers our instance and inclusion logic and the glue that calls Helios. The glue includes the three pre-checks of `docs/TRUST.md` section 7, which exist because Helios `verify_*` does not enforce the quorum or finality by itself.
 
-Cost of reuse. The audited code runs only on the private path, where the 10M cap does not apply. It costs 74.4M to 89.3M user cycles per update, measured (`evidence/v1/v1-exec.json`). A hand-written pipeline sized for the public cap costs 11M to 15M cycles by other applicants' figures, not ours. The proposal states this trade (V1, V2, V3 in `docs/DECISIONS.md` D-10).
+Cost of reuse. Helios runs only on the private path, where the 10M cap does not apply. It costs 46.1M to 65.5M user cycles per update, measured on five real mainnet updates (`evidence/cost/cost.md`, `evidence/cost/raw/exec-lc.json`). Of the 46.1M on the finality update, 36.8M is BLS arithmetic inside Helios and the rest is our glue. A hand-written pipeline sized for the public cap costs 11M to 15M cycles by other applicants' figures, not ours. The proposal states this trade (V1, V2, V3 in `docs/DECISIONS.md` D-10).
 
 New code, lines on 2026-11-12 09:53 UTC (command: `find <dir> -name '*.rs' -o -name '*.sol' | xargs cat | wc -l`, comments and blank lines included, generated SDK sources excluded; all of it still changing):
 
@@ -56,12 +56,12 @@ Our own code is MIT OR Apache-2.0 (`LICENSE-MIT`, `LICENSE-APACHE`), as both RFP
 | `sha2` 0.9.9 (risc0/RustCrypto-hashes) | tag `sha2-v0.9.9-risczero.0`, commit `c2b5d71c` | MIT OR Apache-2.0 | `sha2/LICENSE-*` | `[patch.crates-io]` (Helios uses sha2 0.9) |
 | `keccak` 0.2.0 (logos-blockchain/sponges) | rev `3a56e99771be` | Apache-2.0 OR MIT | `keccak/Cargo.toml`, `keccak/LICENSE-*` | `[patch.crates-io]`, the patch LEZ rc3 uses |
 | `blst` (risc0/blst) | tag `v0.3.16-risczero.0`, commit `7d1fc3e6` | Apache-2.0 | `LICENSE` | Not used in the prototype (variant V3 only) |
-| `risc0-zkvm`, `risc0-build` | 3.0.5 | Apache-2.0 | crate manifests | Cargo dependencies |
+| `risc0-zkvm`, `risc0-build` | 3.0.5 | Apache-2.0 | crate manifests | Cargo dependencies. Advisory GHSA-g6qg-9j8p-7j87 (critical, 2026-11-11) affects versions below 3.1.0. LEZ rc3 pins 3.0.5, so our LEZ-side guests stay on 3.0.5 until LEZ moves. `burn_proof` and vault v3 use 3.1.0 |
 | LEZ v0.4.0-rc3 crates (`lee_core`, `lee`, `wallet`, `common`, `sequencer_service_rpc`, `program_loader_core`) | tag `v0.4.0-rc3`, commit `bafd07be` | MIT (file); the workspace manifest says "MIT or Apache-2.0" | `LICENSE` (copyright 2025 Vac); only an MIT file is in the tree | Cargo git dependencies |
 | `alloy-trie` | 0.9.9 | MIT OR Apache-2.0 | crate manifest | Dependency of `attest_inclusion` |
 | `alloy-rlp` | 0.3.17 | MIT OR Apache-2.0 | crate manifest | Dependency of `attest_inclusion` |
 | `alloy-primitives` | 1.7.3 | MIT OR Apache-2.0 | crate manifest | Dependency |
-| `risc0-ethereum` | tag `v3.0.1`, commit `365e7b2d` | Apache-2.0 | `LICENSE` | Git submodule in `contracts/lib` |
+| `risc0-ethereum` | tag `v3.0.1`, commit `365e7b2d` | Apache-2.0 | `LICENSE` | Git submodule in `contracts/lib`. The Groth16 verifier 3.0.0 it ships is affected by the advisory. Vault v3 uses verifier 3.1.0 behind its emergency-stop wrapper |
 | OpenZeppelin Contracts | tag `v5.7.0`, commit `cab19933` | MIT | `LICENSE` | Git submodule in `contracts/lib` |
 | `forge-std` | v1.17.0 | MIT OR Apache-2.0 | `LICENSE-MIT`, `LICENSE-APACHE` | Git submodule, tests only |
 | `logos-module-builder` | 0.3.2, commit `4b799827` | MIT and Apache-2.0 | `LICENSE-MIT`, `LICENSE-APACHE-v2` | `#rust` template for `attest_follower_module` |

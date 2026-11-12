@@ -1,0 +1,81 @@
+{
+  "cap_bytes": 1966080,
+  "elf_path": ".tmp/w1/v2-target/riscv32im-risc0-zkvm-elf/release/lc_verify",
+  "image_id": "401ce0caacf23bbed80977861ed1e90634421bdc02b142dc927368dd275c1e17",
+  "measured": true,
+  "program_binary_bytes": 749512,
+  "steps": [
+    {
+      "executor_ms": 3889,
+      "handoff": false,
+      "head_slot": 15605824,
+      "native_ms": 80,
+      "new_slot": true,
+      "participation": 511,
+      "period": 1905,
+      "segments": 47,
+      "step": "update[0]",
+      "total_cycles_padded": 49283072,
+      "update_bytes": 26914,
+      "user_cycles": 45573595
+    },
+    {
+      "executor_ms": 5287,
+      "handoff": true,
+      "head_slot": 15613952,
+      "native_ms": 83,
+      "new_slot": true,
+      "participation": 512,
+      "period": 1906,
+      "segments": 50,
+      "step": "update[1]",
+      "total_cycles_padded": 52428800,
+      "update_bytes": 26926,
+      "user_cycles": 48730919
+    },
+    {
+      "executor_ms": 4096,
+      "handoff": true,
+      "head_slot": 15622144,
+      "native_ms": 83,
+      "new_slot": true,
+      "participation": 511,
+      "period": 1907,
+      "segments": 52,
+      "step": "update[2]",
+      "total_cycles_padded": 53608448,
+      "update_bytes": 26920,
+      "user_cycles": 49864139
+    },
+    {
+      "executor_ms": 4209,
+      "handoff": true,
+      "head_slot": 15631808,
+      "native_ms": 85,
+      "new_slot": true,
+      "participation": 512,
+      "period": 1908,
+      "segments": 50,
+      "step": "update[3]",
+      "total_cycles_padded": 52428800,
+      "update_bytes": 26922,
+      "user_cycles": 48730021
+    },
+    {
+      "executor_ms": 3714,
+      "handoff": false,
+      "head_slot": 15637568,
+      "native_ms": 38,
+      "new_slot": true,
+      "participation": 512,
+      "period": 1908,
+      "segments": 38,
+      "step": "finality_update_15637644",
+      "total_cycles_padded": 39845888,
+      "update_bytes": 2109,
+      "user_cycles": 37032744
+    }
+  ],
+  "user_elf_bytes": 717088,
+  "what": "lc_verify V1 (Helios 0.12.0 unmodified) on real mainnet fixtures, RISC Zero 3.0.5 executor"
+}
