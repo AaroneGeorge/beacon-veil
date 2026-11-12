@@ -1,0 +1,6 @@
+G2 CI run: PASS
+url: https://github.com/agent-lechuuu/beacon-veil-staging/actions/runs/43224584450
+commit: 764acf9
+completed: 2026-11-12T13:42Z
+jobs: fmt+clippy+nextest (dev mode) success; guest build (docker r0.1.91.1) + image-id check success; forge test success
+note: the staging repo is private until the owner publishes the public repo; the run is re-done there.
