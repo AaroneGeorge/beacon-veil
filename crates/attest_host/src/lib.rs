@@ -746,8 +746,9 @@ pub async fn attest_with(
     let payer = account_from_env_or_label(&w, "BV_PAYER", "bv-payer")?;
     let mut accounts = vec![
         AccountIdentity::Public(payer).select_program_actor_state(ids.attest),
-        AccountIdentity::PublicNoSign(record_id(&ids.attest, instance, record.slot))
-            .select_program_actor_state(ids.attest),
+        // Declared as the attest PDA (admission evidence), so a record that does not exist reaches `CheckHeader` and
+        // fails with E02 instead of the runtime's "declared public but not admitted".
+        pda(ids.attest, record_seed(instance, record.slot)).select_program_actor_state(ids.attest),
     ];
     if !extra.iter().any(|m| m.identity.account_id() == deliver_to.account_id) {
         accounts.push(deliver_to_mention.unwrap_or_else(|| {

@@ -1,0 +1,28 @@
+   Compiling attest_inclusion v0.1.0 (/home/lechuuu/hackathons/logos-rfp/build/repo/crates/attest_inclusion)
+   Compiling consumer_erc20_program v0.1.0 (/home/lechuuu/hackathons/logos-rfp/build/repo/programs/consumer_erc20)
+   Compiling attest_host v0.1.0 (/home/lechuuu/hackathons/logos-rfp/build/repo/crates/attest_host)
+   Compiling e2e_consumer v0.1.0 (/home/lechuuu/hackathons/logos-rfp/build/repo/tests/e2e_consumer)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 9.31s
+warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+     Running tests/e2e_consumer.rs (/home/lechuuu/hackathons/logos-rfp/build/target/debug/deps/e2e_consumer-dba6724d80d38a25)
+
+running 1 test
+test g3_consumer_accepts_once_and_refuses_replay ... reusing instance 3uFZPqUY74dtbfWYWeY2Jawjmos7zPCbWf4Vgvu8XQvt
+consumer instance 52zHjQCHVJPrL6p5sgdfAPQEeLF2Bwp1FpuKvfYx76Dy: init tx b3c9480a7cbf6526127e3983eebea988a4ee533ad84ed16508ec205b05930887 gas Some(10000000)
+tx 1 e012fd36571f47d26abbbc98078f897fa81312b1acfc565b527b48e52d693cef accepted: consumer count 1 total 0x0000000000000000000000000000000000000000000000000000000006520467
+
+thread 'main' (1) panicked at crates/attest_core/src/error.rs:120:9:
+ESA:E11
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+tx 2 refused: attest: The transaction reverts when simulated and would still pay its fee, so it was not sent: Failed to execute program: Guest panicked: ESA:E11: E11_ALREADY_CONSUMED
+
+thread 'main' (1) panicked at crates/attest_core/src/error.rs:120:9:
+ESA:E11
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+tx 2 sent with allow-revert: attest (allow revert): tx a3a5c11ea75377bfcc6bea5f743b5534f0871df7886f84d2e6218cdc5fbc8f5d reverted in block 382 (the panic code is in the sequencer log)
+G3RESULT {"attest_program":"CvWQWXteVtA67suCS32ovZZ4CxbwK7YcQT1fSfpMnR43","consumer_instance":"52zHjQCHVJPrL6p5sgdfAPQEeLF2Bwp1FpuKvfYx76Dy","consumer_program":"8kvsH5D1XVRkoY7z5JoXowT7hq5NM2p3s9uwTGZ9h4Dg","exec_hash":"5a500b1d7ec30eb2859694f9e26616ef7693921bccc6b2ef0da87e998587b410","exec_number":26397891,"instance":"3uFZPqUY74dtbfWYWeY2Jawjmos7zPCbWf4Vgvu8XQvt","nullifier":"AjZELpV999c4yYyWhaFe8ABkHesrwdHr5jt6SjRYV3K5","record_slot":15637568,"statement_id":"6c0ec6f0fcfa09c75134f0129d64d35b424079ab1129d0526f05c14aa9bb81ed","tx1":{"accepted":true,"consumer_count_after":1,"consumer_count_before":0,"consumer_total_after":"0000000000000000000000000000000000000000000000000000000006520467","gas_limit_declared":10000000,"tx":"e012fd36571f47d26abbbc98078f897fa81312b1acfc565b527b48e52d693cef"},"tx2_sent":{"accepted":false,"consumer_state_unchanged":true,"error":"attest (allow revert): tx a3a5c11ea75377bfcc6bea5f743b5534f0871df7886f84d2e6218cdc5fbc8f5d reverted in block 382 (the panic code is in the sequencer log)"},"tx2_simulated":{"accepted":false,"code":"E11_ALREADY_CONSUMED"}}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 98.31s
+

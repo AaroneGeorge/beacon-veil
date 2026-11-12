@@ -1,0 +1,1 @@
+Earlier G3 run (PASS) against attest/lc_verify from W1 local bins (attest.bin sha256 8e3386cd..., lc_verify.bin 4bf46e87...) and consumer_erc20.bin sha256 2fb35162... (local risc0-build, not the reproducible release). Superseded by ../run.json (release bins bf95e359).
