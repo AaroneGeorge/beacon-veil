@@ -74,7 +74,7 @@ json.dump({"run": os.path.basename(os.path.dirname(out)), "started_utc": datetim
            "machine": platform.platform(), "cpu": sh("sh", "-c", "grep -m1 'model name' /proc/cpuinfo | cut -d: -f2")},
           open(out, "w"), indent=2)
 PY
-  echo "run A started: pid $pid, log $LOG"; cat "$RUN_DIR/run.json"
+  echo "$(basename "$RUN_DIR") started: pid $pid, log $LOG"; cat "$RUN_DIR/run.json"
   ;;
 status)
   if pid_alive; then echo "running: pid $(cat "$RUN_DIR/followerd.pid")"; else echo "NOT running"; fi
