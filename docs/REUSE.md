@@ -1,0 +1,95 @@
+# Reuse assessment (RFP-021 R6)
+
+RFP-021 Reliability 6 asks for a statement of what is reused, what is rewritten, and the cost and audit-surface consequences of that split. This file is that statement. It also lists the licence of every reused component, read from the file in the pinned source tree on 2026-11-12.
+
+Status of this draft: written 2026-11-12. TODO-REFRESH: re-count lines on 2026-11-15 and re-read `Cargo.lock` for the final dependency set.
+
+## 1. The split
+
+| Part | Source | Audit status of the reused code |
+|---|---|---|
+| Light-client rules: sync-committee signature check, committee handoff, finality branch, execution payload branch | `helios-consensus-core` 0.12.0 from `a16z/helios`, used unmodified (variant V1, `docs/DECISIONS.md` D-05) | The Helios consensus code has been audited. The audit reports are not ours and we have not re-read them. TODO-OWNER: link the report that covers the 0.12.0 consensus crate, or state the earlier version it covers |
+| BLS12-381 and SHA-256 inside the guest | RISC Zero accelerator forks, patched in by `[patch.crates-io]` | RISC Zero's own code. We make no claim about its audits |
+| Merkle-Patricia proofs, RLP, keccak | `alloy-trie` 0.9.9, `alloy-rlp` 0.3.17, `alloy-primitives` 1.7.3: the same calls Helios makes in `core/src/execution/proof.rs` | Widely used. No audit claim by us |
+| LEZ SDK, wallet, sequencer | LEZ v0.4.0-rc3 crates | The platform |
+| Groth16 verification on Ethereum | `risc0-ethereum` v3.0.1 verifier contracts | RISC Zero's code |
+| Vault safe transfers, reentrancy guard, roles | OpenZeppelin Contracts v5.7.0 | OpenZeppelin's audits |
+| Instance program `attest`, the glue around Helios, header records, inclusion verification entry point, predicates, statement ids, reference consumer, follower, CLI, bridge program, burn guest, vault | Ours | **Not audited. This is the audit surface** |
+
+Consequence. We do not rewrite the signature, committee and finality code. The audit covers our instance and inclusion logic and the glue that calls Helios. The glue includes the three pre-checks of `docs/TRUST.md` section 7, which exist because Helios `verify_*` does not enforce the quorum or finality by itself.
+
+Cost of reuse. The audited code runs only on the private path, where the 10M cap does not apply. It costs 74.4M to 89.3M user cycles per update, measured (`evidence/v1/v1-exec.json`). A hand-written pipeline sized for the public cap costs 11M to 15M cycles by other applicants' figures, not ours. The proposal states this trade (V1, V2, V3 in `docs/DECISIONS.md` D-10).
+
+New code, lines on 2026-11-12 09:53 UTC (command: `find <dir> -name '*.rs' -o -name '*.sol' | xargs cat | wc -l`, comments and blank lines included, generated SDK sources excluded; all of it still changing):
+
+| Directory | Lines |
+|---|---|
+| `crates/attest_core` | 1,251 |
+| `crates/attest_inclusion` | 1,136 |
+| `crates/attest_host` | 581 |
+| `crates/follower` | 2,011 |
+| `crates/attest_cli` | 525 |
+| `programs/` (four programs) | 1,930 |
+| `guests/` | 27 |
+| `tools/` | 2,630 |
+| `tests/` | 1,884 |
+| `contracts/src` | 422 |
+| `contracts/test` | 648 |
+| `modules/attest_follower_module/rust-lib` | 376 |
+
+TODO-REFRESH: the consensus-critical subset (`attest_core` `lc.rs` and `rules.rs`, `attest_inclusion`, `programs/attest`, `programs/lc_verify`) is the number the audit quote needs. Count it on the frozen commit.
+
+## 2. The `ethereum_hashing` pin
+
+The root `Cargo.toml` patches `ethereum_hashing` to `github.com/ncitron/ethereum_hashing`, rev `7ee70944ed4fabe301551da8c447e4f4ae5e6c35`. This is the fork of the Helios author. It is the same patch, at the same revision, as `[patch.crates-io]` in Helios 0.12.0's own workspace (`Cargo.toml:134` at tag `0.12.0`). The fork drops `ring` and uses `sha2` 0.10, so the RISC Zero SHA-256 accelerator applies in the guest. Without it Helios pulls `ring`, which does not build for the zkVM target. Licence: Apache-2.0 (`LICENSE` and `Cargo.toml` in the pinned checkout). Decision: `docs/DECISIONS.md` D-04.
+
+## 3. Licence of every reused component
+
+Our own code is MIT OR Apache-2.0 (`LICENSE-MIT`, `LICENSE-APACHE`), as both RFPs require. "File" means a licence file exists in the pinned source tree.
+
+| Component | Pin | Licence | Evidence | How used |
+|---|---|---|---|---|
+| `helios-consensus-core` (a16z/helios) | tag `0.12.0`, commit `2af9b418` | MIT | `LICENSE`, copyright a16z | Cargo git dependency, unmodified |
+| `ethereum_hashing` (ncitron fork) | rev `7ee70944` | Apache-2.0 | `LICENSE`, `Cargo.toml` | `[patch.crates-io]` |
+| `bls12_381` (risc0/zkcrypto-bls12_381) | tag `bls12_381/v0.8.0-risczero.1`, commit `a3192e1b` | MIT OR Apache-2.0 | `LICENSE-MIT`, `LICENSE-APACHE` | `[patch.crates-io]` |
+| `sha2` 0.10.8 (risc0/RustCrypto-hashes) | tag `sha2-v0.10.8-risczero.0`, commit `244dc3b0` | MIT OR Apache-2.0 | `sha2/Cargo.toml`, `sha2/LICENSE-*` | `[patch.crates-io]` |
+| `sha2` 0.9.9 (risc0/RustCrypto-hashes) | tag `sha2-v0.9.9-risczero.0`, commit `c2b5d71c` | MIT OR Apache-2.0 | `sha2/LICENSE-*` | `[patch.crates-io]` (Helios uses sha2 0.9) |
+| `keccak` 0.2.0 (logos-blockchain/sponges) | rev `3a56e99771be` | Apache-2.0 OR MIT | `keccak/Cargo.toml`, `keccak/LICENSE-*` | `[patch.crates-io]`, the patch LEZ rc3 uses |
+| `blst` (risc0/blst) | tag `v0.3.16-risczero.0`, commit `7d1fc3e6` | Apache-2.0 | `LICENSE` | Not used in the prototype (variant V3 only) |
+| `risc0-zkvm`, `risc0-build` | 3.0.5 | Apache-2.0 | crate manifests | Cargo dependencies |
+| LEZ v0.4.0-rc3 crates (`lee_core`, `lee`, `wallet`, `common`, `sequencer_service_rpc`, `program_loader_core`) | tag `v0.4.0-rc3`, commit `bafd07be` | MIT (file); the workspace manifest says "MIT or Apache-2.0" | `LICENSE` (copyright 2025 Vac); only an MIT file is in the tree | Cargo git dependencies |
+| `alloy-trie` | 0.9.9 | MIT OR Apache-2.0 | crate manifest | Dependency of `attest_inclusion` |
+| `alloy-rlp` | 0.3.17 | MIT OR Apache-2.0 | crate manifest | Dependency of `attest_inclusion` |
+| `alloy-primitives` | 1.7.3 | MIT OR Apache-2.0 | crate manifest | Dependency |
+| `risc0-ethereum` | tag `v3.0.1`, commit `365e7b2d` | Apache-2.0 | `LICENSE` | Git submodule in `contracts/lib` |
+| OpenZeppelin Contracts | tag `v5.7.0`, commit `cab19933` | MIT | `LICENSE` | Git submodule in `contracts/lib` |
+| `forge-std` | v1.17.0 | MIT OR Apache-2.0 | `LICENSE-MIT`, `LICENSE-APACHE` | Git submodule, tests only |
+| `logos-module-builder` | 0.3.2, commit `4b799827` | MIT and Apache-2.0 | `LICENSE-MIT`, `LICENSE-APACHE-v2` | `#rust` template for `attest_follower_module` |
+| `logos-logoscore-cli` (`logosctl`) | 0.3.2, commit `ca70bcdd` | MIT and Apache-2.0 | `LICENSE-MIT`, `LICENSE-APACHE-v2` | Tool for the module runbook |
+| Ethereum deposit contract tree algorithm | n/a | CC0 | Ethereum deposit contract source | Algorithm reimplemented in `Vault.sol` and `programs/bridge/src/tree.rs`, no code copied |
+| consensus-specs | commit `c3e16117` | CC0 | n/a | Read for `docs/TRUST.md` section 3; no code used |
+| Foundry (`forge`, `cast`, `anvil`) | v1.9.0 in CI | MIT OR Apache-2.0 per the project; TODO: confirm from the tag | n/a | Tool, not redistributed |
+
+CI actions, pinned by commit SHA in `.github/workflows/ci.yml`: `actions/checkout` (MIT), `foundry-rs/foundry-toolchain` (Apache-2.0), `taiki-e/install-action` (Apache-2.0), `Swatinem/rust-cache` (LGPL-3.0; a CI-time tool, not linked into any artefact). Licences from the GitHub licence API on 2026-11-12. Choices came from the Code Garage entries `engineering.ci.caching-and-speed`, `web3.evm.foundry` and `security.supplychain.github-actions-hardening`.
+
+## 4. The Logos modules: runtime dependencies only
+
+| Module | Version | LICENSE file | What the repository says |
+|---|---|---|---|
+| `beacon_api_module` (`logos-co/logos-evm-beacon-api-module`) | v0.2.0, commit `aca138e5` | **None** | The README states no licence |
+| `verified_proxy_module` (`logos-co/logos-verified-proxy-module`) | v0.2.0, commit `fa984790` | **None** | The README ends with "MIT / Apache-2.0, matching the Logos workspace", but the repository has no LICENSE file |
+
+Neither repository has a LICENSE file, so we have no written grant we can point to. We therefore use both only as installed runtime dependencies (the `.lgx` package a user installs next to ours). We copy no source from either. `attest_follower_module` declares `beacon_api_module` as a dependency and calls it through `lc_request`. The verified proxy is a stretch dependency; the fallback is direct JSON-RPC, because the proofs are checked in the guest anyway. The same rule holds for the generated example sources the module builder emits: they carry the builder's licence (MIT and Apache-2.0).
+
+Open question for Logos (office hours of 2026-11-13, question 8): which licence applies to these two repositories, and may we propose a LICENSE file by pull request. The fixtures fetcher (`tools/fixtures/fetch.py`) reads the default public provider URLs from `beacon_api_module` v0.2.0 (`rust-lib/src/beacon.rs`, `DEFAULT_PROVIDERS`). That is a list of URLs, which we treat as configuration data. TODO-OWNER: confirm you are content with that reading until Logos answers.
+
+## 5. Reference only: nothing copied
+
+| Project | Licence | What we took |
+|---|---|---|
+| `succinctlabs/sp1-helios` | No LICENSE file | Read for the program split and input layout. Nothing copied |
+| `boundless-xyz/r0vm-helios` | No LICENSE file | Read for structure. Not the base: it targets RISC Zero 2.0 and Helios 0.8.3, it targets EVM destination chains with Solidity contracts, and it has no licence file |
+| `lez-multisig` (IDL generation, e2e layout) | MIT or Apache-2.0 | Layout ideas only |
+| `logos-co/lez-programs` token module | MIT or Apache-2.0 | Shape of a core module |
+
+Earlier applicants' repositories for RFP-021 and RFP-022 were not opened, copied or paraphrased (`docs/DECISIONS.md` D-37).
