@@ -1,0 +1,677 @@
+{
+  "version": "0.1.0",
+  "name": "bridge",
+  "instructions": [
+    {
+      "name": "claim",
+      "docs": "Top level, on the claimer's PRIVATE actor. Proves the deposit opening and Merkle path to an attested vault root, then CheckRoot, Nullify, credit.",
+      "accounts": [
+        {
+          "name": "claimer",
+          "writable": true,
+          "signer": false,
+          "init": false
+        },
+        {
+          "name": "root_receipt",
+          "writable": false,
+          "signer": false,
+          "init": false
+        },
+        {
+          "name": "claim_nullifier",
+          "writable": true,
+          "signer": false,
+          "init": true
+        },
+        {
+          "name": "dest",
+          "writable": true,
+          "signer": false,
+          "init": false
+        },
+        {
+          "name": "treasury",
+          "writable": true,
+          "signer": false,
+          "init": false
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "ClaimArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "check_root",
+      "docs": "Own program only. Panics WB:B03 unless the receipt holds the statement vault.depositRoot == root.",
+      "accounts": [
+        {
+          "name": "root_receipt",
+          "writable": false,
+          "signer": false,
+          "init": false
+        }
+      ],
+      "args": [
+        {
+          "name": "attest_program",
+          "type": "account_id"
+        },
+        {
+          "name": "attest_instance",
+          "type": "account_id"
+        },
+        {
+          "name": "chain_id",
+          "type": "u64"
+        },
+        {
+          "name": "vault",
+          "type": {
+            "array": [
+              "u8",
+              20
+            ]
+          }
+        },
+        {
+          "name": "root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "nullify",
+      "docs": "Own program only. Panics ESA:E11 unless empty, then marks.",
+      "accounts": [
+        {
+          "name": "claim_nullifier",
+          "writable": true,
+          "signer": false,
+          "init": true
+        }
+      ],
+      "args": [
+        {
+          "name": "instance",
+          "type": "account_id"
+        },
+        {
+          "name": "nullifier",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "credit",
+      "docs": "Own program only. Adds amount to the receiver's holding of (instance, token).",
+      "accounts": [
+        {
+          "name": "holder",
+          "writable": true,
+          "signer": false,
+          "init": false
+        }
+      ],
+      "args": [
+        {
+          "name": "instance",
+          "type": "account_id"
+        },
+        {
+          "name": "token",
+          "type": {
+            "array": [
+              "u8",
+              20
+            ]
+          }
+        },
+        {
+          "name": "amount",
+          "type": "u128"
+        }
+      ]
+    },
+    {
+      "name": "burn",
+      "docs": "Holder-authorized, private (default) or public. Debits denom + burn_fee, appends the note.",
+      "accounts": [
+        {
+          "name": "holder",
+          "writable": true,
+          "signer": true,
+          "init": false
+        },
+        {
+          "name": "accumulator",
+          "writable": true,
+          "signer": false,
+          "init": true
+        },
+        {
+          "name": "leaf_record",
+          "writable": true,
+          "signer": false,
+          "init": true
+        },
+        {
+          "name": "treasury",
+          "writable": true,
+          "signer": false,
+          "init": false
+        }
+      ],
+      "args": [
+        {
+          "name": "config",
+          "type": {
+            "defined": "BridgeConfig"
+          }
+        },
+        {
+          "name": "token",
+          "type": {
+            "array": [
+              "u8",
+              20
+            ]
+          }
+        },
+        {
+          "name": "denom",
+          "type": "u128"
+        },
+        {
+          "name": "note",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "memo",
+          "type": {
+            "array": [
+              "u8",
+              36
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "append",
+      "docs": "Own program only, to the accumulator PDA.",
+      "accounts": [
+        {
+          "name": "accumulator",
+          "writable": true,
+          "signer": false,
+          "init": true
+        },
+        {
+          "name": "leaf_record",
+          "writable": true,
+          "signer": false,
+          "init": true
+        }
+      ],
+      "args": [
+        {
+          "name": "instance",
+          "type": "account_id"
+        },
+        {
+          "name": "token",
+          "type": {
+            "array": [
+              "u8",
+              20
+            ]
+          }
+        },
+        {
+          "name": "denom",
+          "type": "u128"
+        },
+        {
+          "name": "note",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "memo",
+          "type": {
+            "array": [
+              "u8",
+              36
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "record_leaf",
+      "docs": "Own program only, write once.",
+      "accounts": [
+        {
+          "name": "leaf_record",
+          "writable": true,
+          "signer": false,
+          "init": true
+        }
+      ],
+      "args": [
+        {
+          "name": "event",
+          "type": {
+            "defined": "BurnEvent"
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Holding",
+      "seeds": "the holder's own account, bridge actor state",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "balances",
+            "type": {
+              "vec": {
+                "tuple": [
+                  "account_id",
+                  {
+                    "array": [
+                      "u8",
+                      20
+                    ]
+                  },
+                  "u128"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Accumulator",
+      "seeds": "PDA(bridge, sha256('bridge/acc/v1' || instance))",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "tree",
+            "type": {
+              "defined": "IncrementalTree"
+            }
+          },
+          {
+            "name": "root",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RootReceipt",
+      "seeds": "PDA(bridge, sha256('bridge/root/v1' || sender_program || attest_instance || stmt_id))",
+      "type": {
+        "defined": "attest_core::Statement"
+      }
+    },
+    {
+      "name": "ClaimNullifier",
+      "seeds": "PDA(bridge, sha256('bridge/null/v1' || instance || deposit_nullifier))",
+      "type": {
+        "array": [
+          "u8",
+          1
+        ]
+      }
+    },
+    {
+      "name": "LeafRecord",
+      "seeds": "PDA(bridge, sha256('bridge/bleaf/v1' || instance || index_le))",
+      "type": {
+        "defined": "BurnEvent"
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "TokenEntry",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "token",
+          "type": {
+            "array": [
+              "u8",
+              20
+            ]
+          }
+        },
+        {
+          "name": "denoms",
+          "type": {
+            "vec": "u128"
+          }
+        },
+        {
+          "name": "mint_fee",
+          "type": "u128"
+        },
+        {
+          "name": "burn_fee",
+          "type": "u128"
+        }
+      ]
+    },
+    {
+      "name": "BridgeConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "chain_id",
+          "type": "u64"
+        },
+        {
+          "name": "vault",
+          "type": {
+            "array": [
+              "u8",
+              20
+            ]
+          }
+        },
+        {
+          "name": "attest_program",
+          "type": "account_id"
+        },
+        {
+          "name": "attest_instance",
+          "type": "account_id"
+        },
+        {
+          "name": "tokens",
+          "type": {
+            "vec": {
+              "defined": "TokenEntry"
+            }
+          }
+        },
+        {
+          "name": "treasury",
+          "type": {
+            "option": "account_id"
+          }
+        }
+      ]
+    },
+    {
+      "name": "AttestCall",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "on",
+          "type": "account_id"
+        },
+        {
+          "name": "record",
+          "type": {
+            "defined": "HeaderRecord"
+          }
+        },
+        {
+          "name": "claim",
+          "type": "bytes"
+        }
+      ]
+    },
+    {
+      "name": "ClaimArgs",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "config",
+          "type": {
+            "defined": "BridgeConfig"
+          }
+        },
+        {
+          "name": "token",
+          "type": {
+            "array": [
+              "u8",
+              20
+            ]
+          }
+        },
+        {
+          "name": "denom",
+          "type": "u128"
+        },
+        {
+          "name": "secret",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "dest",
+          "type": "account_id"
+        },
+        {
+          "name": "leaf_index",
+          "type": "u64"
+        },
+        {
+          "name": "path",
+          "type": {
+            "array": [
+              {
+                "array": [
+                  "u8",
+                  32
+                ]
+              },
+              32
+            ]
+          }
+        },
+        {
+          "name": "root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "attest",
+          "type": {
+            "option": {
+              "defined": "AttestCall"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "BurnEvent",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "instance",
+          "type": "account_id"
+        },
+        {
+          "name": "index",
+          "type": "u64"
+        },
+        {
+          "name": "token",
+          "type": {
+            "array": [
+              "u8",
+              20
+            ]
+          }
+        },
+        {
+          "name": "denom",
+          "type": "u128"
+        },
+        {
+          "name": "note",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "memo",
+          "type": {
+            "array": [
+              "u8",
+              36
+            ]
+          }
+        },
+        {
+          "name": "root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "HeaderRecord",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "chain_id",
+          "type": "u64"
+        },
+        {
+          "name": "slot",
+          "type": "u64"
+        },
+        {
+          "name": "beacon_root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "exec_number",
+          "type": "u64"
+        },
+        {
+          "name": "exec_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "exec_state_root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "exec_receipts_root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "instruction_type": "bridge_program::lez::BridgeMessage",
+  "errors": [
+    {
+      "code": 1,
+      "name": "B01_UNSUPPORTED_TOKEN"
+    },
+    {
+      "code": 2,
+      "name": "B02_INVALID_AMOUNT"
+    },
+    {
+      "code": 3,
+      "name": "B03_ROOT_NOT_ATTESTED"
+    },
+    {
+      "code": 4,
+      "name": "B04_INSUFFICIENT_BALANCE"
+    },
+    {
+      "code": 5,
+      "name": "B05_NOT_AUTHORIZED"
+    },
+    {
+      "code": 6,
+      "name": "B06_WRONG_ACCOUNT"
+    },
+    {
+      "code": 7,
+      "name": "B07_FEE_TOO_HIGH"
+    }
+  ],
+  "notes": "Hand-kept in the SPEL IDL JSON shape (SPEL has no LEZ 0.4 release). Messages are borsh. Panic text WB:Bxx for these codes; shared checks use ESA:E01, ESA:E07, ESA:E11. A message from another program is a raw borsh(attest_core::Statement) delivery to a RootReceipt. Drift test: programs/bridge/tests/idl_drift.rs."
+}

@@ -1,0 +1,18 @@
+Latest block is 293
+Syncing to block 293. Blocks to sync: 207
+Synced to block 293 in 2.180511494s
+Latest block is 295
+Syncing to block 295. Blocks to sync: 2
+Synced to block 295 in 42.108627ms
+{
+  "denom": "10000000000000000",
+  "dest": "Coyt1q7HXnJQVZgzbEduWjK9h2Awq2erZF5iF87wnUM",
+  "dest_kind": "private (default)",
+  "dev_mode": true,
+  "nullifier_pda": "Dhf1wcd3qyTz56CqdDJShGCAKQ9xUc9YHc2R2a6ixy7v",
+  "public_on_lez": "the root used and a fresh nullifier; not the destination, not which deposit",
+  "root": "0xd49d0c5c4856e2cf04a2cc1745c705ac8857221432c36b04ce5c23ac44a88b29",
+  "seconds": 33.630485881,
+  "token": "0x0000000000000000000000000000000000000000",
+  "tx": "da075ede2d88dc306f202482cb73dd547b132c310005d3f999508153cb615e38"
+}

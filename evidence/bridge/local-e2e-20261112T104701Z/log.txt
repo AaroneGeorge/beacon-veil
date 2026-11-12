@@ -1,0 +1,99 @@
+bridge=3hbh5nYS1wJWLckLFkMYSkt92oCo3CSe2oZgmDDNfCfp dev_source=EetyxLidmSdFQ5WsWQY68vWT2jCSktAddjxir25MyTQR burn_image_id=0xaca7290c3dba4d68d0a7440232088acef1cd084e2ef94924b2f276b13e8b0daa
+
+== 10:47:01 deploy vault on anvil (mock verifier, STUB anchor delay 0)
+vault=0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82 anchor=0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0
+
+== 10:47:02 bridge config (attest_program = DEV source)
+{
+  "anchor": "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0",
+  "attest_instance": "11111111111111111111111111111111",
+  "attest_program": "EetyxLidmSdFQ5WsWQY68vWT2jCSktAddjxir25MyTQR",
+  "bridge_program": "3hbh5nYS1wJWLckLFkMYSkt92oCo3CSe2oZgmDDNfCfp",
+  "bridge_program_hex": "0x281dd4dff404a4c62b67d76997035c063e24c1c8412a07e51415415aac41a117",
+  "chain_id": 31337,
+  "config_borsh": "0x697a0000000000000dcd1bf9a1b36ce34237eeafef220932846bcd82cadd3238a4fa8479e6d151e38ad5bab9e5a96f853d9c1b1566cb3bebe133df360000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000020000000080c6a47e8d030000000000000000000000c16ff28623000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "instance": "DRPuJmRtSGE9duaXq5AEJtKZidbhwM67hsssKfFHKY5Z",
+  "instance_hex": "0xb88c13e56601ea8406933f0daa0ba5dc6d43804e79043e0f59c62e353936a774",
+  "tokens": [
+    "eth:1000000000000000,10000000000000000"
+  ],
+  "treasury": null,
+  "vault": "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82",
+  "vault_block": 6
+}
+
+== 10:47:02 deposit 0.01 ETH, commitment bound to the private claimer
+  deposit root 0xd49d0c5c4856e2cf04a2cc1745c705ac8857221432c36b04ce5c23ac44a88b29
+  deposit count 1
+
+== 10:47:02 DEV attest root 0xd49d0c5c4856e2cf04a2cc1745c705ac8857221432c36b04ce5c23ac44a88b29
+{"dev_only":true,"receipt":"DAq2R3TyquqJ315jNAGzthsxncD7s5ptr9sG1t2ipbHk","root":"0xd49d0c5c4856e2cf04a2cc1745c705ac8857221432c36b04ce5c23ac44a88b29","tx":"9c71ad64464ab8f1a57604ff8a693d704039e20095e4af7df141d36a10b54f94"}
+
+== 10:47:33 private claim (dev mode)
+Latest block is 293
+Syncing to block 293. Blocks to sync: 207
+Synced to block 293 in 2.180511494s
+WARNING: proving in dev mode. This will not generate valid, secure proofs.
+WARNING: Proving in dev mode does not generate a valid receipt. Receipts generated from this process are invalid and should never be used in production.
+WARNING: proving in dev mode. This will not generate valid, secure proofs.
+WARNING: Proving in dev mode does not generate a valid receipt. Receipts generated from this process are invalid and should never be used in production.
+Latest block is 295
+Syncing to block 295. Blocks to sync: 2
+Synced to block 295 in 42.108627ms
+{
+  "denom": "10000000000000000",
+  "dest": "Coyt1q7HXnJQVZgzbEduWjK9h2Awq2erZF5iF87wnUM",
+  "dest_kind": "private (default)",
+  "dev_mode": true,
+  "nullifier_pda": "Dhf1wcd3qyTz56CqdDJShGCAKQ9xUc9YHc2R2a6ixy7v",
+  "public_on_lez": "the root used and a fresh nullifier; not the destination, not which deposit",
+  "root": "0xd49d0c5c4856e2cf04a2cc1745c705ac8857221432c36b04ce5c23ac44a88b29",
+  "seconds": 33.630485881,
+  "token": "0x0000000000000000000000000000000000000000",
+  "tx": "da075ede2d88dc306f202482cb73dd547b132c310005d3f999508153cb615e38"
+}
+
+== 10:48:06 repeat claim must be refused with ESA:E11
+ESA:E11
+Error: claim: Failed to build transaction: Failed to execute program: Guest panicked: ESA:E11
+    E11_ALREADY_CONSUMED
+second claim refused: OK
+
+== 10:48:07 private burn of 0.01 ETH to 0x...beef, fee 0.0001
+Latest block is 295
+WARNING: proving in dev mode. This will not generate valid, secure proofs.
+WARNING: Proving in dev mode does not generate a valid receipt. Receipts generated from this process are invalid and should never be used in production.
+WARNING: proving in dev mode. This will not generate valid, secure proofs.
+WARNING: Proving in dev mode does not generate a valid receipt. Receipts generated from this process are invalid and should never be used in production.
+Latest block is 297
+Syncing to block 297. Blocks to sync: 2
+Synced to block 297 in 37.552929ms
+burn tx acde9ad86db30c9d2dced104acca73971862ef44605d7fa20ee8df29748d3edf (leaf index 0)
+{
+  "burn_index": 0,
+  "hidden": "the Ethereum recipient and the relayer fee",
+  "leaf": "0xfceccc058e36110f185aca4d61a62dda2f51fc79c8b1d677c5e0271e9f46cdec",
+  "note": "0x23b40bbd69c9b575cd8994b5b9e80df098514e3762510c2f157eb12828aebea0",
+  "public_on_lez": "token, amount, time, note and memo (both random-looking)"
+}
+
+== 10:48:39 STUB anchor: owner posts the accumulator root
+
+== 10:48:39 burn_proof in the executor (dev mode, mock seal)
+{
+  "cycles_user": 261662,
+  "denom": "10000000000000000",
+  "fee": "100000000000000",
+  "image_id": "0xaca7290c3dba4d68d0a7440232088acef1cd084e2ef94924b2f276b13e8b0daa",
+  "journal_sha256": "0x585ea59030d26d0fe6a9bfb0e6daad8d18539a1027dadd9803148280c808bedc",
+  "leaf_index": 0,
+  "mode": "execute",
+  "nullifier": "0xe544120c6054a82424997cbd676a50edd7376a66cf4a3a590b0b7a7c52522d1a",
+  "recipient": "0x000000000000000000000000000000000000beef",
+  "seal": "mock (RiscZeroMockVerifier selector 0x00000000), not a proof",
+  "seconds": 0.059090409,
+  "segments": 1,
+  "token": "0x0000000000000000000000000000000000000000"
+}
+
+== 10:48:39 release on anvil

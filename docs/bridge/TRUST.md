@@ -1,0 +1,77 @@
+# Bridge trust model and privacy analysis (spike)
+
+This file states what the RFP-022 spike trusts, what it reveals, and what is not yet built. Requirement ids refer to RFP-022. Where the sprint uses a stub, the stub is named.
+
+## 1. What a user relies on
+
+| Leg | Relied on | Not relied on |
+|---|---|---|
+| Inbound (deposit to mint) | RISC Zero proof system (LEZ privacy circuit); Ethereum consensus through RFP-021: the sync committee's honest supermajority (Helios 0.12.0, unmodified); correctness of `attest`, `attest_inclusion` and `bridge`; the token issuer | Any relayer, prover or operator. Step 1 (`attest-root`) is permissionless and shared; the claim is proven on the user's device |
+| Outbound (burn to release) | RISC Zero Groth16 (verifier 3.0.0, immutable); correctness of `burn_proof`, `bridge` and `Vault`; **the anchor**: in the sprint, `StubLezAnchor`, an **owner-posted stub** whose owner key can make any root final; the token issuer | Any relayer: the recipient and the fee are bound inside the proof |
+
+**The stub is a stub.** `StubLezAnchor` stands in for the stage-1 optimistic Bedrock anchor of OUTBOUND.md. With it, whoever holds the owner key can release any registered asset up to the window cap. Nothing in the sprint claims trustless release. F7 cannot be met on LEZ v0.4.0-rc3: headers carry no state root, and public execution is not proven. The stated residual trust of the grant's stage 1 is: canonical Bedrock header, attested optimistically, with an arbiter on dispute.
+
+## 2. Ethereum finality under gloas (Sepolia)
+
+Sepolia runs gloas (ePBS). A gloas light-client header proves `bid.parent_block_hash` (generalized index 2856), and Helios 0.12.0 uses the same index. The beacon chain advances `latest_block_hash` only when a payload was delivered and verified. Fork choice rejects a child that declares a withheld parent FULL. So a light-client-proven execution hash is canonical under the same assumption as before gloas: an honest sync-committee supermajority. Source: consensus-specs master `c3e16117`, checked by W3 on 2026-11-12.
+
+Two consequences:
+
+- A gloas record attests the parent execution block of the finalised beacon block. It lags by at least one slot. A deposit becomes claimable one record later than its block's own finalisation.
+- A gloas record holds only `exec_hash`; its state and receipts roots are zero. The storage proof of the vault's root then carries the RLP execution header. `attest_inclusion` checks it by keccak against `exec_hash`: `ESA:E01` if the header is missing when the roots are zero, `ESA:E15` if the hash does not match.
+
+Finality depth (F12): a deposit is claimable only against a header the light client has applied as finalised (two epochs, about 13 minutes on mainnet). The depth is not configurable per bridge in the sprint. It is the attest instance's rule. A bridge that wants a deeper margin would require `record.slot + k <= head.slot`. That is milestone work.
+
+## 3. Off-chain participants
+
+| Participant | Role | Can it block? | Can it steal, redirect, deanonymise? |
+|---|---|---|---|
+| Root attester (`attest-root`) | Posts "vault root = R at header H" for everyone | No: anyone can run it, including the user | No: the statement is checked on chain; it names no deposit |
+| Claim prover | The user's own device | n/a | n/a |
+| Burn prover (`burn_proof`) | Anyone with the witness, normally the user | No: anyone can prove | A prover who gets the witness learns the burn's recipient. It cannot change the recipient or the fee (bound in the note) |
+| Release relayer | Calls `release`, receives `fee` | No: anyone can call | No: the recipient and fee are in the proof. It learns the link only if the user gives it the witness instead of the seal |
+| STUB anchor owner | Posts accumulator roots | **Yes, in the sprint** | **Yes, in the sprint**: see section 1 |
+| Follower (RFP-021) | Keeps the attest instance current | No: anyone can submit updates | No |
+
+## 4. Privacy (Privacy 1 to 7)
+
+What each step makes public:
+
+| Step | Public | Hidden |
+|---|---|---|
+| Deposit (Ethereum) | depositor address, token, denomination, time, commitment, leaf index, new root | the LEZ destination (bound inside the commitment) |
+| Attest root (LEZ, public) | a vault root R, the header record used | which deposit, who will claim |
+| Claim (LEZ, private) | that R was used, one fresh nullifier, the time; for a public destination, the credit (token, amount) | which leaf, the commitment, the destination if private |
+| Burn (LEZ) | token, denomination, time, note, memo; for a public holder, the holder | the Ethereum recipient and the fee; the holder if private |
+| Release (Ethereum) | recipient, token, denomination, fee, nullifier, accumulator root, relayer | which burn (any leaf under the root) |
+
+Remaining correlations, and why they remain:
+
+- **Amount and token.** Public on both chains by construction. Fixed denominations (F8) put every deposit of one (token, denomination) into one anonymity set. Set size: the deposits of that pair under the root used, minus those already claimed. The CLI prints this leak at each step (U5).
+- **Timing.** A claim against root R shows the deposit came no later than R. Using the latest attested root makes the set as large as possible. The UI should advise waiting (U5). Claims never expire (R4): the nullifier account stays empty until used, and any later root still contains the leaf.
+- **Fee payer.** A claim is a privacy-preserving LEZ transaction paid from the claimer's private account, so no public funding source shows. The release fee goes to whoever calls `release`. The recipient need not hold ETH first.
+- **Errors.** Error codes name the check that failed, never the deposit or burn (Privacy 5, U8). A repeat claim and a claim against an unattested root both fail before anything is consumed.
+- **Network level.** IP correlation between the Ethereum deposit and the LEZ claim is out of scope and is residual leakage (Privacy 6).
+
+Client rule: a claim must run as a privacy-preserving transaction. The program cannot see its own placement. A claim on a public actor would publish the secret and the path, which links deposit and mint. `bridge_cli` sends claims only as private transactions. A public destination is reached by a separate private claimer (U6: the private destination is the default).
+
+## 5. Soundness of supply (Security 6)
+
+- Mint: needs a leaf under an attested vault root (the vault computes the leaf from what it received) and an empty nullifier account. One deposit gives one nullifier, so it can be minted once. The nullifier account is `PDA(bridge, sha256("bridge/null/v1" || bridge_instance || deposit_nullifier))`. The instance id is in the seed, so another instance (another entity's config, or a fake one) cannot mark this instance's nullifiers. Without that, a fake instance could front-run a real claim and burn its nullifier (griefing found by W3, 2026-11-12).
+- Root receipts: written only by a statement whose real sender program, attest instance and statement id derive the receipt's address. A fake attest program or a fake light-client instance writes only to receipts that no honest config reads.
+- Wrapped balances are kept per (instance, token). Tokens minted by a fake instance are a different asset and cannot be burned against this instance's vault.
+- Release: needs a valid Groth16 proof for the fixed image id, an anchor-final root, the pairing checks, and an unspent nullifier. Each burn leaf has one secret and therefore one nullifier.
+
+## 6. Freeze, caps, migration, failsafe
+
+- Freeze (F14, Security 5): the vault has global and per-token switches for deposits and releases (`FREEZER_ROLE`). The LEZ-side freeze (RFP-002) is not built in the sprint. The two halves are independent by construction. The freeze works per token and per protocol only: the protocol does not know whose holdings are whose. That is a designed consequence of the privacy, not a gap.
+- Caps (F11, Security 4): per token, a fixed window, separately for deposits and releases. The stub is not rolling, and there is no global cross-token cap (it would need a common unit). Milestone M4.
+- No swappable verification (Security 8): the verifier, the burn image id, the anchor, the LEZ program id and the bound instance are immutable or write-once in the vault. On LEZ, `bridge` is deployed with the immutable flag. Migration means a new vault and a new instance. In-flight deposits are claimed on the old instance (it stays live). In-flight burns are released by the old vault. A freeze of new deposits on the old vault moves users over.
+- Failsafe (Security 9): position, for the proposal. A recovery path must let a depositor prove their own entitlement. For deposits not yet claimed, the depositor can prove the opening of their leaf to a recovery verifier, with the same proof as a claim, and receive the original asset back on Ethereum. Funds already minted are ordinary tokens and are not touched. Not built in the sprint.
+
+## 7. Open issues (2026-11-12)
+
+- The outbound anchor is a stub (section 1). Stages 2 to 5 are design text.
+- Burn leaf records are a stand-in for LP-0012 events through the indexer (OUTBOUND.md). Concurrent burns may need a retry.
+- The wrapped balance is a ledger inside `bridge`, not an LP-0013 token mint. ATA compatibility (RFP-022 dependency text) is milestone work.
+- Finality depth per bridge is not configurable (section 2).

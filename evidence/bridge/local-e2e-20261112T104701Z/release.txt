@@ -1,0 +1,30 @@
+Compiling 1 files with Solc 0.8.30
+Solc 0.8.30 finished in 2.41s
+Compiler run successful!
+Script ran successfully.
+
+## Setting up 1 EVM.
+
+==========================
+
+Chain 31337
+
+Estimated max fee per gas: 0.657684277 gwei
+Estimated base fee per gas: 0.328842138 gwei
+Estimated max priority fee per gas: 0.000000001 gwei
+
+Estimated total gas used for script: 222781
+
+Estimated amount required: 0.000146519560914337 ETH
+
+==========================
+
+
+==========================
+
+ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.
+
+Transactions saved to: /home/lechuuu/hackathons/logos-rfp/build/repo/contracts/broadcast/Deploy.s.sol/31337/run-latest.json
+
+Sensitive values saved to: /home/lechuuu/hackathons/logos-rfp/build/repo/contracts/cache/Deploy.s.sol/31337/run-latest.json
+

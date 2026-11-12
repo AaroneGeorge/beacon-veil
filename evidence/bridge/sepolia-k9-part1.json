@@ -1,0 +1,122 @@
+{
+  "label": "K9 part 1: vault deployed on Sepolia, one ETH and one ERC-20 deposit (measured)",
+  "date_utc": "2026-11-12",
+  "chain_id": 11155111,
+  "rpc": "https://ethereum-sepolia-rpc.publicnode.com",
+  "deployer": "0x523072A2aC5e5A3E51c107bc17995A3fa03dBD78",
+  "contracts": {
+    "vault": "0xf4d3EE2274842bf32CE6873bdA4e4D0617D911b4",
+    "anchor_STUB_owner_posted": "0x0C4d685A23Eeb622C594377fe3833025c0802c07",
+    "test_usdt_no_bool_return": "0xb16e90B582eA3209b588b64b5543671b1F6A2c02",
+    "verifier_risc0_groth16_3_0_0": "0x2a098988600d87650Fb061FfAff08B97149Fa84D"
+  },
+  "vault_immutables": {
+    "burn_image_id": "0xaca7290c3dba4d68d0a7440232088acef1cd084e2ef94924b2f276b13e8b0daa",
+    "lez_program_bridge_on_seq_dev": "3hbh5nYS1wJWLckLFkMYSkt92oCo3CSe2oZgmDDNfCfp",
+    "lez_program_hex": "0x281dd4dff404a4c62b67d76997035c063e24c1c8412a07e51415415aac41a117",
+    "anchor_delay_s": 600,
+    "eth_denoms_wei": [
+      "1000000000000000",
+      "10000000000000000"
+    ],
+    "usdt_denoms": [
+      "100000000",
+      "1000000000"
+    ]
+  },
+  "deploy_txs": [
+    {
+      "what": "StubLezAnchor create",
+      "tx": "0xb3d8709407fabd5630ece251d6e066431c52b057365311b19fe67888d22a2ad7",
+      "block": 12118311,
+      "gas_used": 2054313,
+      "status": "0x1"
+    },
+    {
+      "what": "Vault create",
+      "tx": "0x5583c7d1eacc63c8074b8cefbd449ad2d35de1723399d665a8c2341077414985",
+      "block": 12118312,
+      "gas_used": 17436004,
+      "status": "0x1"
+    },
+    {
+      "what": "MockUsdt create",
+      "tx": "0x3bda4d7b179e1c0a0befa4e42e389d04c298103559c882b6a7f248fbb33ffa93",
+      "block": 12118313,
+      "gas_used": 2555327,
+      "status": "0x1"
+    },
+    {
+      "what": "Vault registerToken(address,uint256[],uint256,uint256)",
+      "tx": "0x075df5d768af2379fe2fd7df661b900f384cc43189e61a7d6a8e23274795acf1",
+      "block": 12118314,
+      "gas_used": 683349,
+      "status": "0x1"
+    },
+    {
+      "what": "Vault registerToken(address,uint256[],uint256,uint256)",
+      "tx": "0xaf368cf922b6b07c65210b95271454e65426d62a9bbbf64387263944b7b7eae0",
+      "block": 12118315,
+      "gas_used": 683481,
+      "status": "0x1"
+    },
+    {
+      "what": "MockUsdt mint(address,uint256)",
+      "tx": "0x0cc5651c90feb526c94eb057b91026352dc048aa4442afdc726e48008f469547",
+      "block": 12118316,
+      "gas_used": 236464,
+      "status": "0x1"
+    }
+  ],
+  "deposit_eth_txs": [
+    {
+      "what": " deposit(address,uint256,bytes32)",
+      "tx": "0x0382d8e4f75fd2743b8e10e080fd7cade0e69c6f79320452345a8e59156d054c",
+      "block": 12118337,
+      "gas_used": 585560,
+      "status": "0x1"
+    }
+  ],
+  "deposit_usdt_txs": [
+    {
+      "what": " approve(address,uint256)",
+      "tx": "0xd7a19f7675fd7421e04610c7165d6661efe4d3498e15edd880a55fe11df218b0",
+      "block": 12118339,
+      "gas_used": 19352,
+      "status": "0x1"
+    },
+    {
+      "what": " approve(address,uint256)",
+      "tx": "0x95eae166a10b7b8ef1b1d585ca5a7230e893ed581406756079d794e37ac29fd8",
+      "block": 12118340,
+      "gas_used": 126433,
+      "status": "0x1"
+    },
+    {
+      "what": " deposit(address,uint256,bytes32)",
+      "tx": "0x1bdb59bb329afba3743374bf71e5a311dfbb6cbc9967202b10a2bba0f1342202",
+      "block": 12118341,
+      "gas_used": 614695,
+      "status": "0x1"
+    }
+  ],
+  "after": {
+    "depositCount": 2,
+    "depositRoot": "0xaf458f7b6e5a8ea04170f91d7af4cf01a0d1ba213a1ba84d012e150f9613084a",
+    "root_slot": "0xc48ce8c9c69c089f8e403bb82c6c6a3b0b082f197e29f63d5843b5b37b73a200",
+    "vault_eth_wei": "1000000000000000",
+    "vault_usdt_units": "100000000"
+  },
+  "notes": [
+    "Deposits use the provisional bridge config raw/config-provisional.json (attest instance placeholder 1111...1111) and the public TEST-ONLY mnemonic; they are vault evidence, not claimable under the final config. The K9 part 2 claim uses a fresh deposit.",
+    "Gas measured on Sepolia is far above local forge figures (raw/forge-gas-report-local.txt: deposit max 245,966, registerToken 161,761). Vault creation 17.4M gas. Cause not investigated (guess: current Sepolia fork prices state creation higher); the vault constructor writes 31 zero-hash slots, an optimisation target.",
+    "recover: raw/recover.json found both deposits from the mnemonic and Deposit logs only."
+  ],
+  "commands": [
+    "forge script script/Deploy.s.sol:Deploy --rpc-url <sepolia> --broadcast --slow  (env: PRIVATE_KEY from lechu-secret logos/LOGOS_SEPOLIA_KEY, VERIFIER, BURN_IMAGE_ID, LEZ_PROGRAM, ANCHOR_DELAY=600)",
+    "bridge_cli config ... ; bridge_cli commitment --index 0|1 ...",
+    "forge script script/Deploy.s.sol:DepositOne (TOKEN, DENOM_INDEX=0, COMMITMENT)",
+    "bridge_cli recover --dest <w5-claimer> --dest <w5-payer> --gap 5"
+  ],
+  "machine": "lechu 8 cpus Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz / 15 GiB\nforge Version: 1.9.0"
+}

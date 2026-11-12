@@ -9,6 +9,24 @@ publish.workspace = true
 [lints]
 workspace = true
 
+[[bin]]
+name = "bridge_cli"
+path = "src/main.rs"
+
 [dependencies]
 anyhow.workspace = true
 attest_core.workspace = true
+attest_host.workspace = true
+bridge_program = { path = "../../programs/bridge" }
+borsh.workspace = true
+clap.workspace = true
+hex.workspace = true
+lee_core.workspace = true
+reqwest.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
+alloy-primitives.workspace = true
+# Same version as LEZ rc3's wallet (Cargo.lock): the bridge key derives from the wallet mnemonic's BIP-39 seed.
+bip39 = "2.2.2"
+# Host prover (r0vm over IPC) for guest burn_proof.
+risc0-zkvm = { workspace = true, features = ["client"] }

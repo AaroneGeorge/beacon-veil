@@ -14,4 +14,7 @@ name = "burn_proof"
 path = "src/bin/burn_proof.rs"
 
 [dependencies]
+# Only the hashes, tree and journal of the bridge library (no LEZ crates in this guest).
+bridge_program = { path = "../../programs/bridge", default-features = false }
+borsh.workspace = true
 risc0-zkvm.workspace = true

@@ -1,0 +1,25 @@
+{
+  "burns": [],
+  "deposits": [
+    {
+      "claimed": null,
+      "denom": "1000000000000000",
+      "deposit_index": 0,
+      "dest": "Coyt1q7HXnJQVZgzbEduWjK9h2Awq2erZF5iF87wnUM",
+      "eth_block": 12118337,
+      "eth_tx": "0x0382d8e4f75fd2743b8e10e080fd7cade0e69c6f79320452345a8e59156d054c",
+      "leaf_index": 0,
+      "token": "0x0000000000000000000000000000000000000000"
+    },
+    {
+      "claimed": null,
+      "denom": "100000000",
+      "deposit_index": 1,
+      "dest": "Coyt1q7HXnJQVZgzbEduWjK9h2Awq2erZF5iF87wnUM",
+      "eth_block": 12118341,
+      "eth_tx": "0x1bdb59bb329afba3743374bf71e5a311dfbb6cbc9967202b10a2bba0f1342202",
+      "leaf_index": 1,
+      "token": "0xb16e90b582ea3209b588b64b5543671b1f6a2c02"
+    }
+  ]
+}

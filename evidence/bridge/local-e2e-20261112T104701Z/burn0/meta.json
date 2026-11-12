@@ -1,0 +1,15 @@
+{
+  "cycles_user": 261662,
+  "denom": "10000000000000000",
+  "fee": "100000000000000",
+  "image_id": "0xaca7290c3dba4d68d0a7440232088acef1cd084e2ef94924b2f276b13e8b0daa",
+  "journal_sha256": "0x585ea59030d26d0fe6a9bfb0e6daad8d18539a1027dadd9803148280c808bedc",
+  "leaf_index": 0,
+  "mode": "execute",
+  "nullifier": "0xe544120c6054a82424997cbd676a50edd7376a66cf4a3a590b0b7a7c52522d1a",
+  "recipient": "0x000000000000000000000000000000000000beef",
+  "seal": "mock (RiscZeroMockVerifier selector 0x00000000), not a proof",
+  "seconds": 0.059090409,
+  "segments": 1,
+  "token": "0x0000000000000000000000000000000000000000"
+}

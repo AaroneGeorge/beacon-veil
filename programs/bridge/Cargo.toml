@@ -9,15 +9,33 @@ publish.workspace = true
 [lints]
 workspace = true
 
+# The library holds the bridge's hashes, trees and journal encoding, shared by the program, guest burn_proof and
+# bridge_cli. Without the default `lez` feature it needs only sha2 + borsh (that is how burn_proof uses it).
+[lib]
+path = "src/lib.rs"
+
 [[bin]]
 name = "bridge"
 path = "src/bin/bridge.rs"
 
+# DEV ONLY: local end-to-end statement source (see the file header).
+[[bin]]
+name = "bridge_dev_source"
+path = "src/bin/bridge_dev_source.rs"
+
+[features]
+default = ["lez"]
+lez = ["dep:attest_core", "dep:lee_core", "dep:risc0-zkvm"]
+
 [dependencies]
-attest_core.workspace = true
+attest_core = { workspace = true, optional = true }
 borsh.workspace = true
-lee_core.workspace = true
-risc0-zkvm.workspace = true
+lee_core = { workspace = true, optional = true }
+risc0-zkvm = { workspace = true, optional = true }
+sha2.workspace = true
 
 [package.metadata.cargo-machete]
 ignored = ["risc0-zkvm"]
+
+[dev-dependencies]
+serde_json.workspace = true
