@@ -21,6 +21,7 @@ dependencies = [
  "consumer_erc20_program",
  "fixtures",
  "helios-consensus-core",
+ "sha2 0.10.8",
  "tokio",
 ]
 

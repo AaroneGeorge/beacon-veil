@@ -48,17 +48,25 @@ pub fn expect_chain<T: std::fmt::Debug>(r: anyhow::Result<T>, want: EsaError, ca
     }
 }
 
+/// Second verifier id in every G2 config: `sha256("beacon-veil/w2/g2/v1")`, an account no program uses. It only
+/// makes G2's instance ids unique on a shared `seq-dev` (other tracks create instances of the same checkpoint with
+/// the same `min_participants` values). `lc_verify` stays the accepted verifier.
+pub fn w2_tag() -> AccountId {
+    use sha2::{Digest, Sha256};
+    AccountId::new(Sha256::digest(b"beacon-veil/w2/g2/v1").into())
+}
+
 /// The real mainnet config of a G2 instance on this deployment.
 pub fn real_config(ids: &DeployedIds, min_participants: u16) -> InstanceConfig {
     let mut c = mainnet().config.clone();
-    c.verifiers = vec![ids.lc_verify];
+    c.verifiers = vec![ids.lc_verify, w2_tag()];
     c.min_participants = min_participants;
     c
 }
 
 /// The fabricated chain's own config on this deployment.
 pub fn fab_config(ids: &DeployedIds, min_participants: u16) -> InstanceConfig {
-    fab().config(vec![ids.lc_verify], min_participants)
+    fab().config(vec![ids.lc_verify, w2_tag()], min_participants)
 }
 
 /// Inits `config` with `bootstrap` unless the instance exists. Returns the instance id.
@@ -142,10 +150,18 @@ pub async fn attest_raw(
 ) -> anyhow::Result<TxOutcome> {
     let mut w = host::wallet::WalletCore::from_env()?;
     let payer = host::account_from_env_or_label(&w, "BV_PAYER", "bv-payer")?;
+    // An existing record is declared as a plain public account (as `attest_host::attest_with` does). A record that
+    // does not exist must be declared as the attest PDA, else the runtime refuses the transaction before any program
+    // runs ("declared public but not admitted"); declared as a PDA it reaches `CheckHeader`, which answers E02.
+    let record_mention = if host::read_record(ids, instance, record.slot).await?.is_some() {
+        AccountIdentity::PublicNoSign(record_id(&ids.attest, instance, record.slot))
+            .select_program_actor_state(ids.attest)
+    } else {
+        host::pda(ids.attest, record_seed(instance, record.slot)).select_program_actor_state(ids.attest)
+    };
     let accounts = vec![
         AccountIdentity::Public(payer).select_program_actor_state(ids.attest),
-        AccountIdentity::PublicNoSign(record_id(&ids.attest, instance, record.slot))
-            .select_program_actor_state(ids.attest),
+        record_mention,
     ];
     let msg = borsh::to_vec(&AttestMessage::Attest {
         instance: *instance,

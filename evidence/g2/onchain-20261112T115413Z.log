@@ -1,0 +1,93 @@
+# 2026-11-12T11:54:13Z HEAD c5cd076 + W2 working tree; Linux 7.0.0-43-generic x86_64; 8 threads
+# cmd: BV_G2_ONCHAIN=1 cargo test -p adversarial -- --test-threads=1 --nocapture (wallet-w2, BV_GUESTS=/home/lechuuu/hackathons/logos-rfp/build/run/w4/guests)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.27s
+warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+     Running unittests src/lib.rs (/home/lechuuu/hackathons/logos-rfp/build/target/debug/deps/adversarial-32a896361c59885c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/adversarial.rs (/home/lechuuu/hackathons/logos-rfp/build/target/debug/deps/adversarial-0fc40d8651b0dbc3)
+
+running 7 tests
+test vs1_fabricated_chain ... Latest block is 560
+Syncing to block 560. Blocks to sync: 2
+Synced to block 560 in 44.917097ms
+
+thread 'main' (1) panicked at crates/attest_core/src/error.rs:120:9:
+ESA:E03
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'main' (1) panicked at crates/attest_core/src/error.rs:120:9:
+ESA:E06
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'main' (1) panicked at crates/attest_core/src/error.rs:120:9:
+ESA:E15
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'main' (1) panicked at crates/attest_core/src/error.rs:120:9:
+ESA:E02
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+ok
+test vs2a_committee_not_handed_off ... Latest block is 560
+
+thread 'main' (1) panicked at crates/attest_core/src/error.rs:120:9:
+ESA:E05
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+ok
+test vs2b_below_participation ... Latest block is 560
+
+thread 'main' (1) panicked at crates/attest_core/src/error.rs:120:9:
+ESA:E04
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+ok
+test vs2c_header_not_finalised ... Latest block is 561
+Syncing to block 561. Blocks to sync: 1
+Synced to block 561 in 17.724415ms
+
+thread 'main' (1) panicked at crates/attest_core/src/error.rs:120:9:
+ESA:E02
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Latest block is 561
+
+thread 'main' (1) panicked at crates/attest_core/src/error.rs:120:9:
+ESA:E02
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+ok
+test vs2d_tampered_roots ... Latest block is 561
+
+thread 'main' (1) panicked at crates/attest_core/src/error.rs:120:9:
+ESA:E15
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'main' (1) panicked at crates/attest_core/src/error.rs:120:9:
+ESA:E15
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+ok
+test vs2e_wrong_chain_id ... 
+thread 'main' (1) panicked at crates/attest_core/src/error.rs:120:9:
+ESA:E09
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Latest block is 561
+
+thread 'main' (1) panicked at crates/attest_core/src/error.rs:120:9:
+ESA:E03
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+ok
+test vs2f_predicate_not_covered ... 
+thread 'main' (1) panicked at crates/attest_core/src/error.rs:120:9:
+ESA:E10
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 36.30s
+
+   Doc-tests adversarial
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
