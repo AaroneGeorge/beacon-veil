@@ -4,6 +4,9 @@
 # turns it into evidence/calibration.json.
 #
 #   scripts/calibrate.sh            # seq-real must be running: scripts/seq.sh real start
+#
+# Scope (coordinator, 2026-11-12): this is the real-proof PIPELINE smoke test ("pipeline_smoke" in
+# evidence/calibration.json), not the K4 number; W6 owns K4 with LEZ's cycle_bench. Do not run inside W6's window.
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=scripts/env.sh
@@ -29,6 +32,11 @@ fi
 payer="$(wallet account list | sed -n 's#^Public/\([1-9A-HJ-NP-Za-km-z]\{32,44\}\)$#\1#p' | head -1)"
 priv="$(wallet account new private --label "calib-$stamp" | sed -n 's#.*Private/\([1-9A-HJ-NP-Za-km-z]\{32,44\}\).*#\1#p' | head -1)"
 [ -n "$payer" ] && [ -n "$priv" ] || { echo "could not resolve payer ($payer) or private account ($priv)" >&2; exit 1; }
+# rc3: the private transaction pays its fee reserve from the private account, so fund it first (this transfer is itself
+# a privacy-preserving transaction; on seq-real it is a real proof too, timed separately).
+/usr/bin/time -v -o "$out/fund-$stamp.time" nice -n 19 ionice -c3 \
+  wallet auth-transfer send --from "$payer_label" --to "Private/$priv" --amount 1000000000 > "$out/fund-$stamp.log" 2>&1
+wallet account sync-private >/dev/null
 
 {
   echo "date_utc=$(date -u +%FT%TZ)"
