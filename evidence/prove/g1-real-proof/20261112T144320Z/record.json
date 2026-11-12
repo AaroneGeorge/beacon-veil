@@ -1,0 +1,43 @@
+{
+  "name": "g1-real-proof",
+  "label": "measured",
+  "dev_mode": false,
+  "exit": 0,
+  "start_utc": "2026-11-12T14:43:20Z",
+  "end_utc": "2026-11-12T20:17:41Z",
+  "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
+  "command": "nice -n 19 ionice -c3 /home/lechuuu/hackathons/logos-rfp/build/target/debug/g1_real_proof --step finality_update_15637644 --verifier lc_verify --instance 5kWLCgG7nT8tMdT47nnbQGH2czDuada2CrnSesjG1GGw",
+  "loadavg_start": "4.95 7.54 7.39 1/729 1230516",
+  "loadavg_end": "3.90 6.90 7.56 1/754 1583061",
+  "mem_start": "total 15823 MiB, available 12932 MiB; swap used 754 MiB of 12147",
+  "risc0": "unset risc0_prover=default",
+  "repo_commit": "466b45a dirty=10",
+  "note": "G1 real proof, lc_verify V1 finality_update_15637644, Path A on seq-real",
+  "raw": {
+    "meta.txt": "evidence/prove/g1-real-proof/20261112T144320Z/meta.txt",
+    "time.txt": "evidence/prove/g1-real-proof/20261112T144320Z/time.txt",
+    "output.log": "evidence/prove/g1-real-proof/20261112T144320Z/output.log",
+    "samples.csv": "evidence/prove/g1-real-proof/20261112T144320Z/samples.csv",
+    "sampler.json": "evidence/prove/g1-real-proof/20261112T144320Z/sampler.json"
+  },
+  "wall_s": 20060.0,
+  "max_rss_kib_time_v": 9646504,
+  "user_s": 151374.93,
+  "sys_s": 264.57,
+  "cpu_pct": 755,
+  "major_faults": 108,
+  "exit_status_time_v": 0,
+  "sampler": {
+    "samples": 19830,
+    "interval_s": 1.0,
+    "peak_tree_rss_kib": 9708356,
+    "peak_tree_rss_gib": 9.259,
+    "peak_single_process_rss_kib": 9644256,
+    "peak_single_process": "r0vm",
+    "min_mem_available_kib": 3496424,
+    "swap_used_by_run_kib_max": 92700,
+    "load1_mean": 8.14,
+    "load1_max": 10.36
+  },
+  "peak_rss_gib": 9.259
+}

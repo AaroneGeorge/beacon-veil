@@ -1,0 +1,8 @@
+head before: slot 15631808 period 1908
+Latest block is 449
+Syncing to block 449. Blocks to sync: 59
+Synced to block 449 in 443.090139ms
+Latest block is 1785
+Syncing to block 1785. Blocks to sync: 1336
+Synced to block 1785 in 19.19660687s
+G1REAL {"accepted":true,"block_id":1784,"head_after":{"exec_number":26397891,"period":1908,"slot":15637568},"head_before":{"period":1908,"slot":15631808},"init_tx":null,"instance":"5kWLCgG7nT8tMdT47nnbQGH2czDuada2CrnSesjG1GGw","prove_and_submit_s":20060.227490498,"step":"finality_update_15637644","total_s":20060.287691214,"tx":"8fa6e970c28d62f9115271516d7cb0f6d9f59b0c3d712cb796604f5f16affc73","tx_wire_bytes":255351,"verifier":"lc_verify","verifier_id":"D4ieSbPKLW26qLnCWizkjUir7uosKf9m4AGNxUEG5U3d","witness_set_bytes":239214}

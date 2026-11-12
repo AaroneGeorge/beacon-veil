@@ -1,0 +1,43 @@
+{
+  "name": "fund-submitter",
+  "label": "measured",
+  "dev_mode": false,
+  "exit": 0,
+  "start_utc": "2026-11-12T14:08:24Z",
+  "end_utc": "2026-11-12T14:27:55Z",
+  "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
+  "command": "nice -n 19 ionice -c3 wallet auth-transfer send --from Public/CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r --to Private/7qtSZh5UFitYJ3kVz7by2kH9FXtsJirpSik9mRBCFnzj --amount 1000000000",
+  "loadavg_start": "0.64 0.96 3.73 6/730 1198390",
+  "loadavg_end": "4.87 7.20 6.70 1/719 1216212",
+  "mem_start": "total 15823 MiB, available 12971 MiB; swap used 765 MiB of 12147",
+  "risc0": "unset risc0_prover=default",
+  "repo_commit": "f77a1d0 dirty=6",
+  "note": "fund private submitter 7qtSZh5U... on seq-real from bv-payer (privacy-preserving tx, real proof), wallet-w6-real",
+  "raw": {
+    "meta.txt": "evidence/prove/fund-submitter/20261112T140824Z/meta.txt",
+    "time.txt": "evidence/prove/fund-submitter/20261112T140824Z/time.txt",
+    "output.log": "evidence/prove/fund-submitter/20261112T140824Z/output.log",
+    "samples.csv": "evidence/prove/fund-submitter/20261112T140824Z/samples.csv",
+    "sampler.json": "evidence/prove/fund-submitter/20261112T140824Z/sampler.json"
+  },
+  "wall_s": 1169.63,
+  "max_rss_kib_time_v": 9609336,
+  "user_s": 8592.13,
+  "sys_s": 16.46,
+  "cpu_pct": 736,
+  "major_faults": 394,
+  "exit_status_time_v": 0,
+  "sampler": {
+    "samples": 1157,
+    "interval_s": 1.0,
+    "peak_tree_rss_kib": 9627092,
+    "peak_tree_rss_gib": 9.181,
+    "peak_single_process_rss_kib": 9610224,
+    "peak_single_process": "r0vm",
+    "min_mem_available_kib": 3630036,
+    "swap_used_by_run_kib_max": 20552,
+    "load1_mean": 7.78,
+    "load1_max": 9.01
+  },
+  "peak_rss_gib": 9.181
+}

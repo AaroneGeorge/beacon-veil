@@ -1,0 +1,54 @@
+{
+  "gate": "G1 (real-proof half)",
+  "dev_mode": false,
+  "accepted": true,
+  "step": "finality_update_15637644",
+  "verifier": "lc_verify",
+  "verifier_id": "D4ieSbPKLW26qLnCWizkjUir7uosKf9m4AGNxUEG5U3d",
+  "instance": "5kWLCgG7nT8tMdT47nnbQGH2czDuada2CrnSesjG1GGw",
+  "init_tx": null,
+  "tx": "8fa6e970c28d62f9115271516d7cb0f6d9f59b0c3d712cb796604f5f16affc73",
+  "block_id": 1784,
+  "receipt_bytes": 239214,
+  "receipt_bytes_note": "borsh size of the transaction's witness set (succinct receipt + signatures); LEZ prices the proof at PROOF_BYTES = 223,551",
+  "tx_wire_bytes": 255351,
+  "prove_seconds": 20060.227490498,
+  "job_wall_seconds": 20060.0,
+  "peak_rss_gib": 9.259,
+  "swap_used_kib_max": 92700,
+  "load1_mean": 8.14,
+  "head_before": {
+    "period": 1908,
+    "slot": 15631808
+  },
+  "head_after": {
+    "exec_number": 26397891,
+    "period": 1908,
+    "slot": 15637568
+  },
+  "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
+  "command": "nice -n 19 ionice -c3 /home/lechuuu/hackathons/logos-rfp/build/target/debug/g1_real_proof --step finality_update_15637644 --verifier lc_verify --instance 5kWLCgG7nT8tMdT47nnbQGH2czDuada2CrnSesjG1GGw",
+  "start_utc": "2026-11-12T14:43:20Z",
+  "end_utc": "2026-11-12T20:17:41Z",
+  "repo_commit": "466b45a dirty=10",
+  "label": "measured",
+  "sequencer": "seq-real (standalone rc3, RISC0_DEV_MODE unset in its environment)",
+  "sequencer_log_excerpt": [
+    "[2026-11-12T20:16:48Z INFO  sequencer_core] Publishing block 1783 on pin 38de667301ccfc2286a979dba0317e9f7d3142b06333b870743f63bd93c1d43d",
+    "[2026-11-12T20:16:48Z INFO  sequencer_executor_actor::actor] Block with id 1783 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1",
+    "[2026-11-12T20:16:51Z INFO  jsonrpsee_server::server] connection; remote_addr=127.0.0.1:44710 conn_id=20",
+    "[2026-11-12T20:17:03Z INFO  sequencer_core] Created block with 3 transactions in 0 seconds",
+    "[2026-11-12T20:17:03Z INFO  sequencer_core] Publishing block 1784 on pin 3e030695188aa17a127870fad0022e7f97a358fac7a277e3672a1cfdff215abd",
+    "[2026-11-12T20:17:04Z INFO  sequencer_executor_actor::actor] Block with id 1784 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1",
+    "[2026-11-12T20:17:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds",
+    "[2026-11-12T20:17:18Z INFO  sequencer_core] Publishing block 1785 on pin 542d1b48fdbef696a2d2f7dfda4a0f6e2dec0db0a1e107e5c3aaa1de560c494f"
+  ],
+  "raw": {
+    "job_record": "evidence/prove/g1-real-proof/20261112T144320Z/record.json",
+    "output": "evidence/prove/g1-real-proof/20261112T144320Z/output.log",
+    "time": "evidence/prove/g1-real-proof/20261112T144320Z/time.txt",
+    "rss_samples": "evidence/prove/g1-real-proof/20261112T144320Z/samples.csv",
+    "sequencer_log": "evidence/prove/g1-real-proof/20261112T144320Z/seq-real.log"
+  },
+  "sequencer_log_excerpt_note": "seq-real log around the block that includes the tx (the rc3 sequencer logs blocks, not tx hashes, at info level); full log in raw.sequencer_log"
+}

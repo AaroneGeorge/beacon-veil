@@ -7,3 +7,5 @@
 | calib-seg20 | 2026-11-12T13:42:33Z | False | 0 | 513.88 | 9.15 | n/a | 8.69 8.85 9.82 | Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5 |
 | calib-recursion-composite | 2026-11-12T13:51:08Z | False | 0 | 38.47 | 1.16 | 247,532 | 8.52 8.45 9.16 | Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5 |
 | calib-recursion-succinct | 2026-11-12T13:51:48Z | False | 0 | 69.59 | 1.40 | 226,508 | 8.29 8.38 9.11 | Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5 |
+| fund-submitter | 2026-11-12T14:08:24Z | False | 0 | 1,169.63 | 9.18 | n/a | 0.64 0.96 3.73 | Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5 |
+| g1-real-proof | 2026-11-12T14:43:20Z | False | 0 | 20,060.00 | 9.26 | n/a | 4.95 7.54 7.39 | Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5 |

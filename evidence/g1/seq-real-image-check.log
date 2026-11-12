@@ -1,0 +1,3 @@
+attest: header 2TXRshgszyS8soS6jTm3j5FcEJZTe2TUT8rpaxbDx3cB state 66 bytes, image id 9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d: MATCH
+lc_verify: header D4ieSbPKLW26qLnCWizkjUir7uosKf9m4AGNxUEG5U3d state 66 bytes, image id c7b5f2191f133026017c09072e883217dfe3785450d40d081718b0fd204878ba: MATCH
+lc_verify_v2: header Gu5isNCuiaeFXBDbUnuFAKgEfrxyQAHH6rbVwRrFdiMg state 66 bytes, image id 18684beee3e973a2f1391c9bdb9108743c71e6f216bb5fba88bc0443403e8230: MATCH

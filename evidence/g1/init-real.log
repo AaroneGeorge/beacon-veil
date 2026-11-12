@@ -1,0 +1,4 @@
+2026-11-12T14:28:06Z
+init: instance 5kWLCgG7nT8tMdT47nnbQGH2czDuada2CrnSesjG1GGw tx b27730245343fa7dc864f6657b1b64b0cde4b2e553ca0d0fd5469531824b63f0 (checkpoint slot 15631808, min_participants 342)
+G1INIT {"checkpoint_slot":15631808,"init_tx":"b27730245343fa7dc864f6657b1b64b0cde4b2e553ca0d0fd5469531824b63f0","instance":"5kWLCgG7nT8tMdT47nnbQGH2czDuada2CrnSesjG1GGw","min_participants":342,"verifiers":["D4ieSbPKLW26qLnCWizkjUir7uosKf9m4AGNxUEG5U3d","Gu5isNCuiaeFXBDbUnuFAKgEfrxyQAHH6rbVwRrFdiMg"]}
+exit 0
