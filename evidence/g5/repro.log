@@ -1,0 +1,8 @@
+g5: clone of f1982433cf0d8e5e9c17595624bcdadd0f86e5f4 in /home/lechuuu/hackathons/logos-rfp/build/.tmp/clean
+tools/cost/cost_exec.sh
+cost-exec: building harnesses
+cost-exec: exec-lc
+cost-exec: attest_exec
+import-trace: 5 steps -> /home/lechuuu/hackathons/logos-rfp/build/.tmp/clean/evidence/cost/raw/b0-phases.json
+cost: 31 rows -> /home/lechuuu/hackathons/logos-rfp/build/.tmp/clean/evidence/cost/cost.json, cost.md
+g5: cost-exec in the clone exited 0

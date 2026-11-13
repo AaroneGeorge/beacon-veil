@@ -1,0 +1,26 @@
+{
+  "gate": "G5",
+  "commit": "f1982433cf0d8e5e9c17595624bcdadd0f86e5f4",
+  "started_utc": "2026-11-13T06:37:26Z",
+  "reference": "/home/lechuuu/hackathons/logos-rfp/build/.tmp/clean/evidence/cost/cost.json",
+  "regenerated": "/home/lechuuu/hackathons/logos-rfp/build/.tmp/clean/evidence/cost/cost.json",
+  "cost_exec_exit": 0,
+  "guest_build_docker": false,
+  "release_bins": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2",
+  "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, Linux 7.0.0-43-generic, risc0-r0vm 3.0.5",
+  "rows_compared": 31,
+  "image_ids": {
+    "reference": {
+      "attest": "9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d",
+      "lc_verify": "c7b5f2191f133026017c09072e883217dfe3785450d40d081718b0fd204878ba",
+      "lc_verify_v2": "18684beee3e973a2f1391c9bdb9108743c71e6f216bb5fba88bc0443403e8230"
+    },
+    "regenerated": {
+      "attest": "9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d",
+      "lc_verify": "c7b5f2191f133026017c09072e883217dfe3785450d40d081718b0fd204878ba",
+      "lc_verify_v2": "18684beee3e973a2f1391c9bdb9108743c71e6f216bb5fba88bc0443403e8230"
+    }
+  },
+  "pass": true,
+  "failures": []
+}
