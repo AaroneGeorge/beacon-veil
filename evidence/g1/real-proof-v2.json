@@ -1,0 +1,53 @@
+{
+  "gate": "G1 (real-proof half)",
+  "dev_mode": false,
+  "accepted": true,
+  "step": "finality_update_15637644",
+  "verifier": "lc_verify_v2",
+  "verifier_id": "Gu5isNCuiaeFXBDbUnuFAKgEfrxyQAHH6rbVwRrFdiMg",
+  "instance": "67bw5WxQGYcaSbJwVjkbkwMMHkQ5GGMAPAjYX1YDjoXa",
+  "init_tx": null,
+  "tx": "275582a19905c442cb69d2aa876555ea48a54ac4625e51e8a4f141ec2fb473b6",
+  "block_id": 3111,
+  "receipt_bytes": 239214,
+  "receipt_bytes_note": "borsh size of the transaction's witness set (succinct receipt + signatures); LEZ prices the proof at PROOF_BYTES = 223,551",
+  "tx_wire_bytes": 255351,
+  "prove_seconds": 16064.344584416,
+  "job_wall_seconds": 16064.0,
+  "peak_rss_gib": 9.24,
+  "swap_used_kib_max": 113712,
+  "load1_mean": 8.21,
+  "head_before": {
+    "period": 1908,
+    "slot": 15631808
+  },
+  "head_after": {
+    "exec_number": 26397891,
+    "period": 1908,
+    "slot": 15637568
+  },
+  "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
+  "command": "nice -n 19 ionice -c3 /home/lechuuu/hackathons/logos-rfp/build/target/debug/g1_real_proof --step finality_update_15637644 --verifier lc_verify_v2 --instance 67bw5WxQGYcaSbJwVjkbkwMMHkQ5GGMAPAjYX1YDjoXa",
+  "start_utc": "2026-11-12T21:21:41Z",
+  "end_utc": "2026-11-13T01:49:26Z",
+  "repo_commit": "9c83cda dirty=3",
+  "label": "measured",
+  "sequencer": "seq-real (standalone rc3, RISC0_DEV_MODE unset in its environment)",
+  "sequencer_log_excerpt": [
+    "[2026-11-13T01:48:34Z INFO  sequencer_core] Publishing block 3110 on pin 909b3bfd4f39f00b9d4d0b6656c808bb1de125d8e2bb6b67199acb56c30157c0",
+    "[2026-11-13T01:48:34Z INFO  sequencer_executor_actor::actor] Block with id 3110 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1",
+    "[2026-11-13T01:48:44Z INFO  jsonrpsee_server::server] connection; remote_addr=127.0.0.1:45706 conn_id=40",
+    "[2026-11-13T01:48:49Z INFO  sequencer_core] Created block with 3 transactions in 0 seconds",
+    "[2026-11-13T01:48:49Z INFO  sequencer_core] Publishing block 3111 on pin 924b90134bdcc2327e1a733319b198306d7953324d88344a18908d257fa3b2b5",
+    "[2026-11-13T01:48:49Z INFO  sequencer_executor_actor::actor] Block with id 3111 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1",
+    "[2026-11-13T01:49:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds",
+    "[2026-11-13T01:49:03Z INFO  sequencer_core] Publishing block 3112 on pin 26753650d58f7a31cc7528c8b7f6fd41d5e2a12efa7e72307b37d33d13899ea9"
+  ],
+  "raw": {
+    "job_record": "evidence/prove/g1-real-proof-v2/20261112T212141Z/record.json",
+    "output": "evidence/prove/g1-real-proof-v2/20261112T212141Z/output.log",
+    "time": "evidence/prove/g1-real-proof-v2/20261112T212141Z/time.txt",
+    "rss_samples": "evidence/prove/g1-real-proof-v2/20261112T212141Z/samples.csv",
+    "sequencer_log": "evidence/prove/g1-real-proof-v2/20261112T212141Z/seq-real.log"
+  }
+}

@@ -1,0 +1,18 @@
+RISC0_DEV_MODE=None
+consumer instance 3ypQ9TD1RCQ6xzZAZ7SCaLH7yfnj1mAfejwUUYzeTkMX: init tx c0c2f2f2264ade83451c8116ebfcb0fb4e70fa39d726d185ba57bb564aefaad4
+Latest block is 1809
+Syncing to block 1809. Blocks to sync: 17
+Synced to block 1809 in 225.847553ms
+Latest block is 1950
+Syncing to block 1950. Blocks to sync: 141
+Synced to block 1950 in 2.050858666s
+private attest tx e682b7fef80ce69cb3947ef47064dcf85ab907ae6d33372d7573585840a51ec5 in 2120.6 s
+Latest block is 1951
+Syncing to block 1951. Blocks to sync: 1
+Synced to block 1951 in 14.080962ms
+
+thread 'main' (1) panicked at crates/attest_core/src/error.rs:120:9:
+ESA:E11
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+replay: accepted false code Some(E11AlreadyConsumed): attest (private, replay): Failed to build transaction: Failed to execute program: Guest panicked: ESA:E11: E11_ALREADY_CONSUMED
+G3REAL {"accepted":true,"attest_program":"2TXRshgszyS8soS6jTm3j5FcEJZTe2TUT8rpaxbDx3cB","block_id":1949,"consumer_count_after":1,"consumer_count_before":0,"consumer_init_tx":"c0c2f2f2264ade83451c8116ebfcb0fb4e70fa39d726d185ba57bb564aefaad4","consumer_instance":"3ypQ9TD1RCQ6xzZAZ7SCaLH7yfnj1mAfejwUUYzeTkMX","consumer_program":"95W1TbwkzjVp1ciszPnMiQ7cM9he6xNgQ4TYwftcPDpb","consumer_total_after":"0000000000000000000000000000000000000000000000000000000006520467","exec_hash":"5a500b1d7ec30eb2859694f9e26616ef7693921bccc6b2ef0da87e998587b410","exec_number":26397891,"fixture":"mainnet_log_usdt_tx1_log2.json","instance":"5kWLCgG7nT8tMdT47nnbQGH2czDuada2CrnSesjG1GGw","nullifier":"691GWpN1Ma4G8yNVnmmCZMjgTHPwBDVo3xh2WzTKcjdV","prove_and_submit_s":2120.599719166,"record_slot":15637568,"replay":{"accepted":false,"code":"E11_ALREADY_CONSUMED","consumer_state_unchanged":true,"error":"attest (private, replay): Failed to build transaction: Failed to execute program: Guest panicked: ESA:E11: E11_ALREADY_CONSUMED","seconds":0.435069148},"risc0_dev_mode":null,"statement_id":"6c0ec6f0fcfa09c75134f0129d64d35b424079ab1129d0526f05c14aa9bb81ed","submitter_private":true,"total_s":2151.442677657,"tx":"e682b7fef80ce69cb3947ef47064dcf85ab907ae6d33372d7573585840a51ec5","tx_wire_bytes":255657,"witness_set_bytes":239367}

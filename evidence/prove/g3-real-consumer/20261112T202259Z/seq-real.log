@@ -1,0 +1,443 @@
+[2026-11-12T20:22:59Z INFO  jsonrpsee_server::server] connection; remote_addr=127.0.0.1:39572 conn_id=33
+[2026-11-12T20:22:59Z INFO  jsonrpsee_server::server] connection; remote_addr=127.0.0.1:39586 conn_id=34
+[2026-11-12T20:23:03Z INFO  sequencer_core] Created block with 3 transactions in 0 seconds
+[2026-11-12T20:23:03Z INFO  sequencer_core] Publishing block 1808 on pin 9c3fcee1f935b2d36cc372f44a95cde61d34c1e62f3d3dc123a43e54d95e6ff9
+[2026-11-12T20:23:04Z INFO  sequencer_executor_actor::actor] Block with id 1808 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:23:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:23:18Z INFO  sequencer_core] Publishing block 1809 on pin db2cc1cb740f3e0a1b2cc9a2239a64cf609b8cfb9b82cb6ffd73b60e2deffc74
+[2026-11-12T20:23:18Z INFO  sequencer_executor_actor::actor] Block with id 1809 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:23:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:23:33Z INFO  sequencer_core] Publishing block 1810 on pin a007733aa40bbf9909c62d4fcaef66dc014d0e555924a872300005c840a88f26
+[2026-11-12T20:23:34Z INFO  sequencer_executor_actor::actor] Block with id 1810 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:23:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:23:48Z INFO  sequencer_core] Publishing block 1811 on pin d9412e195b3a67d6228c23f063a2e806e1bf5bc91052783d016c947047145d86
+[2026-11-12T20:23:49Z INFO  sequencer_executor_actor::actor] Block with id 1811 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:24:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:24:03Z INFO  sequencer_core] Publishing block 1812 on pin 05bec291110a4bbe9da6cab6627a0ba8086c5d42309217f05c357e4fe43fc9e7
+[2026-11-12T20:24:04Z INFO  sequencer_executor_actor::actor] Block with id 1812 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:24:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:24:18Z INFO  sequencer_core] Publishing block 1813 on pin 34f09559a464b4fbb6ae13228e80746d3a152260df1b41cb41321a36f88a9754
+[2026-11-12T20:24:18Z INFO  sequencer_executor_actor::actor] Block with id 1813 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:24:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:24:33Z INFO  sequencer_core] Publishing block 1814 on pin 8148c848de109b32e2c6f818eb89a4cd66f37647978e31c43905f4e679ce7dcb
+[2026-11-12T20:24:34Z INFO  sequencer_executor_actor::actor] Block with id 1814 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:24:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:24:48Z INFO  sequencer_core] Publishing block 1815 on pin a77e401249dd9f13be86b8833881cbe64c132a69965a67e6367c8424f4692208
+[2026-11-12T20:24:49Z INFO  sequencer_executor_actor::actor] Block with id 1815 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:25:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:25:03Z INFO  sequencer_core] Publishing block 1816 on pin 03885b0483077c802a1883818985024e84b89329ac54c88c5d8cbf6cfef3ffa3
+[2026-11-12T20:25:04Z INFO  sequencer_executor_actor::actor] Block with id 1816 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:25:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:25:18Z INFO  sequencer_core] Publishing block 1817 on pin 352237a6937a1fb2731489be58163734510d91df458014fb476e32643a2620e3
+[2026-11-12T20:25:19Z INFO  sequencer_executor_actor::actor] Block with id 1817 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:25:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:25:33Z INFO  sequencer_core] Publishing block 1818 on pin 40d4ed739abac4c67fe0129598c7a5bf106db370ad50ad92eeae14a3154f48e3
+[2026-11-12T20:25:34Z INFO  sequencer_executor_actor::actor] Block with id 1818 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:25:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:25:48Z INFO  sequencer_core] Publishing block 1819 on pin d4a1dbde1812fd0a46a2b7d085b5742efede41635ab6691ba9c9aaaafaecc798
+[2026-11-12T20:25:49Z INFO  sequencer_executor_actor::actor] Block with id 1819 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:26:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:26:03Z INFO  sequencer_core] Publishing block 1820 on pin 0d7f97e6a3f99bdbb29ed25e3b0e5148777cd95adf10054955cd9401eab3d4a9
+[2026-11-12T20:26:04Z INFO  sequencer_executor_actor::actor] Block with id 1820 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:26:05Z WARN  libp2p_kad::behaviour] Failed to trigger bootstrap: No known peers.
+[2026-11-12T20:26:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:26:18Z INFO  sequencer_core] Publishing block 1821 on pin b54cbe07067b41c5f2688a40d38b9c26ff3498f9b844f67fddd61228a930ee85
+[2026-11-12T20:26:19Z INFO  sequencer_executor_actor::actor] Block with id 1821 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:26:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:26:33Z INFO  sequencer_core] Publishing block 1822 on pin 3a9172019391d02c6e591c5f23fdcfa333aca96bae744a61c62039260b373324
+[2026-11-12T20:26:34Z INFO  sequencer_executor_actor::actor] Block with id 1822 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:26:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:26:48Z INFO  sequencer_core] Publishing block 1823 on pin 1c9a3b03a22da8c3223bf9b7c85f53501b27a2542311e4f849f94e2bf3f3c022
+[2026-11-12T20:26:49Z INFO  sequencer_executor_actor::actor] Block with id 1823 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:27:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:27:03Z INFO  sequencer_core] Publishing block 1824 on pin b2a314adddf33e7b7b61ef66e2e59f36994d53592f9e49d4b65134c0c8ba1086
+[2026-11-12T20:27:04Z INFO  sequencer_executor_actor::actor] Block with id 1824 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:27:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:27:18Z INFO  sequencer_core] Publishing block 1825 on pin 6c4f5134c824fb386914ea5ccde2d680891d09dbaba80f47dbb37c85e082c88d
+[2026-11-12T20:27:19Z INFO  sequencer_executor_actor::actor] Block with id 1825 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:27:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:27:33Z INFO  sequencer_core] Publishing block 1826 on pin f058c0c3df8d4afe595d832ef3c76b4c4ebdfe7162f25bbf14b4b9dab0a3ed02
+[2026-11-12T20:27:34Z INFO  sequencer_executor_actor::actor] Block with id 1826 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:27:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:27:48Z INFO  sequencer_core] Publishing block 1827 on pin 52daed24d4aa7adf63daa8898efdb6a59b708eac45a262ffbd2351afd059f5eb
+[2026-11-12T20:27:49Z INFO  sequencer_executor_actor::actor] Block with id 1827 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:28:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:28:03Z INFO  sequencer_core] Publishing block 1828 on pin 3f53ef5d174fb81d0272408932e8138461ac1e11226c041c8e853c5c29046853
+[2026-11-12T20:28:04Z INFO  sequencer_executor_actor::actor] Block with id 1828 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:28:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:28:18Z INFO  sequencer_core] Publishing block 1829 on pin fd9f46cdb9d4f103f998f872a03227a25e077f0dc34e9a6d79ca5e7f99448f30
+[2026-11-12T20:28:19Z INFO  sequencer_executor_actor::actor] Block with id 1829 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:28:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:28:33Z INFO  sequencer_core] Publishing block 1830 on pin 0514f5856cd367e2cb50e8d7220be50053eb48214a3486f178b0098f9a8ed929
+[2026-11-12T20:28:33Z INFO  sequencer_executor_actor::actor] Block with id 1830 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:28:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:28:48Z INFO  sequencer_core] Publishing block 1831 on pin 32c378b5cb981ec10730b56828bbdab2c006f55170c1f376bef4cb7ea4692c5f
+[2026-11-12T20:28:49Z INFO  sequencer_executor_actor::actor] Block with id 1831 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:29:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:29:03Z INFO  sequencer_core] Publishing block 1832 on pin 036511e4c06c2370028455d102abd96396dde522f4a0c024ee93f098f59da71f
+[2026-11-12T20:29:04Z INFO  sequencer_executor_actor::actor] Block with id 1832 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:29:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:29:18Z INFO  sequencer_core] Publishing block 1833 on pin ca2b1476c4d9fcf282d50d1d23e47943391b6cd6c525becfcf993c4acfb7de91
+[2026-11-12T20:29:19Z INFO  sequencer_executor_actor::actor] Block with id 1833 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:29:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:29:33Z INFO  sequencer_core] Publishing block 1834 on pin b8da5a1ae43d7272f198c0fa521e9686122e510c6dbac70cbcf66b1d0ebe200d
+[2026-11-12T20:29:34Z INFO  sequencer_executor_actor::actor] Block with id 1834 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:29:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:29:48Z INFO  sequencer_core] Publishing block 1835 on pin 88bc1c67f8704eccdf2a184b36396ad56721e4b7ccaea8b05dd454215f1d2ea4
+[2026-11-12T20:29:49Z INFO  sequencer_executor_actor::actor] Block with id 1835 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:30:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:30:03Z INFO  sequencer_core] Publishing block 1836 on pin b85e966345c50e7c692f3084ac342355dde33e6f197b19d4adb2cd4c042911b9
+[2026-11-12T20:30:04Z INFO  sequencer_executor_actor::actor] Block with id 1836 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:30:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:30:18Z INFO  sequencer_core] Publishing block 1837 on pin a7e9b77eb86edc083bafacfa9ee3179afb9e59a15eb76a16764b5c7cc4d1aa34
+[2026-11-12T20:30:19Z INFO  sequencer_executor_actor::actor] Block with id 1837 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:30:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:30:33Z INFO  sequencer_core] Publishing block 1838 on pin 1fda15a088ee0444540b4bc4a45a8b8aa9b592101d549b15bd10587220107685
+[2026-11-12T20:30:34Z INFO  sequencer_executor_actor::actor] Block with id 1838 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:30:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:30:48Z INFO  sequencer_core] Publishing block 1839 on pin ac973dc076116b357938399bcf283b2e55eb1ce43742b4a6e1ce0284e15310a9
+[2026-11-12T20:30:49Z INFO  sequencer_executor_actor::actor] Block with id 1839 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:31:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:31:03Z INFO  sequencer_core] Publishing block 1840 on pin 8659a5d163005160564f0d9ee1ac08db6d68a0f4d9df6a65e8044acbec482974
+[2026-11-12T20:31:04Z INFO  sequencer_executor_actor::actor] Block with id 1840 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:31:05Z WARN  libp2p_kad::behaviour] Failed to trigger bootstrap: No known peers.
+[2026-11-12T20:31:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:31:18Z INFO  sequencer_core] Publishing block 1841 on pin 05b5c931d3efb81c3d2de414ceb9156e25d653bf58c0b6a8b958e8ba25f22bb3
+[2026-11-12T20:31:19Z INFO  sequencer_executor_actor::actor] Block with id 1841 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:31:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:31:33Z INFO  sequencer_core] Publishing block 1842 on pin ab9d748e39da43643524a9734ed9f3044ebd0e7676c7a679800aa8cedd852381
+[2026-11-12T20:31:34Z INFO  sequencer_executor_actor::actor] Block with id 1842 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:31:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:31:48Z INFO  sequencer_core] Publishing block 1843 on pin 7d271dc5cb0adca8352d41321bf5e31e99b49e1cc32bd107c3079b16b7513370
+[2026-11-12T20:31:49Z INFO  sequencer_executor_actor::actor] Block with id 1843 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:32:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:32:03Z INFO  sequencer_core] Publishing block 1844 on pin 8e0fd497418af8ad2f02adcc553954a02937fffa45a927625b0bfa0b0579efed
+[2026-11-12T20:32:04Z INFO  sequencer_executor_actor::actor] Block with id 1844 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:32:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:32:18Z INFO  sequencer_core] Publishing block 1845 on pin 8a09dc9cfd50dcfbca7b1897f3ecee57b4cae4711259f55130583a7a9eb9eedd
+[2026-11-12T20:32:19Z INFO  sequencer_executor_actor::actor] Block with id 1845 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:32:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:32:33Z INFO  sequencer_core] Publishing block 1846 on pin 23ca5c7f2112c62b7daa1e72afcccc7c168f76ce91d896efc75aec6013a32a1f
+[2026-11-12T20:32:34Z INFO  sequencer_executor_actor::actor] Block with id 1846 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:32:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:32:48Z INFO  sequencer_core] Publishing block 1847 on pin fb40ec8a5b31b5bc3e311c52f931da5ab109471f2633d28b85c5b279846e24dc
+[2026-11-12T20:32:49Z INFO  sequencer_executor_actor::actor] Block with id 1847 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:33:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:33:03Z INFO  sequencer_core] Publishing block 1848 on pin 6c83b4ddeb3d56b1c6d6609714b54672e9d980b755a563a684bb30106a96ef70
+[2026-11-12T20:33:04Z INFO  sequencer_executor_actor::actor] Block with id 1848 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:33:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:33:18Z INFO  sequencer_core] Publishing block 1849 on pin bb365da570374e0e906a4694d9fd5edf01351802248498278f8d1cf747d70d77
+[2026-11-12T20:33:19Z INFO  sequencer_executor_actor::actor] Block with id 1849 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:33:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:33:33Z INFO  sequencer_core] Publishing block 1850 on pin 4c35ea40e092e1a81df2bd8ccd1a791af97c77e354f1031bb8cca134df21280d
+[2026-11-12T20:33:34Z INFO  sequencer_executor_actor::actor] Block with id 1850 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:33:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:33:48Z INFO  sequencer_core] Publishing block 1851 on pin c421433a452dbf87c658183d768642810780239bbf2b7187b4247f8328fb8dcb
+[2026-11-12T20:33:49Z INFO  sequencer_executor_actor::actor] Block with id 1851 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:34:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:34:03Z INFO  sequencer_core] Publishing block 1852 on pin c600f2c7db340e4558abd0dd10d43906d133092571f0efa894a67a1a2edfd254
+[2026-11-12T20:34:04Z INFO  sequencer_executor_actor::actor] Block with id 1852 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:34:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:34:18Z INFO  sequencer_core] Publishing block 1853 on pin 015686dd764f1a1b88e7ad59310484f59331c777b82d367e3addef6260dc5816
+[2026-11-12T20:34:19Z INFO  sequencer_executor_actor::actor] Block with id 1853 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:34:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:34:33Z INFO  sequencer_core] Publishing block 1854 on pin b99827a6ab222fc5f0a5e0ba6988f0ce6823574ce678fd8b6474d9721767578f
+[2026-11-12T20:34:34Z INFO  sequencer_executor_actor::actor] Block with id 1854 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:34:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:34:48Z INFO  sequencer_core] Publishing block 1855 on pin d19e40df7601daa59a05013d43e0061e2a583024ebcbcfe95fbf2d3438a7a26e
+[2026-11-12T20:34:49Z INFO  sequencer_executor_actor::actor] Block with id 1855 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:35:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:35:03Z INFO  sequencer_core] Publishing block 1856 on pin 2eff17e1bcd0a08ff707cb9d10605a1545edbe36510b28fc35037351a7939464
+[2026-11-12T20:35:04Z INFO  sequencer_executor_actor::actor] Block with id 1856 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:35:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:35:18Z INFO  sequencer_core] Publishing block 1857 on pin db76108f8b07f72e21b42b62cf6bf3294f823e8fdd31984adcf8cf177cc47f49
+[2026-11-12T20:35:18Z INFO  sequencer_executor_actor::actor] Block with id 1857 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:35:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:35:33Z INFO  sequencer_core] Publishing block 1858 on pin 943e62adb4d3d656475fc9dd8d832385825f5096c05939e247f697f602b47d4d
+[2026-11-12T20:35:34Z INFO  sequencer_executor_actor::actor] Block with id 1858 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:35:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:35:48Z INFO  sequencer_core] Publishing block 1859 on pin 041fb5196c4d530bd15504c09a14b4ed3bd1bef34153860bebf430beb86251c9
+[2026-11-12T20:35:49Z INFO  sequencer_executor_actor::actor] Block with id 1859 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:36:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:36:03Z INFO  sequencer_core] Publishing block 1860 on pin 5bcc1e0e8ba6a7cff4ee0ae8d5e3e4451b532b64993dd793f34904fd7e1cdd60
+[2026-11-12T20:36:04Z INFO  sequencer_executor_actor::actor] Block with id 1860 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:36:05Z WARN  libp2p_kad::behaviour] Failed to trigger bootstrap: No known peers.
+[2026-11-12T20:36:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:36:18Z INFO  sequencer_core] Publishing block 1861 on pin 763208585973303b328b9f541673ef1b4863aff54da7a3b2d8a9495b2b270dac
+[2026-11-12T20:36:19Z INFO  sequencer_executor_actor::actor] Block with id 1861 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:36:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:36:33Z INFO  sequencer_core] Publishing block 1862 on pin c26143a3cdd0c8b8b79623d3aa81444636621ffd8bcc8ee4216238374d24a1e3
+[2026-11-12T20:36:34Z INFO  sequencer_executor_actor::actor] Block with id 1862 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:36:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:36:48Z INFO  sequencer_core] Publishing block 1863 on pin 19fc724c4579643409e103537f6ba1de083496d16f2fbe901728713cd7bd4ab1
+[2026-11-12T20:36:49Z INFO  sequencer_executor_actor::actor] Block with id 1863 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:37:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:37:03Z INFO  sequencer_core] Publishing block 1864 on pin f273a1baa6a641fc0858b4f9c14978be876390cf01fda0cfdb710369ac42a9e2
+[2026-11-12T20:37:04Z INFO  sequencer_executor_actor::actor] Block with id 1864 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:37:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:37:18Z INFO  sequencer_core] Publishing block 1865 on pin b25d201c72231f52bca3cc4c472dd3027842d71a9acf2cfa03f162e39e987543
+[2026-11-12T20:37:19Z INFO  sequencer_executor_actor::actor] Block with id 1865 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:37:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:37:33Z INFO  sequencer_core] Publishing block 1866 on pin 98ba1b859cecc10ba2923da11400bab2f01ea701abc8c435c2c0070ecdd81141
+[2026-11-12T20:37:34Z INFO  sequencer_executor_actor::actor] Block with id 1866 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:37:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:37:48Z INFO  sequencer_core] Publishing block 1867 on pin d8d4bcaaf5cd67ea5dfb8a78865511c1db9ef9472ad81afc6bc4b269d7a2bcbd
+[2026-11-12T20:37:49Z INFO  sequencer_executor_actor::actor] Block with id 1867 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:38:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:38:03Z INFO  sequencer_core] Publishing block 1868 on pin 13914691ad2ce346b8949cb91eae51c8e830422cb1b3b87d7e939a144006645c
+[2026-11-12T20:38:04Z INFO  sequencer_executor_actor::actor] Block with id 1868 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:38:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:38:18Z INFO  sequencer_core] Publishing block 1869 on pin 5a0443ce6d310b02a91b0a72eada5ff1960e4e9e2ffebd0881b0124a564278a4
+[2026-11-12T20:38:19Z INFO  sequencer_executor_actor::actor] Block with id 1869 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:38:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:38:33Z INFO  sequencer_core] Publishing block 1870 on pin 592fcf82443d81a79c7e0ce22daeb05d2e06ce185e2e59a233ee15f8d78e2af0
+[2026-11-12T20:38:34Z INFO  sequencer_executor_actor::actor] Block with id 1870 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:38:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:38:48Z INFO  sequencer_core] Publishing block 1871 on pin 78ebd0e638158aa90d733b4b4a3e7415a6a23bda874445b30c5f68277f6694ca
+[2026-11-12T20:38:49Z INFO  sequencer_executor_actor::actor] Block with id 1871 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:39:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:39:03Z INFO  sequencer_core] Publishing block 1872 on pin f77d872c78a55c107650c008468c572f8196ca91fc3b3d87381b8c0ce8b4e119
+[2026-11-12T20:39:04Z INFO  sequencer_executor_actor::actor] Block with id 1872 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:39:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:39:18Z INFO  sequencer_core] Publishing block 1873 on pin 9a83ed029246700011b7c9bab96ad289354bc97a642dcdb0a9797ef51421fc06
+[2026-11-12T20:39:19Z INFO  sequencer_executor_actor::actor] Block with id 1873 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:39:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:39:33Z INFO  sequencer_core] Publishing block 1874 on pin ac399f6bf8b9fa1b76252c5776946fc002943402a35875b16141783b22e33276
+[2026-11-12T20:39:34Z INFO  sequencer_executor_actor::actor] Block with id 1874 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:39:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:39:48Z INFO  sequencer_core] Publishing block 1875 on pin 23f59bed9578bf6481a45353eab2d3eb6231ecb090dd86ff08648a03d76aef97
+[2026-11-12T20:39:49Z INFO  sequencer_executor_actor::actor] Block with id 1875 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:40:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:40:03Z INFO  sequencer_core] Publishing block 1876 on pin 7dcc26341b40a50d2eea4bdc36ff2c8c5a2e8dde9278096df1c28cf5679b968c
+[2026-11-12T20:40:04Z INFO  sequencer_executor_actor::actor] Block with id 1876 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:40:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:40:18Z INFO  sequencer_core] Publishing block 1877 on pin 7e857b3da0e25062915133337d694df1286e990ccc80eade3b7a380873eda7cb
+[2026-11-12T20:40:19Z INFO  sequencer_executor_actor::actor] Block with id 1877 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:40:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:40:33Z INFO  sequencer_core] Publishing block 1878 on pin 0abd5e645abcf0940d3e5ef358bf479bfd9690e75e4e0101bbc648f027f4744b
+[2026-11-12T20:40:34Z INFO  sequencer_executor_actor::actor] Block with id 1878 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:40:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:40:48Z INFO  sequencer_core] Publishing block 1879 on pin b17f59e55031bf59938a8ad330826118195b074d372cdb3e5c198729fcdd3592
+[2026-11-12T20:40:49Z INFO  sequencer_executor_actor::actor] Block with id 1879 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:41:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:41:03Z INFO  sequencer_core] Publishing block 1880 on pin 9c0e511bb9ce164b46730a673503799fb77a80166cf9e93c4aace65c4733a137
+[2026-11-12T20:41:04Z INFO  sequencer_executor_actor::actor] Block with id 1880 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:41:05Z WARN  libp2p_kad::behaviour] Failed to trigger bootstrap: No known peers.
+[2026-11-12T20:41:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:41:18Z INFO  sequencer_core] Publishing block 1881 on pin 9a06d0a65089430c35a69c705b1e14a84cf938f10a7632bfa3d7d26a49ade3b4
+[2026-11-12T20:41:19Z INFO  sequencer_executor_actor::actor] Block with id 1881 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:41:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:41:33Z INFO  sequencer_core] Publishing block 1882 on pin 21abf7cd7e4dffe4f3c914ebd75f78f58582d7467067cae56859c83dac34cb31
+[2026-11-12T20:41:34Z INFO  sequencer_executor_actor::actor] Block with id 1882 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:41:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:41:48Z INFO  sequencer_core] Publishing block 1883 on pin c489911c08bd9562dc88485e6f2d43e88d23f84087317fdb950e0f239ccc038a
+[2026-11-12T20:41:49Z INFO  sequencer_executor_actor::actor] Block with id 1883 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:42:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:42:03Z INFO  sequencer_core] Publishing block 1884 on pin d786953ca6674201a045a41f393578682dc7b574bf6fb49d64df324783ea58f4
+[2026-11-12T20:42:04Z INFO  sequencer_executor_actor::actor] Block with id 1884 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:42:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:42:18Z INFO  sequencer_core] Publishing block 1885 on pin 53dc4fa9bfbf6941d86e55767ddc488c8358b8129523321b1af70e458b1b6938
+[2026-11-12T20:42:19Z INFO  sequencer_executor_actor::actor] Block with id 1885 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:42:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:42:33Z INFO  sequencer_core] Publishing block 1886 on pin 27d19295c7db843678366c02aa551a9106e12fbc32dc0511bbf63243df4eba7c
+[2026-11-12T20:42:33Z INFO  sequencer_executor_actor::actor] Block with id 1886 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:42:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:42:48Z INFO  sequencer_core] Publishing block 1887 on pin 008369a5b7e9b3fc5a38a701245d4a77e3f56e6d92dbac61f9b6a37b11bb888a
+[2026-11-12T20:42:49Z INFO  sequencer_executor_actor::actor] Block with id 1887 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:43:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:43:03Z INFO  sequencer_core] Publishing block 1888 on pin ff4a642e90e6bf267543cef80519b47ba441fe9da981ad22a7065dadf2d98a56
+[2026-11-12T20:43:04Z INFO  sequencer_executor_actor::actor] Block with id 1888 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:43:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:43:18Z INFO  sequencer_core] Publishing block 1889 on pin 6e21c41aef22c19a6599639911f4345d8940d57a4b65105c507e80bd854c720c
+[2026-11-12T20:43:19Z INFO  sequencer_executor_actor::actor] Block with id 1889 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:43:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:43:33Z INFO  sequencer_core] Publishing block 1890 on pin c8c7f5beeec0a9feecf6097fc4292057aa204f34dc342a7c6b92da17f4d0a033
+[2026-11-12T20:43:34Z INFO  sequencer_executor_actor::actor] Block with id 1890 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:43:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:43:48Z INFO  sequencer_core] Publishing block 1891 on pin 6eff3ee0a6694f1f1e534d83dc99cb4568e7cb99b201d5e74695dd32ae811d52
+[2026-11-12T20:43:49Z INFO  sequencer_executor_actor::actor] Block with id 1891 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:44:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:44:03Z INFO  sequencer_core] Publishing block 1892 on pin be1b3f3cfadf5f5cedfd6405ba8b32d3e25ecef1698e273adb36199e57e467c1
+[2026-11-12T20:44:04Z INFO  sequencer_executor_actor::actor] Block with id 1892 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:44:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:44:18Z INFO  sequencer_core] Publishing block 1893 on pin 4c37308dc2d4fd22e3a6d74ac63a0643f71f048d12dd4c712433948801515bd7
+[2026-11-12T20:44:19Z INFO  sequencer_executor_actor::actor] Block with id 1893 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:44:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:44:33Z INFO  sequencer_core] Publishing block 1894 on pin 2d7463b101ba169ee8e5c31f798fdf8cf7b3f5519d06d59bb42e4a84f1f1bc91
+[2026-11-12T20:44:34Z INFO  sequencer_executor_actor::actor] Block with id 1894 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:44:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:44:48Z INFO  sequencer_core] Publishing block 1895 on pin 5cf73151e8dfdcb4e38a2670f9df623f5f4c5d07b558705031fbdbf072e9e9d9
+[2026-11-12T20:44:49Z INFO  sequencer_executor_actor::actor] Block with id 1895 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:45:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:45:03Z INFO  sequencer_core] Publishing block 1896 on pin 6268eb695d544f0e5d02b299dd01e609e33425db5dcdd1c666a69374b2f281d1
+[2026-11-12T20:45:04Z INFO  sequencer_executor_actor::actor] Block with id 1896 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:45:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:45:18Z INFO  sequencer_core] Publishing block 1897 on pin d5a5f86531c555b3abb58fc586e36ce724ea3a1748dffb34acbce36810721204
+[2026-11-12T20:45:19Z INFO  sequencer_executor_actor::actor] Block with id 1897 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:45:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:45:33Z INFO  sequencer_core] Publishing block 1898 on pin 008e523c06660637a7b732ad266fce47beae307816ffb4a338a5ddabc65a4fe6
+[2026-11-12T20:45:34Z INFO  sequencer_executor_actor::actor] Block with id 1898 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:45:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:45:48Z INFO  sequencer_core] Publishing block 1899 on pin 667b337835298aff26d9ec1a8d8fcc4e439bcd743609eca847cd1ca34faf3c24
+[2026-11-12T20:45:49Z INFO  sequencer_executor_actor::actor] Block with id 1899 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:46:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:46:03Z INFO  sequencer_core] Publishing block 1900 on pin c4b9752898f802cbd7361d2087eb3411133060253a3e89911192a2ea89d12f93
+[2026-11-12T20:46:04Z INFO  sequencer_executor_actor::actor] Block with id 1900 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:46:05Z WARN  libp2p_kad::behaviour] Failed to trigger bootstrap: No known peers.
+[2026-11-12T20:46:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:46:18Z INFO  sequencer_core] Publishing block 1901 on pin 673047e0135e00dc94e51f4fc4ca28e299a3d279e4a20605d064cfc240c05be6
+[2026-11-12T20:46:19Z INFO  sequencer_executor_actor::actor] Block with id 1901 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:46:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:46:33Z INFO  sequencer_core] Publishing block 1902 on pin b14c17aea2231e986e33fb4ee9a7feb1e7a9f15a388577e8177f55aafaeab34e
+[2026-11-12T20:46:34Z INFO  sequencer_executor_actor::actor] Block with id 1902 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:46:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:46:48Z INFO  sequencer_core] Publishing block 1903 on pin 0a53b4467eb1b0ed4cf09fd407605473cc8b6b09274b24882f0f1fa453899ab8
+[2026-11-12T20:46:49Z INFO  sequencer_executor_actor::actor] Block with id 1903 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:47:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:47:03Z INFO  sequencer_core] Publishing block 1904 on pin 37602bc1d3678619d1e3d7af0bf0ae97da1f16d4d128676791abd037951975b2
+[2026-11-12T20:47:04Z INFO  sequencer_executor_actor::actor] Block with id 1904 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:47:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:47:18Z INFO  sequencer_core] Publishing block 1905 on pin db4d978e016e5abddafc99b357602e9234410d5aa67d39841d2443e87bbf98d4
+[2026-11-12T20:47:19Z INFO  sequencer_executor_actor::actor] Block with id 1905 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:47:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:47:33Z INFO  sequencer_core] Publishing block 1906 on pin 714f731c1e9549a2bbc78bdc881f5079265f4f28d4d2be86e2bdd66acd0d41aa
+[2026-11-12T20:47:34Z INFO  sequencer_executor_actor::actor] Block with id 1906 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:47:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:47:48Z INFO  sequencer_core] Publishing block 1907 on pin b643edb7c2c5701a061367c92462b302835f0cd5c8ce05c5c3bcb7bcdb94bba0
+[2026-11-12T20:47:49Z INFO  sequencer_executor_actor::actor] Block with id 1907 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:48:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:48:03Z INFO  sequencer_core] Publishing block 1908 on pin a4af007a1588b79a662a1e97b937f03ed967b70418979c15bbd808624907dae1
+[2026-11-12T20:48:04Z INFO  sequencer_executor_actor::actor] Block with id 1908 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:48:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:48:18Z INFO  sequencer_core] Publishing block 1909 on pin 7a75c50f4c623a531612e9db5566ec86bb12780075aac4f312686110540a3c5e
+[2026-11-12T20:48:19Z INFO  sequencer_executor_actor::actor] Block with id 1909 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:48:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:48:33Z INFO  sequencer_core] Publishing block 1910 on pin a9feb4d67b4231a34352041fad50c307bb4031de820356e66aad04b7b72d58e9
+[2026-11-12T20:48:34Z INFO  sequencer_executor_actor::actor] Block with id 1910 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:48:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:48:48Z INFO  sequencer_core] Publishing block 1911 on pin dea5d2feb6fe3760cbdd2a12392d95431651877cf2e3ec5b1a09a02e2cfe92d4
+[2026-11-12T20:48:49Z INFO  sequencer_executor_actor::actor] Block with id 1911 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:49:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:49:03Z INFO  sequencer_core] Publishing block 1912 on pin e96cb74ae74fd4c2e84e0fa85c7a665f91d5a85fdaf0a6a44b467a71a6b7d600
+[2026-11-12T20:49:04Z INFO  sequencer_executor_actor::actor] Block with id 1912 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:49:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:49:18Z INFO  sequencer_core] Publishing block 1913 on pin c4a2bb9a1024f4bc150b673bff36d345aac2d6586e152aa3adac4de17ee715da
+[2026-11-12T20:49:19Z INFO  sequencer_executor_actor::actor] Block with id 1913 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:49:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:49:33Z INFO  sequencer_core] Publishing block 1914 on pin 684b1d81baac34b388424717c0c32c86d7507619db321c2b5d025ceac4ad7400
+[2026-11-12T20:49:34Z INFO  sequencer_executor_actor::actor] Block with id 1914 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:49:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:49:48Z INFO  sequencer_core] Publishing block 1915 on pin f8aa6556e1b2664efcdef430e5057d4cdf7af401e7985235f2c8d3f05e830101
+[2026-11-12T20:49:49Z INFO  sequencer_executor_actor::actor] Block with id 1915 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:50:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:50:03Z INFO  sequencer_core] Publishing block 1916 on pin 370061928310fda1439f3c6fd7a04a6a8e686804deba44f691d32e5418c17e0b
+[2026-11-12T20:50:04Z INFO  sequencer_executor_actor::actor] Block with id 1916 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:50:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:50:18Z INFO  sequencer_core] Publishing block 1917 on pin 4b071c44ae6631cd820c6680e0a94ff3a631d33799556dad06f9b3f1516f039e
+[2026-11-12T20:50:19Z INFO  sequencer_executor_actor::actor] Block with id 1917 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:50:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:50:33Z INFO  sequencer_core] Publishing block 1918 on pin ef887bb606a7e2a7dca06198fd5a0088b4337a29461e3101c2725fdb2ee41fe2
+[2026-11-12T20:50:34Z INFO  sequencer_executor_actor::actor] Block with id 1918 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:50:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:50:48Z INFO  sequencer_core] Publishing block 1919 on pin c36449c94baae1e57bc867e6286871abcc6df88a8dbe8a0761be262abeab4174
+[2026-11-12T20:50:49Z INFO  sequencer_executor_actor::actor] Block with id 1919 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:51:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:51:03Z INFO  sequencer_core] Publishing block 1920 on pin 03ebcb755b7af141d0546ba078ce946d281415fbaba87e5946e72a38b76ae736
+[2026-11-12T20:51:04Z INFO  sequencer_executor_actor::actor] Block with id 1920 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:51:05Z WARN  libp2p_kad::behaviour] Failed to trigger bootstrap: No known peers.
+[2026-11-12T20:51:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:51:18Z INFO  sequencer_core] Publishing block 1921 on pin c931cca65b37d8d6329329b592d8d1f77f75afbc9ae0d4c797f849f9a019a622
+[2026-11-12T20:51:19Z INFO  sequencer_executor_actor::actor] Block with id 1921 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:51:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:51:33Z INFO  sequencer_core] Publishing block 1922 on pin 7ab2f3f04e034a43c580f685ab539a99fa0a7e923f3893fcc6fa766b70b53112
+[2026-11-12T20:51:34Z INFO  sequencer_executor_actor::actor] Block with id 1922 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:51:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:51:48Z INFO  sequencer_core] Publishing block 1923 on pin 62186c71360e0693548a01b69d5b389782cde8169183108a5b813ed14683da65
+[2026-11-12T20:51:49Z INFO  sequencer_executor_actor::actor] Block with id 1923 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:52:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:52:03Z INFO  sequencer_core] Publishing block 1924 on pin e8172e51b229d2ca3eedbe5cb9ed1b7666dcaf8a4d9b50948b34ebfffa744ca5
+[2026-11-12T20:52:04Z INFO  sequencer_executor_actor::actor] Block with id 1924 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:52:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:52:18Z INFO  sequencer_core] Publishing block 1925 on pin a7416df93ade493e68aca640f6b78e989a3336645d9cc64d5c5929a4ac6818eb
+[2026-11-12T20:52:19Z INFO  sequencer_executor_actor::actor] Block with id 1925 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:52:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:52:33Z INFO  sequencer_core] Publishing block 1926 on pin 0c3bb569a7c15c8e3a7b04d37a4893561c81392bc0a5e4e27a97493b5e2b8e09
+[2026-11-12T20:52:34Z INFO  sequencer_executor_actor::actor] Block with id 1926 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:52:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:52:48Z INFO  sequencer_core] Publishing block 1927 on pin e0ba556dc0f898a8a01db0f00391461d48b0048bc08997cb5527aed60a0d1d15
+[2026-11-12T20:52:49Z INFO  sequencer_executor_actor::actor] Block with id 1927 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:53:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:53:03Z INFO  sequencer_core] Publishing block 1928 on pin fd830ccaeb501904869d6188a87e7b46787e17583ea53b5c1ec3556c212eef37
+[2026-11-12T20:53:04Z INFO  sequencer_executor_actor::actor] Block with id 1928 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:53:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:53:18Z INFO  sequencer_core] Publishing block 1929 on pin feb3b85d224db15f0d6f5acad45f207c8f142a2d8e2f8140e8f7301a75d4fd31
+[2026-11-12T20:53:19Z INFO  sequencer_executor_actor::actor] Block with id 1929 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:53:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:53:33Z INFO  sequencer_core] Publishing block 1930 on pin 27a915fe7e308e315f3ea4429784ee13a0718a2d13f0f05426611f9f22036334
+[2026-11-12T20:53:34Z INFO  sequencer_executor_actor::actor] Block with id 1930 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:53:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:53:48Z INFO  sequencer_core] Publishing block 1931 on pin 13dbce85b8166bb8f1aec718c6b53b2f43ca50946efd9f8e9ec6f5209cee9eb3
+[2026-11-12T20:53:49Z INFO  sequencer_executor_actor::actor] Block with id 1931 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:54:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:54:03Z INFO  sequencer_core] Publishing block 1932 on pin e150c12105b6d0aadb97a10a30e342c2a2e61d27c847f4633cf329eb07a1d518
+[2026-11-12T20:54:03Z INFO  sequencer_executor_actor::actor] Block with id 1932 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:54:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:54:18Z INFO  sequencer_core] Publishing block 1933 on pin 4c9fb67e851302685e02ed8e38fe3925a5c5c76235dab913e03331981477a8b9
+[2026-11-12T20:54:19Z INFO  sequencer_executor_actor::actor] Block with id 1933 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:54:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:54:33Z INFO  sequencer_core] Publishing block 1934 on pin db667d45d88e43e31059925dc8a37887b255c3cb9c21152f2efe6a620ab9a878
+[2026-11-12T20:54:34Z INFO  sequencer_executor_actor::actor] Block with id 1934 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:54:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:54:48Z INFO  sequencer_core] Publishing block 1935 on pin 122044d41216868830720d74d0d57718eac448f8f03d1ff239467fb4e8f3cbe6
+[2026-11-12T20:54:49Z INFO  sequencer_executor_actor::actor] Block with id 1935 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:55:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:55:03Z INFO  sequencer_core] Publishing block 1936 on pin 7504ea0f68bb19cb4d142c2863a544320719d2e1ea9c2144930db56fddc6febc
+[2026-11-12T20:55:04Z INFO  sequencer_executor_actor::actor] Block with id 1936 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:55:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:55:18Z INFO  sequencer_core] Publishing block 1937 on pin 49e0647251e07fc88772c748b45aab8fcd9c3219fa536ce0092127eb455ffc71
+[2026-11-12T20:55:19Z INFO  sequencer_executor_actor::actor] Block with id 1937 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:55:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:55:33Z INFO  sequencer_core] Publishing block 1938 on pin 3df3ea2cee9d3670541041849fbfbec5e95516542357a7cce3614802e8b92d87
+[2026-11-12T20:55:34Z INFO  sequencer_executor_actor::actor] Block with id 1938 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:55:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:55:48Z INFO  sequencer_core] Publishing block 1939 on pin 18398c0b992682588c333166a5d013f27a68431c5e168837fa31956915ac565c
+[2026-11-12T20:55:49Z INFO  sequencer_executor_actor::actor] Block with id 1939 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:56:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:56:03Z INFO  sequencer_core] Publishing block 1940 on pin 181a38a61dd73532a827da5220930a6c4e58459e0bdab0a5b25feaeb40b7ac16
+[2026-11-12T20:56:04Z INFO  sequencer_executor_actor::actor] Block with id 1940 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:56:05Z WARN  libp2p_kad::behaviour] Failed to trigger bootstrap: No known peers.
+[2026-11-12T20:56:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:56:18Z INFO  sequencer_core] Publishing block 1941 on pin 2a39ec6d302c1e7441616eaa4a410558b60a78d1574d34ff3e62b6c83b7748a3
+[2026-11-12T20:56:19Z INFO  sequencer_executor_actor::actor] Block with id 1941 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:56:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:56:33Z INFO  sequencer_core] Publishing block 1942 on pin e4d287d54406a30b3762d513d66f20db396383ec6ffc98988666e5fc508ddd30
+[2026-11-12T20:56:34Z INFO  sequencer_executor_actor::actor] Block with id 1942 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:56:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:56:48Z INFO  sequencer_core] Publishing block 1943 on pin d904f1c801cb5712515e413f2d455622e2addcfb6591d4a74ed1bb74d6ca0a72
+[2026-11-12T20:56:49Z INFO  sequencer_executor_actor::actor] Block with id 1943 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:57:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:57:03Z INFO  sequencer_core] Publishing block 1944 on pin 384661a235185bdce6e0b1183965782ddddae4770943ab13c207ab6bd974af54
+[2026-11-12T20:57:04Z INFO  sequencer_executor_actor::actor] Block with id 1944 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:57:18Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:57:18Z INFO  sequencer_core] Publishing block 1945 on pin 213f48180ae0fffc83de260213597c5546a4da7075b1e202da5990a7da3dcc76
+[2026-11-12T20:57:19Z INFO  sequencer_executor_actor::actor] Block with id 1945 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:57:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:57:33Z INFO  sequencer_core] Publishing block 1946 on pin f327ce36eeae89a32250ea952dbdf4b03c5ce2ac25e75986758f5e0e0f6da8af
+[2026-11-12T20:57:34Z INFO  sequencer_executor_actor::actor] Block with id 1946 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:57:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:57:48Z INFO  sequencer_core] Publishing block 1947 on pin 779db811108a03f787ba5fbfd31b37e55279a840409f4e7f0410e74302e12fbd
+[2026-11-12T20:57:49Z INFO  sequencer_executor_actor::actor] Block with id 1947 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:58:03Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:58:03Z INFO  sequencer_core] Publishing block 1948 on pin a73a2c3ac7ab02c0c604575769e5ffec9099c5c7f2ad86f1330eea59ce991679
+[2026-11-12T20:58:04Z INFO  sequencer_executor_actor::actor] Block with id 1948 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:58:18Z INFO  jsonrpsee_server::server] connection; remote_addr=127.0.0.1:45558 conn_id=35
+[2026-11-12T20:58:18Z INFO  sequencer_core] Created block with 3 transactions in 0 seconds
+[2026-11-12T20:58:18Z INFO  sequencer_core] Publishing block 1949 on pin 6f6e1f56f63c2f6dc68611b15533e442578301b28718d8e76a3c1568e6be8fbe
+[2026-11-12T20:58:19Z INFO  sequencer_executor_actor::actor] Block with id 1949 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:58:33Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:58:33Z INFO  sequencer_core] Publishing block 1950 on pin 1526dd5f344333b3bbd5725d30b6cf7d691bed261e191f92ad3044e76e341199
+[2026-11-12T20:58:33Z INFO  sequencer_executor_actor::actor] Block with id 1950 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:58:48Z INFO  sequencer_core] Created block with 2 transactions in 0 seconds
+[2026-11-12T20:58:48Z INFO  sequencer_core] Publishing block 1951 on pin 92ea88f13f9d05681a8f9fdb454c2081493906b2b5b78c89572b73aaaeb53800
+[2026-11-12T20:58:48Z INFO  sequencer_executor_actor::actor] Block with id 1951 created by f84a8c562c53bf6e479b89b1fd587bdee848ab782e888613c00ca03ebbf14ae1
+[2026-11-12T20:58:51Z INFO  jsonrpsee_server::server] connection; remote_addr=127.0.0.1:47548 conn_id=36

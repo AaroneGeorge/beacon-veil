@@ -1,0 +1,43 @@
+{
+  "name": "g3-real-consumer",
+  "label": "measured",
+  "dev_mode": false,
+  "exit": 0,
+  "start_utc": "2026-11-12T20:22:59Z",
+  "end_utc": "2026-11-12T20:58:51Z",
+  "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
+  "command": "nice -n 19 ionice -c3 /home/lechuuu/hackathons/logos-rfp/build/target/debug/g3_real --instance 5kWLCgG7nT8tMdT47nnbQGH2czDuada2CrnSesjG1GGw",
+  "loadavg_start": "0.37 2.99 5.66 1/736 1590029",
+  "loadavg_end": "4.51 7.02 7.40 2/752 1624368",
+  "mem_start": "total 15823 MiB, available 12896 MiB; swap used 813 MiB of 12147",
+  "risc0": "unset risc0_prover=default",
+  "repo_commit": "d379b17 dirty=11",
+  "note": "G3 real: private Attest (USDT Transfer log, block 26397891) -> consumer_erc20 on seq-real, then replay (E11)",
+  "raw": {
+    "meta.txt": "evidence/prove/g3-real-consumer/20261112T202259Z/meta.txt",
+    "time.txt": "evidence/prove/g3-real-consumer/20261112T202259Z/time.txt",
+    "output.log": "evidence/prove/g3-real-consumer/20261112T202259Z/output.log",
+    "samples.csv": "evidence/prove/g3-real-consumer/20261112T202259Z/samples.csv",
+    "sampler.json": "evidence/prove/g3-real-consumer/20261112T202259Z/sampler.json"
+  },
+  "wall_s": 2151.45,
+  "max_rss_kib_time_v": 9611124,
+  "user_s": 15712.05,
+  "sys_s": 30.29,
+  "cpu_pct": 731,
+  "major_faults": 308,
+  "exit_status_time_v": 0,
+  "sampler": {
+    "samples": 2126,
+    "interval_s": 1.0,
+    "peak_tree_rss_kib": 9653908,
+    "peak_tree_rss_gib": 9.207,
+    "peak_single_process_rss_kib": 9611824,
+    "peak_single_process": "r0vm",
+    "min_mem_available_kib": 3515128,
+    "swap_used_by_run_kib_max": 98588,
+    "load1_mean": 7.65,
+    "load1_max": 8.98
+  },
+  "peak_rss_gib": 9.207
+}
