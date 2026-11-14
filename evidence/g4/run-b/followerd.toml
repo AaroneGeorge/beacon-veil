@@ -1,0 +1,29 @@
+# attest-followerd config: Sepolia instance on seq-dev (run A). Paths are absolute on purpose (the daemon may be
+# started by logosctl or a launcher from any directory). scripts/run_a.sh writes the real one into the state dir.
+
+[follower]
+echo = false
+id = "run-a"
+chain_id = 11155111
+state_dir = "/home/lechuuu/hackathons/logos-rfp/build/run/w4/run-b"
+# log_file defaults to <state_dir>/follower.jsonl
+cadence_s = 6144        # 16 epochs: one finality update per ~1.7 h; handoffs go at once
+poll_s = 300            # one tick line every 5 min: the G4 gap limit is 2 x cadence
+jitter_max_s = 60       # per-instance deferral before each submission
+min_participation = 342 # 2/3 of 512 (Helios applies only with a supermajority)
+
+[source]
+kind = "logos_module"
+logosctl = "/home/lechuuu/hackathons/logos-rfp/build/run/w4/logosctl/squashfs-root/AppRun"  # logosctl 0.3.2, extracted once
+logosctl_config_dir = "/home/lechuuu/hackathons/logos-rfp/build/run/w4/logos-session"
+logosctl_tmpdir = "/home/lechuuu/hackathons/logos-rfp/build/.tmp"   # TMPDIR the session daemon was started with (scripts/env.sh)
+provider = ""           # module's order: lodestar (https) first
+timeout_s = 60
+# Used when kind = "direct_http": the same public providers beacon_api_module seeds for Sepolia.
+endpoints = ["https://lodestar-sepolia.chainsafe.io", "http://unstable.sepolia.beacon-api.nimbus.team"]
+
+[chain]
+kind = "host"
+instance = "3YmV7VDujQF7zqtfMLf9VMKc4G9Vg1qYwYiTFXmJ8kBX"
+# ids_file defaults to $BV_IDS or $BV_REPO/deploy/ids.toml
+mode = "private"        # Path A; "public_probe" = B0

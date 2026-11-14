@@ -1,0 +1,49 @@
+{
+  "gate": "G4",
+  "result": "PASS",
+  "log": "/home/lechuuu/hackathons/logos-rfp/build/repo/evidence/g4/run-a/follower.jsonl",
+  "failures": [],
+  "pids": [
+    816650
+  ],
+  "start_lines": 1,
+  "start": {
+    "cadence_s": 6144,
+    "chain": "host",
+    "chain_id": 11155111,
+    "config": "/home/lechuuu/hackathons/logos-rfp/build/run/w4/run-a/followerd.toml",
+    "endpoints": [
+      "https://lodestar-sepolia.chainsafe.io",
+      "http://unstable.sepolia.beacon-api.nimbus.team"
+    ],
+    "follower_id": "run-a",
+    "instance": "FwXdD7CsPiuGVcX88UUcTdCpRTpaweNQderEuSdrzakd",
+    "jitter_max_s": 60,
+    "mode": "private",
+    "poll_s": 300,
+    "risc0_dev_mode": "1",
+    "source_kind": "logos_module",
+    "version": "0.1.0"
+  },
+  "first_ts": "2026-11-12T11:11:59.118Z",
+  "last_ts": "2026-11-13T23:00:00.372Z",
+  "hours": 35.8,
+  "cadence_s": 6144,
+  "max_gap_s": 320.0,
+  "max_gap_before_line": 19,
+  "submits": 23,
+  "applied": 23,
+  "noops": 0,
+  "handoffs": 1,
+  "period_updates": 2,
+  "head_first": 11562176,
+  "head_last": 11572992,
+  "max_applied_gap_s": 6417.3,
+  "beacon_source": "logos_module",
+  "chain": "host",
+  "risc0_dev_mode": "1",
+  "error_lines": {
+    "source_error": 1
+  },
+  "lines": 495
+}

@@ -1,0 +1,15 @@
+{
+  "run": "A",
+  "started_utc": "2026-11-12T11:12:04.169897+00:00",
+  "pid": 816650,
+  "binary": "/home/lechuuu/hackathons/logos-rfp/build/run/w4/bin/attest-followerd-997e757a7843",
+  "binary_sha256": "997e757a78430c6d21e1584469b3209a567b2d6828f1abc743a1266f10ee3c23",
+  "config": "/home/lechuuu/hackathons/logos-rfp/build/run/w4/run-a/followerd.toml",
+  "config_sha256": "2ce197a491977856c38d58cd507e29dd0e3e0216740369f509a6e1707f0bdab0",
+  "instance": "FwXdD7CsPiuGVcX88UUcTdCpRTpaweNQderEuSdrzakd",
+  "beacon_source": "logos_module",
+  "repo_commit": "71561133ab85821d730a95c237199df6d9aeb496",
+  "repo_dirty": true,
+  "machine": "Linux-7.0.0-43-generic-x86_64-with-glibc2.43",
+  "cpu": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz"
+}

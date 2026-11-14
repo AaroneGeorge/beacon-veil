@@ -1,0 +1,56 @@
+{
+  "bootstrap_provider": "https://lodestar-sepolia.chainsafe.io",
+  "bootstrap_ssz_bytes": 25472,
+  "bootstrap_version": "gloas",
+  "config": {
+    "borsh_hex": "a736aa0000000000d8ea171f3c94aea21ebc42a1ed61052acf3f9209c00e4efbaaddac09ed9b8078607db062000000000800000000000000000000009000006932000000000000009000007064000000000000009000007100de00000000000090000072000602000000000090000073006503000000000090000074002904000000000090000075006305000000000090000076b23e67cfab3dc0b9368fb7073e761e5c0f0ada34d25b64f29454688153da6ce1c06cb0000000000001000000f69ea976812e6393e9be6c94a9beaa69098ea23963dad9452f0e3ad47743fe425601",
+    "chain_id": 11155111,
+    "checkpoint_root": "0xb23e67cfab3dc0b9368fb7073e761e5c0f0ada34d25b64f29454688153da6ce1",
+    "checkpoint_slot": 11562176,
+    "forks": [
+      [
+        0,
+        "0x90000069"
+      ],
+      [
+        50,
+        "0x90000070"
+      ],
+      [
+        100,
+        "0x90000071"
+      ],
+      [
+        56832,
+        "0x90000072"
+      ],
+      [
+        132608,
+        "0x90000073"
+      ],
+      [
+        222464,
+        "0x90000074"
+      ],
+      [
+        272640,
+        "0x90000075"
+      ],
+      [
+        353024,
+        "0x90000076"
+      ]
+    ],
+    "genesis_time": 1655733600,
+    "genesis_validators_root": "0xd8ea171f3c94aea21ebc42a1ed61052acf3f9209c00e4efbaaddac09ed9b8078",
+    "min_participants": 342,
+    "verifiers": [
+      "HbhcgBQr9ydWhek15vvHdGmDerSjDvjYob4d3xGqPJ6m"
+    ]
+  },
+  "cycles": null,
+  "gas": 10000000,
+  "instance": "FwXdD7CsPiuGVcX88UUcTdCpRTpaweNQderEuSdrzakd",
+  "period": 1411,
+  "tx": "5cdf177092e212417828477c68d657d875b361f80cb2fbdd7db3443a8a8f5718"
+}
