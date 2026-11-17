@@ -129,7 +129,7 @@ The K4 projection for the V1 finality update was 6.08 to 7.01 hours, an estimate
 | `idl/` | SPEL-shaped IDLs, checked against the message enums by a test |
 | `evidence/` | Raw outputs behind every figure |
 | `docs/` | Documents below |
-| `proposal/` | Drafts of the two grant proposals |
+| `proposal/` | Pointer to the filed combined grant proposal |
 
 ## 5. Documents
 
@@ -166,10 +166,10 @@ These are listed here so that no reader has to find them.
 
 ## 7. How this was built
 
-The team builds with AI coding agents. A named engineer reviews and tests every change before it is merged, and answers for it. The commit history shows the reviews.
+The team builds with AI coding agents. A named engineer reviews and tests every change before it is merged, and answers for it.
 
 ## 8. Licence, team, contact
 
 Dual licensed under MIT or Apache-2.0 (`LICENSE-MIT`, `LICENSE-APACHE`). Reused components and their licences: `docs/REUSE.md`.
 
-Team: the members are listed in the grant proposals under `proposal/`. There is no `TEAM.md` in this repository. Contact: open an issue at https://github.com/AaroneGeorge/beacon-veil. A Discord handle and an email address are not listed here.
+Team: the members are listed in the filed grant proposal (see `proposal/README.md` for its link). There is no `TEAM.md` in this repository. Contact: open an issue at https://github.com/AaroneGeorge/beacon-veil. A Discord handle and an email address are not listed here.

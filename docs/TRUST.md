@@ -2,7 +2,7 @@
 
 This document states what the attestation primitive trusts, what it proves, what each off-chain participant can see and do, and when the guarantees degrade. Requirement ids refer to RFP-021 (F1, U3, VS4). The bridge's own trust model is in `docs/bridge/TRUST.md`.
 
-Status: written 2026-11-12 and not re-read in full since. Sections 7 and 8 have not been re-checked against the final code. For section 4, both G4 follower runs used the Logos `beacon_api_module` path (`beacon_source` is `logos_module` in `evidence/g4/run-a/g4-summary.json` and `evidence/g4/run-b/g4-summary.json`). The fallback to direct HTTP in that table was not exercised in those runs.
+Status: written 2026-11-12 and not re-read in full since. Section 7 was re-checked against the final code and evidence on 2026-11-18 (its Status paragraph says what is and is not verified). Section 8 has not been re-checked against the final code. For section 4, both G4 follower runs used the Logos `beacon_api_module` path (`beacon_source` is `logos_module` in `evidence/g4/run-a/g4-summary.json` and `evidence/g4/run-b/g4-summary.json`). The fallback to direct HTTP in that table was not exercised in those runs.
 
 ## 1. What an attestation proves, and what it does not
 
@@ -112,7 +112,7 @@ Residual signal, stated plainly. The header record a private consumer reads is v
 Finding (W2, 2026-11-12), confirmed against `a16z/helios` tag 0.12.0 (commit `2af9b418`), `ethereum/consensus-core/src/`:
 
 - `consensus_core.rs:248-256`, `verify_generic_update`, rejects only an update with no participants (`InsufficientParticipation` on zero bits). The two-thirds quorum is checked in `apply_generic_update` (`consensus_core.rs:176`, `has_majority`, used at `:184`). There, an update below quorum is silently not applied. It is not an error.
-- `types/mod.rs:474-482` and `:520-525` (`default_header_to_none`): an update whose finalized header has slot 0 or is a default header becomes `finalized_header: None`. `verify_generic_update` then skips the finality-branch check (`consensus_core.rs:302`). An optimistic update never has a finalized header (`types/mod.rs:488-496`).
+- `types/mod.rs:468`, `:482` and `:520-525` (`default_header_to_none`): an update whose finalized header has slot 0 or is a default header becomes `finalized_header: None`. `verify_generic_update` then skips the finality-branch check (`consensus_core.rs:302`). An optimistic update never has a finalized header (`types/mod.rs:488-496`).
 
 Consequence. Helios as a client is safe, because its `apply_*` functions filter. A program that records a header after "Helios `verify` returned Ok" is not. It would accept a header signed by one of 512 members, or a header that is not finalised.
 
@@ -125,6 +125,20 @@ Our rule (approved 2026-11-12, `docs/DECISIONS.md` D-22). `lc_verify` checks, in
 5. The store moved: a newer finalized slot or a newly known next committee (E14 otherwise).
 
 Tests: `vs2b_below_participation` and `vs2c_header_not_finalised` in `tests/adversarial`, both passing on the sequencer (`evidence/g2/onchain-20261112T115413Z.log`). Helios is used unmodified and is not audited by itself. The pre-checks are ours and sit in the audit surface.
+
+Status, re-checked 2026-11-18 against the final code. Verified:
+
+- Helios side. Both bullets of the finding hold in the pinned copy of `a16z/helios` tag 0.12.0 (commit `2af9b41`): `verify_generic_update` rejects only zero participants (`consensus_core.rs:256-257`), the two-thirds rule is in `apply_generic_update` (`:176-184`), and `default_header_to_none` turns a finalized header of slot 0 into `None` (`types/mod.rs:520-525`, called at `:468` and `:482`), which makes `verify_generic_update` skip the finality check (`consensus_core.rs:302`). A finalized header that is present with an all-zero finality branch is rejected by Helios (`consensus_core.rs:320-322`), and we map that to E02 (`crates/attest_core/src/lc.rs:263`).
+- Our pre-checks are in the code, in the order listed above, in one function that both verifier variants use (`verify_and_apply_variant`, `lc.rs:636`; called for V1 and V2 from `programs/lc_verify/src/bin/lc_verify.rs:30` and `:32`). Decode, E01: `lc.rs:652`. An optimistic update has no finalized header, E02: `lc.rs:242`. Finalized slot 0, E02: `lc.rs:653-655`. This test is the same as Helios's own (slot 0 means no finalized header). Participation below `max(min_participants, 342)`, E04, before any signature work: `lc.rs:658-660`, with `QUORUM = 342` at `lc.rs:35` (341 * 3 = 1023 is below 1024; 342 * 3 = 1026 is not). Helios `verify` and `apply`: `lc.rs:672-694`. Store moved, else E14: `lc.rs:700-702`.
+- Tests. `vs2b_below_participation` (`tests/adversarial/tests/adversarial.rs:275`) shows that Helios `verify_update` accepts a validly signed update with 341 of 512 (`:283-299`) and that `verify_and_apply` refuses it with E04 (`:300-305`); 342 is accepted; a stricter `min_participants` of 400 refuses 399 and accepts 400; a real mainnet update cut to 300 and one with zero participants give E04, not E03. `vs2c_header_not_finalised` (`:364`) gets E02 for a validly signed update with the zero finalized header as a full update and as a finality update, for the attested header presented as finalised, for a real update with its finality stripped and for the real optimistic update. The on-chain legs cover only the canonical cases: vs2b at 300 of 512 (`:347-361`), vs2c with finality stripped and the optimistic update (`:437-451`). The 341 of 512, the 342 boundary, the `min_participants` and the zero-participant cases, and the cases on the fabricated chain, run natively only.
+- Evidence. `evidence/g2/onchain-20261112T115413Z.log` shows all 7 adversarial tests passing, including those legs against the sequencer, with the codes `ESA:E04` for vs2b and `ESA:E02` for vs2c. `lc.rs`, `programs/lc_verify` and `tests/adversarial` have not changed since the commit that added those legs.
+
+Not verified, and what that means:
+
+- The tests were not run again on 2026-11-18. The evidence for them is the log of 2026-11-12, and the code under test is unchanged since. The code and test text were read, not re-executed.
+- The adversarial suite ran against the V1 verifier only. It was not built with the `v2` feature, so no test drives `lc_verify` V2 with these inputs. V2 shares the pre-checks above through `verify_and_apply_variant`, and its own `verify` (`crates/attest_core/src/lc_v2.rs:135`) repeats the zero-participants and finality-branch rules of Helios, but a V2 run of vs2b and vs2c has not been made.
+- The on-chain legs ran on the `seq-dev` sequencer, which runs with `RISC0_DEV_MODE=1` (`scripts/seq.sh:6`). They show the guest's rejection codes, not a real proof of a rejection. A rejection aborts before any proof is made.
+- The Helios source was read from the pinned local copy of tag 0.12.0, not fetched again from upstream. Helios is not audited, and the pre-checks are ours; both sit in the audit surface.
 
 ## 8. Nullifier keying and griefing
 
