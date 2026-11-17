@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Gate G1, dev-mode half (PLAN.md section 1): on the standalone rc3 sequencer seq-dev, `Init` from a real mainnet
+# Gate G1, dev-mode half: on the standalone rc3 sequencer seq-dev, `Init` from a real mainnet
 # bootstrap, then consecutive updates including committee handoffs, applied through Path A; a replayed Apply (E14) and
-# an unlisted verifier (E12) are refused. The chain itself is W1's test tests/e2e_chain (it asserts every head slot,
+# an unlisted verifier (E12) are refused. The chain itself is the test tests/e2e_chain (it asserts every head slot,
 # period and record); this script runs it, then re-checks the printed heads and writes evidence/g1/chain.json.
 #
 #   scripts/gate/g1_chain.sh

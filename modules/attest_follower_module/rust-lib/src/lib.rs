@@ -1,4 +1,4 @@
-//! `attest_follower_module`: a Logos core module that supervises `attest-followerd` (beacon-veil, PLAN.md 2.6).
+//! `attest_follower_module`: a Logos core module that supervises `attest-followerd` (beacon-veil).
 //!
 //! The follower is a separate process: it links the LEZ wallet and RISC Zero host crates, which do not belong inside
 //! a Qt plugin, and it must keep running (and be killable and restartable) on its own. The module starts and stops

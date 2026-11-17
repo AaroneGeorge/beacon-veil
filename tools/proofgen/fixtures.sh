@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Regenerates the attest_inclusion test fixtures (crates/attest_inclusion/tests/data) from public RPC (W3).
-# Blocks are the execution blocks of W2's beacon fixtures:
+# Regenerates the attest_inclusion test fixtures (crates/attest_inclusion/tests/data) from public RPC.
+# Blocks are the execution blocks of the beacon fixtures:
 #   mainnet 26397891 = finalized header of fixtures/mainnet/finality_update_15637644 (beacon slot 15637568)
 #   sepolia 12117875 = execution_block_hash 0x06ea7e9f... of fixtures/sepolia/finality_update_11561824 (beacon slot 11561760)
-# RPCs (no keys, PLAN.md 3.3): mainnet https://eth.drpc.org (historical eth_getProof), sepolia publicnode.
+# RPCs (no keys): mainnet https://eth.drpc.org (historical eth_getProof), sepolia publicnode.
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$here/../../scripts/env.sh"

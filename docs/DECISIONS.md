@@ -2,7 +2,7 @@
 
 This log records each major design decision: the context, the options considered, the option chosen, and the rationale and trade-offs. It answers RFP-021 Supportability 11 (S11) and RFP-022 Supportability 4 (S4). It is updated when a decision is made and is current at each milestone delivery.
 
-Status: written 2026-11-12, corrected the same day for the Helios audit claim, the failsafe and the RISC Zero advisory. Written from `PLAN.md` section 2 the coordinator notes (`W0-NOTES.md`) up to 11:40 UTC, and the bridge notes (decisions 1 to 11). Entries from section 2 of the plan are marked "plan". Entries from the build notes are marked "build" with a time. Later edits updated status lines with measured results (the real proofs and the G4 runs). The log was not otherwise re-reviewed in the final docs pass of 2026-11-17.
+Status: written 2026-11-12, corrected the same day for the Helios audit claim, the failsafe and the RISC Zero advisory. Written from section 2 of the project plan, the build notes up to 11:40 UTC, and the bridge notes (decisions 1 to 11). Entries from section 2 of the plan are marked "plan". Entries from the build notes are marked "build" with a time. Later edits updated status lines with measured results (the real proofs and the G4 runs). The log was not otherwise re-reviewed in the final docs pass of 2026-11-17.
 
 Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.0-rc3 is 1 per cycle, capped at 10,000,000 per transaction and per block (`MAX_GAS_EXEC` in `lez/programs/fee/core/src/market.rs`, read in the pinned tree on 2026-11-12). "Measured" means a raw output file exists in `evidence/`. "Estimate" means it does not.
 
@@ -33,11 +33,11 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 | D-23 | G2 error mapping | build 2026-11-12 11:40 | decided |
 | D-24 | Statement delivery and host API shape | build 2026-11-12 11:00 | decided |
 | D-25 | Guest build profile | plan | decided |
-| D-26 | Store witness and commitment | build (W1 notes) | decided |
+| D-26 | Store witness and commitment | build (light-client notes) | decided |
 | D-27 | Beacon source: Logos module first, direct HTTP as stated fallback | plan | decided |
 | D-28 | LEZ access through the wallet crate | plan | decided |
 | D-29 | Hand-kept IDL with a drift test | plan | decided |
-| D-30 | The follower runs as a separate process under the module | build (W4 runbook) | decided |
+| D-30 | The follower runs as a separate process under the module | build (follower runbook) | decided |
 | D-31 | Proving environment: CPU only, proving windows | plan | decided |
 | D-32 | RFP-022 inbound design | plan | decided |
 | D-33 | Claim nullifier: per deposit and per bridge instance | plan, build | decided |
@@ -48,7 +48,7 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 | D-38 | Filing structure: two linked proposals | plan | decided, office hours may change it |
 | D-39 | Measured cost of V1, and the glue fix that lowered it | build 2026-11-12 | decided |
 | D-40 | The vault holds the verifier's emergency-stop wrapper | build (bridge notes 4), revised 2026-11-12 | decided |
-| D-51 | RISC Zero advisory GHSA-g6qg-9j8p-7j87 | coordinator 2026-11-12 | decided, platform risk open |
+| D-51 | RISC Zero advisory GHSA-g6qg-9j8p-7j87 | build 2026-11-12 | decided, platform risk open |
 | D-52 | Reproducible guest builds: one release set | build 2026-11-12 | decided |
 | D-41 | Two-transaction claim | build (bridge notes 1) | decided |
 | D-42 | Root receipt address cannot be squatted; attest program id from config | build (bridge notes 2) | decided |
@@ -90,7 +90,7 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 
 - Context. Helios 0.12.0 patches `ethereum_hashing` in its own workspace. Our guest build must resolve the same crate or Helios pulls in `ring`, which does not build for the zkVM target.
 - Options. (a) Vendor a trimmed copy of Helios. (b) Use the same patch Helios uses, pinned to the same revision. (c) Move to Helios 0.11.1.
-- Chosen. (b). `github.com/ncitron/ethereum_hashing` rev `7ee70944ed4fabe301551da8c447e4f4ae5e6c35`. This is the fork of the Helios author. It is the same revision in Helios 0.12.0's `[patch.crates-io]` (`Cargo.toml:134` at the tag). Coordinator decision for kill criterion K1, 2026-11-12. Added to the root `Cargo.toml` at about 10:30 UTC.
+- Chosen. (b). `github.com/ncitron/ethereum_hashing` rev `7ee70944ed4fabe301551da8c447e4f4ae5e6c35`. This is the fork of the Helios author. It is the same revision in Helios 0.12.0's `[patch.crates-io]` (`Cargo.toml:134` at the tag). Decision for kill criterion K1, 2026-11-12. Added to the root `Cargo.toml` at about 10:30 UTC.
 - Rationale. The fork drops `ring` and uses `sha2` 0.10, so the RISC Zero SHA-256 accelerator applies in the guest. The same revision means the Helios code path is the one its authors test.
 - Trade-off. A fork by one maintainer. Licence Apache-2.0. It is pinned by revision, and `docs/REUSE.md` lists it.
 
@@ -163,13 +163,13 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 
 ## D-15. `Attest` takes the instance and a delivery actor; one claim entry point
 
-- Date. 2026-11-12 about 10:40 UTC. Approved by the coordinator on a proposal from W3.
+- Date. 2026-11-12 about 10:40 UTC. Approved by the team on a proposal from the inclusion-proof work.
 - Chosen. `Attest.deliver_to` becomes `lee_core::account::Actor`. `Attest` gains `instance: AccountId`, as do `attest_host::attest` and `dry_run_attest`. There is a single claim entry point: `attest_inclusion::verify_claim(instance, record, claim_bytes, predicate) -> Result<Statement, EsaError>`.
 - Rationale. The record must be bound to the instance by `CheckHeader`. One entry point means the dry run and the on-chain path run the same code (021 U2).
 
 ## D-16. Nullifier keyed on the consuming program instance
 
-- Date. 2026-11-12 about 10:40 UTC. Approved by the coordinator.
+- Date. 2026-11-12 about 10:40 UTC. Approved by the team.
 - Context. Anyone can create a consumer instance with any config, including one that trusts a fake `attest` program.
 - Options. (a) Nullifier at `PDA(consumer, stmt.id)`. (b) Nullifier at `PDA(consumer, sha256(domain || consumer_instance || stmt.id))`.
 - Chosen. (b). Domain `c20/null/v1` for the reference consumer, `bridge/null/v1` for the bridge.
@@ -196,19 +196,19 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 
 ## D-21. ePBS check: a gloas header attests the parent execution block
 
-- Date. 2026-11-12 about 11:20 UTC. Question from W1: under ePBS, can the proven hash name a withheld bid, which is not canonical?
+- Date. 2026-11-12 about 11:20 UTC. Question raised during the light-client work: under ePBS, can the proven hash name a withheld bid, which is not canonical?
 - Finding. No, under the current spec (consensus-specs `c3e16117`, 2026-11-11). The hash in the gloas light-client header is `bid.parent_block_hash`, generalized index 2856, and Helios 0.12.0 uses the same leaf. It is reachable only after the payload was delivered and verified. Full reasoning and line citations: `docs/TRUST.md` section 3.
 - Consequence. A gloas record attests the parent execution block, so it lags by one or more slots. Documentation and the bridge say so.
 
 ## D-22. Pre-checks before Helios: decode, finality, quorum
 
-- Date. 2026-11-12 about 11:40 UTC. Finding by W2, confirmed against `a16z/helios` 0.12.0. Helios `verify_generic_update` does not enforce the two-thirds quorum, and it treats a zero finalized header as "no finality" and skips the finality branch.
+- Date. 2026-11-12 about 11:40 UTC. Finding from the adversarial-test work, confirmed against `a16z/helios` 0.12.0. Helios `verify_generic_update` does not enforce the two-thirds quorum, and it treats a zero finalized header as "no finality" and skips the finality branch.
 - Chosen. `lc_verify` checks, in this order: SSZ decode (E01), finalized header present and non-default (E02), participants at least `max(min_participants, 342)` (E04), then Helios, then that the store moved (E14). Full explanation: `docs/TRUST.md` section 7.
 - Rationale. A program that records the header after "Helios returned Ok" would accept a header signed by one of 512 members, or one that is not finalised.
 
 ## D-23. G2 error mapping
 
-- Date. 2026-11-12 about 11:40 UTC. The table is in `crates/attest_core/src/error.rs` and `TRACK-W2-NOTES.md` section 3. Every adversarial test asserts an exact code. Init errors map to E06, including `InvalidCurrentSyncCommitteeProof` (coordinator decision).
+- Date. 2026-11-12 about 11:40 UTC. The table is in `crates/attest_core/src/error.rs`. Every adversarial test asserts an exact code. Init errors map to E06, including `InvalidCurrentSyncCommitteeProof` (team decision).
 
 ## D-24. Statement delivery and host API shape
 
@@ -260,7 +260,7 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 ## D-33. Claim nullifier: per deposit and per bridge instance
 
 - Context. 022 F3 asks for uniqueness "keyed on the statement identifier". The statement about the vault root is shared by every deposit under one root, so it cannot be the only key. This is a reasoned deviation from F3 (`docs/bridge/INBOUND.md`).
-- Chosen. Nullifier account `PDA(bridge, sha256("bridge/null/v1" || bridge_instance || deposit_nullifier))`. The key is per deposit. The instance is in the seed for the reason in D-16 (W3's griefing finding): another instance, real or fake, cannot mark this instance's nullifiers.
+- Chosen. Nullifier account `PDA(bridge, sha256("bridge/null/v1" || bridge_instance || deposit_nullifier))`. The key is per deposit. The instance is in the seed for the reason in D-16 (the griefing finding): another instance, real or fake, cannot mark this instance's nullifiers.
 
 ## D-34. RFP-022 outbound is staged
 
@@ -294,25 +294,25 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 ## D-39. Measured cost of V1, and the glue fix that lowered it
 
 - Date. 2026-11-12. Measured on an i5-10300H, RISC Zero 3.0.5 executor, dev mode, five real mainnet updates. The first run (09:45 UTC) gave 74,446,829 to 89,340,805 user cycles per update, about three times the plan estimate of 28M (raw: `.tmp/w1/evidence/v1-exec.json` on the build machine). A cycle trace showed the cause was our glue and not Helios: `tree_hash` packs every byte of a 48-byte key separately (about 11M cycles per committee root), and the glue hashed committees three times per update.
-- Fix. Glue only, Helios unmodified: direct SSZ committee roots over the accelerated `sha2`, raw witness bytes, no rehash of an unchanged next committee. A native test checks equality with `tree_hash`. `Init` also stopped calling Helios `verify_bootstrap` (11M cycles for its committee hash, above the public cap) and runs the same three checks in `lc::bootstrap_valid`, cross-checked against Helios by a native test (W1 notes).
+- Fix. Glue only, Helios unmodified: direct SSZ committee roots over the accelerated `sha2`, raw witness bytes, no rehash of an unchanged next committee. A native test checks equality with `tree_hash`. `Init` also stopped calling Helios `verify_bootstrap` (11M cycles for its committee hash, above the public cap) and runs the same three checks in `lc::bootstrap_valid`, cross-checked against Helios by a native test (light-client notes).
 - Result. 46,095,505 (finality update) to 65,461,983 (handoff with next committee) user cycles per update on the reproducible release guests. `Init` 4,926,875. `Apply` 54,965 (`evidence/cost/cost.md`, regenerated 2026-11-12 20:20 UTC). The BLS phases are 36.84M of the 46.1M on the finality update, so most of the cost is Helios's own BLS work.
 - Consequences. A public single-transaction update cannot fit the 10M cap with V1 (4.6 to 6.5 times the cap). Path A remains the way to run Helios unmodified. V2 (D-10) saves 8.77M cycles per update. Real proving time, measured: 20,060 s (5.57 hours) and 9.259 GiB for the V1 finality update, accepted in block 1784 on a dev-mode-off sequencer (`evidence/g1/real-proof.json`). The K4 projection was 6.08 to 7.01 hours (`evidence/cost/k4-projection.json`). The V2 finality update was also proven for real: 16,064 s (4.46 hours) and 9.24 GiB, accepted in block 3111 (`evidence/g1/real-proof-v2.json`).
 
 ## D-40. The vault holds the verifier's emergency-stop wrapper
 
-- Source. Bridge notes 4, revised 2026-11-12. `PLAN.md` 2.4 said router. The first sprint decision was to hold the RISC Zero Groth16 verifier 3.0.0 directly, because the `RiscZeroVerifierRouter` has an owner who can add or remove verifiers.
+- Source. Bridge notes 4, revised 2026-11-12. The plan (section 2.4) said router. The first sprint decision was to hold the RISC Zero Groth16 verifier 3.0.0 directly, because the `RiscZeroVerifierRouter` has an owner who can add or remove verifiers.
 - Revised. The vault holds the verifier's emergency-stop wrapper, an immutable address, and not the raw verifier. The wrapper can only stop verification, never change it, so Sec8 holds. Advisory GHSA-g6qg-9j8p-7j87 affects verifier 3.0.0. Vault v3 uses verifier 3.1.0: Sepolia verifier `0x8c915b5071206C6E328BC18529586c513408aB3b`, emergency stop `0xA1DCB16cb765b3CA71605339F0C37Bfe0F60bA29`. Vaults v1 and v2 use 3.0.0 and are deprecated testnet artefacts.
 - Rationale. 022 Security 8: no party may change what the bridge accepts after deployment. A new proof system means a new vault and a migration. The stop-only wrapper also gives L1 of the failsafe (D-35).
 
 ## D-41. Two-transaction claim
 
-- Date. 2026-11-12, approved by the coordinator. `PLAN.md` 2.4 described one transaction.
+- Date. 2026-11-12, approved by the team. The plan (section 2.4) described one transaction.
 - Chosen. Step 1 is a public `attest` of `vault.depositRoot` into a root receipt (shared by every claimant against that root). Step 2 is a private `Claim` that does CheckRoot, Nullify and Credit. The `AttestCall` option in the message keeps the one-transaction variant available.
 - Rationale. Step 1 is shared and permissionless, so one attestation serves every claimant, and the private proof stays small.
 
 ## D-42. Root receipt address cannot be squatted; attest program id from config
 
-- Chosen. The receipt PDA seed is `sender_program || attest_instance || stmt_id`. The bridge recomputes it from the real sender program and the statement's own instance and id, and refuses any other receiver. So the attest program id comes from the bridge config and not from a build-time constant (the consumer rule of `PLAN.md` 2.3).
+- Chosen. The receipt PDA seed is `sender_program || attest_instance || stmt_id`. The bridge recomputes it from the real sender program and the statement's own instance and id, and refuses any other receiver. So the attest program id comes from the bridge config and not from a build-time constant (the consumer rule, plan section 2.3).
 - Rationale. A fake attest program or a fake light-client instance can write only receipts no honest config reads. The safety equals the build-time constant, because the instance id commits to the config.
 
 ## D-43. Deposit root at a hand-fixed storage slot
@@ -357,7 +357,7 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 
 ## D-51. RISC Zero advisory GHSA-g6qg-9j8p-7j87
 
-- Date. 2026-11-12. Critical, published 2026-11-11 (companion GHSA-mm6c-35cm-g4x2 for `risc0-ethereum`), verified by the coordinator with `gh api`. An attacker who can produce one valid Groth16 receipt can have an arbitrary claim accepted. Affected: `risc0-zkvm` below 3.1.0, and every Groth16 verifier up to 3.0.0. Fixed in 3.1.0 and verifier 3.1.0.
+- Date. 2026-11-12. Critical, published 2026-11-11 (companion GHSA-mm6c-35cm-g4x2 for `risc0-ethereum`), verified by the team with `gh api`. An attacker who can produce one valid Groth16 receipt can have an arbitrary claim accepted. Affected: `risc0-zkvm` below 3.1.0, and every Groth16 verifier up to 3.0.0. Fixed in 3.1.0 and verifier 3.1.0.
 - Our pins. `risc0-zkvm` 3.0.5 in `Cargo.lock`. LEZ v0.4.0-rc3 pins the same, so the platform is affected.
 - Chosen. (1) Vault v3 uses verifier 3.1.0 through its emergency-stop wrapper (D-40). (2) `burn_proof` is proven with RISC Zero 3.1.0. (3) The LEZ-side programs stay on 3.0.5, because a different version gives different image ids that LEZ may not accept, and move to 3.1.0 when LEZ does. (4) Both proposals name the platform risk in one line. (5) Vaults v1 and v2 are deprecated testnet artefacts and say so in the evidence notes.
 - Trade-off. Until LEZ moves, inbound claims and RFP-021 Path A rely on receipt checks of an affected version. We cannot remove this risk.

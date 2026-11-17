@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# `make cost-exec` (W6): deterministic cycles and gas, from the RISC Zero 3.0.5 executor on real fixtures, into
+# `make cost-exec`: deterministic cycles and gas, from the RISC Zero 3.0.5 executor on real fixtures, into
 # evidence/cost/{cost.json,cost.md} with every raw output in evidence/cost/raw/. No sequencer, no proof, no network.
 #
 #   tools/cost/cost_exec.sh                 # build the guests (crates/guest_methods), then measure
@@ -7,10 +7,10 @@
 #   BV_GUEST_DOCKER=1 tools/cost/cost_exec.sh       # guests from the pinned image r0.1.91.1 (reproducible image ids)
 #
 # Harnesses (each writes raw JSON + a log):
-#   cost exec-lc     (tools/cost, W6)   lc_verify Verify V1 per mainnet step; attest Init, Apply, WriteRecord, CheckHeader
-#   cost sizes       (tools/cost, W6)   borsh sizes of stored states and inputs
-#   attest_exec      (tests/e2e_consumer, W3)  attest Attest (log, storage, account), consumer_erc20 Statement, MarkConsumed
-# Optional raw files other tracks drop into evidence/cost/raw/ by hand are kept and merged (b0-phases.json, ...).
+#   cost exec-lc     (tools/cost)         lc_verify Verify V1 per mainnet step; attest Init, Apply, WriteRecord, CheckHeader
+#   cost sizes       (tools/cost)         borsh sizes of stored states and inputs
+#   attest_exec      (tests/e2e_consumer)      attest Attest (log, storage, account), consumer_erc20 Statement, MarkConsumed
+# Optional raw files dropped into evidence/cost/raw/ by hand are kept and merged (b0-phases.json, ...).
 # Cycles depend only on the guest image and the input; the image ids are recorded in cost.json.
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -48,7 +48,7 @@ have_attest_exec=0
 if RISC0_SKIP_BUILD=1 nice -n 15 cargo build -p e2e_consumer --bin attest_exec >> "$raw/harness-build.log" 2>&1; then
   have_attest_exec=1
 else
-  echo "cost-exec: attest_exec (W3) did not build; its rows are skipped (see raw/harness-build.log)" >&2
+  echo "cost-exec: attest_exec did not build; its rows are skipped (see raw/harness-build.log)" >&2
 fi
 
 bin="$CARGO_TARGET_DIR/debug"
@@ -74,7 +74,7 @@ json.dump({
     "risc0_dev_mode": "${RISC0_DEV_MODE:-unset}", "r0vm": sh("r0vm --version"),
 }, open(sys.argv[1], "w"), indent=2)
 EOF
-# W1's cycle-trace log (committed raw file; a separate measurement build of lc_verify) -> per-phase table.
+# The cycle-trace log (committed raw file; a separate measurement build of lc_verify) -> per-phase table.
 if [ -f "$raw/w1-v1-trace.log" ]; then
   python3 -I "$here/cost.py" import-trace --log "$raw/w1-v1-trace.log" --out "$raw/b0-phases.json"
 fi

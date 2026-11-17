@@ -1,4 +1,4 @@
-//! Follower (PLAN.md 2.6 and W4): `attest-followerd` follows a beacon chain and keeps an `attest` instance on LEZ
+//! Follower: `attest-followerd` follows a beacon chain and keeps an `attest` instance on LEZ
 //! current, submitting light-client updates through `attest_host`.
 //!
 //! - [`source`]: the [`BeaconSource`] trait, with [`LogosModuleSource`] (Logos `beacon_api_module` through

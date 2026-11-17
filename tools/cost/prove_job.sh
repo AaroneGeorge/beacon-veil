@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Proof-window job runner (W6, PLAN.md 3.4 and section 0 rule 8). One real-proving job at a time, under
+# Proof-window job runner. One real-proving job at a time, under
 # `nice -n 19 ionice -c3`, with wall seconds, peak RSS, receipt bytes and the machine line recorded next to the raw
 # output. Used by `make cost-prove` and by scripts/gate/g1_real_proof.sh.
 #
@@ -14,14 +14,14 @@
 #   --foreground     run attached (default: detach with setsid nohup, PID in $B/run/prove-NAME.pid)
 #   --allow-dev      allow RISC0_DEV_MODE (only to test this script: the record then says dev_mode true)
 #
-# Refuses to run unless BV_PROOF_WINDOW_OK=1 (the coordinator has confirmed the window with the owner), and unless
+# Refuses to run unless BV_PROOF_WINDOW_OK=1 (the proof window has been confirmed), and unless
 # RISC0_DEV_MODE is unset (real proofs only). Exit code = the command's exit code (or 3 for a refusal).
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=scripts/env.sh
 source "$here/../../scripts/env.sh"
 
-# Detach by default (coordinator 2026-11-12): a proof outlives the shell, SSH session or agent that started it. The job
+# Detach by default (2026-11-12): a proof outlives the shell, SSH session or process that started it. The job
 # re-executes itself under `setsid nohup` (new session, parent init, no tty), writes its PID to $B/run/<pidname>.pid
 # and returns at once. --foreground (or BV_FOREGROUND=1) runs attached; nested calls inherit BV_DETACHED=1.
 bv_detach() { # pidname, original args...
@@ -60,7 +60,7 @@ if [ -n "${RISC0_DEV_MODE:-}" ] && [ "${RISC0_DEV_MODE}" != 0 ] && [ "$allow_dev
   echo "prove_job: RISC0_DEV_MODE=$RISC0_DEV_MODE. Real proofs need BV_REAL_PROOF=1 (which unsets it)." >&2; exit 3
 fi
 if [ "${BV_PROOF_WINDOW_OK:-0}" != 1 ] && [ "$allow_dev" != 1 ]; then
-  echo "prove_job: refusing: real proving only in a PLAN.md 3.4 window confirmed by the coordinator (BV_PROOF_WINDOW_OK=1)." >&2
+  echo "prove_job: refusing: real proving only in a confirmed proof window (BV_PROOF_WINDOW_OK=1)." >&2
   exit 3
 fi
 if [ "${BV_DETACHED:-0}" != 1 ] && [ "${BV_FOREGROUND:-0}" != 1 ]; then bv_detach "prove-$name" "${orig_args[@]}"; fi

@@ -16,7 +16,7 @@ What an operator needs:
 
 - A beacon source: the Logos `beacon_api_module` (v0.2.0) on a `logosctl` daemon, or any Beacon API endpoint that serves the light-client routes (stated fallback).
 - A LEZ wallet with gas for the sequencer it submits to, and the instance id. The follower needs a funded public payer (`BV_PAYER`) and, on Path A, a funded private submitter (`BV_SUBMITTER`). One private transaction reserves about 5.07e6 in fees.
-- A machine that can prove one update. One Path A update takes about 40 s end to end in dev mode (follower track dev log), which measures the executor and not a real proof. The follower proves `Verify` (46.1M to 65.5M user cycles per update on real mainnet data, measured on the executor: `evidence/cost/cost.md`) and the privacy circuit's wrapper.
+- A machine that can prove one update. One Path A update takes about 40 s end to end in dev mode (follower dev log), which measures the executor and not a real proof. The follower proves `Verify` (46.1M to 65.5M user cycles per update on real mainnet data, measured on the executor: `evidence/cost/cost.md`) and the privacy circuit's wrapper.
 - No standing on Ethereum. No validator, no Ethereum account.
 
 What it costs, per update, measured. Proving one V1 finality update for real took 20,060 s (5.57 hours) and peaked at 9.259 GiB on the build laptop (`evidence/g1/real-proof.json`). Proving the V2 finality update for real took 16,064 s (4.46 hours) and peaked at 9.24 GiB on the same laptop (`evidence/g1/real-proof-v2.json`). Derived from measured cycles and LEZ constants (`evidence/cost/cost.md` section 2): 409,764 gas for receipt verification plus 54,965 cycles for `Apply` plus 24,047 for `WriteRecord`, which is 488,776 execution gas, and 224,063 storage gas.
@@ -30,7 +30,7 @@ Sepolia account for the project's own runs. The project deploys the vault and se
 | Follower daemon, idle between ticks | Not measured. The follower log records no CPU or memory figures | `evidence/g4/` |
 | Proving one V1 finality update, CPU only | 20,060 s (5.57 hours), peak 9.259 GiB, at most 92,700 KiB of swap, on an Intel i5-10300H with 15 GiB of RAM and 11 GiB of swap. Declared minimum for a user machine: 16 GB of RAM | `evidence/g1/real-proof.json` |
 | Disk | Log growth about 81 KB per day (run B: 116,454 bytes in 34.49 h; run A: 121,408 bytes in 35.8 h). State cache size: not measured | file sizes of `evidence/g4/run-b/follower.jsonl` and `evidence/g4/run-a/follower.jsonl` |
-| Network | Mainnet (fulu): light-client update 2,109 bytes (finality) to 26,926 bytes (period) as SSZ. Sepolia (gloas): 1,448 bytes (finality) and 26,424 bytes (period) | `fixtures/*/manifest.json`, follower track notes |
+| Network | Mainnet (fulu): light-client update 2,109 bytes (finality) to 26,926 bytes (period) as SSZ. Sepolia (gloas): 1,448 bytes (finality) and 26,424 bytes (period) | `fixtures/*/manifest.json`, follower build notes |
 
 An operator who wants hourly headers needs a faster prover than this laptop. An operator who only keeps the instance alive needs one proof per sync-committee period plus the finality updates at the chosen cadence.
 

@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# One-time setup of a track's own dev wallet (coordinator rule 2026-11-12: one wallet home per track; bv-payer only
-# funds each track's own public payer, under the ids.toml lock).
+# One-time setup of an own dev wallet (project rule 2026-11-12: one wallet home per writer; bv-payer only
+# funds each wallet's own public payer, under the ids.toml lock).
 #
 #   LEE_WALLET_HOME_DIR=$B/run/wallet-w1 tests/e2e_chain/scripts/setup_wallet.sh [prefix] [amount]
 #   then: export BV_PAYER=<printed public id> BV_SUBMITTER=<printed private id>
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-home="${LEE_WALLET_HOME_DIR:?set LEE_WALLET_HOME_DIR to the track wallet}"
+home="${LEE_WALLET_HOME_DIR:?set LEE_WALLET_HOME_DIR to your own wallet home}"
 # shellcheck source=/dev/null
 source "$here/../../../scripts/env.sh"
 export LEE_WALLET_HOME_DIR="$home" LEE_WALLET_PASSWORD="${LEE_WALLET_PASSWORD:-}"

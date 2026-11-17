@@ -49,7 +49,7 @@ pub fn expect_chain<T: std::fmt::Debug>(r: anyhow::Result<T>, want: EsaError, ca
 }
 
 /// Second verifier id in every G2 config: `sha256("beacon-veil/w2/g2/v1")`, an account no program uses. It only
-/// makes G2's instance ids unique on a shared `seq-dev` (other tracks create instances of the same checkpoint with
+/// makes G2's instance ids unique on a shared `seq-dev` (other test runs create instances of the same checkpoint with
 /// the same `min_participants` values). `lc_verify` stays the accepted verifier.
 pub fn w2_tag() -> AccountId {
     use sha2::{Digest, Sha256};

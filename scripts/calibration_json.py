@@ -5,7 +5,7 @@ Usage: python3 -I scripts/calibration_json.py evidence/calibration/run-<stamp>
 
 Reads <prefix>.meta, <prefix>.time (GNU time -v), <prefix>.log (RISC0_INFO session lines) and the matching fund-<stamp>.time.
 All figures are MEASURED on this machine; us_per_cycle divides prove wall time by total cycles of all proven sessions,
-which includes deployment block waits (labelled), so it is an upper bound and not the K4 number (W6 owns K4).
+which includes deployment block waits (labelled), so it is an upper bound and not the K4 number (see tools/cost).
 """
 import json, os, re, sys
 

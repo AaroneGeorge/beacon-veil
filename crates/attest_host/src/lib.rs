@@ -1,4 +1,4 @@
-//! Host library (PLAN.md 2.3, owner W1; used by W2, W3, W4, W5, W6).
+//! Host library.
 //!
 //! Configuration comes from the environment, never from arguments (`scripts/env.sh` sets most of it):
 //! - `LEE_WALLET_HOME_DIR`: wallet home; the sequencer address is read from its `wallet_config.json`.

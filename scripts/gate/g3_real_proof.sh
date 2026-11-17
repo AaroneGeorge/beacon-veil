@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Gate G3 with a REAL proof (W3; coordinator request 2026-11-12): on seq-real (RISC0_DEV_MODE unset), a private
+# Gate G3 with a REAL proof (requested 2026-11-12): on seq-real (RISC0_DEV_MODE unset), a private
 # `Attest` of the mainnet USDT `Transfer` (block 26397891) proven for real in the user's private account and delivered
 # to a public consumer_erc20 instance in the same transaction; then the identical transaction again, refused with
 # E11_ALREADY_CONSUMED. Writes evidence/g3/real-proof.json (wall time, peak RSS, tx, block, image ids) and the raw job

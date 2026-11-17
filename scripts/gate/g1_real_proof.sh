@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Gate G1, real-proof half (PLAN.md section 1 and 3.4): one light-client update proven for real (not dev mode) and
+# Gate G1, real-proof half: one light-client update proven for real (not dev mode) and
 # accepted by a standalone rc3 sequencer started with RISC0_DEV_MODE unset (seq-real). Writes
 # evidence/g1/real-proof.json with dev_mode:false, accepted, tx id, block id, receipt bytes, prove seconds, peak RSS
 # and a sequencer log excerpt, plus the raw job directory under evidence/prove/.
@@ -17,13 +17,13 @@
 # bv-submitter). Init (public, no proof) can be done before with
 #   g1_real_proof --bootstrap bootstrap_15631808.ssz --init-only   (prints G1INIT {instance, init_tx, ...}). Funding a private
 # account on seq-real is itself a (small) real proof: do it inside the window, through tools/cost/prove_job.sh.
-# Real proving only in a window the coordinator confirmed: BV_PROOF_WINDOW_OK=1.
+# Real proving only in a confirmed proof window: BV_PROOF_WINDOW_OK=1.
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=scripts/env.sh
 source "$here/../env.sh"
 
-# Detach by default (coordinator 2026-11-12): a proof outlives the shell, SSH session or agent that started it. The job
+# Detach by default (2026-11-12): a proof outlives the shell, SSH session or process that started it. The job
 # re-executes itself under `setsid nohup` (new session, parent init, no tty), writes its PID to $B/run/<pidname>.pid
 # and returns at once. --foreground (or BV_FOREGROUND=1) runs attached; nested calls inherit BV_DETACHED=1.
 bv_detach() { # pidname, original args...

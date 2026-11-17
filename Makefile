@@ -1,4 +1,4 @@
-# beacon-veil Makefile (skeleton, owner W0). Targets `cost-exec`, `cost-prove`, `gate` belong to W6.
+# beacon-veil Makefile.
 # Every recipe sources scripts/env.sh (shared target dir, 4 jobs, RISC0_DEV_MODE=1, TMPDIR on disk) and runs niced.
 
 SHELL := /usr/bin/env bash
@@ -50,11 +50,11 @@ seq-dev-stop: ## Stop the dev-mode sequencer
 deploy-local: guests ## Deploy attest and lc_verify to seq-dev, write deploy/ids.toml
 	scripts/deploy_local.sh dev
 
-cost-exec: ## (W6) deterministic cycles and gas (executor, real fixtures) -> evidence/cost/cost.{json,md}
+cost-exec: ## deterministic cycles and gas (executor, real fixtures) -> evidence/cost/cost.{json,md}
 	tools/cost/cost_exec.sh
 
-cost-prove: ## (W6) proof-window job, JOB=calib-seg20|calib-ppe|g1-real (needs BV_PROOF_WINDOW_OK=1); no JOB: summary
+cost-prove: ## proof-window job, JOB=calib-seg20|calib-ppe|g1-real (needs BV_PROOF_WINDOW_OK=1); no JOB: summary
 	tools/cost/cost_prove.sh $(JOB) $(ARGS)
 
-gate: ## (W6) gate checks G1 to G5 -> evidence/gate/summary.json (GATE_ARGS=--quick re-checks evidence only)
+gate: ## gate checks G1 to G5 -> evidence/gate/summary.json (GATE_ARGS=--quick re-checks evidence only)
 	scripts/gate/gate.sh $(GATE_ARGS)

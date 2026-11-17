@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# W0 calibration (PLAN.md 3.4): LEZ's `run_hello_world_private` example against seq-real (RISC0_DEV_MODE unset),
+# Calibration: LEZ's `run_hello_world_private` example against seq-real (RISC0_DEV_MODE unset),
 # under /usr/bin/time -v, nice -n 19 ionice -c3. Raw output goes to evidence/calibration/; scripts/calibration_json.py
 # turns it into evidence/calibration.json.
 #
 #   scripts/calibrate.sh            # seq-real must be running: scripts/seq.sh real start
 #
-# Scope (coordinator, 2026-11-12): this is the real-proof PIPELINE smoke test ("pipeline_smoke" in
-# evidence/calibration.json), not the K4 number; W6 owns K4 with LEZ's cycle_bench. Do not run inside W6's window.
+# Scope (2026-11-12): this is the real-proof PIPELINE smoke test ("pipeline_smoke" in
+# evidence/calibration.json), not the K4 number (tools/cost measures K4 with LEZ's cycle_bench). Not in a proof window.
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=scripts/env.sh

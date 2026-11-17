@@ -1,4 +1,4 @@
-//! The fabricated chain (RFP-021 Verification Security 1, PLAN.md W2 scope).
+//! The fabricated chain (RFP-021 Verification Security 1).
 //!
 //! "Given a self-consistent header and inclusion proof over state that was never finalised on the canonical chain,
 //! verification must fail" (021:650-653). This module builds exactly that, as an attacker with unlimited compute but

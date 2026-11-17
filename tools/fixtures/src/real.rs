@@ -128,7 +128,7 @@ mod tests {
     use super::*;
     use crate::ssz::{BootstrapParts, UpdateParts};
 
-    /// G1 real-proof input (coordinator 2026-11-12): a checkpoint at update[3]'s finalized header (slot 15631808,
+    /// G1 real-proof input (2026-11-12): a checkpoint at update[3]'s finalized header (slot 15631808,
     /// period 1908), then `finality_update_15637644` as the FIRST update.
     #[test]
     fn mainnet_bootstrap_1908_then_finality_update() {

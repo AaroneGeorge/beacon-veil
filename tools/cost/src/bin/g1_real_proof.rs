@@ -1,4 +1,4 @@
-//! G1 real-proof leg (W6; PLAN.md section 1 G1, 3.4): on `seq-real` (RISC0_DEV_MODE unset), `Init` a mainnet
+//! G1 real-proof leg: on `seq-real` (RISC0_DEV_MODE unset), `Init` a mainnet
 //! instance from the real bootstrap (public, no proof), then submit ONE update through Path A with a real proof: the
 //! wallet proves `lc_verify` (succinct, through the external r0vm) and the sequencer verifies the receipt and applies
 //! `Apply` publicly. Prints one line `G1REAL {json}` with the instance, tx ids, block id and transaction bytes.

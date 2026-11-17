@@ -1,4 +1,4 @@
-//! LEZ side of bridge_cli, on `attest_host` (W1): wallet, public and private transactions, record reads.
+//! LEZ side of bridge_cli, on `attest_host`: wallet, public and private transactions, record reads.
 
 use std::path::PathBuf;
 

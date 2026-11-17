@@ -12,11 +12,11 @@
 #   --check         report what is missing, change nothing (exit 1 if anything is missing)
 #   --no-lez-build  skip building the LEZ binaries (about 20 min on 4 cores)
 #   --with-sudo     run the apt-get step (it is always printed first); without it, only print it
-#   --with-hello    also build LEZ's hello_world example guests in docker (W0 acceptance and pipeline smoke test)
+#   --with-hello    also build LEZ's hello_world example guests in docker (acceptance and pipeline smoke test)
 #
 # Versions: rzup components cargo-risczero 3.0.5, r0vm 3.0.5, rust 1.91.1, cpp, risc0-groth16 0.1.0; host Rust from
 # rust-toolchain.toml (1.98.1, via rustup); Foundry v1.9.0; just 1.59.0; cargo-nextest 0.9.151. Nix (only for the Logos
-# module, W4) is not installed here: see the end of this script's output.
+# module) is not installed here: see the end of this script's output.
 set -euo pipefail
 
 repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -104,7 +104,7 @@ for tv in "just 1.59.0" "cargo-nextest 0.9.151"; do
   if [ "$check" = 1 ]; then need "$1 $2"; else say "cargo install $1 --version $2 --locked"; nice -n 15 cargo install "$1" --version "$2" --locked; fi
 done
 
-# ---- 5. logosctl 0.3.2 (W4; Logos module runtime) ----
+# ---- 5. logosctl 0.3.2 (Logos module runtime) ----
 lc="$B/tools/logosctl/logosctl-x86_64.AppImage"
 if [ ! -x "$lc" ]; then
   if [ "$check" = 1 ]; then need "logosctl 0.3.2"; else
@@ -133,7 +133,7 @@ if [ "$with_hello" = 1 ] && [ "$check" = 0 ]; then
      cargo risczero build --manifest-path examples/program_deployment/methods/guest/Cargo.toml)
 fi
 
-say "Nix (only for the Logos module build, W4): official multi-user installer with TMPDIR=$B/.tmp, then add"
+say "Nix (only for the Logos module build): official multi-user installer with TMPDIR=$B/.tmp, then add"
 say "  'experimental-features = nix-command flakes' to /etc/nix/nix.conf. Not run here (sudo, about 10 GB)."
 if [ "$missing" = 1 ]; then say "some items are missing (see above)"; exit 1; fi
 say "OK. Next: source scripts/env.sh && scripts/seq.sh dev start"

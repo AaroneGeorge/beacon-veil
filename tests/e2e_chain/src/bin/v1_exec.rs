@@ -1,4 +1,4 @@
-//! V1 harness (W1 accept point (a), kill criteria K1/K2): runs the real mainnet light-client chain natively through
+//! V1 harness (accept point (a), kill criteria K1/K2): runs the real mainnet light-client chain natively through
 //! `attest_core::lc` (Helios 0.12.0 unmodified) and the `lc_verify` guest in the RISC Zero executor, and prints
 //! cycles and ELF sizes.
 //!

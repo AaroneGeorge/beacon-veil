@@ -9,7 +9,7 @@ set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=/dev/null
 source "$here/../../../scripts/env.sh"
-# env.sh resets LEE_WALLET_HOME_DIR to the shared wallet-dev: load the W4 wallet env (and BV_IDS) after it.
+# env.sh resets LEE_WALLET_HOME_DIR to the shared wallet-dev: load the follower wallet env (and BV_IDS) after it.
 if [ -n "${WALLET_ENV:-}" ]; then
   # shellcheck source=/dev/null
   source <(grep '^export ' "$WALLET_ENV")

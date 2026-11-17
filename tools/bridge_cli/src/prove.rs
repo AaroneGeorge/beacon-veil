@@ -1,5 +1,5 @@
-//! Guest burn_proof: native check, executor run (dev mode, cycles) or a real Groth16 proof (proving windows only,
-//! PLAN.md 3.4). Writes `journal.hex`, `seal.hex` and `meta.json` into the output directory; never the witness.
+//! Guest burn_proof: native check, executor run (dev mode, cycles) or a real Groth16 proof (proving windows
+//! only). Writes `journal.hex`, `seal.hex` and `meta.json` into the output directory; never the witness.
 
 use std::path::Path;
 
@@ -89,7 +89,7 @@ pub fn run(witness: &BurnWitness, out: &Path, mode: &str) -> Result<()> {
             }
             "groth16" => {
                 if std::env::var("RISC0_DEV_MODE").is_ok_and(|v| v != "0" && !v.is_empty()) {
-                    bail!("groth16 needs RISC0_DEV_MODE unset (and a PLAN.md 3.4 proving window)");
+                    bail!("groth16 needs RISC0_DEV_MODE unset (and a proving window)");
                 }
                 let info = default_prover().prove_with_opts(env, &elf, &ProverOpts::groth16())?;
                 info.receipt.verify(image_id)?;

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""G4 check (PLAN.md section 1): the follower followed a public testnet for 24 hours without manual help.
+"""G4 check: the follower followed a public testnet for 24 hours without manual help.
 
     python3 scripts/gate/g4_check.py evidence/g4/follower.jsonl [--min-hours 24] [--cadence S] [--allow-mock]
                                      [--summary-out FILE]

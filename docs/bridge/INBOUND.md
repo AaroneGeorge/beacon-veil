@@ -1,7 +1,7 @@
 # Inbound: Ethereum deposit to LEZ mint
 
 Status: spike (sprint 2026-11-12 to 2026-11-15). Code: `contracts/src/Vault.sol`, `programs/bridge`, `tools/bridge_cli`.
-Design source: PLAN.md 2.4. Requirement ids refer to RFP-022.
+Requirement ids refer to RFP-022.
 
 ## Summary
 
@@ -40,15 +40,15 @@ Instance id = `PDA(bridge, sha256("bridge/instance/v1" || borsh(config)))`. Ever
 
 ### Step 1: public attestation of the root (anyone)
 
-`bridge_cli attest-root --slot S` reads the header record of slot S from the followed `attest` instance. It builds a storage proof of the vault's root slot at that execution block with W3's `proofgen` (on gloas the proof carries the RLP execution header, checked against `exec_hash`). It then sends `attest.Attest{instance, record, claim, predicate: Eq(R), deliver_to}` as a public transaction.
+`bridge_cli attest-root --slot S` reads the header record of slot S from the followed `attest` instance. It builds a storage proof of the vault's root slot at that execution block with `proofgen` (on gloas the proof carries the RLP execution header, checked against `exec_hash`). It then sends `attest.Attest{instance, record, claim, predicate: Eq(R), deliver_to}` as a public transaction.
 
-`deliver_to` is the root receipt: `PDA(bridge, sha256("bridge/root/v1" || sender_program || attest_instance || stmt_id))`. Here `stmt_id = statement_id_state(chain_id, vault, DEPOSIT_ROOT_SLOT, R)` (W3). When a `Statement` arrives from another program, the bridge recomputes this seed from the actual sender program and the statement's own instance and id, and refuses any other receiver. So:
+`deliver_to` is the root receipt: `PDA(bridge, sha256("bridge/root/v1" || sender_program || attest_instance || stmt_id))`. Here `stmt_id = statement_id_state(chain_id, vault, DEPOSIT_ROOT_SLOT, R)`. When a `Statement` arrives from another program, the bridge recomputes this seed from the actual sender program and the statement's own instance and id, and refuses any other receiver. So:
 
 - A fake "attest" program can only write receipts keyed by its own program id. No bridge config points at those.
 - A fake light-client instance can only write receipts keyed by its own instance id.
 - The real attest program, for the real instance, can only write the receipt of exactly this (chain, vault, slot, R). Any such statement is true, so a first writer cannot squat it with something wrong.
 
-This lets the bridge take the attest program id from its config instead of a build-time constant (the consumer rule of PLAN.md 2.3). The safety is the same, because the instance id commits to the config.
+This lets the bridge take the attest program id from its config instead of a build-time constant (the consumer rule). The safety is the same, because the instance id commits to the config.
 
 Privacy of step 1: R is public on Ethereum. It is the root after some deposit, and every deposit before it is under R. The step names no deposit and no destination. It is shared: one attestation serves every claimant against R. A relayer or the bridge operator can run it for everyone. A gloas record attests the parent execution block of the finalised beacon block (see TRUST.md), so a deposit becomes provable one record later.
 
@@ -59,7 +59,7 @@ Privacy of step 1: R is public on Ethereum. It is the root after some deposit, a
 1. checks the token and denomination against the config;
 2. recomputes binding, commitment and leaf, and the root from the path (`ESA:E07` if wrong);
 3. sends `CheckRoot` to the root receipt (`WB:B03` unless it holds the statement "vault slot = R" under the configured attest instance);
-4. sends `Nullify` to `PDA(bridge, sha256("bridge/null/v1" || bridge_instance || deposit_nullifier))`. It panics `ESA:E11` unless the account is empty, then marks it (R3). The instance is in the seed, so a fake instance cannot mark a real instance's nullifier (griefing found by W3);
+4. sends `Nullify` to `PDA(bridge, sha256("bridge/null/v1" || bridge_instance || deposit_nullifier))`. It panics `ESA:E11` unless the account is empty, then marks it (R3). The instance is in the seed, so a fake instance cannot mark a real instance's nullifier (griefing found in review);
 5. credits `denom - mint_fee` to the destination's holding, `(instance, token) -> amount`, and the fee to the treasury (F13).
 
 The claim's proof runs on the user's machine. On chain one sees: the receipt read (that is, R), a fresh nullifier, and, only for a public destination, the credit. The secret, the leaf index, the path and the commitment never leave the device (Privacy 4). A failed step aborts the whole transaction. Nothing is consumed and the deposit stays claimable (R1).
@@ -81,9 +81,9 @@ If a claim ran on a public account, the sequencer would see the secret and the p
 
 ## What was shown, and how (2026-11-12)
 
-- The claim was shown in dev mode on Sepolia data. Against W4's followed Sepolia instances (run A on vault v2, run B on vault v3), `attest-root` proved the vault's root slot through RFP-021. The private `Claim` then landed on seq-dev in dev mode (`RISC0_DEV_MODE=1`, no real proof), and a repeat claim was refused with `ESA:E11_ALREADY_CONSUMED`. Evidence: `evidence/bridge/k9-part2-runA-v2/`, `evidence/bridge/k9-part2-runB-v3/`.
+- The claim was shown in dev mode on Sepolia data. Against the follower's Sepolia instances (run A on vault v2, run B on vault v3), `attest-root` proved the vault's root slot through RFP-021. The private `Claim` then landed on seq-dev in dev mode (`RISC0_DEV_MODE=1`, no real proof), and a repeat claim was refused with `ESA:E11_ALREADY_CONSUMED`. Evidence: `evidence/bridge/k9-part2-runA-v2/`, `evidence/bridge/k9-part2-runB-v3/`.
 - No real proof of a private bridge claim was made. It would need a Sepolia light-client instance on the real-proof sequencer (seq-real), with its own update proven for real, which takes hours.
-- The mechanism the private claim relies on was shown with a real proof by G3: a private `Attest` against a light-client record that was itself proven for real (W3's consumer, about 35 min and 9.2 GiB peak on this laptop; `evidence/g3/real-proof.json`, raw files under `evidence/prove/g3-real-consumer/`). The bridge claim uses the same placement: a private actor, public PDAs reached by sync messages, and a statement checked against a record.
+- The mechanism the private claim relies on was shown with a real proof by G3: a private `Attest` against a light-client record that was itself proven for real (the G3 consumer, about 35 min and 9.2 GiB peak on this laptop; `evidence/g3/real-proof.json`, raw files under `evidence/prove/g3-real-consumer/`). The bridge claim uses the same placement: a private actor, public PDAs reached by sync messages, and a statement checked against a record.
 
 ## Recovery (F9, R5)
 

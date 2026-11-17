@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# `make gate` (W6): runs the objective checks of PLAN.md section 1, G1 to G5, and writes evidence/gate/summary.json.
+# `make gate`: runs the objective gate checks G1 to G5, and writes evidence/gate/summary.json.
 # G6 (signatures in TEAM.md) is the owner's confirmation and is only reported as present or not.
 #
 #   scripts/gate/gate.sh [--quick]
 #
 #   G1  scripts/gate/g1_chain.sh (seq-dev, mainnet fixtures) + g1_real_proof.sh --verify (evidence/g1/real-proof.json)
 #   G2  evidence/g2/ci-run.txt holds the URL of a green GitHub Actions run on the default branch (checked with gh)
-#   G3  scripts/gate/g3_consumer.sh (W3)
-#   G4  python3 scripts/gate/g4_check.py evidence/g4/follower.jsonl (W4)
+#   G3  scripts/gate/g3_consumer.sh
+#   G4  python3 scripts/gate/g4_check.py evidence/g4/follower.jsonl
 #   G5  scripts/gate/g5_repro.sh (clean clone, cold build: slow)
 #   --quick: G1 and G3 re-check their existing evidence JSON instead of re-running on seq-dev; G5 re-checks
 #            evidence/g5/repro.json instead of a new clean-clone build.

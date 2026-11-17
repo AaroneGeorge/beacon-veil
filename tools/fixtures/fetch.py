@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fetch Beacon API light-client fixtures with a manifest (W2, PLAN.md section 4).
+"""Fetch Beacon API light-client fixtures with a manifest.
 
 Stdlib only. Run with `python3 -I tools/fixtures/fetch.py --chain mainnet|sepolia [--out fixtures]`.
 The Rust binary `fixtures fetch` writes the same layout and manifest schema; this script exists so that

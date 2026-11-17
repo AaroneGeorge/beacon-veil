@@ -1,4 +1,4 @@
-//! End-to-end light-client chain on a running LEZ v0.4.0-rc3 sequencer (W1 accept (b), gate G1 dev-mode half).
+//! End-to-end light-client chain on a running LEZ v0.4.0-rc3 sequencer (accept (b), gate G1 dev-mode half).
 //!
 //! Needs: `scripts/seq.sh dev start`, `scripts/deploy_local.sh dev` (writes deploy/ids.toml), a funded public
 //! payer (`BV_PAYER` or wallet label `bv-payer`) and a funded private submitter (`BV_SUBMITTER` or label
@@ -177,7 +177,7 @@ async fn mainnet_chain_init_three_updates_handoff_and_rejections() {
     assert_eq!(head.period, 1908);
 }
 
-/// B0 (PLAN.md D3): the same monolithic `Verify` sent as a PUBLIC transaction (sequencer-executed, metered). Expected:
+/// B0 (D-09): the same monolithic `Verify` sent as a PUBLIC transaction (sequencer-executed, metered). Expected:
 /// refused at the 10M per-transaction cap. With `BV_ALLOW_REVERT=1` the wallet sends it anyway and the sequencer
 /// includes it as reverted (fee charged); otherwise the wallet's simulation refuses it before sending.
 #[tokio::test(flavor = "multi_thread")]

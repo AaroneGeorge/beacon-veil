@@ -1,6 +1,6 @@
 //! The LEZ side of the follower: read the instance's verified store status and submit updates.
 //!
-//! [`HostChain`] goes through `attest_host` (W1) to a LEZ sequencer. [`MockChain`] is a file-backed stand-in that
+//! [`HostChain`] goes through `attest_host` to a LEZ sequencer. [`MockChain`] is a file-backed stand-in that
 //! applies Helios's store rules on the update metadata only (no signatures). It exists to test the follower loop,
 //! restart-resume and the G4 checker before and beside the real programs. A run on the mock is never G4 evidence: its
 //! `start` line says `chain: "mock"`.

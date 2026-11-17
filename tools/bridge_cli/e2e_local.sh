@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Local round trip of the bridge spike (W5): anvil vault + seq-dev (dev mode).
+# Local round trip of the bridge spike: anvil vault + seq-dev (dev mode).
 #   deposit (anvil) -> dev-attest-root (DEV statement source) -> private claim -> repeat claim refused (E11)
 #   -> private burn -> STUB anchor post -> burn_proof in the executor -> release on anvil (mock verifier) -> recover
 #
@@ -8,7 +8,7 @@
 #
 # Needs: seq-dev running; guests built (`make guests`: bridge.bin, bridge_dev_source.bin, burn_proof.bin in
 # $B/target/guests); bridge_cli built; anvil on PATH. Wallet home: $B/run/wallet-w5 with a funded public `w5-payer`
-# and a funded private `w5-claimer` (see TRACK-W5-NOTES.md). Keys used: anvil dev key 0 and the LEZ local test key,
+# and a funded private `w5-claimer`. Keys used: anvil dev key 0 and the LEZ local test key,
 # both public test keys, not secrets.
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

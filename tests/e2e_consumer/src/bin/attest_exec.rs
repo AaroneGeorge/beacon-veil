@@ -1,5 +1,5 @@
-//! Cycles of `attest::Attest` (log and storage claims) and of `consumer_erc20` in the RISC Zero executor (W3, for
-//! W6's cost table). No sequencer: each handler is run once with a `ReceiveInput` frame, as LEZ runs an actor.
+//! Cycles of `attest::Attest` (log and storage claims) and of `consumer_erc20` in the RISC Zero executor (for
+//! the cost table). No sequencer: each handler is run once with a `ReceiveInput` frame, as LEZ runs an actor.
 //!
 //! ```text
 //! cargo run -p e2e_consumer --bin attest_exec -- [--attest-elf P] [--consumer-elf P] [--json OUT]

@@ -1,4 +1,4 @@
-//! Beacon light-client data sources (PLAN.md 2.6): Logos `beacon_api_module` through `logosctl`, preferred; direct
+//! Beacon light-client data sources: Logos `beacon_api_module` through `logosctl`, preferred; direct
 //! HTTP to the same Beacon API routes, as the stated fallback. Both return the Beacon API JSON objects; SSZ for
 //! submission is made by [`crate::ssz`], so the bytes submitted do not depend on which source ran.
 

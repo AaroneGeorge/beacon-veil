@@ -13,7 +13,7 @@ This file states what the RFP-022 spike trusts, what it reveals, and what is not
 
 ## 2. Ethereum finality under gloas (Sepolia)
 
-Sepolia runs gloas (ePBS). A gloas light-client header proves `bid.parent_block_hash` (generalized index 2856), and Helios 0.12.0 uses the same index. The beacon chain advances `latest_block_hash` only when a payload was delivered and verified. Fork choice rejects a child that declares a withheld parent FULL. So a light-client-proven execution hash is canonical under the same assumption as before gloas: an honest sync-committee supermajority. Source: consensus-specs master `c3e16117`, checked by W3 on 2026-11-12.
+Sepolia runs gloas (ePBS). A gloas light-client header proves `bid.parent_block_hash` (generalized index 2856), and Helios 0.12.0 uses the same index. The beacon chain advances `latest_block_hash` only when a payload was delivered and verified. Fork choice rejects a child that declares a withheld parent FULL. So a light-client-proven execution hash is canonical under the same assumption as before gloas: an honest sync-committee supermajority. Source: consensus-specs master `c3e16117`, checked on 2026-11-12.
 
 Two consequences:
 
@@ -57,7 +57,7 @@ Client rule: a claim must run as a privacy-preserving transaction. The program c
 
 ## 5. Soundness of supply (Security 6)
 
-- Mint: needs a leaf under an attested vault root (the vault computes the leaf from what it received) and an empty nullifier account. One deposit gives one nullifier, so it can be minted once. The nullifier account is `PDA(bridge, sha256("bridge/null/v1" || bridge_instance || deposit_nullifier))`. The instance id is in the seed, so another instance (another entity's config, or a fake one) cannot mark this instance's nullifiers. Without that, a fake instance could front-run a real claim and burn its nullifier (griefing found by W3, 2026-11-12).
+- Mint: needs a leaf under an attested vault root (the vault computes the leaf from what it received) and an empty nullifier account. One deposit gives one nullifier, so it can be minted once. The nullifier account is `PDA(bridge, sha256("bridge/null/v1" || bridge_instance || deposit_nullifier))`. The instance id is in the seed, so another instance (another entity's config, or a fake one) cannot mark this instance's nullifiers. Without that, a fake instance could front-run a real claim and burn its nullifier (griefing found in review, 2026-11-12).
 - Root receipts: written only by a statement whose real sender program, attest instance and statement id derive the receipt's address. A fake attest program or a fake light-client instance writes only to receipts that no honest config reads.
 - Wrapped balances are kept per (instance, token). Tokens minted by a fake instance are a different asset and cannot be burned against this instance's vault.
 - Release: needs a valid Groth16 proof for the fixed image id, an anchor-final root, the pairing checks, and an unspent nullifier. Each burn leaf has one secret and therefore one nullifier.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Samples a process tree until its root exits (W6, used by tools/cost/prove_job.sh).
+"""Samples a process tree until its root exits (used by tools/cost/prove_job.sh).
 
     python3 -I tools/cost/rss_sampler.py ROOT_PID OUT_CSV OUT_JSON [--interval 1.0]
 

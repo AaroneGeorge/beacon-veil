@@ -24,7 +24,7 @@ hex.workspace = true
 serde_json.workspace = true
 sha2 = { workspace = true, features = ["std"] }
 
-# Helios 0.12.0 types, unmodified (PLAN.md 2.5). The fabricated chain is built from Helios's own containers so
+# Helios 0.12.0 types, unmodified. The fabricated chain is built from Helios's own containers so
 # Helios's own tree hashing defines every root.
 helios-consensus-core.workspace = true
 # Same versions as Helios 0.12.0's workspace (Cargo.toml:34-40); `bls12_381` resolves to the RISC Zero fork via

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# `make cost-prove JOB=<job>` (W6): the proof-window jobs of PLAN.md 3.4, one at a time, each through
+# `make cost-prove JOB=<job>`: the proof-window jobs, one at a time, each through
 # tools/cost/prove_job.sh (nice 19, ionice 3, proving lock, wall seconds, peak RSS, receipt bytes, machine line).
 # Afterwards (and with no JOB) it rebuilds evidence/cost/prove.{json,md} from every evidence/prove/*/record.json.
 #
@@ -17,7 +17,7 @@ set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=scripts/env.sh
 source "$here/../../scripts/env.sh"
-# Detach by default (coordinator 2026-11-12): a proof outlives the shell, SSH session or agent that started it. The job
+# Detach by default (2026-11-12): a proof outlives the shell, SSH session or process that started it. The job
 # re-executes itself under `setsid nohup` (new session, parent init, no tty), writes its PID to $B/run/<pidname>.pid
 # and returns at once. --foreground (or BV_FOREGROUND=1) runs attached; nested calls inherit BV_DETACHED=1.
 bv_detach() { # pidname, original args...

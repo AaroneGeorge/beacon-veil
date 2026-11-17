@@ -1,4 +1,4 @@
-//! G3 end to end on a running LEZ v0.4.0-rc3 sequencer (W3): one attested ERC-20 `Transfer` lands in the
+//! G3 end to end on a running LEZ v0.4.0-rc3 sequencer: one attested ERC-20 `Transfer` lands in the
 //! consumer's own transaction and changes its state; the identical transaction is refused with
 //! `E11_ALREADY_CONSUMED`. Plus the private placement: `Attest` run in the user's private account, the statement
 //! delivered to the public consumer, in dev mode.
@@ -10,7 +10,7 @@
 //!   cargo test -p e2e_consumer --test e2e_consumer -- --ignored --nocapture --test-threads 1
 //!
 //! The light-client instance: `$BV_E2E_INSTANCE` (base58) if set and its record at beacon slot 15637568 exists;
-//! else a fresh mainnet instance is built from W2's fixtures (`e2e_chain::mainnet_chain`: Init + 5 updates, Path A
+//! else a fresh mainnet instance is built from fixtures (`e2e_chain::mainnet_chain`: Init + 5 updates, Path A
 //! in dev mode), whose last update finalises execution block 26397891, the block of the claim fixtures.
 //! Each run uses a fresh consumer instance (config `salt` = unix time), so reruns start clean.
 //! A line `G3RESULT {json}` is printed for `scripts/gate/g3_consumer.sh`.

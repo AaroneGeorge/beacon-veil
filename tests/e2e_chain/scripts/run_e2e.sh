@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Runs the W1 end-to-end chain test against seq-dev (accept (b); called by scripts/gate/g1_chain.sh).
-# Needs: seq-dev running, attest + lc_verify deployed (deploy/ids.toml), a track wallet with a funded public payer
+# Runs the end-to-end chain test against seq-dev (accept (b); called by scripts/gate/g1_chain.sh).
+# Needs: seq-dev running, attest + lc_verify deployed (deploy/ids.toml), an own wallet home with a funded public payer
 # and private submitter (tests/e2e_chain/scripts/setup_wallet.sh).
 #
 #   LEE_WALLET_HOME_DIR=... BV_PAYER=... BV_SUBMITTER=... tests/e2e_chain/scripts/run_e2e.sh [log]
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-home="${LEE_WALLET_HOME_DIR:?set LEE_WALLET_HOME_DIR to the track wallet}"
+home="${LEE_WALLET_HOME_DIR:?set LEE_WALLET_HOME_DIR to your own wallet home}"
 # shellcheck source=/dev/null
 source "$here/../../../scripts/env.sh"
 export LEE_WALLET_HOME_DIR="$home" LEE_WALLET_PASSWORD="${LEE_WALLET_PASSWORD:-}" RUST_LOG="${RUST_LOG:-warn}"

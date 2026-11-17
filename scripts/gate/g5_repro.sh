@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Gate G5 (PLAN.md section 1): the measured cost table is reproducible from a clean clone.
+# Gate G5: the measured cost table is reproducible from a clean clone.
 #   1. fresh `git clone` of the committed HEAD into $B/.tmp/clean (uncommitted work is not part of the clone);
 #   2. `make cost-exec` there, with its own empty target dir ($B/.tmp/g5/target: a cold build, nothing reused);
 #   3. exact diff of the cycle and gas columns against the committed evidence/cost/cost.json;

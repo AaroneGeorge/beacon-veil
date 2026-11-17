@@ -1,6 +1,6 @@
 # Outbound: LEZ burn to Ethereum release
 
-Status: spike. Code: `programs/bridge` (Burn, accumulator), `guests/burn_proof`, `contracts/src/Vault.sol` (`release`), `contracts/src/StubLezAnchor.sol`, `tools/bridge_cli`. Design source: PLAN.md 2.4.
+Status: spike. Code: `programs/bridge` (Burn, accumulator), `guests/burn_proof`, `contracts/src/Vault.sol` (`release`), `contracts/src/StubLezAnchor.sol`, `tools/bridge_cli`.
 
 ## Summary
 
@@ -52,7 +52,7 @@ Verifier choice (revised 2026-11-12). RISC Zero advisory GHSA-g6qg-9j8p-7j87 (ri
 
 Open route (failsafe L2). `releaseOpen(burnSecret, recipient, fee, token, denom, leafIndex, path)` checks the same statement as `burn_proof` with plain SHA-256 in the vault (`burnStatement`), then runs the same checks and payout as `release`. It shares the nullifier map, so one burn pays once across both routes. The recipient and fee are inside the note, so a caller can only pay the bound recipient. It reveals the burn secret, which links this release to its burn: the client offers it only with explicit confirmation, when the zero-knowledge route is stopped or the user chooses it. The freezer can freeze each route separately (`setRouteFreeze`). Foundry tests: `test_openRoute*`, `test_zkRoutePaysAndThenOpenRouteRefuses`, and the Rust vector `test_openRouteStatementMatchesRust`. Measured locally (forge gas report): at most 183,971 gas.
 
-## Stages of the anchor (PLAN.md 2.4)
+## Stages of the anchor
 
 | Stage | What makes `isFinal` true | Sprint | Residual trust |
 |---|---|---|---|

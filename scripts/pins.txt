@@ -1,5 +1,5 @@
 # Pinned vendor clones under $B/vendor (scripts/bootstrap.sh). Format: dir  github-repo  ref  commit
-# Every clone is checked against the commit; a mismatch stops the bootstrap (PLAN.md 3.2).
+# Every clone is checked against the commit; a mismatch stops the bootstrap.
 lez                           logos-blockchain/logos-execution-zone     v0.4.0-rc3                   bafd07be0701398f9bc435f73ab05e9a7936c301
 helios                        a16z/helios                               0.12.0                       2af9b41887e069144ee56cd710f3ddca195473f8
 zkcrypto-bls12_381            risc0/zkcrypto-bls12_381                  bls12_381/v0.8.0-risczero.1  a3192e1bc58921d42d03d99957abf3be55f9d435

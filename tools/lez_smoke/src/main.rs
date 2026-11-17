@@ -1,6 +1,6 @@
 //! `hello_public <hello_world.bin> <account_id> <payer_account_id> [<program_header_id>]`
 //!
-//! W0 acceptance smoke test on a local rc3 sequencer. Same steps as LEZ's `run_hello_world` example, except that the
+//! Acceptance smoke test on a local rc3 sequencer. Same steps as LEZ's `run_hello_world` example, except that the
 //! transaction goes through `WalletCore::send_pub_tx_paid_by`, which adds the fee declaration rc3's sequencer requires
 //! (the rc3 example sends a bare `PublicTransaction` and is rejected with "transaction fee classification failed").
 //! If `program_header_id` is given, the already-deployed program is reused instead of deploying the binary again.

@@ -1,8 +1,8 @@
-//! `fixtures` CLI (W2, PLAN.md section 4).
+//! `fixtures` CLI.
 //!
 //! - `fixtures fetch --chain mainnet|sepolia [--out DIR] [--periods N] [--finality-only]`: runs the stdlib fetcher
 //!   `tools/fixtures/fetch.py` with `python3 -I` (one implementation of the Beacon API fetch, used before this
-//!   binary could be built while the shared target was locked; see TRACK-W2-NOTES.md).
+//!   binary could be built while the shared target was locked).
 //! - `fixtures fabricate [--like mainnet] [--seed S] [--out DIR]`: writes a fabricated chain that impersonates the
 //!   fetched chain (same chain id, genesis validators root, forks, checkpoint slot; fresh keys), with a manifest.
 

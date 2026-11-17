@@ -55,7 +55,7 @@ When an instance must be replaced (F10). An instance that falls behind can still
 
 Question. Sepolia runs gloas, which separates the block proposer's bid from the execution payload (EIP-7732, ePBS). A gloas light-client header carries only an execution block hash. Could the hash a sync committee signs name a payload that was never delivered, so that it is not on the canonical chain?
 
-Answer. No, under the current spec. Sources: `ethereum/consensus-specs` commit `c3e16117a66523902fd21d6ba708d987b56bd4a4` (master on 2026-11-11), read by W3 on 2026-11-12 and re-read by W7 the same day. Line numbers refer to that commit.
+Answer. No, under the current spec. Sources: `ethereum/consensus-specs` commit `c3e16117a66523902fd21d6ba708d987b56bd4a4` (master on 2026-11-11), read on 2026-11-12 and re-read independently the same day. Line numbers refer to that commit.
 
 1. The hash in the gloas light-client header is the bid's `parent_block_hash`, not its `block_hash`. `EXECUTION_BLOCK_HASH_GINDEX_GLOAS = get_generalized_index(BeaconBlockBody, "signed_execution_payload_bid", "message", "parent_block_hash")`, which is 2,856 (`specs/gloas/light-client/sync-protocol.md:113`). Helios 0.12.0 uses index 808 at depth 11 in `ethereum/consensus-core/src/proof.rs`. 2^11 + 808 = 2,856, the same leaf.
 2. `process_execution_payload_bid` asserts `bid.parent_block_hash == state.latest_block_hash` (`specs/gloas/beacon-chain.md:2193`).
@@ -109,7 +109,7 @@ Residual signal, stated plainly. The header record a private consumer reads is v
 
 ## 7. Pre-checks before Helios: the quorum and finality finding
 
-Finding (W2, 2026-11-12), confirmed against `a16z/helios` tag 0.12.0 (commit `2af9b418`), `ethereum/consensus-core/src/`:
+Finding (2026-11-12), confirmed against `a16z/helios` tag 0.12.0 (commit `2af9b418`), `ethereum/consensus-core/src/`:
 
 - `consensus_core.rs:248-256`, `verify_generic_update`, rejects only an update with no participants (`InsufficientParticipation` on zero bits). The two-thirds quorum is checked in `apply_generic_update` (`consensus_core.rs:176`, `has_majority`, used at `:184`). There, an update below quorum is silently not applied. It is not an error.
 - `types/mod.rs:468`, `:482` and `:520-525` (`default_header_to_none`): an update whose finalized header has slot 0 or is a default header becomes `finalized_header: None`. `verify_generic_update` then skips the finality-branch check (`consensus_core.rs:302`). An optimistic update never has a finalized header (`types/mod.rs:488-496`).

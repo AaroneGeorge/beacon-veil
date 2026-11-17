@@ -1,4 +1,4 @@
-//! G2 adversarial suite helpers (W2). The tests live in `tests/adversarial.rs`.
+//! G2 adversarial suite helpers. The tests live in `tests/adversarial.rs`.
 //!
 //! Native legs call the same pure functions the guests run: `attest_core::lc` (Helios 0.12.0 unmodified plus the
 //! approved pre-checks), `attest_core::rules` (`attest` program checks), `attest_inclusion` (claims and predicates)

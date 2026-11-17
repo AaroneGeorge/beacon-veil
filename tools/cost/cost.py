@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Cost table, proof-job records and the K4 projection (W6, PLAN.md section 4). Stdlib only; run with `python3 -I`.
+"""Cost table, proof-job records and the K4 projection. Stdlib only; run with `python3 -I`.
 
     cost.py build   --raw DIR --out evidence/cost      # cost.json + cost.md from the raw executor outputs
     cost.py prove-record --dir JOBDIR --name N --exit RC --dev-mode BOOL [--receipt F] [--receipt-regex RE] [--cycles N]
@@ -641,7 +641,7 @@ def cmd_project(a):
 
 
 # ------------------------------------------------------------------------------------------------------------------
-# import-trace: W1's cycle-trace build log -> raw/b0-phases.json
+# import-trace: the cycle-trace build log -> raw/b0-phases.json
 # ------------------------------------------------------------------------------------------------------------------
 
 BLS_PHASES = ("key_aggregation", "sig_decompress", "g2_subgroup_check", "hash_to_curve", "miller_loop_2",

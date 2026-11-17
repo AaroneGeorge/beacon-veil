@@ -1,4 +1,4 @@
-//! `proofgen` (PLAN.md section 4, owner W3): builds `attest_inclusion::Claim`s from public Ethereum JSON-RPC.
+//! `proofgen`: builds `attest_inclusion::Claim`s from public Ethereum JSON-RPC.
 //!
 //! ```text
 //! proofgen [--chain mainnet|sepolia] [--rpc URL] --block N|latest|finalized <account|storage|log|header> ... [--out F]
@@ -10,7 +10,7 @@
 //!
 //! Sources: `eth_getBlockByNumber` (header, rebuilt to RLP and checked against `hash`), `eth_getProof` (account and
 //! storage), `eth_getBlockReceipts` (receipts trie rebuilt and checked against `receiptsRoot`). Every claim is
-//! verified with `attest_inclusion` before it is written. No API keys: public endpoints only (PLAN.md 3.3).
+//! verified with `attest_inclusion` before it is written. No API keys: public endpoints only.
 //!
 //! Output: one JSON fixture with the block fields, `exec_header_rlp`, the expected value, `claim` (borsh hex, no
 //! header: for records that carry roots) and `claim_with_header` (borsh hex, header included: required for gloas

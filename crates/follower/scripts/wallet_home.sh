@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Own wallet home for a W4 follower (coordinator rules in W0-NOTES.md: one wallet home per writer; bv-payer only
+# Own wallet home for a follower (project rules: one wallet home per writer; bv-payer only
 # funds each home's own payer, under the deploy lock).
 #
 #   crates/follower/scripts/wallet_home.sh <name> [public_amount] [private_amount]
@@ -24,7 +24,7 @@ command -v wallet >/dev/null || { echo "wallet binary not on PATH" >&2; exit 1; 
 LEZ_TEST_KEY="7f273098f25b71e6c005a9519f2678da8d1c7f01f6a27778e2d9948abdf901fb" # LEZ Justfile, local genesis
 has() { wallet account id --account-id "$1" >/dev/null 2>&1; }
 id_of() { wallet account id --account-id "$1" 2>/dev/null | tail -1; }
-BV_PAYER_ID="CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r" # W0-NOTES: the imported genesis test account
+BV_PAYER_ID="CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r" # the imported genesis test account
 
 if ! has bv-payer; then
   # rc3's import has no --label: import, then label the known id.

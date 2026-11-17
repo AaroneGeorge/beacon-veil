@@ -1,4 +1,4 @@
-# Foundry project for the RFP-022 vault (owner W5). Libraries are git submodules pinned by tag:
+# Foundry project for the RFP-022 vault. Libraries are git submodules pinned by tag:
 # forge-std v1.17.0, OpenZeppelin Contracts v5.7.0, risc0-ethereum v3.0.1.
 [profile.default]
 src = "src"

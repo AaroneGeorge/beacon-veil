@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Sepolia flow of the bridge spike (W5), in stages. State is kept in $B/run/w5/sepolia/flow.env.
+# Sepolia flow of the bridge spike, in stages. State is kept in $B/run/w5/sepolia/flow.env.
 #
 #   e2e_sepolia.sh vault                                 deploy vault v2 + STUB anchor + test token
 #   ATTEST_INSTANCE=<base58> e2e_sepolia.sh config       final bridge config (real attest program from deploy/ids.toml);

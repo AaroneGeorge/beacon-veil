@@ -1,4 +1,4 @@
-// beacon-veil bridge mini-app: skeleton (PLAN.md 2.6, RFP-022 U2, U5, U6).
+// beacon-veil bridge mini-app: skeleton (RFP-022 U2, U5, U6).
 // Live: the light-client instance status, from attest_follower_module.status().
 // Static: deposit, claim and recover screens. The private path is preselected everywhere (U5, U6). The actions are
 // done today with tools/bridge_cli; these screens show the flow and the defaults, and send nothing.

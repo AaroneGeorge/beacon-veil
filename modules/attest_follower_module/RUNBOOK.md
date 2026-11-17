@@ -17,7 +17,7 @@ plugin. The daemon must also survive `kill -9` and restart on its own (021 R4).
 
 | Event (payload: the follower's JSON log line) | Log line |
 |---|---|
-| `update_submitted` (PLAN.md name: `updateSubmitted`) | `submit` |
+| `update_submitted` (design name: `updateSubmitted`) | `submit` |
 | `handoff_applied` (`handoffApplied`) | `applied` with `extra.handoff = true` |
 | `follower_error` (`followerError`) | `submit_failed`, `*_error`, `no_instance` |
 
@@ -32,7 +32,7 @@ Two traps, both found on 2026-11-12:
   It funds `<name>-payer` from `bv-payer` under the deploy lock, creates a funded private `bv-submitter`, and prints
   the env lines (`LEE_WALLET_HOME_DIR`, `BV_PAYER`, `BV_SUBMITTER`). Add `BV_GUESTS` (deployed guest bins) and
   `BV_IDS` (a frozen copy of deploy/ids.toml) to that env file. Since 2026-11-12, env.sh keeps an existing
-  `LEE_WALLET_HOME_DIR`; the W4 scripts still load the env file after env.sh.
+  `LEE_WALLET_HOME_DIR`; the follower scripts still load the env file after env.sh.
 
 ## 1. Build
 
@@ -97,7 +97,7 @@ For a 24 h G4 run, `crates/follower/scripts/run_a.sh start|status|stop|collect` 
 a frozen `ids.toml` and `instance.json` (from `attest init --out`); start refuses `wallet-dev`, an unverified store
 or a failed module probe. The daemon
 does not depend on the logosctl session staying alive, apart from its beacon source. The module path above is the
-packaging that PLAN.md 2.6 promises, and it is shown working separately (TRACK-W4-NOTES.md records the evidence).
+packaging the design calls for, and it is shown working separately.
 
 ## 4. The daemon without Logos (stated fallback, K8)
 

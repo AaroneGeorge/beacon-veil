@@ -1,4 +1,4 @@
-//! Fixtures (W2, PLAN.md section 4).
+//! Fixtures.
 //!
 //! - [`real`]: load the fetched Beacon API fixtures in `fixtures/<chain>/` (see `fetch.py` and `manifest.json`) and
 //!   build an [`attest_core::InstanceConfig`] from them.

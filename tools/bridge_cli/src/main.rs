@@ -1,8 +1,8 @@
-//! `bridge_cli` (PLAN.md section 4, W5): the user and operator side of the RFP-022 spike.
+//! `bridge_cli`: the user and operator side of the RFP-022 spike.
 //!
 //! Secrets come only from the LEZ wallet mnemonic (`keys.rs`, F9). Ethereum writes go through `forge script`
 //! (contracts/script/Deploy.s.sol), which reads `PRIVATE_KEY` from the environment; this tool never reads or prints a
-//! key. LEZ access uses `attest_host` (W1) and the wallet at `$LEE_WALLET_HOME_DIR`.
+//! key. LEZ access uses `attest_host` and the wallet at `$LEE_WALLET_HOME_DIR`.
 //!
 //! Inbound:  `commitment` -> (forge DepositOne) -> `attest-root` -> `claim`.   Outbound: `burn` -> `post-root` (STUB
 //! anchor) -> `prove` -> `release`.   Recovery: `recover` lists every unclaimed deposit and unreleased burn of the
@@ -97,7 +97,7 @@ enum Cmd {
         /// Fail unless the record's execution block is at or after this Ethereum block (the deposit's block).
         #[arg(long, default_value_t = 0)]
         min_eth_block: u64,
-        /// proofgen binary (W3).
+        /// proofgen binary.
         #[arg(long, env = "BV_PROOFGEN")]
         proofgen: Option<PathBuf>,
     },

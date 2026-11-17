@@ -1,6 +1,6 @@
 //! `guest-ids <user_elf> <out.bin>`: wraps a guest user ELF with the RISC Zero v1compat kernel into the `.bin`
 //! (`ProgramBinary`) that `wallet program-loader deploy --elf` takes, as risc0-build does, and prints the image id.
-//! Same logic as W1's `tests/e2e_chain` `mkbin`, in a crate with no LEZ or Helios dependencies so CI builds it fast.
+//! Same logic as `tests/e2e_chain` `mkbin`, in a crate with no LEZ or Helios dependencies so CI builds it fast.
 
 fn main() -> anyhow::Result<()> {
     let a: Vec<String> = std::env::args().collect();

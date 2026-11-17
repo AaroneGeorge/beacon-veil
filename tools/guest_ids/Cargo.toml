@@ -15,6 +15,6 @@ path = "src/main.rs"
 
 [dependencies]
 anyhow.workspace = true
-# Same versions as LEZ rc3 and W1's tests/e2e_chain mkbin.
+# Same versions as LEZ rc3 and tests/e2e_chain mkbin.
 risc0-binfmt = "=3.0.4"
 risc0-zkos-v1compat = "=2.2.2"

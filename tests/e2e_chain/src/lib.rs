@@ -1,4 +1,4 @@
-//! Test crate `e2e_chain` (PLAN.md section 4, owner W1). Integration tests live in `tests/`; this lib holds the
+//! Test crate `e2e_chain`. Integration tests live in `tests/`; this lib holds the
 //! fixture helpers they share with the `v1_exec` harness (`src/bin/v1_exec.rs`).
 
 use std::path::PathBuf;
@@ -124,7 +124,7 @@ pub struct FixtureChain {
     pub updates: Vec<(String, Vec<u8>)>,
 }
 
-/// Mainnet chain (W2 fixtures 2026-11-12): bootstrap 15605760 (period 1905), `updates_by_range` 1905..1908
+/// Mainnet chain (fixtures 2026-11-12): bootstrap 15605760 (period 1905), `updates_by_range` 1905..1908
 /// (update[0] adds the next committee, update[1..3] hand off to 1906, 1907, 1908), then finality update 15637644.
 pub fn mainnet_chain(verifiers: Vec<AccountId>) -> Result<FixtureChain> {
     let bootstrap = fixture("mainnet", "bootstrap_15605760.ssz")?;

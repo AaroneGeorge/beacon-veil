@@ -1,5 +1,5 @@
 //! G2: the fabricated chain and the six negative cases of RFP-021 Verification Security 1 and 2 (021:650-660),
-//! each asserting an exact error code (PLAN.md 2.3; mapping approved 2026-11-12, see TRACK-W2-NOTES.md).
+//! each asserting an exact error code (mapping approved 2026-11-12, see docs/DECISIONS.md).
 //!
 //! Every test has a native leg, which always runs: the pure functions the guests execute. It may also have an
 //! on-chain leg, which runs only with `BV_G2_ONCHAIN=1` against `seq-dev` (see `onchain` below).

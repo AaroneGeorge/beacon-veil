@@ -67,7 +67,7 @@ Gate status on 2026-11-17, from `evidence/`. G1 to G5 all pass:
 |---|---|---|---|
 | Light client in a LEZ guest | `programs/lc_verify` runs `helios-consensus-core` 0.12.0 unmodified. Pre-checks for quorum and finality in front of it (`docs/TRUST.md` section 7) | `evidence/cost/cost.md`, `evidence/g1/real-proof.json` | Measured on 5 real mainnet updates, native and executor results equal. One update proven for real with V1 and again with V2 |
 | Instance program | `programs/attest`: init from a checkpoint, apply updates, write-once header records, attest a claim | `evidence/g1/chain.json` | Passed on `seq-dev` |
-| Inclusion and predicates | `crates/attest_inclusion`: account, storage and log proofs under a record, predicates, statement ids | `crates/attest_inclusion/tests/real_proofs.rs` | In tree, on real mainnet and Sepolia proofs. The consumer track reports 22 tests green |
+| Inclusion and predicates | `crates/attest_inclusion`: account, storage and log proofs under a record, predicates, statement ids | `crates/attest_inclusion/tests/real_proofs.rs` | In tree, on real mainnet and Sepolia proofs. The consumer suite reports 22 tests green |
 | Adversarial suite | `tests/adversarial`: fabricated chain and six negative cases | `evidence/g2/` | 7 of 7 on the sequencer |
 | Reference consumer | `programs/consumer_erc20`: acts once per ERC-20 transfer, replay refused | `evidence/g3/` | Passed in dev mode and with a real proof of the private `Attest` |
 | Follower daemon | `crates/follower` (`attest-followerd`) and the Logos module `modules/attest_follower_module` | `evidence/g4/` | Two runs on Sepolia, 34.5 h and 35.8 h, with a live handoff in each (G4) |

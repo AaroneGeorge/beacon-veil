@@ -8,7 +8,7 @@
 # image, ENV, workdir /src, CARGO_TARGET_DIR=target, `cargo +risc0 build --release --locked`), with one change: all
 # guests are built in ONE container after ONE `cargo fetch`, instead of one container and one fetch per guest
 # (about 15 min of git fetching each on this machine). ELFs are wrapped with the v1compat kernel by tools/guest_ids
-# (same logic as W1's tests/e2e_chain mkbin), as risc0-build does, which also prints the image id.
+# (same logic as tests/e2e_chain mkbin), as risc0-build does, which also prints the image id.
 #
 # BV_RELEASE_DIR overrides the output dir. CI runs this and then scripts/check_image_ids.sh against
 # guests/IMAGE_IDS.expected.
@@ -70,7 +70,7 @@ done
 {
   echo "commit=$commit"
   echo "image=docker.io/risczero/$(grep -oE "risc0-guest-builder:$tag@sha256:[0-9a-f]{64}" "$work/docker.log" | head -1)"
-  echo "note_burn_proof=burn_proof.bin is built with risc0-zkvm 3.0.5 like the rest; W5 builds the deployed burn_proof with risc0 3.1.0 (advisory GHSA-g6qg-9j8p-7j87), so this one is NOT the vault's"
+  echo "note_burn_proof=burn_proof.bin is built with risc0-zkvm 3.0.5 like the rest; the deployed burn_proof is built with risc0 3.1.0 (advisory GHSA-g6qg-9j8p-7j87), so this one is NOT the vault's"
   echo "built_utc=$(date -u +%FT%TZ)"
   echo "machine=$(uname -srm), $(lscpu | sed -n 's/^Model name: *//p')"
   echo "dockerfile=$work/Dockerfile"

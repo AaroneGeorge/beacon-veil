@@ -1,4 +1,4 @@
-//! The follower loop (PLAN.md W4): read the verified store status, fetch the next update, check it is still needed
+//! The follower loop: read the verified store status, fetch the next update, check it is still needed
 //! after a per-instance deferral, submit, log every step.
 //!
 //! Restart-resume (021 R4): all decisions start from the instance's on-chain head (through `attest_host`'s verified

@@ -1,4 +1,4 @@
-//! Test crate `e2e_consumer` (PLAN.md section 4, owner W3).
+//! Test crate `e2e_consumer`.
 //!
 //! - `tests/e2e_consumer.rs`: G3 on a running `seq-dev`: one attested ERC-20 `Transfer` consumed in the consumer's
 //!   own transaction, the identical transaction refused with `E11_ALREADY_CONSUMED`; and the private placement.
@@ -6,7 +6,7 @@
 //!
 //! This lib holds the fixture helpers both use. Fixtures are `crates/attest_inclusion/tests/data/*.json`
 //! (`tools/proofgen/fixtures.sh`); the mainnet ones sit at execution block 26397891, which is the finalized header of
-//! W2's `finality_update_15637644` (beacon slot 15637568), the last step of `e2e_chain::mainnet_chain`.
+//! the fixture `finality_update_15637644` (beacon slot 15637568), the last step of `e2e_chain::mainnet_chain`.
 
 use std::path::PathBuf;
 

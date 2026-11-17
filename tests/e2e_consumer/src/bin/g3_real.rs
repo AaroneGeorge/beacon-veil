@@ -1,4 +1,4 @@
-//! G3 with a REAL proof on seq-real (W3): a private `Attest` (the mainnet USDT `Transfer` log at block 26397891)
+//! G3 with a REAL proof on seq-real: a private `Attest` (the mainnet USDT `Transfer` log at block 26397891)
 //! proven for real in the user's private account, delivered to a public `consumer_erc20` instance in the same
 //! transaction; then the identical transaction again, refused with `E11_ALREADY_CONSUMED`.
 //!

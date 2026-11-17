@@ -70,7 +70,7 @@ Status: written 2026-11-12, updated 2026-11-17 with the results of G1 (V2 real p
 
 ## Verification Security test rows (G2)
 
-These rows are owned by W2 and are kept as W2 wrote them on 2026-11-12. They list one row per adversarial test, so that each test name appears in this file. VS1 and VS2 above point here.
+These rows were written with the adversarial suite on 2026-11-12 and are kept as written. They list one row per adversarial test, so that each test name appears in this file. VS1 and VS2 above point here.
 
 | Section | Requirement | Milestone | Test or evidence | Status |
 |---|---|---|---|---|

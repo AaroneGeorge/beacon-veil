@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Two local LEZ v0.4.0-rc3 standalone sequencers (mock Bedrock, 15 s blocks), PLAN.md 2.1 and 3.2.
+# Two local LEZ v0.4.0-rc3 standalone sequencers (mock Bedrock, 15 s blocks).
 #
 #   scripts/seq.sh dev|real start|stop|status|reset|logs
 #
 #   dev  : RISC0_DEV_MODE=1, RPC 127.0.0.1:3040, ops/metrics 127.0.0.1:9040, home $B/run/seq-dev,  wallet $B/run/wallet-dev
 #   real : dev mode UNSET,   RPC 127.0.0.1:3041, ops/metrics 127.0.0.1:9041, home $B/run/seq-real, wallet $B/run/wallet-real
-#          (proof windows of PLAN.md 3.4 only)
+#          (proof windows only)
 #
 # Binary: $B/vendor/lez/target/release/sequencer_service, built with `--features standalone` (see env-install.log).
 # The config template and the funding key are LEZ's own (`just run-sequencer-standalone`).

@@ -20,7 +20,7 @@ SOURCE_KIND="${SOURCE_KIND:-logos_module}"
 LOG="$RUN_DIR/follower.jsonl"
 CFG="$RUN_DIR/followerd.toml"
 mkdir -p "$RUN_DIR"
-# Own wallet home and payer (W0-NOTES rules): wallet_home.sh w4-runA > $RUN_DIR/wallet.env
+# Own wallet home and payer (one wallet home per writer): wallet_home.sh w4-runA > $RUN_DIR/wallet.env
 if [ -f "$RUN_DIR/wallet.env" ]; then
   # shellcheck source=/dev/null
   source <(grep '^export ' "$RUN_DIR/wallet.env")

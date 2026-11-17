@@ -1,11 +1,11 @@
-//! `cost` (W6, PLAN.md section 4): deterministic cycle measurements for the cost table (`make cost-exec`).
+//! `cost`: deterministic cycle measurements for the cost table (`make cost-exec`).
 //!
 //! ```text
 //! cost exec-lc [--lc-elf P] [--attest-elf P] --json OUT
 //! cost sizes --json OUT
 //! ```
 //!
-//! `exec-lc` runs the real mainnet light-client chain (W2 fixtures, via `e2e_chain::mainnet_chain`) through both
+//! `exec-lc` runs the real mainnet light-client chain (mainnet fixtures, via `e2e_chain::mainnet_chain`) through both
 //! guests in the RISC Zero 3.0.5 executor, each handler once per step with a `ReceiveInput` frame, as LEZ runs an
 //! actor: `lc_verify::Verify` (the private leg on Path A, the whole update on Path B0) and the public `attest`
 //! handlers `Init`, `WriteRecord`, `Apply`, `CheckHeader`. No sequencer and no proof: `user_cycles` is

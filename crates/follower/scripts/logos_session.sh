@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Logos side of the follower (PLAN.md 2.6): a logosctl 0.3.2 daemon session with beacon_api_module (v0.2.0) and
+# Logos side of the follower: a logosctl 0.3.2 daemon session with beacon_api_module (v0.2.0) and
 # attest_follower_module installed. Runbook: modules/attest_follower_module/RUNBOOK.md.
 #
 #   crates/follower/scripts/logos_session.sh start|install|load|probe|status|stop

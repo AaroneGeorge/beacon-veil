@@ -1,4 +1,4 @@
-//! CLI `attest` (PLAN.md 2.6, owner W4): `init`, `update`, `status`, `config`, `attest [--dry-run]`,
+//! CLI `attest`: `init`, `update`, `status`, `config`, `attest [--dry-run]`,
 //! `checkpoint verify`.
 //!
 //! LEZ access goes through `attest_host` (wallet and sequencer from the environment: `LEE_WALLET_HOME_DIR`,

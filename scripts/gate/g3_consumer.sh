@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Gate G3 (PLAN.md section 1): one consumer attestation lands in the consumer's own transaction and a replay is refused.
+# Gate G3: one consumer attestation lands in the consumer's own transaction and a replay is refused.
 #   tx 1: Attest(mainnet USDT Transfer, block 26397891) -> consumer_erc20 accepts, its state changes, nullifier written
 #   tx 2: identical -> refused with E11_ALREADY_CONSUMED (simulation), and when sent anyway reverted by the sequencer
 # Writes evidence/g3/run.json (+ run.log). Exit 0 only if both hold.
@@ -11,10 +11,10 @@ set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=scripts/env.sh
 source "$here/../env.sh"
-# Own wallet home (W0 rule: wallet storage is not safe for concurrent writers). Needs bv-payer and bv-submitter in it.
+# Own wallet home (rule: wallet storage is not safe for concurrent writers). Needs bv-payer and bv-submitter in it.
 export LEE_WALLET_HOME_DIR="${BV_G3_WALLET:-$B/run/wallet-w3}"
 export LEE_WALLET_PASSWORD="${LEE_WALLET_PASSWORD:-}"
-# Own public payer (W0 rule: bv-payer only funds track payers). Default: the id saved when wallet-w3 was set up.
+# Own public payer (rule: bv-payer only funds each wallet's payer). Default: the id saved when wallet-w3 was set up.
 if [ -z "${BV_PAYER:-}" ] && [ -f "$LEE_WALLET_HOME_DIR/w3-payer.id" ]; then
   BV_PAYER="$(cat "$LEE_WALLET_HOME_DIR/w3-payer.id")"; export BV_PAYER
 fi
