@@ -1,8 +1,8 @@
 # Film script and shot list
 
-Narrator: Aarone George. Target length: 4 minutes 30 seconds, hard limit 5 minutes. Recording: Monday 2026-11-16, after the proposal text is final. The film is linked from both proposals.
+Narrator: Aarone George. Target length: 4 minutes 30 seconds, hard limit 5 minutes. Recording: after the proposal text is final. The film is linked from both proposals.
 
-Status of this draft: written 2026-11-12. TODO-REFRESH on 2026-11-16: replace every TODO-MEASURE with the figure from `evidence/`, cut any shot whose evidence does not exist, and have Aarone rewrite lines into his own words. Narration is plain and says only what the screen shows. TODO-OWNER: Aarone to confirm he will narrate, and to read the whole script before recording.
+Status: script written 2026-11-12, figures filled in from `evidence/` on 2026-11-17. This repository holds the script only; no recording is included. The narrator is expected to rewrite the lines in his own words before recording. Narration is plain and says only what the screen shows.
 
 Rules for the recording:
 
@@ -17,17 +17,17 @@ Rules for the recording:
 
 | # | Time | On screen | Source and prerequisite |
 |---|---|---|---|
-| 1 | 0:00 to 0:20 | Title card with the project name, the two RFP numbers, the repository URL. Then Aarone's GitHub profile for two seconds | TODO-OWNER: name, URL |
+| 1 | 0:00 to 0:20 | Title card with the project name, the two RFP numbers, the repository URL. Then Aarone's GitHub profile for two seconds | Project name beacon-veil, `https://github.com/AaroneGeorge/beacon-veil` |
 | 2 | 0:20 to 0:55 | Slide with three boxes: Ethereum header, inclusion proof, fabricated chain. A red cross on "valid inclusion proof against a fake root" | Drawn by hand. Based on RFP-021 Design Rationale |
 | 3 | 0:55 to 1:30 | `docs/REUSE.md` section 1 table, then the `[patch.crates-io]` block of `Cargo.toml` with the `ethereum_hashing` pin highlighted | `docs/REUSE.md`, root `Cargo.toml` |
 | 4 | 1:30 to 2:20 | Terminal: `make ci` result lines, then the chain test: `Init`, three updates, one handoff, with the head slot and period printed after each. Then the table of cycles per update | `README.md` step 6, `evidence/cost/cost.md`, `evidence/g1/chain.json`, `evidence/g1/real-proof.json`. Prerequisite: `tests/e2e_chain` green on a sequencer |
 | 5 | 2:20 to 2:50 | Terminal: `cargo test -p adversarial`, seven tests with their names and the error code each one asserts. Zoom on `vs1_fabricated_chain` | `tests/adversarial`. Prerequisite: on-chain legs pass |
 | 6 | 2:50 to 3:20 | Terminal: consumer test. First transaction accepted, consumer state changed. Same transaction again, rejected with `ESA:E11` | `scripts/gate/g3_consumer.sh`, `evidence/g3/run.json` |
-| 7 | 3:20 to 3:45 | The follower log: first and last line of the 24 h run, the `beacon_source` field highlighted, the checker's exit code | `evidence/g4/follower.jsonl`. Prerequisite: the 24 h run finished |
+| 7 | 3:20 to 3:45 | The follower log: first and last line of run B (34.49 h), the `beacon_source` field highlighted, the checker's exit code | `evidence/g4/run-b/follower.jsonl`, `evidence/g4/run-b/g4-summary.json` (run A: `evidence/g4/run-a/`) |
 | 8 | 3:45 to 4:20 | Browser: the vault on a Sepolia explorer, one deposit transaction (the event shows a commitment and no destination). Terminal: the claim, the second claim refused. File listing: the Groth16 proof and the gas figure | `docs/bridge/INBOUND.md`, `evidence/` bridge files. Prerequisite: Sepolia deployment and a claim run |
 | 9 | 4:20 to 4:30 | Text on screen: three gaps (anchor stub, standalone sequencer, no audit). Then contact and the price line | `README.md` section 6 |
 
-If shot 7 or 8 has no evidence by Monday, cut it and cut the matching narration. Do not substitute a mock.
+If shot 7 or 8 has no evidence when recording starts, cut it and cut the matching narration. Do not substitute a mock.
 
 ## Narration
 
@@ -52,7 +52,7 @@ These are the adversarial tests. A fabricated chain with its own committee and v
 A consumer program takes an attestation of an ERC-20 transfer and acts on it once. The same transaction sent again is refused. The nullifier is scoped to the consumer's own instance. Without that, someone else's instance could burn the identifier of a real transfer before the honest user acts.
 
 **Shot 7 [0:25]**
-This is the follower. It ran for TODO-MEASURE hours against Sepolia without anyone touching it. Its beacon data came from TODO-MEASURE. Every submission was applied. The log has one process id and no gap larger than the limit.
+This is the follower. The primary run lasted 34 and a half hours against the Sepolia testnet without anyone touching it, and a second run lasted almost 36. Its beacon data came from the Logos beacon module. Every submission was applied, 22 of 22, and the run crossed one sync-committee handoff. The proofs in these runs were in development mode, so this shows the loop and not the proving time. The log has one process id and no gap larger than the limit.
 
 **Shot 8 [0:35]**
 The bridge is a spike. This vault is deployed on Sepolia. A deposit carries a commitment, and nothing on Ethereum names the destination. The claim is one private LEZ transaction against a root attested through the same light client. A second claim is refused. The release side verifies a Groth16 proof of a burn. Its anchor is a stub that the repository owner controls. We built the stub to test the rest, and we name it as a stub. The proposal explains the stages that replace it.

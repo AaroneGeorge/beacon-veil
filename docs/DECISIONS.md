@@ -2,7 +2,7 @@
 
 This log records each major design decision: the context, the options considered, the option chosen, and the rationale and trade-offs. It answers RFP-021 Supportability 11 (S11) and RFP-022 Supportability 4 (S4). It is updated when a decision is made and is current at each milestone delivery.
 
-Status of this draft: written 2026-11-12, corrected the same day for the Helios audit claim, the failsafe and the RISC Zero advisory. Written from `PLAN.md` section 2 the coordinator notes (`W0-NOTES.md`) up to 11:40 UTC, and the bridge notes (decisions 1 to 11). Entries from section 2 of the plan are marked "plan". Entries from the build notes are marked "build" with a time. TODO-REFRESH: re-read the track notes on 2026-11-14 and 2026-11-15 and add or correct entries.
+Status: written 2026-11-12, corrected the same day for the Helios audit claim, the failsafe and the RISC Zero advisory. Written from `PLAN.md` section 2 the coordinator notes (`W0-NOTES.md`) up to 11:40 UTC, and the bridge notes (decisions 1 to 11). Entries from section 2 of the plan are marked "plan". Entries from the build notes are marked "build" with a time. Later edits updated status lines with measured results (the real proofs and the G4 runs). The log was not otherwise re-reviewed in the final docs pass of 2026-11-17.
 
 Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.0-rc3 is 1 per cycle, capped at 10,000,000 per transaction and per block (`MAX_GAS_EXEC` in `lez/programs/fee/core/src/market.rs`, read in the pinned tree on 2026-11-12). "Measured" means a raw output file exists in `evidence/`. "Estimate" means it does not.
 
@@ -102,7 +102,7 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 - Rationale. Only a private proof is free of the 10M cap (D-08), so the upstream library can run as published. The audit surface shrinks to the instance program, the inclusion code and the glue. `r0vm-helios` is stale and has no licence file. We read `sp1-helios` and `r0vm-helios` for structure only and copy nothing.
 - Trade-off. Cost. Measured at 46.1M to 65.5M user cycles per update (D-39), more than the figures other applicants cite for hand-written code. V2 (D-10) is the mitigation: 37.0M on the finality update.
 - Audit status, corrected 2026-11-12. Helios is not audited by itself. Its README at 0.12.0 (line 178) says "It has not been audited". The audits of SP1 Helios (Zellic, 2025-07, Helios 0.8.6) and R0VM Helios (zkSecurity, 2025-04, Helios 0.8.3, library out of scope) did not review it. What holds is that it is unmodified upstream code, maintained by a16z since 2022 and the core of both products. The audit scope must include the Helios functions we call. The `bls12_381` fork is not audited as a crate either (its README says so). Source: `research/10-failsafe-and-helios-audit.md` part B.
-- Check. Passed on real mainnet data: Helios 0.12.0 runs unmodified inside a RISC Zero 3.0.5 guest, five consecutive updates, native and executor results equal (`evidence/cost/raw/exec-lc.json`). TODO-REFRESH: CI job that diffs the resolved Helios source against the tag.
+- Check. Passed on real mainnet data: Helios 0.12.0 runs unmodified inside a RISC Zero 3.0.5 guest, five consecutive updates, native and executor results equal (`evidence/cost/raw/exec-lc.json`). Not done yet: a CI job that diffs the resolved Helios source against the tag. Today the source is pinned by tag and commit in `Cargo.lock` (`git+https://github.com/a16z/helios?tag=0.12.0#2af9b418...`).
 
 ## D-06. Two programs: `attest` and `lc_verify`
 
@@ -131,13 +131,13 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 - Context. The RFP calls in-program BLS12-381 verification the central feasibility question and asks for the cost of the public path.
 - Chosen. The tracked state is public and shared on both paths. Only where verification is paid differs. Path B is a second verifier id in the same config. B0 (sprint, required): run the monolithic `Verify` in the public executor on `seq-dev`, record cycles per phase and the cap rejection. B1 (milestone): split the pairing over three or more public transactions that end in the same `Apply`. Competitors' split figures are cited as theirs.
 - Rationale. It gives our own numbers for P8, and the proposal can lead with either path after the office-hours answer.
-- Status. B0 measured: `Verify` is 4.6 to 6.5 times the cap (`evidence/cost/cost.md` section 3). Sent as a public transaction it is refused in the wallet's simulation, and when forced it is included and reverted (tx `43902552...c38d`, block 334; raw `b0-public-verify-2026-11-12.log`, TODO-REFRESH: copy into `evidence/cost/raw/`). B1 is milestone work.
+- Status. B0 measured: `Verify` is 4.6 to 6.5 times the cap (`evidence/cost/cost.md` section 3). Sent as a public transaction it is refused in the wallet's simulation, and when forced it is included and reverted (tx `43902552...c38d`, block 334; raw `evidence/cost/raw/b0-public-verify-2026-11-12.log`). B1 is milestone work.
 
 ## D-10. Three `Verify` variants
 
 - V1: Helios unmodified. V2: the Helios rules transcribed from `verify_generic_update` (0.12.0, MIT) with one function replaced, the signature check. Helios decompresses the signature, which already rejects points outside the subgroup, then runs the subgroup check again (8.77M cycles). V2 drops the repeat. `apply_*` is still Helios's. (The plan's version of V2, witnessed non-signer keys, is not built.) V3: hand-written `blst` pipeline, not built.
 - Rationale. V1 is the audit story. V2 is the likely operating variant. Each variant has the same interface, so the instance config can accept more than one. V2 is not unmodified Helios, so it adds one short function to the audit surface.
-- Status. V1 and V2 measured. V2: 37,032,744 cycles on the finality update, 45.6M to 49.9M on the period updates, 717,088-byte user ELF (`v2-exec.json`, TODO-REFRESH: copy into `evidence/cost/raw/`). A differential test (`tests/e2e_chain/tests/v1_v2.rs`) gives V1 and V2 the same post-store or the same error code on the real chain and on 165 tampered updates. V3 is milestone work if Logos prefers it.
+- Status. V1 and V2 measured. V2: 37,032,744 cycles on the finality update, 45.6M to 49.9M on the period updates, 717,088-byte user ELF (`evidence/cost/raw/v2-exec.json`). A differential test (`tests/e2e_chain/tests/v1_v2.rs`) gives V1 and V2 the same post-store or the same error code on the real chain and on 165 tampered updates. V3 is milestone work if Logos prefers it.
 
 ## D-11. Interface contract and identifier derivations
 
@@ -228,8 +228,8 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 ## D-27. Beacon source: Logos module first, direct HTTP as stated fallback
 
 - Context. Any Ethereum-side interaction must use the Logos Ethereum core module (021 platform dependency).
-- Chosen. `LogosModuleSource` through `beacon_api_module` `lc_request` is preferred. `DirectHttpSource` calls the same Beacon API routes on the same public providers and is a stated fallback. Every log line carries `beacon_source`, and the 24 h gate reports which was used.
-- Trade-off. If the module path is not what ran, the proposal says so. Status: TODO-REFRESH from the 24 h run.
+- Chosen. `LogosModuleSource` through `beacon_api_module` `lc_request` is preferred. `DirectHttpSource` calls the same Beacon API routes on the same public providers and is a stated fallback. Every log line carries `beacon_source`, and the G4 gate reports which was used.
+- Trade-off. If the module path is not what ran, the proposal says so. Status: the module path ran. Both G4 runs report `beacon_source` `logos_module` (`evidence/g4/run-a/g4-summary.json`, `evidence/g4/run-b/g4-summary.json`).
 
 ## D-28. LEZ access through the wallet crate
 
@@ -289,14 +289,14 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 
 ## D-38. Filing structure: two linked proposals
 
-- Chosen. Two issues, one per RFP, each stating the combined price in its first paragraph. Each submission under the Terms targets one RFP. Office hours of 2026-11-13 may change this: TODO-OWNER.
+- Chosen. Two issues, one per RFP, each stating the combined price in its first paragraph. Each submission under the Terms targets one RFP. The outcome of the office hours of 2026-11-13 is not recorded in this repository.
 
 ## D-39. Measured cost of V1, and the glue fix that lowered it
 
 - Date. 2026-11-12. Measured on an i5-10300H, RISC Zero 3.0.5 executor, dev mode, five real mainnet updates. The first run (09:45 UTC) gave 74,446,829 to 89,340,805 user cycles per update, about three times the plan estimate of 28M (raw: `.tmp/w1/evidence/v1-exec.json` on the build machine). A cycle trace showed the cause was our glue and not Helios: `tree_hash` packs every byte of a 48-byte key separately (about 11M cycles per committee root), and the glue hashed committees three times per update.
 - Fix. Glue only, Helios unmodified: direct SSZ committee roots over the accelerated `sha2`, raw witness bytes, no rehash of an unchanged next committee. A native test checks equality with `tree_hash`. `Init` also stopped calling Helios `verify_bootstrap` (11M cycles for its committee hash, above the public cap) and runs the same three checks in `lc::bootstrap_valid`, cross-checked against Helios by a native test (W1 notes).
 - Result. 46,095,505 (finality update) to 65,461,983 (handoff with next committee) user cycles per update on the reproducible release guests. `Init` 4,926,875. `Apply` 54,965 (`evidence/cost/cost.md`, regenerated 2026-11-12 20:20 UTC). The BLS phases are 36.84M of the 46.1M on the finality update, so most of the cost is Helios's own BLS work.
-- Consequences. A public single-transaction update cannot fit the 10M cap with V1 (4.6 to 6.5 times the cap). Path A remains the way to run Helios unmodified. V2 (D-10) saves 8.77M cycles per update. Real proving time, measured: 20,060 s (5.57 hours) and 9.259 GiB for the V1 finality update, accepted in block 1784 on a dev-mode-off sequencer (`evidence/g1/real-proof.json`). The K4 projection was 6.08 to 7.01 hours (`evidence/cost/k4-projection.json`). TODO-MEASURE: the V2 real proof, running.
+- Consequences. A public single-transaction update cannot fit the 10M cap with V1 (4.6 to 6.5 times the cap). Path A remains the way to run Helios unmodified. V2 (D-10) saves 8.77M cycles per update. Real proving time, measured: 20,060 s (5.57 hours) and 9.259 GiB for the V1 finality update, accepted in block 1784 on a dev-mode-off sequencer (`evidence/g1/real-proof.json`). The K4 projection was 6.08 to 7.01 hours (`evidence/cost/k4-projection.json`). The V2 finality update was also proven for real: 16,064 s (4.46 hours) and 9.24 GiB, accepted in block 3111 (`evidence/g1/real-proof-v2.json`).
 
 ## D-40. The vault holds the verifier's emergency-stop wrapper
 

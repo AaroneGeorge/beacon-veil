@@ -2,7 +2,7 @@
 
 This document states what the attestation primitive trusts, what it proves, what each off-chain participant can see and do, and when the guarantees degrade. Requirement ids refer to RFP-021 (F1, U3, VS4). The bridge's own trust model is in `docs/bridge/TRUST.md`.
 
-Status of this draft: written 2026-11-12. The code it describes is mid-build. TODO-REFRESH on 2026-11-14 and 2026-11-15: re-check sections 7 and 8 against the final code, and section 4 against the 24 h follower run.
+Status: written 2026-11-12 and not re-read in full since. Sections 7 and 8 have not been re-checked against the final code. For section 4, both G4 follower runs used the Logos `beacon_api_module` path (`beacon_source` is `logos_module` in `evidence/g4/run-a/g4-summary.json` and `evidence/g4/run-b/g4-summary.json`). The fallback to direct HTTP in that table was not exercised in those runs.
 
 ## 1. What an attestation proves, and what it does not
 
@@ -37,7 +37,7 @@ Quantifying the attack. The committee is sampled from the active validators with
 | 0.65 | 0.21 | 68 |
 | 2/3 | 0.50 | 159 |
 
-So buying seats by stake needs roughly 60 percent of all effective stake or more. TODO-MEASURE: convert to ETH and USD with the live total effective balance read from the beacon API on the day of filing.
+So buying seats by stake needs roughly 60 percent of all effective stake or more. Not done yet: converting this share to ETH and USD needs the total effective balance read from the beacon API on a stated day. No such reading is recorded in `evidence/`, so no ETH or USD figure is given here.
 
 The cheaper route is not stake. The committee for a period is public one period (256 epochs, 98,304 s, about 27.3 hours) in advance. An attacker who can corrupt the signing keys or operators of 342 specific seats needs no stake share. The consensus spec defines rewards and penalties for sync aggregate participation (`process_sync_aggregate`, Altair `beacon-chain.md:635`) but no slashing condition for signing a header that is off the canonical chain, so the attack costs the attacker no stake. This is weaker than Ethereum's economic finality, which needs at least a third of all stake to be slashable. The RFP states the same trade-off. We do not offer a stronger anchor in this proposal.
 
@@ -49,7 +49,7 @@ Tracking starts from a checkpoint: a finalised block root with its sync committe
 
 How a verifier confirms it independently. `attest checkpoint verify --instance-file <file>` asks N public beacon sources for the block root at the checkpoint slot and for a finalised slot at or above it. Each source must report the same root. This is our fallback for F9. RFP-021 asks for the check as an API of the Logos Ethereum core module. Whether the module will carry it is an open item with Logos (upstream pull request planned, `docs/DECISIONS.md` D-27). A user who does not trust a checkpoint can initialise their own instance with a corrected one. A failed bootstrap is repaired by initialising again (F10).
 
-When an instance must be replaced (F10). An instance that falls behind can still catch up by submitting every period update in order (R7). Its risk grows with age: after the weak-subjectivity period, validators that left the set can sign a long-range fork without penalty. Recommended rule, to be confirmed: replace any instance whose head is older than 14 days. TODO-VERIFY: derive the figure from `compute_weak_subjectivity_period` in the consensus-specs `weak-subjectivity.md` for the current validator-set size. The replacement is a new instance with a recent, independently verified checkpoint. `docs/OPERATOR.md` section 7 and `docs/CONSUMER-PATTERN.md` section 7 give the steps.
+When an instance must be replaced (F10). An instance that falls behind can still catch up by submitting every period update in order (R7). Its risk grows with age: after the weak-subjectivity period, validators that left the set can sign a long-range fork without penalty. Recommended rule: replace any instance whose head is older than 14 days. Not derived yet: the 14-day figure is a working rule. It has not been computed from `compute_weak_subjectivity_period` in the consensus-specs `weak-subjectivity.md` for the current validator-set size. The replacement is a new instance with a recent, independently verified checkpoint. `docs/OPERATOR.md` section 7 and `docs/CONSUMER-PATTERN.md` section 7 give the steps.
 
 ## 3. Ethereum finality under gloas (ePBS)
 
@@ -68,7 +68,7 @@ Consequences.
 
 - A gloas record attests the parent execution block of the finalised beacon block. It lags by one or more slots (more after empty slots). A deposit or transfer becomes attestable once a later block that builds on it is finalised.
 - A gloas record holds only `exec_hash`. Its `exec_number`, `exec_state_root` and `exec_receipts_root` are zero. A claim against it carries the RLP execution header. `attest_inclusion` checks `keccak(rlp) == record.exec_hash`, then reads `stateRoot` (field 3), `receiptsRoot` (field 5) and `number` (field 8). Later header fields are bound by the hash and not parsed, so a new field in a later fork needs no change. Errors: E01 if the header is missing when the roots are zero, E15 if the hash differs (`docs/DECISIONS.md` D-20).
-- The risk is cleared for the spec at this commit. If the gloas rules change before release, this section must be re-checked. TODO-REFRESH: re-read the four cited lines on the day of filing.
+- The risk is cleared for the spec at this commit. If the gloas rules change before release, this section must be re-checked. The four cited lines were read on 2026-11-12 and have not been re-read since.
 
 ## 4. Off-chain participants (F12, VS5)
 
@@ -105,7 +105,7 @@ Verifying and consuming an attestation must not add a correlation signal beyond 
 - Records are never written by a consumer's transaction, so private transactions in one block do not contend (R11).
 - The statement's public inputs are limited to what the consumer's own handler exposes. It does not carry the consuming account's identity.
 
-Residual signal, stated plainly. The header record a private consumer reads is visible. Using the latest record, as most users will, makes it uninformative. An execution RPC provider that serves the proof sees which account or slot the claimant asked about. Network-level correlation is out of scope (RFP-022). TODO-TEST: a state-diff test over a consumer round trip (`docs/COVERAGE-021.md` F8).
+Residual signal, stated plainly. The header record a private consumer reads is visible. Using the latest record, as most users will, makes it uninformative. An execution RPC provider that serves the proof sees which account or slot the claimant asked about. Network-level correlation is out of scope (RFP-022). Not tested yet: a state-diff test over a consumer round trip. It is planned in the grant (`docs/COVERAGE-021.md` F8).
 
 ## 7. Pre-checks before Helios: the quorum and finality finding
 
@@ -153,4 +153,4 @@ State facts. The id of an account or storage statement does not depend on the bl
 - LEZ itself: a bug in the sequencer's proof checking, or censorship of transactions.
 - A fork-change in Ethereum containers that our pinned Helios does not support. The follower then submits nothing, and the instance stalls until a new verifier is deployed (section 9).
 
-TODO-OWNER: after the audit report, link it here and list what it changed.
+No audit report exists yet. When the audit is done, the report and the changes it caused will be linked here.

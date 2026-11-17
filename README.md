@@ -1,26 +1,29 @@
 # beacon-veil
 
-beacon-veil is a working prototype for Logos RFP-021 (Trustless Ethereum State Attestation for LEZ) and RFP-022 (Privacy-Preserving Wrapped ERC-20 and Ether Bridge for LEZ). It runs the Ethereum light client from `a16z/helios` 0.12.0, unmodified, inside a RISC Zero 3.0.5 guest on LEZ v0.4.0-rc3, and builds a consumer, a follower daemon and a bridge spike on top of it. Both RFPs are bid together. The name is a working name. TODO-OWNER: confirm the project name.
+beacon-veil is a working prototype for Logos RFP-021 (Trustless Ethereum State Attestation for LEZ) and RFP-022 (Privacy-Preserving Wrapped ERC-20 and Ether Bridge for LEZ). It runs the Ethereum light client from `a16z/helios` 0.12.0, unmodified, inside a RISC Zero 3.0.5 guest on LEZ v0.4.0-rc3, and builds a consumer, a follower daemon and a bridge spike on top of it. Both RFPs are bid together. The project name is beacon-veil.
 
-Status: draft of 2026-11-12. Sections marked TODO wait for a build track. Nothing in this file is a claim until a raw file under `evidence/` backs it.
+Status: prototype, 2026-11-17. Each result in this file points to a raw file under `evidence/`. Section 6 lists what is not done.
 
 ## 1. Clean-clone commands
 
-Machine: Linux x86_64, 15 GiB RAM or more, about 20 GB of disk. Everything runs in RISC Zero dev mode (`RISC0_DEV_MODE=1`) unless a step says it proves for real. TODO-REFRESH: the commands below are the ones that exist on 2026-11-12. Those marked TODO do not run yet.
+Machine: Linux x86_64, 15 GiB RAM or more, about 20 GB of disk. Everything runs in RISC Zero dev mode (`RISC0_DEV_MODE=1`) unless a step says it proves for real. The commands below are the ones the build used on the build machine described in section 3.
 
 ```bash
 # 1. Get the code (the pinned contract libraries are git submodules).
-git clone --recurse-submodules https://github.com/TODO-OWNER/beacon-veil.git   # TODO-OWNER: public repository URL
+git clone --recurse-submodules https://github.com/AaroneGeorge/beacon-veil.git
 cd beacon-veil
 
-# 2. Prerequisites. Versions are pinned: Rust 1.98.1 comes from rust-toolchain.toml.
-sudo apt-get install -y build-essential clang libclang-dev libssl-dev pkg-config cmake jq
-curl -L https://risczero.com/install | bash
-rzup install cargo-risczero 3.0.5 && rzup install r0vm 3.0.5 && rzup install rust 1.91.1
-# Foundry (forge) and Docker are also needed. TODO: scripts/bootstrap.sh that does steps 2 and 3 in one go.
-
-# 3. LEZ v0.4.0-rc3, built once, for the local sequencer (commit bafd07be0701398f9bc435f73ab05e9a7936c301).
-# TODO: scripts/bootstrap.sh clones and builds it. Today scripts/env.sh expects the layout of the build machine.
+# 2 and 3. Prerequisites, and LEZ v0.4.0-rc3 built once for the local sequencer (commit bafd07be0701398f9bc435f73ab05e9a7936c301).
+# scripts/bootstrap.sh does both. It clones the pinned vendor repositories (scripts/pins.txt) next to the repository,
+# installs the pinned toolchains (Rust 1.98.1 from rust-toolchain.toml, rzup components, Foundry v1.9.0) and builds the LEZ
+# binaries (about 20 minutes on 4 cores). Docker is also needed. --check reports what is missing and changes nothing;
+# --with-sudo lets it run the apt-get step, which it otherwise only prints.
+scripts/bootstrap.sh --check
+scripts/bootstrap.sh --with-sudo
+# By hand, the toolchain part of step 2 is:
+#   sudo apt-get install -y build-essential clang libclang-dev libssl-dev pkg-config cmake jq
+#   curl -L https://risczero.com/install | bash
+#   rzup install cargo-risczero 3.0.5 && rzup install r0vm 3.0.5 && rzup install rust 1.91.1
 
 # 4. Set the environment, then run the checks CI runs: format, lints, unit tests, Foundry tests.
 source scripts/env.sh
@@ -40,39 +43,40 @@ cargo test -p adversarial                                                       
 make cost-exec     # writes evidence/cost/cost.json and cost.md
 
 # 8. The gate checks G1 to G5 (G1 and G5 need a running sequencer and a committed tree; see scripts/gate/).
-make gate          # TODO-REFRESH: record the result in evidence/gate/summary.json
+make gate          # writes evidence/gate/summary.json; GATE_ARGS=--quick re-checks the committed evidence instead of re-running
 ```
 
-If a step fails, the log of the last green run is in `evidence/` once the harness lands (TODO-REFRESH).
+If a step fails, compare with the logs of the green runs in `evidence/` (`evidence/g1/chain.log`, `evidence/g3/run.log`, `evidence/g5/repro.log`). The result of `make gate` is not committed: the per-gate evidence in section 2 is what backs the table. `scripts/bootstrap.sh` was written for the build machine and a clean clone. The G5 run (`evidence/g5/`) did not use it, and no run of it on another machine is recorded.
 
 ## 2. What runs today
 
-Gate status on 2026-11-12, from `evidence/`:
+Gate status on 2026-11-17, from `evidence/`. G1 to G5 all pass:
 
 | Gate | Result | Evidence |
 |---|---|---|
 | G1 chain (dev-mode half) | PASS: `Init`, three updates with committee handoffs, replay E14, wrong verifier E12, fresh-account submit | `evidence/g1/chain.json` |
-| G1 real proof | PASS: finality update 15637644, unmodified Helios (V1), proven for real on a dev-mode-off sequencer, block 1784. 20,060 s (5.57 h) on an i5-10300H, 9.259 GiB peak | `evidence/g1/real-proof.json` |
-| G2 adversarial suite | PASS: 7 of 7 tests on the sequencer, each asserting an exact error code, and green CI on the staging repository (commit 764acf9; the repository is private until the public one exists, and the run is repeated there) | `evidence/g2/onchain-20261112T115413Z.log`, `evidence/g2/ci-run.txt` |
+| G1 real proof (V1) | PASS: finality update 15637644, unmodified Helios (V1), proven for real on a dev-mode-off sequencer, block 1784. 20,060 s (5.57 h) on an i5-10300H, 9.259 GiB peak | `evidence/g1/real-proof.json` |
+| G1 real proof (V2) | PASS: the same finality update with the V2 verifier (`lc_verify_v2`), proven for real, block 3111. 16,064 s (4.46 h), 9.24 GiB peak | `evidence/g1/real-proof-v2.json` |
+| G2 adversarial suite | PASS: 7 of 7 tests on the sequencer, each asserting an exact error code, and green CI on the staging repository (commit 764acf9, a private repository). The workflow has not yet been run on the public repository | `evidence/g2/onchain-20261112T115413Z.log`, `evidence/g2/ci-run.txt` |
 | G3 consumer | PASS: one transfer consumed, identical replay refused with E11 | `evidence/g3/run.json` |
 | G3 real proof | PASS: a private `Attest` of a mainnet USDT transfer proven for real, 2,120.6 s (35.3 min), 9.207 GiB, block 1949, replay refused with E11. The sequencer excerpt in the JSON was filled by hand from the raw log, see the note | `evidence/g3/real-proof.json`, `evidence/g3/NOTE-real-proof.txt` |
-| G4 follower, 24 h | Pending. Run B (primary) ends 2026-11-13 12:31 UTC, run A (backup) ends 11:12 UTC, both through `logos_module` | `evidence/g4/` |
-| G5 clean-clone cost reproduction | Pending | `scripts/gate/g5_repro.sh` |
+| G4 follower, 24 h | PASS on two runs, both following the Sepolia beacon chain (chain_id 11155111) through the Logos `logos_module` beacon source, with proofs in RISC Zero dev mode. Run B (primary): 34.49 h, 22 of 22 submitted updates applied, one live sync-committee handoff (period 1411 to 1412), longest gap between log lines 354 s, no error lines. Run A (backup): 35.8 h, 23 of 23 applied, one handoff, one transient `source_error` (a 20 s timeout of the module call). Each run had one process id, no restart and no manual help. Both stopped with a clean shutdown at 2026-11-13 23:00 UTC for a host reboot | `evidence/g4/run-b/g4-summary.json` (primary), `evidence/g4/run-a/g4-summary.json` |
+| G5 clean-clone cost reproduction | PASS: the cost table was regenerated from a clean clone (the commit is recorded in `evidence/g5/repro.json`) and equals the committed one, 31 rows. The three guest image ids match. The run used the prebuilt release guest set and did not rebuild the guests in Docker | `evidence/g5/repro.json`, `evidence/g5/repro.log`, `scripts/gate/g5_repro.sh` |
 
 | Piece | What it is | Evidence | State |
 |---|---|---|---|
-| Light client in a LEZ guest | `programs/lc_verify` runs `helios-consensus-core` 0.12.0 unmodified. Pre-checks for quorum and finality in front of it (`docs/TRUST.md` section 7) | `evidence/cost/cost.md`, `evidence/g1/real-proof.json` | Measured on 5 real mainnet updates, native and executor results equal. One update proven for real |
+| Light client in a LEZ guest | `programs/lc_verify` runs `helios-consensus-core` 0.12.0 unmodified. Pre-checks for quorum and finality in front of it (`docs/TRUST.md` section 7) | `evidence/cost/cost.md`, `evidence/g1/real-proof.json` | Measured on 5 real mainnet updates, native and executor results equal. One update proven for real with V1 and again with V2 |
 | Instance program | `programs/attest`: init from a checkpoint, apply updates, write-once header records, attest a claim | `evidence/g1/chain.json` | Passed on `seq-dev` |
 | Inclusion and predicates | `crates/attest_inclusion`: account, storage and log proofs under a record, predicates, statement ids | `crates/attest_inclusion/tests/real_proofs.rs` | In tree, on real mainnet and Sepolia proofs. The consumer track reports 22 tests green |
 | Adversarial suite | `tests/adversarial`: fabricated chain and six negative cases | `evidence/g2/` | 7 of 7 on the sequencer |
 | Reference consumer | `programs/consumer_erc20`: acts once per ERC-20 transfer, replay refused | `evidence/g3/` | Passed in dev mode and with a real proof of the private `Attest` |
-| Follower daemon | `crates/follower` (`attest-followerd`) and the Logos module `modules/attest_follower_module` | `evidence/g4/` | Runs A and B in progress |
+| Follower daemon | `crates/follower` (`attest-followerd`) and the Logos module `modules/attest_follower_module` | `evidence/g4/` | Two runs on Sepolia, 34.5 h and 35.8 h, with a live handoff in each (G4) |
 | CLI | `crates/attest_cli`: `init`, `update`, `status`, `config`, `attest --dry-run`, `checkpoint verify` | | In tree |
 | Vault v3 | `contracts/src/Vault.sol`: fixed denominations, ETH and ERC-20, caps, freeze, verifier 3.1.0 behind its emergency stop (L1), open release route (L2) | `evidence/bridge/sepolia-v3.json` | Deployed on Sepolia at `0x380be74d9F3dFeBAaFC5F911CD6A45bFbeE3aD27` with an ETH and a USDT-style deposit |
-| Bridge inbound | `programs/bridge` `Claim`, `tools/bridge_cli` | `evidence/bridge/k9-part2-runA-v2/`, `evidence/bridge/k9-part2-runB-v3/` | Shown in dev mode against both follower runs: real attestation of the vault root, private claim, repeat refused with E11. TODO-MEASURE: a real proof of a private claim, a public destination |
+| Bridge inbound | `programs/bridge` `Claim`, `tools/bridge_cli` | `evidence/bridge/k9-part2-runA-v2/`, `evidence/bridge/k9-part2-runB-v3/` | Shown in dev mode against both follower runs: real attestation of the vault root, private claim, repeat refused with E11. Not done yet: a real proof of a private claim, and a claim to a public destination |
 | Bridge outbound | `guests/burn_proof` (RISC Zero 3.1.0), `Vault.release`, `releaseOpen` | `evidence/bridge/groth16-release-v3/` | Real Groth16 proof (471.3 s) verified on Sepolia through the emergency stop: release 527,859 gas, open release 325,769 gas. The anchor is the owner-posted stub and the burns ran in dev mode |
 | Reproducible guests | Release set `bf95e359` built in `risczero/risc0-guest-builder:r0.1.91.1@sha256:fafb377a...`; CI checks `guests/IMAGE_IDS.expected` | `evidence/g1/deployment.txt`, `evidence/g2/ci-run.txt` | The on-chain image ids match (`evidence/g1/seq-real-image-check.log`) |
-| Cost table | Cycles, gas, state growth, real proof times | `evidence/cost/cost.md` (31 rows), `evidence/cost/prove.md`, `evidence/cost/k4-projection.json` | Measured or derived. TODO-MEASURE: the V2 real proof |
+| Cost table | Cycles, gas, state growth, real proof times | `evidence/cost/cost.md` (31 rows), `evidence/cost/prove.md`, `evidence/cost/k4-projection.json` | Measured or derived. Includes the V2 real proof |
 
 Deprecated testnet artefacts. Sepolia vaults v1 and v2 used the RISC Zero Groth16 verifier 3.0.0, which advisory GHSA-g6qg-9j8p-7j87 shows to be broken. Both were frozen on 2026-11-12 and are evidence of the deposit path only (`evidence/bridge/README.md`).
 
@@ -100,11 +104,12 @@ Real proofs on the same laptop:
 | Job | Result | Raw |
 |---|---|---|
 | V1 finality update, dev mode off (block 1784) | 20,060 s (5.57 h), peak 9.259 GiB, at most 92,700 KiB swap | `evidence/g1/real-proof.json` |
+| V2 finality update, same update, dev mode off (block 3111) | 16,064 s (4.46 h), peak 9.24 GiB, at most 113,712 KiB swap | `evidence/g1/real-proof-v2.json` |
 | Private `Attest` of a USDT transfer (block 1949) | 2,120.6 s (35.3 min), peak 9.207 GiB | `evidence/g3/real-proof.json` |
 | `burn_proof` Groth16 on RISC Zero 3.1.0 | 471.3 s, peak 2,419,024 KiB, 211,726 user cycles, 260-byte seal | `evidence/bridge/groth16-release-v3/record.json` |
 | One po2-20 segment, 3 runs | mean 363.0 s, 346.2 microseconds per padded cycle | `evidence/cost/k4-projection.json` |
 
-The K4 projection for the V1 finality update was 6.08 to 7.01 hours, an estimate. The measured 5.57 hours is below it. TODO-MEASURE: the V2 real proof, running now.
+The K4 projection for the V1 finality update was 6.08 to 7.01 hours, an estimate. The measured 5.57 hours is below it. The V2 update took 4.46 hours, 20 percent less than V1 (16,064 s against 20,060 s).
 
 ## 4. Repository layout
 
@@ -149,20 +154,22 @@ These are listed here so that no reader has to find them.
 - LEZ testnet 0.4 has no public endpoint yet (expected about 2026-11-30). Everything runs on a local standalone v0.4.0-rc3 sequencer.
 - The outbound release uses `StubLezAnchor`, an owner-posted stub. Whoever holds its owner key can make any root final. It stands for the stage-1 optimistic anchor of `docs/bridge/OUTBOUND.md`. RFP-022 F7 cannot be met in full on LEZ v0.4.0-rc3: headers carry no state root and public execution is not proven.
 - `bridge_dev_source` (`programs/bridge/src/bin/bridge_dev_source.rs`) is a DEV-ONLY statement source. It forwards any statement unchecked. It exists only for the local anvil round trip (`tools/bridge_cli/e2e_local.sh`), where no light client follows the chain. It is never part of a deployment that holds value. Any bridge result in this repository states which statement source it used. The Sepolia run uses the real attestation through RFP-021.
-- The follower's beacon source is recorded in every log line. If the Logos `beacon_api_module` path did not run, the 24 h result says `direct_http`. TODO-MEASURE: state which ran.
+- The follower's beacon source is recorded in every log line. Both G4 runs report `logos_module`, so the Logos `beacon_api_module` path ran (`evidence/g4/run-a/g4-summary.json`, `evidence/g4/run-b/g4-summary.json`). Both ran with `RISC0_DEV_MODE=1`, so the follower runs show the submission path and the module path, not proving cost.
+- The G4 follower runs followed Sepolia, not mainnet, against a local standalone sequencer, with proofs in RISC Zero dev mode. They show that the submission loop and a live committee handoff work over 34 to 36 hours. They do not show proving time over a long run. Real proofs were run as separate jobs (section 3).
 - LEZ access is through the `wallet` crate, not Logos's LEZ module, which does not target v0.4 yet.
 - The Logos `beacon_api_module` and `verified_proxy_module` have no LICENSE file. We use them only as installed runtime dependencies (`docs/REUSE.md` section 4).
 - Path B (sequencer-executed verification split over public transactions) is measured for the monolithic case only. The split is milestone work.
+- Not done yet: a real proof of a private bridge `Claim`, and a claim to a public destination (`evidence/bridge/README.md`).
 - Native-ETH consumer, registry and cap libraries on RFP-001/002, relayer, module catalog, release action, macOS, public testnet deployment and the audit are milestone work and are not shown here.
 - No code here has been through a third-party audit.
 - Before this work, none of the team had shipped a RISC Zero guest, a LEZ program or an Ethereum light client.
 
 ## 7. How this was built
 
-The team builds with AI coding agents. A named engineer reviews and tests every change before it is merged, and answers for it. The commit history shows the reviews. TODO-OWNER: confirm this sentence is final (decision D5 in the plan).
+The team builds with AI coding agents. A named engineer reviews and tests every change before it is merged, and answers for it. The commit history shows the reviews.
 
 ## 8. Licence, team, contact
 
 Dual licensed under MIT or Apache-2.0 (`LICENSE-MIT`, `LICENSE-APACHE`). Reused components and their licences: `docs/REUSE.md`.
 
-Team: `TEAM.md` (TODO-OWNER: due 2026-11-13 23:59 UTC). Contact: TODO-OWNER (Discord handle and email).
+Team: the members are listed in the grant proposals under `proposal/`. There is no `TEAM.md` in this repository. Contact: open an issue at https://github.com/AaroneGeorge/beacon-veil. A Discord handle and an email address are not listed here.

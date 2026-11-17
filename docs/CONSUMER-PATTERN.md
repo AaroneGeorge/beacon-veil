@@ -2,7 +2,7 @@
 
 This guide is for the author of a LEZ program that acts on a fact about Ethereum state. The reference implementation is `programs/consumer_erc20` with its end-to-end test `tests/e2e_consumer`. The statement layout and claim format are documented in the rustdoc at the top of `crates/attest_inclusion/src/lib.rs`.
 
-Status of this draft: written 2026-11-12 from the W3 notes and the consumer source. TODO-REFRESH on 2026-11-15: re-check each rule against `programs/consumer_erc20` and the final `Attest` message.
+Status: written 2026-11-12 from the consumer source. The reference consumer and its test passed on the release deployment (`evidence/g3/run.json`, `evidence/g3/real-proof.json`). The rules below have not been re-read line by line against the final `Attest` message since 2026-11-12.
 
 ## 1. Overview
 
@@ -84,7 +84,7 @@ A replacement is a new instance with a new checkpoint (`docs/OPERATOR.md` sectio
 3. Keep the old consumer running for as long as it holds positions that depend on it. In-flight claims against records of the old instance stay valid, because a record is valid indefinitely (R3).
 4. Announce the new consumer. Users move by calling the new one.
 
-TODO-TEST: a migration test with two instances, one consumer per instance, and the same transfer attested through both (`docs/COVERAGE-021.md` F10).
+Not tested yet: a migration test with two instances, one consumer per instance, and the same transfer attested through both. It is planned in the grant (`docs/COVERAGE-021.md` F10).
 
 ## 8. When an attestation cannot be produced: refuse
 

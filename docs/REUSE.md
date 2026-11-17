@@ -2,7 +2,7 @@
 
 RFP-021 Reliability 6 asks for a statement of what is reused, what is rewritten, and the cost and audit-surface consequences of that split. This file is that statement. It also lists the licence of every reused component, read from the file in the pinned source tree on 2026-11-12.
 
-Status of this draft: written 2026-11-12. TODO-REFRESH: re-count lines on 2026-11-15 and re-read `Cargo.lock` for the final dependency set.
+Status: written 2026-11-12, line counts redone on 2026-11-17 at commit `aab23fc`. The dependency set is the one pinned in `Cargo.lock`; licences were read on 2026-11-12 and have not been re-read since.
 
 ## 1. The split
 
@@ -20,24 +20,24 @@ Consequence. We do not rewrite the signature, committee and finality code. The a
 
 Cost of reuse. Helios runs only on the private path, where the 10M cap does not apply. It costs 46.1M to 65.5M user cycles per update, measured on five real mainnet updates (`evidence/cost/cost.md`, `evidence/cost/raw/exec-lc.json`). Of the 46.1M on the finality update, 36.8M is BLS arithmetic inside Helios and the rest is our glue. A hand-written pipeline sized for the public cap costs 11M to 15M cycles by other applicants' figures, not ours. The proposal states this trade (V1, V2, V3 in `docs/DECISIONS.md` D-10).
 
-New code, lines on 2026-11-12 09:53 UTC (command: `find <dir> -name '*.rs' -o -name '*.sol' | xargs cat | wc -l`, comments and blank lines included, generated SDK sources excluded; all of it still changing):
+New code, lines on 2026-11-17 at commit `aab23fc` (command: `find <dir> \( -name '*.rs' -o -name '*.sol' \) | xargs cat | wc -l`, comments and blank lines included, generated SDK sources and `contracts/lib` excluded):
 
 | Directory | Lines |
 |---|---|
-| `crates/attest_core` | 1,251 |
-| `crates/attest_inclusion` | 1,136 |
-| `crates/attest_host` | 581 |
-| `crates/follower` | 2,011 |
-| `crates/attest_cli` | 525 |
-| `programs/` (four programs) | 1,930 |
-| `guests/` | 27 |
-| `tools/` | 2,630 |
-| `tests/` | 1,884 |
-| `contracts/src` | 422 |
-| `contracts/test` | 648 |
+| `crates/attest_core` | 1,791 |
+| `crates/attest_inclusion` | 1,307 |
+| `crates/attest_host` | 780 |
+| `crates/follower` | 2,187 |
+| `crates/attest_cli` | 604 |
+| `programs/` (four programs) | 2,513 |
+| `guests/` | 159 |
+| `tools/` | 3,895 |
+| `tests/` | 2,788 |
+| `contracts/src` | 500 |
+| `contracts/test` | 758 |
 | `modules/attest_follower_module/rust-lib` | 376 |
 
-TODO-REFRESH: the consensus-critical subset (`attest_core` `lc.rs` and `rules.rs`, `attest_inclusion`, `programs/attest`, `programs/lc_verify`) is the number the audit quote needs. Count it on the frozen commit.
+The consensus-critical subset is the number the audit quote needs: `attest_core` `lc.rs` (817) and `rules.rs` (156), the source of `attest_inclusion` without its tests (784), `programs/attest` (94) and `programs/lc_verify` (47). That is 1,898 lines at commit `aab23fc`. The audit quote should recount it on the commit that is frozen for the audit.
 
 ## 2. The `ethereum_hashing` pin
 
@@ -68,7 +68,7 @@ Our own code is MIT OR Apache-2.0 (`LICENSE-MIT`, `LICENSE-APACHE`), as both RFP
 | `logos-logoscore-cli` (`logosctl`) | 0.3.2, commit `ca70bcdd` | MIT and Apache-2.0 | `LICENSE-MIT`, `LICENSE-APACHE-v2` | Tool for the module runbook |
 | Ethereum deposit contract tree algorithm | n/a | CC0 | Ethereum deposit contract source | Algorithm reimplemented in `Vault.sol` and `programs/bridge/src/tree.rs`, no code copied |
 | consensus-specs | commit `c3e16117` | CC0 | n/a | Read for `docs/TRUST.md` section 3; no code used |
-| Foundry (`forge`, `cast`, `anvil`) | v1.9.0 in CI | MIT OR Apache-2.0 per the project; TODO: confirm from the tag | n/a | Tool, not redistributed |
+| Foundry (`forge`, `cast`, `anvil`) | v1.9.0 in CI | MIT OR Apache-2.0 (workspace `Cargo.toml` and `LICENSE-MIT`, `LICENSE-APACHE` at tag v1.9.0) | n/a | Tool, not redistributed |
 
 CI actions, pinned by commit SHA in `.github/workflows/ci.yml`: `actions/checkout` (MIT), `foundry-rs/foundry-toolchain` (Apache-2.0), `taiki-e/install-action` (Apache-2.0), `Swatinem/rust-cache` (LGPL-3.0; a CI-time tool, not linked into any artefact). Licences from the GitHub licence API on 2026-11-12. Choices came from the Code Garage entries `engineering.ci.caching-and-speed`, `web3.evm.foundry` and `security.supplychain.github-actions-hardening`.
 
@@ -81,7 +81,7 @@ CI actions, pinned by commit SHA in `.github/workflows/ci.yml`: `actions/checkou
 
 Neither repository has a LICENSE file, so we have no written grant we can point to. We therefore use both only as installed runtime dependencies (the `.lgx` package a user installs next to ours). We copy no source from either. `attest_follower_module` declares `beacon_api_module` as a dependency and calls it through `lc_request`. The verified proxy is a stretch dependency; the fallback is direct JSON-RPC, because the proofs are checked in the guest anyway. The same rule holds for the generated example sources the module builder emits: they carry the builder's licence (MIT and Apache-2.0).
 
-Open question for Logos (office hours of 2026-11-13, question 8): which licence applies to these two repositories, and may we propose a LICENSE file by pull request. The fixtures fetcher (`tools/fixtures/fetch.py`) reads the default public provider URLs from `beacon_api_module` v0.2.0 (`rust-lib/src/beacon.rs`, `DEFAULT_PROVIDERS`). That is a list of URLs, which we treat as configuration data. TODO-OWNER: confirm you are content with that reading until Logos answers.
+Open question for Logos (office hours of 2026-11-13, question 8): which licence applies to these two repositories, and may we propose a LICENSE file by pull request. The fixtures fetcher (`tools/fixtures/fetch.py`) reads the default public provider URLs from `beacon_api_module` v0.2.0 (`rust-lib/src/beacon.rs`, `DEFAULT_PROVIDERS`). That is a list of URLs, which we treat as configuration data. We keep that reading until Logos answers.
 
 ## 5. Reference only: nothing copied
 

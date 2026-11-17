@@ -2,7 +2,7 @@
 
 This guide is for anyone who runs the update-submitting component for an instance: what it costs, how often it submits, how to start one without permission, what to expect when others run one, and how to tell that an instance has stalled.
 
-Status of this draft: written 2026-11-12 from the follower source and `modules/attest_follower_module/RUNBOOK.md`. Sections marked TODO-MEASURE wait for the 24 h run (G4, started by 2026-11-13 20:00 UTC at the latest) and for the cost harness. TODO-REFRESH on 2026-11-15: replace every TODO-MEASURE with a figure and a raw file.
+Status: written 2026-11-12 from the follower source and `modules/attest_follower_module/RUNBOOK.md`. Figures from the G4 follower runs (`evidence/g4/`, 34.5 h and 35.8 h on Sepolia, proofs in dev mode) were added on 2026-11-17. Figures that the runs did not record are marked "Not measured".
 
 ## 1. What an operator does
 
@@ -19,7 +19,7 @@ What an operator needs:
 - A machine that can prove one update. One Path A update takes about 40 s end to end in dev mode (follower track dev log), which measures the executor and not a real proof. The follower proves `Verify` (46.1M to 65.5M user cycles per update on real mainnet data, measured on the executor: `evidence/cost/cost.md`) and the privacy circuit's wrapper.
 - No standing on Ethereum. No validator, no Ethereum account.
 
-What it costs, per update, measured. Proving one V1 finality update for real took 20,060 s (5.57 hours) and peaked at 9.259 GiB on the build laptop (`evidence/g1/real-proof.json`). TODO-MEASURE: the V2 real proof. Derived from measured cycles and LEZ constants (`evidence/cost/cost.md` section 2): 409,764 gas for receipt verification plus 54,965 cycles for `Apply` plus 24,047 for `WriteRecord`, which is 488,776 execution gas, and 224,063 storage gas.
+What it costs, per update, measured. Proving one V1 finality update for real took 20,060 s (5.57 hours) and peaked at 9.259 GiB on the build laptop (`evidence/g1/real-proof.json`). Proving the V2 finality update for real took 16,064 s (4.46 hours) and peaked at 9.24 GiB on the same laptop (`evidence/g1/real-proof-v2.json`). Derived from measured cycles and LEZ constants (`evidence/cost/cost.md` section 2): 409,764 gas for receipt verification plus 54,965 cycles for `Apply` plus 24,047 for `WriteRecord`, which is 488,776 execution gas, and 224,063 storage gas.
 
 Sepolia account for the project's own runs. The project deploys the vault and sends test deposits and releases from one dedicated Sepolia key. Its address is `0x523072A2aC5e5A3E51c107bc17995A3fa03dBD78`, funded with 0.3 SepETH. It holds testnet funds only and is used for nothing else. The key is not in the repository, in the logs or in `evidence/`. An operator of the follower needs no Ethereum account. An operator of the bridge's root attester or relayer uses LEZ gas and, for release calls, an Ethereum account of their own.
 
@@ -27,9 +27,9 @@ Sepolia account for the project's own runs. The project deploys the vault and se
 
 | Resource | Figure | Source |
 |---|---|---|
-| Follower daemon, idle between ticks | TODO-MEASURE (CPU, RSS) | 24 h run log |
+| Follower daemon, idle between ticks | Not measured. The follower log records no CPU or memory figures | `evidence/g4/` |
 | Proving one V1 finality update, CPU only | 20,060 s (5.57 hours), peak 9.259 GiB, at most 92,700 KiB of swap, on an Intel i5-10300H with 15 GiB of RAM and 11 GiB of swap. Declared minimum for a user machine: 16 GB of RAM | `evidence/g1/real-proof.json` |
-| Disk | TODO-MEASURE (log growth per day, state cache size) | 24 h run |
+| Disk | Log growth about 81 KB per day (run B: 116,454 bytes in 34.49 h; run A: 121,408 bytes in 35.8 h). State cache size: not measured | file sizes of `evidence/g4/run-b/follower.jsonl` and `evidence/g4/run-a/follower.jsonl` |
 | Network | Mainnet (fulu): light-client update 2,109 bytes (finality) to 26,926 bytes (period) as SSZ. Sepolia (gloas): 1,448 bytes (finality) and 26,424 bytes (period) | `fixtures/*/manifest.json`, follower track notes |
 
 An operator who wants hourly headers needs a faster prover than this laptop. An operator who only keeps the instance alive needs one proof per sync-committee period plus the finality updates at the chosen cadence.
@@ -42,15 +42,15 @@ Check before submitting (R9). The follower reads the on-chain head before it dec
 
 Deferral (R10). Before each submission the follower waits `d` seconds, where `d` is derived from `sha256(instance || follower_id || finalized_slot)` and lies in 0 to `jitter_max_s` (default 60). Two followers of one instance, with different ids, wait different times, and the order changes from update to update. Over many updates the cost spreads across the operators instead of always falling on the fastest. It adds at most `jitter_max_s` to latency. It is a configuration value. A single operator can set it to 0.
 
-Effect on latency. TODO-MEASURE: submission delay distribution from the 24 h run. The bound is `poll_s` plus `jitter_max_s` plus proving time.
+Effect on latency. The bound is `poll_s` plus `jitter_max_s` plus proving time. In the G4 runs the deferral `d` ranged from 4 s to 60 s (run A: 23 values, median 31 s; run B: 22 values, median 45 s). The time from `submit` to `applied` was 37.7 s to 48.9 s over both runs (median about 42 s). Proofs were in dev mode, so that figure contains no real proving time. All values come from the `defer`, `submit` and `applied` lines of `evidence/g4/run-a/follower.jsonl` and `evidence/g4/run-b/follower.jsonl`.
 
-Contention. With several operators on one instance, the first valid submission wins. A no-op update (E14) is refused by `attest_host` before it is sent, costs nothing, and is logged as `noop`. A lost race that does reach the chain is rejected there (E13 or E14) and costs the fee. The deferral rotates who pays it. TODO-MEASURE: a one-week run with two operators, no double application (R9, M2 gate).
+Contention. With several operators on one instance, the first valid submission wins. A no-op update (E14) is refused by `attest_host` before it is sent, costs nothing, and is logged as `noop`. A lost race that does reach the chain is rejected there (E13 or E14) and costs the fee. The deferral rotates who pays it. Not measured: a one-week run with two operators on one instance. The two G4 runs each had one follower on their own instance, so they do not test contention. The run is planned in the grant (R9, M2 gate).
 
 ## 5. Install, configure, run, monitor
 
 Paths below are relative to the repository root. Always run `source scripts/env.sh` first. The full command list, with the Nix build of the module, is in `modules/attest_follower_module/RUNBOOK.md`.
 
-1. Install. Build the daemon: `cargo build --profile host -p follower -p attest_cli`. Build and install the module and its dependency with `logosctl install` (RUNBOOK section 1 and 2). TODO-REFRESH: replace with the catalog install line once the catalog exists (S9).
+1. Install. Build the daemon: `cargo build --profile host -p follower -p attest_cli`. Build and install the module and its dependency with `logosctl install` (RUNBOOK section 1 and 2). No module catalog exists yet, so there is no catalog install line. One is planned in the grant (S9).
 2. Configure. Use one wallet home per follower (helper: `crates/follower/scripts/wallet_home.sh`). Copy `crates/follower/examples/followerd.sepolia.toml`. Set `follower.id` (unique per operator), `follower.chain_id`, `follower.state_dir`, the `[source]` section (`logos_module` or `direct_http` with `endpoints`), and `[chain] instance`. Consensus and execution endpoints are configuration values (U3). Environment variables: `LEE_WALLET_HOME_DIR`, `LEE_WALLET_PASSWORD`, `BV_PAYER`, `BV_SUBMITTER`, `BV_GUESTS`, `BV_IDS`, `BV_STORE_DIR`. With `logos_module` also set `logosctl_config_dir` and `logosctl_tmpdir`. The client must use the same `TMPDIR` the `logosctl` daemon was started with.
 3. Create or find an instance. `attest init --checkpoint finalized --out instance.json` creates one. To follow an existing one, take its id from the consumer you serve and verify its checkpoint first: `attest checkpoint verify --instance-file instance.json`.
 4. Run. Standalone: `attest-followerd --config followerd.toml`. Under Logos: `logosctl call attest_follower_module configure @settings.json`, then `start`. Stop: the module's `stop` sends SIGTERM, waits 60 s, then sends SIGKILL. A daemon run directly exits with 143 on a second signal.
@@ -79,7 +79,7 @@ A stalled instance loses nothing. Existing records still verify, and any party c
 3. Publish the new instance id and the checkpoint evidence to the consumers that used the old one. They move as in `docs/CONSUMER-PATTERN.md` section 7.
 4. Point your follower at the new instance. Stop following the old one when no consumer needs it.
 
-The recommended rule for when to replace is in `docs/TRUST.md` section 2.2. TODO-VERIFY the 14-day figure.
+The recommended rule for when to replace is in `docs/TRUST.md` section 2.2. The 14-day figure there is a working rule and is not derived from the consensus specs yet.
 
 ## 8. Running next to other operators
 
