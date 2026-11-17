@@ -164,11 +164,7 @@ These are listed here so that no reader has to find them.
 - No code here has been through a third-party audit.
 - Before this work, none of the team had shipped a RISC Zero guest, a LEZ program or an Ethereum light client.
 
-## 7. How this was built
-
-The team builds with AI coding agents. A named engineer reviews and tests every change before it is merged, and answers for it.
-
-## 8. Licence, team, contact
+## 7. Licence, team, contact
 
 Dual licensed under MIT or Apache-2.0 (`LICENSE-MIT`, `LICENSE-APACHE`). Reused components and their licences: `docs/REUSE.md`.
 
