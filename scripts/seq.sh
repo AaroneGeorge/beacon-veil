@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 # Local LEZ v0.4.0-rc3 standalone sequencers (mock Bedrock, 15 s blocks).
 #
-#   scripts/seq.sh dev|real|main start|stop|status|reset|logs
+#   scripts/seq.sh dev|real|main|pub start|stop|status|reset|logs
 #
 #   dev  : RISC0_DEV_MODE=1, RPC 127.0.0.1:3040, ops/metrics 127.0.0.1:9040, home $B/run/seq-dev,  wallet $B/run/wallet-dev
 #   real : dev mode UNSET,   RPC 127.0.0.1:3041, ops/metrics 127.0.0.1:9041, home $B/run/seq-real, wallet $B/run/wallet-real
 #          (proof windows only)
 #   main : RISC0_DEV_MODE=1, RPC 127.0.0.1:3042, ops/metrics 127.0.0.1:9042, home $B/run/seq-main, wallet $B/run/wallet-main
 #          (2026-11-17: fresh chain for the mainnet follower run C; seq-dev's 37 h chain takes ~2.5 h to replay on start)
+#   pub  : dev mode UNSET,   RPC 127.0.0.1:3043, ops/metrics 127.0.0.1:9043, home $B/run/seq-pub,  wallet $B/run/wallet-pub
+#          (public-path probes and evidence: public transactions are executed by the sequencer, no proofs involved)
 #
 # Binary: $B/vendor/lez/target/release/sequencer_service, built with `--features standalone` (see env-install.log).
 # The config template and the funding key are LEZ's own (`just run-sequencer-standalone`).
@@ -22,7 +24,8 @@ case "$which_seq" in
   dev)  port=3040; ops=9040 ;;
   real) port=3041; ops=9041 ;;
   main) port=3042; ops=9042 ;;
-  *) echo "usage: $0 dev|real|main start|stop|status|reset|logs" >&2; exit 2 ;;
+  pub)  port=3043; ops=9043 ;;
+  *) echo "usage: $0 dev|real|main|pub start|stop|status|reset|logs" >&2; exit 2 ;;
 esac
 
 LEZ="$B/vendor/lez"
@@ -53,7 +56,7 @@ case "$cmd" in
         --funding-public-key "$FUNDING_PK" --create-channel
     fi
     ensure_wallet_config
-    if [ "$which_seq" = real ]; then unset RISC0_DEV_MODE; else export RISC0_DEV_MODE=1; fi
+    case "$which_seq" in real|pub) unset RISC0_DEV_MODE ;; *) export RISC0_DEV_MODE=1 ;; esac
     printf '\n=== %s start seq-%s RISC0_DEV_MODE=%s\n' "$(date -u +%FT%TZ)" "$which_seq" "${RISC0_DEV_MODE:-unset}" >> "$log"
     RUST_LOG="${RUST_LOG:-info,risc0_zkvm=warn,kameo=warn}" setsid nohup nice -n 10 "$SEQ_BIN" start "$home" \
       --rpc-listen-address "127.0.0.1:$port" --metrics-listen-address "127.0.0.1:$ops" >> "$log" 2>&1 < /dev/null &
@@ -95,5 +98,5 @@ case "$cmd" in
     echo "seq-$which_seq state wiped (wallet config kept)"
     ;;
   logs) tail -n 50 -f "$log" ;;
-  *) echo "usage: $0 dev|real|main start|stop|status|reset|logs" >&2; exit 2 ;;
+  *) echo "usage: $0 dev|real|main|pub start|stop|status|reset|logs" >&2; exit 2 ;;
 esac
