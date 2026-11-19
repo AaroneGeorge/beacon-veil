@@ -1,0 +1,56 @@
+# bls_bench guest builds (guests/bls_bench/build.sh), recorded 2026-11-19T22:36:20Z
+# Image ids are of the v1compat ProgramBinary (tools/guest_ids), as LEZ and risc0-build compute them.
+
+## local route (rzup rust 1.91.1 + cpp 2024.1.5; risc0-build 3.0.5's guest environment set by hand)
+route=local
+commit=a0edb3b19a2bc6a9de6ad82d47ba7abacfe0d517 (working tree dirty)
+toolchain=local rzup: rust 1.91.1-dev, riscv32-unknown-elf-gcc (gc891d8dc23e) 13.2.0
+started_utc=2026-11-19T22:36:25Z
+finished_utc=2026-11-19T22:36:37Z
+elf_sha256=45f45e12a97d8a6361707f9f054858a8c6d9af7f66da6fe49dfcd71a0b6910ff
+image_id=27adfabeda8939d708afc3b737598db67a20d16ff68d7309f288ef8e684331f3
+user_elf_bytes=831840
+note=the only change in the tree is the untracked evidence/public-path/ folder (hence 'dirty'); a local build embeds local paths, so its image id differs from the docker one; measured with this build too: every phase mark, every whole-update row and every limit equal the docker build's; the session totals of the 14 refused phase cases are 13 cycles higher in the local build (no figure in bench.md changes)
+
+## docker build 1 (BENCH_OUT=.../docker-1 guests/bls_bench/build.sh docker, --no-cache)
+route=docker
+commit=a0edb3b19a2bc6a9de6ad82d47ba7abacfe0d517
+toolchain=docker.io/risczero/risc0-guest-builder:r0.1.91.1@sha256:fafb377a44e1cfca415577c48d2f7012bda99ed36f2fae27f9a663b9fe6048f0
+started_utc=2026-11-19T21:50:18Z
+finished_utc=2026-11-19T22:11:49Z
+elf_sha256=4559a9601b9584ab6ca3c0fe62c203069c9988418649978bca34c9730d635376
+image_id=5004156fed0dfeecedf4aae49adae675699e681d06605a2dd3b913743a9cd91f
+user_elf_bytes=831576
+
+## docker build 2 (BENCH_OUT=.../docker-2 guests/bls_bench/build.sh docker, --no-cache)
+route=docker
+commit=a0edb3b19a2bc6a9de6ad82d47ba7abacfe0d517
+toolchain=docker.io/risczero/risc0-guest-builder:r0.1.91.1@sha256:fafb377a44e1cfca415577c48d2f7012bda99ed36f2fae27f9a663b9fe6048f0
+started_utc=2026-11-19T22:11:49Z
+finished_utc=2026-11-19T22:32:00Z
+elf_sha256=4559a9601b9584ab6ca3c0fe62c203069c9988418649978bca34c9730d635376
+image_id=5004156fed0dfeecedf4aae49adae675699e681d06605a2dd3b913743a9cd91f
+user_elf_bytes=831576
+
+## result
+docker_build_1_image_id=5004156fed0dfeecedf4aae49adae675699e681d06605a2dd3b913743a9cd91f
+docker_build_2_image_id=5004156fed0dfeecedf4aae49adae675699e681d06605a2dd3b913743a9cd91f
+docker_builds_equal=yes (user ELF sha256 equal too: 4559a9601b9584ab...)
+phases.json and bench.md were generated from the docker build (5004156fed0dfeecedf4aae49adae675699e681d06605a2dd3b913743a9cd91f): BENCH_ROUTE=docker BENCH_NO_GUEST_BUILD=1 make bench-bls, run twice, outputs byte-identical (sha256 phases.json 2fac81ae39fc5de4..., bench.md 11dac1294d1ba81e...; regenerated 2026-11-20 with the key-figures and three-layout report, same guest)
+
+## Dockerfile (docker builds)
+FROM risczero/risc0-guest-builder:r0.1.91.1 as build
+WORKDIR /src
+COPY . .
+ENV CARGO_ENCODED_RUSTFLAGS="-C^_passes=lower-atomic^_-C^_link-arg=-Ttext=0x00200800^_-C^_link-arg=--fatal-warnings^_-C^_panic=abort^_--cfg^_getrandom_backend=\"custom\""
+ENV CARGO_TARGET_DIR="target"
+ENV RISC0_FEATURE_bigint2=""
+ENV CC_riscv32im_risc0_zkvm_elf="/root/.risc0/cpp/bin/riscv32-unknown-elf-gcc"
+ENV CFLAGS_riscv32im_risc0_zkvm_elf="-march=rv32im -nostdlib"
+RUN cargo +risc0 fetch --locked --target riscv32im-risc0-zkvm-elf --manifest-path guests/bls_bench/Cargo.toml
+RUN mkdir -p /out && CARGO_MANIFEST_PATH=guests/bls_bench/Cargo.toml CARGO_BUILD_JOBS=4 \
+    cargo +risc0 build --release --locked --target riscv32im-risc0-zkvm-elf --manifest-path guests/bls_bench/Cargo.toml --bin bls_bench && \
+    cp target/riscv32im-risc0-zkvm-elf/release/bls_bench /out/
+
+FROM scratch as export
+COPY --from=build /out /

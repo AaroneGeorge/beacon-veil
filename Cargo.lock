@@ -1289,6 +1289,7 @@ version = "0.1.0"
 dependencies = [
  "alloy-primitives",
  "bls12_381",
+ "bls_blst",
  "borsh",
  "ethereum_ssz 0.9.1",
  "eyre",
@@ -1313,6 +1314,7 @@ dependencies = [
  "lee_core",
  "program_loader_core",
  "sequencer_service_rpc",
+ "tokio",
  "toml 0.9.12+spec-1.1.0",
  "wallet",
 ]
@@ -1656,13 +1658,39 @@ dependencies = [
 ]
 
 [[package]]
+name = "bls_bench_guest"
+version = "0.1.0"
+dependencies = [
+ "alloy-primitives",
+ "attest_core",
+ "bls12_381",
+ "bls_blst",
+ "borsh",
+ "ethereum_ssz 0.9.1",
+ "fixtures",
+ "helios-consensus-core",
+ "risc0-zkvm",
+ "sha2 0.10.8",
+ "sha2 0.9.9",
+ "tree_hash 0.10.0",
+]
+
+[[package]]
+name = "bls_blst"
+version = "0.1.0"
+dependencies = [
+ "blst",
+]
+
+[[package]]
 name = "blst"
-version = "0.3.17"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c20659f9bbee16cbbd2f7393e40ab6309f5a98f76a2eb57a995ec508b72387fe"
+version = "0.3.16"
+source = "git+https://github.com/risc0/blst?tag=v0.3.16-risczero.0#7d1fc3e6d8cf0d52a291f52455233bf8d6432ed2"
 dependencies = [
  "cc",
+ "getrandom 0.2.17",
  "glob",
+ "risc0-bigint2",
  "threadpool",
  "zeroize",
 ]
@@ -2254,9 +2282,11 @@ dependencies = [
  "anyhow",
  "attest_core",
  "attest_host",
+ "bls_bench_guest",
  "borsh",
  "common",
  "e2e_chain",
+ "fixtures",
  "lee_core",
  "risc0-binfmt",
  "risc0-zkos-v1compat",
@@ -2741,6 +2771,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "diff_helios"
+version = "0.1.0"
+dependencies = [
+ "alloy-primitives",
+ "anyhow",
+ "attest_core",
+ "bls12_381",
+ "borsh",
+ "ethereum_ssz 0.9.1",
+ "eyre",
+ "fixtures",
+ "helios-consensus-core",
+ "hex",
+ "serde_json",
+ "sha2 0.10.8",
+]
+
+[[package]]
 name = "digest"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2853,7 +2901,10 @@ dependencies = [
  "anyhow",
  "attest_core",
  "attest_host",
+ "bls_blst",
  "borsh",
+ "ethereum_ssz 0.9.1",
+ "fixtures",
  "hex",
  "lee_core",
  "risc0-binfmt",
@@ -4945,6 +4996,16 @@ dependencies = [
 
 [[package]]
 name = "lc_verify_program"
+version = "0.1.0"
+dependencies = [
+ "attest_core",
+ "borsh",
+ "lee_core",
+ "risc0-zkvm",
+]
+
+[[package]]
+name = "lc_verify_v3_program"
 version = "0.1.0"
 dependencies = [
  "attest_core",

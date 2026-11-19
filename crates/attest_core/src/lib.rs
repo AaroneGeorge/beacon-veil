@@ -40,3 +40,9 @@ pub mod domain {
     /// Statement ids.
     pub const STATEMENT: &[u8] = b"esa/stmt/v1";
 }
+
+// V3 verifier (public path, staged). Appended last so that no line above moves.
+#[cfg(feature = "v3")]
+pub mod lc_v3;
+#[cfg(feature = "v3")]
+pub use messages::LcVerifyV3Message;

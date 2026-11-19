@@ -1,0 +1,27 @@
+[package]
+name = "lc_verify_v3_program"
+description = "LEZ program lc_verify_v3: one light-client update as three public transactions (Begin, Miller, Finish) on a job account, or VerifyOnce in a private actor; then sync Apply to the instance"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[[bin]]
+name = "lc_verify_v3"
+path = "src/bin/lc_verify_v3.rs"
+
+[dependencies]
+attest_core = { workspace = true, features = ["v3"] }
+borsh.workspace = true
+lee_core.workspace = true
+risc0-zkvm.workspace = true
+
+[features]
+# Measurement-only build (cycle marks per phase on stderr, for tools/cost exec-v3); never deployed.
+cycle-trace = ["attest_core/v3-trace"]
+
+[package.metadata.cargo-machete]
+ignored = ["risc0-zkvm"]

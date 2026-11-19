@@ -1,0 +1,20 @@
+[package]
+name = "bls_blst"
+description = "Small safe layer over the blst BLS12-381 library (RISC Zero fork in the guest): the operations of a sync-committee signature check, split at the pairing"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+# Not `workspace = true`: the workspace forbids `unsafe`, and a few blst calls have no safe wrapper (point
+# negation and addition in G1, hash to G2, field-element decoding). Each unsafe block carries a `SAFETY:` comment.
+[lints.rust]
+unsafe_code = "deny"
+
+[lints.clippy]
+all = { level = "warn", priority = -1 }
+undocumented_unsafe_blocks = "deny"
+
+[dependencies]
+# Resolves to github.com/risc0/blst tag v0.3.16-risczero.0 through [patch.crates-io] (workspace Cargo.toml).
+blst = "=0.3.16"

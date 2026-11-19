@@ -30,4 +30,11 @@ serde_json.workspace = true
 
 [dev-dependencies]
 attest_host.workspace = true
+bls_blst.workspace = true
+fixtures = { path = "../../tools/fixtures" }
+ethereum_ssz = "0.9"
 tokio.workspace = true
+
+[features]
+# V3 verifier tests (tests/v3.rs).
+v3 = ["attest_core/v3"]

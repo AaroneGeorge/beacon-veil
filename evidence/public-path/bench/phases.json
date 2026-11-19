@@ -1,0 +1,1585 @@
+{
+  "begin_phases": [
+    "load",
+    "decode",
+    "checks",
+    "aggregate",
+    "sig_decode",
+    "hash_to_g2"
+  ],
+  "cap": 10000000,
+  "executor": "RISC Zero 3.0.5 executor, no proof, no sequencer. Cycles are guest user cycles; phase cycles come from env::cycle_count marks inside the guest; session_user_cycles is the whole execution of one job (input decode included)",
+  "fixtures": {
+    "mainnet": "fixtures/mainnet: bootstrap_15605760, updates_1905_4, finality_update_15637644",
+    "sepolia": "fixtures/sepolia (Gloas): bootstrap_11534336, updates_1408_4, finality_update_11561824"
+  },
+  "guest": {
+    "elf_bytes": 831576,
+    "image_id": "5004156fed0dfeecedf4aae49adae675699e681d06605a2dd3b913743a9cd91f",
+    "name": "bls_bench",
+    "program_binary_bytes": 864000
+  },
+  "key_figures": [
+    {
+      "measured": 4590992,
+      "what": "Miller loop over both pairs, blst (max over the phase cases)"
+    },
+    {
+      "measured": 5170497,
+      "what": "final exponentiation and comparison with one, blst (max)"
+    },
+    {
+      "measured": 16627645,
+      "what": "whole mainnet handoff update in one execution, blst + hashed committee (max of update[1..3], session user cycles)"
+    },
+    {
+      "measured": 8677393,
+      "what": "everything before the Miller loop at 170 absent keys, blst + hashed committee (max)"
+    }
+  ],
+  "measured": true,
+  "phase_cases": [
+    {
+      "absent_keys": 0,
+      "begin_cycles": 9899114,
+      "committee": "hashed",
+      "lib": "zkcrypto",
+      "marked_cycles": 32187581,
+      "network": "mainnet",
+      "phases": {
+        "aggregate": 1155526,
+        "apply": 47184,
+        "checks": 2234588,
+        "decode": 274970,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 1852096,
+        "miller": 9857681,
+        "sig_decode": 1499522
+      },
+      "session_user_cycles": 32373158,
+      "update": "update[1]",
+      "verdict": "accept",
+      "verdict_equals_v1": true
+    },
+    {
+      "absent_keys": 0,
+      "begin_cycles": 6620998,
+      "committee": "hashed",
+      "lib": "blst",
+      "marked_cycles": 16429672,
+      "network": "mainnet",
+      "phases": {
+        "aggregate": 52184,
+        "apply": 47185,
+        "checks": 2234588,
+        "decode": 274970,
+        "final_exp": 5170497,
+        "hash_to_g2": 1518208,
+        "load": 1852096,
+        "miller": 4590992,
+        "sig_decode": 688952
+      },
+      "session_user_cycles": 16615246,
+      "update": "update[1]",
+      "verdict": "accept",
+      "verdict_equals_v1": true
+    },
+    {
+      "absent_keys": 1,
+      "begin_cycles": 11019141,
+      "committee": "hashed",
+      "lib": "zkcrypto",
+      "marked_cycles": 33260424,
+      "network": "mainnet",
+      "phases": {
+        "aggregate": 2275553,
+        "checks": 2234588,
+        "decode": 274970,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 1852096,
+        "miller": 9857681,
+        "sig_decode": 1499522
+      },
+      "session_user_cycles": 33443296,
+      "update": "update[1]",
+      "verdict": "E03BadSignature",
+      "verdict_equals_v1": true
+    },
+    {
+      "absent_keys": 1,
+      "begin_cycles": 6634521,
+      "committee": "hashed",
+      "lib": "blst",
+      "marked_cycles": 16396010,
+      "network": "mainnet",
+      "phases": {
+        "aggregate": 65707,
+        "checks": 2234588,
+        "decode": 274970,
+        "final_exp": 5170497,
+        "hash_to_g2": 1518208,
+        "load": 1852096,
+        "miller": 4590992,
+        "sig_decode": 688952
+      },
+      "session_user_cycles": 16578878,
+      "update": "update[1]",
+      "verdict": "E03BadSignature",
+      "verdict_equals_v1": true
+    },
+    {
+      "absent_keys": 170,
+      "begin_cycles": 200302521,
+      "committee": "hashed",
+      "lib": "zkcrypto",
+      "marked_cycles": 222543804,
+      "network": "mainnet",
+      "phases": {
+        "aggregate": 191558933,
+        "checks": 2234588,
+        "decode": 274970,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 1852096,
+        "miller": 9857681,
+        "sig_decode": 1499522
+      },
+      "session_user_cycles": 223005703,
+      "update": "update[1]",
+      "verdict": "E03BadSignature",
+      "verdict_equals_v1": true
+    },
+    {
+      "absent_keys": 170,
+      "begin_cycles": 8677393,
+      "committee": "hashed",
+      "lib": "blst",
+      "marked_cycles": 18438882,
+      "network": "mainnet",
+      "phases": {
+        "aggregate": 2108579,
+        "checks": 2234588,
+        "decode": 274970,
+        "final_exp": 5170497,
+        "hash_to_g2": 1518208,
+        "load": 1852096,
+        "miller": 4590992,
+        "sig_decode": 688952
+      },
+      "session_user_cycles": 18900777,
+      "update": "update[1]",
+      "verdict": "E03BadSignature",
+      "verdict_equals_v1": true
+    },
+    {
+      "absent_keys": 0,
+      "begin_cycles": 8009058,
+      "committee": "hashed",
+      "lib": "zkcrypto",
+      "marked_cycles": 30297197,
+      "network": "mainnet",
+      "phases": {
+        "aggregate": 1155526,
+        "apply": 46856,
+        "checks": 368625,
+        "decode": 250881,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 1852096,
+        "miller": 9857681,
+        "sig_decode": 1499518
+      },
+      "session_user_cycles": 30407148,
+      "update": "finality_update_15637644",
+      "verdict": "accept",
+      "verdict_equals_v1": true
+    },
+    {
+      "absent_keys": 0,
+      "begin_cycles": 4730728,
+      "committee": "hashed",
+      "lib": "blst",
+      "marked_cycles": 14539074,
+      "network": "mainnet",
+      "phases": {
+        "aggregate": 52184,
+        "apply": 46857,
+        "checks": 368625,
+        "decode": 250881,
+        "final_exp": 5170497,
+        "hash_to_g2": 1518208,
+        "load": 1852096,
+        "miller": 4590992,
+        "sig_decode": 688734
+      },
+      "session_user_cycles": 14649022,
+      "update": "finality_update_15637644",
+      "verdict": "accept",
+      "verdict_equals_v1": true
+    },
+    {
+      "absent_keys": 1,
+      "begin_cycles": 9129085,
+      "committee": "hashed",
+      "lib": "zkcrypto",
+      "marked_cycles": 31370368,
+      "network": "mainnet",
+      "phases": {
+        "aggregate": 2275553,
+        "checks": 368625,
+        "decode": 250881,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 1852096,
+        "miller": 9857681,
+        "sig_decode": 1499518
+      },
+      "session_user_cycles": 31477622,
+      "update": "finality_update_15637644",
+      "verdict": "E03BadSignature",
+      "verdict_equals_v1": true
+    },
+    {
+      "absent_keys": 1,
+      "begin_cycles": 4744251,
+      "committee": "hashed",
+      "lib": "blst",
+      "marked_cycles": 14505740,
+      "network": "mainnet",
+      "phases": {
+        "aggregate": 65707,
+        "checks": 368625,
+        "decode": 250881,
+        "final_exp": 5170497,
+        "hash_to_g2": 1518208,
+        "load": 1852096,
+        "miller": 4590992,
+        "sig_decode": 688734
+      },
+      "session_user_cycles": 14612990,
+      "update": "finality_update_15637644",
+      "verdict": "E03BadSignature",
+      "verdict_equals_v1": true
+    },
+    {
+      "absent_keys": 170,
+      "begin_cycles": 198412465,
+      "committee": "hashed",
+      "lib": "zkcrypto",
+      "marked_cycles": 220653748,
+      "network": "mainnet",
+      "phases": {
+        "aggregate": 191558933,
+        "checks": 368625,
+        "decode": 250881,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 1852096,
+        "miller": 9857681,
+        "sig_decode": 1499518
+      },
+      "session_user_cycles": 221005541,
+      "update": "finality_update_15637644",
+      "verdict": "E03BadSignature",
+      "verdict_equals_v1": true
+    },
+    {
+      "absent_keys": 170,
+      "begin_cycles": 6787123,
+      "committee": "hashed",
+      "lib": "blst",
+      "marked_cycles": 16548612,
+      "network": "mainnet",
+      "phases": {
+        "aggregate": 2108579,
+        "checks": 368625,
+        "decode": 250881,
+        "final_exp": 5170497,
+        "hash_to_g2": 1518208,
+        "load": 1852096,
+        "miller": 4590992,
+        "sig_decode": 688734
+      },
+      "session_user_cycles": 16900401,
+      "update": "finality_update_15637644",
+      "verdict": "E03BadSignature",
+      "verdict_equals_v1": true
+    },
+    {
+      "absent_keys": 0,
+      "begin_cycles": 7683063,
+      "committee": "hashed",
+      "lib": "zkcrypto",
+      "marked_cycles": 29924346,
+      "network": "sepolia",
+      "phases": {
+        "aggregate": 1155526,
+        "checks": 116810,
+        "decode": 176695,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 1852098,
+        "miller": 9857681,
+        "sig_decode": 1499522
+      },
+      "session_user_cycles": 30029088,
+      "update": "finality_update_11561824",
+      "verdict": "E03BadSignature",
+      "verdict_equals_v1": true
+    },
+    {
+      "absent_keys": 0,
+      "begin_cycles": 4404729,
+      "committee": "hashed",
+      "lib": "blst",
+      "marked_cycles": 14166218,
+      "network": "sepolia",
+      "phases": {
+        "aggregate": 52184,
+        "checks": 116810,
+        "decode": 176695,
+        "final_exp": 5170497,
+        "hash_to_g2": 1518208,
+        "load": 1852098,
+        "miller": 4590992,
+        "sig_decode": 688734
+      },
+      "session_user_cycles": 14270956,
+      "update": "finality_update_11561824",
+      "verdict": "E03BadSignature",
+      "verdict_equals_v1": true
+    },
+    {
+      "absent_keys": 1,
+      "begin_cycles": 8803090,
+      "committee": "hashed",
+      "lib": "zkcrypto",
+      "marked_cycles": 31044373,
+      "network": "sepolia",
+      "phases": {
+        "aggregate": 2275553,
+        "checks": 116810,
+        "decode": 176695,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 1852098,
+        "miller": 9857681,
+        "sig_decode": 1499522
+      },
+      "session_user_cycles": 31150433,
+      "update": "finality_update_11561824",
+      "verdict": "E03BadSignature",
+      "verdict_equals_v1": true
+    },
+    {
+      "absent_keys": 1,
+      "begin_cycles": 4418252,
+      "committee": "hashed",
+      "lib": "blst",
+      "marked_cycles": 14179741,
+      "network": "sepolia",
+      "phases": {
+        "aggregate": 65707,
+        "checks": 116810,
+        "decode": 176695,
+        "final_exp": 5170497,
+        "hash_to_g2": 1518208,
+        "load": 1852098,
+        "miller": 4590992,
+        "sig_decode": 688734
+      },
+      "session_user_cycles": 14285797,
+      "update": "finality_update_11561824",
+      "verdict": "E03BadSignature",
+      "verdict_equals_v1": true
+    },
+    {
+      "absent_keys": 170,
+      "begin_cycles": 198086470,
+      "committee": "hashed",
+      "lib": "zkcrypto",
+      "marked_cycles": 220327753,
+      "network": "sepolia",
+      "phases": {
+        "aggregate": 191558933,
+        "checks": 116810,
+        "decode": 176695,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 1852098,
+        "miller": 9857681,
+        "sig_decode": 1499522
+      },
+      "session_user_cycles": 220679948,
+      "update": "finality_update_11561824",
+      "verdict": "E03BadSignature",
+      "verdict_equals_v1": true
+    },
+    {
+      "absent_keys": 170,
+      "begin_cycles": 6461124,
+      "committee": "hashed",
+      "lib": "blst",
+      "marked_cycles": 16222613,
+      "network": "sepolia",
+      "phases": {
+        "aggregate": 2108579,
+        "checks": 116810,
+        "decode": 176695,
+        "final_exp": 5170497,
+        "hash_to_g2": 1518208,
+        "load": 1852098,
+        "miller": 4590992,
+        "sig_decode": 688734
+      },
+      "session_user_cycles": 16574804,
+      "update": "finality_update_11561824",
+      "verdict": "E03BadSignature",
+      "verdict_equals_v1": true
+    }
+  ],
+  "phase_order": [
+    "load",
+    "decode",
+    "checks",
+    "aggregate",
+    "sig_decode",
+    "hash_to_g2",
+    "miller",
+    "final_exp",
+    "apply"
+  ],
+  "step_split_derived": [
+    {
+      "layout": "Begin up to hash to G2",
+      "steps": [
+        {
+          "phases": [
+            "load",
+            "decode",
+            "checks",
+            "aggregate",
+            "sig_decode",
+            "hash_to_g2"
+          ],
+          "share_of_cap": "86.8%",
+          "step": "Begin",
+          "worst_marked_cycles": 8677393
+        },
+        {
+          "phases": [
+            "miller"
+          ],
+          "share_of_cap": "45.9%",
+          "step": "Miller",
+          "worst_marked_cycles": 4590992
+        },
+        {
+          "phases": [
+            "final_exp",
+            "apply"
+          ],
+          "share_of_cap": "52.2%",
+          "step": "Finish",
+          "worst_marked_cycles": 5217682
+        }
+      ]
+    },
+    {
+      "layout": "hash to G2 in Miller",
+      "steps": [
+        {
+          "phases": [
+            "load",
+            "decode",
+            "checks",
+            "aggregate",
+            "sig_decode"
+          ],
+          "share_of_cap": "71.6%",
+          "step": "Begin",
+          "worst_marked_cycles": 7159185
+        },
+        {
+          "phases": [
+            "hash_to_g2",
+            "miller"
+          ],
+          "share_of_cap": "61.1%",
+          "step": "Miller",
+          "worst_marked_cycles": 6109468
+        },
+        {
+          "phases": [
+            "final_exp",
+            "apply"
+          ],
+          "share_of_cap": "52.2%",
+          "step": "Finish",
+          "worst_marked_cycles": 5217682
+        }
+      ]
+    },
+    {
+      "layout": "signature decode and hash to G2 in Miller (the layout of lc_verify_v3)",
+      "steps": [
+        {
+          "phases": [
+            "load",
+            "decode",
+            "checks",
+            "aggregate"
+          ],
+          "share_of_cap": "64.7%",
+          "step": "Begin",
+          "worst_marked_cycles": 6470233
+        },
+        {
+          "phases": [
+            "sig_decode",
+            "hash_to_g2",
+            "miller"
+          ],
+          "share_of_cap": "68.0%",
+          "step": "Miller",
+          "worst_marked_cycles": 6798420
+        },
+        {
+          "phases": [
+            "final_exp",
+            "apply"
+          ],
+          "share_of_cap": "52.2%",
+          "step": "Finish",
+          "worst_marked_cycles": 5217682
+        }
+      ]
+    }
+  ],
+  "tool": "tools/cost bench-bls (make bench-bls)",
+  "v1_comparisons": 68,
+  "variants": [
+    {
+      "begin_cycles": 11016044,
+      "kind": "period",
+      "marked_cycles": 33304386,
+      "network": "mainnet",
+      "participation": 511,
+      "phases": {
+        "aggregate": 2275553,
+        "apply": 47059,
+        "checks": 2232378,
+        "decode": 274087,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 1852096,
+        "miller": 9857681,
+        "sig_decode": 1499518
+      },
+      "session_user_cycles": 33491155,
+      "update": "update[0]",
+      "variant": "zkcrypto+hashed",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 9164859,
+      "kind": "period",
+      "marked_cycles": 31453201,
+      "network": "mainnet",
+      "participation": 511,
+      "phases": {
+        "aggregate": 2275553,
+        "apply": 47059,
+        "checks": 2232378,
+        "decode": 274087,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 911,
+        "miller": 9857681,
+        "sig_decode": 1499518
+      },
+      "session_user_cycles": 31639968,
+      "update": "update[0]",
+      "variant": "zkcrypto+cached",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 6631160,
+      "kind": "period",
+      "marked_cycles": 16439709,
+      "network": "mainnet",
+      "participation": 511,
+      "phases": {
+        "aggregate": 65707,
+        "apply": 47060,
+        "checks": 2232378,
+        "decode": 274087,
+        "final_exp": 5170497,
+        "hash_to_g2": 1517940,
+        "load": 1852096,
+        "miller": 4590992,
+        "sig_decode": 688952
+      },
+      "session_user_cycles": 16626475,
+      "update": "update[0]",
+      "variant": "blst+hashed",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 4779975,
+      "kind": "period",
+      "marked_cycles": 14588524,
+      "network": "mainnet",
+      "participation": 511,
+      "phases": {
+        "aggregate": 65707,
+        "apply": 47060,
+        "checks": 2232378,
+        "decode": 274087,
+        "final_exp": 5170497,
+        "hash_to_g2": 1517940,
+        "load": 911,
+        "miller": 4590992,
+        "sig_decode": 688952
+      },
+      "session_user_cycles": 14775288,
+      "update": "update[0]",
+      "variant": "blst+cached",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": null,
+      "kind": "period",
+      "marked_cycles": 45194875,
+      "network": "mainnet",
+      "participation": 511,
+      "phases": {
+        "v2": 45194875
+      },
+      "session_user_cycles": 45352208,
+      "update": "update[0]",
+      "variant": "v2_today",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 9899114,
+      "kind": "handoff",
+      "marked_cycles": 32187581,
+      "network": "mainnet",
+      "participation": 512,
+      "phases": {
+        "aggregate": 1155526,
+        "apply": 47184,
+        "checks": 2234588,
+        "decode": 274970,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 1852096,
+        "miller": 9857681,
+        "sig_decode": 1499522
+      },
+      "session_user_cycles": 32373158,
+      "update": "update[1]",
+      "variant": "zkcrypto+hashed",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 8047929,
+      "kind": "handoff",
+      "marked_cycles": 30336396,
+      "network": "mainnet",
+      "participation": 512,
+      "phases": {
+        "aggregate": 1155526,
+        "apply": 47184,
+        "checks": 2234588,
+        "decode": 274970,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 911,
+        "miller": 9857681,
+        "sig_decode": 1499522
+      },
+      "session_user_cycles": 30521971,
+      "update": "update[1]",
+      "variant": "zkcrypto+cached",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 6620998,
+      "kind": "handoff",
+      "marked_cycles": 16429672,
+      "network": "mainnet",
+      "participation": 512,
+      "phases": {
+        "aggregate": 52184,
+        "apply": 47185,
+        "checks": 2234588,
+        "decode": 274970,
+        "final_exp": 5170497,
+        "hash_to_g2": 1518208,
+        "load": 1852096,
+        "miller": 4590992,
+        "sig_decode": 688952
+      },
+      "session_user_cycles": 16615246,
+      "update": "update[1]",
+      "variant": "blst+hashed",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 4769813,
+      "kind": "handoff",
+      "marked_cycles": 14578487,
+      "network": "mainnet",
+      "participation": 512,
+      "phases": {
+        "aggregate": 52184,
+        "apply": 47185,
+        "checks": 2234588,
+        "decode": 274970,
+        "final_exp": 5170497,
+        "hash_to_g2": 1518208,
+        "load": 911,
+        "miller": 4590992,
+        "sig_decode": 688952
+      },
+      "session_user_cycles": 14764059,
+      "update": "update[1]",
+      "variant": "blst+cached",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": null,
+      "kind": "handoff",
+      "marked_cycles": 48203092,
+      "network": "mainnet",
+      "participation": 512,
+      "phases": {
+        "v2": 48203092
+      },
+      "session_user_cycles": 48453470,
+      "update": "update[1]",
+      "variant": "v2_today",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 11017267,
+      "kind": "handoff",
+      "marked_cycles": 33305725,
+      "network": "mainnet",
+      "participation": 511,
+      "phases": {
+        "aggregate": 2275553,
+        "apply": 47175,
+        "checks": 2233482,
+        "decode": 274202,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 1852096,
+        "miller": 9857681,
+        "sig_decode": 1499522
+      },
+      "session_user_cycles": 33492547,
+      "update": "update[2]",
+      "variant": "zkcrypto+hashed",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 9166082,
+      "kind": "handoff",
+      "marked_cycles": 31454540,
+      "network": "mainnet",
+      "participation": 511,
+      "phases": {
+        "aggregate": 2275553,
+        "apply": 47175,
+        "checks": 2233482,
+        "decode": 274202,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 911,
+        "miller": 9857681,
+        "sig_decode": 1499522
+      },
+      "session_user_cycles": 31641360,
+      "update": "update[2]",
+      "variant": "zkcrypto+cached",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 6632161,
+      "kind": "handoff",
+      "marked_cycles": 16440826,
+      "network": "mainnet",
+      "participation": 511,
+      "phases": {
+        "aggregate": 65707,
+        "apply": 47176,
+        "checks": 2233482,
+        "decode": 274202,
+        "final_exp": 5170497,
+        "hash_to_g2": 1517940,
+        "load": 1852096,
+        "miller": 4590992,
+        "sig_decode": 688734
+      },
+      "session_user_cycles": 16627645,
+      "update": "update[2]",
+      "variant": "blst+hashed",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 4780976,
+      "kind": "handoff",
+      "marked_cycles": 14589641,
+      "network": "mainnet",
+      "participation": 511,
+      "phases": {
+        "aggregate": 65707,
+        "apply": 47176,
+        "checks": 2233482,
+        "decode": 274202,
+        "final_exp": 5170497,
+        "hash_to_g2": 1517940,
+        "load": 911,
+        "miller": 4590992,
+        "sig_decode": 688734
+      },
+      "session_user_cycles": 14776458,
+      "update": "update[2]",
+      "variant": "blst+cached",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": null,
+      "kind": "handoff",
+      "marked_cycles": 49325501,
+      "network": "mainnet",
+      "participation": 511,
+      "phases": {
+        "v2": 49325501
+      },
+      "session_user_cycles": 49575863,
+      "update": "update[2]",
+      "variant": "v2_today",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 9898284,
+      "kind": "handoff",
+      "marked_cycles": 32186742,
+      "network": "mainnet",
+      "participation": 512,
+      "phases": {
+        "aggregate": 1155526,
+        "apply": 47175,
+        "checks": 2233851,
+        "decode": 274877,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 1852096,
+        "miller": 9857681,
+        "sig_decode": 1499522
+      },
+      "session_user_cycles": 32372310,
+      "update": "update[3]",
+      "variant": "zkcrypto+hashed",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 8047099,
+      "kind": "handoff",
+      "marked_cycles": 30335557,
+      "network": "mainnet",
+      "participation": 512,
+      "phases": {
+        "aggregate": 1155526,
+        "apply": 47175,
+        "checks": 2233851,
+        "decode": 274877,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 911,
+        "miller": 9857681,
+        "sig_decode": 1499522
+      },
+      "session_user_cycles": 30521123,
+      "update": "update[3]",
+      "variant": "zkcrypto+cached",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 6620218,
+      "kind": "handoff",
+      "marked_cycles": 16428883,
+      "network": "mainnet",
+      "participation": 512,
+      "phases": {
+        "aggregate": 52184,
+        "apply": 47176,
+        "checks": 2233851,
+        "decode": 274877,
+        "final_exp": 5170497,
+        "hash_to_g2": 1518476,
+        "load": 1852096,
+        "miller": 4590992,
+        "sig_decode": 688734
+      },
+      "session_user_cycles": 16614448,
+      "update": "update[3]",
+      "variant": "blst+hashed",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 4769033,
+      "kind": "handoff",
+      "marked_cycles": 14577698,
+      "network": "mainnet",
+      "participation": 512,
+      "phases": {
+        "aggregate": 52184,
+        "apply": 47176,
+        "checks": 2233851,
+        "decode": 274877,
+        "final_exp": 5170497,
+        "hash_to_g2": 1518476,
+        "load": 911,
+        "miller": 4590992,
+        "sig_decode": 688734
+      },
+      "session_user_cycles": 14763261,
+      "update": "update[3]",
+      "variant": "blst+cached",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": null,
+      "kind": "handoff",
+      "marked_cycles": 48202214,
+      "network": "mainnet",
+      "participation": 512,
+      "phases": {
+        "v2": 48202214
+      },
+      "session_user_cycles": 48452587,
+      "update": "update[3]",
+      "variant": "v2_today",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 8009058,
+      "kind": "finality",
+      "marked_cycles": 30297197,
+      "network": "mainnet",
+      "participation": 512,
+      "phases": {
+        "aggregate": 1155526,
+        "apply": 46856,
+        "checks": 368625,
+        "decode": 250881,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 1852096,
+        "miller": 9857681,
+        "sig_decode": 1499518
+      },
+      "session_user_cycles": 30407148,
+      "update": "finality_update_15637644",
+      "variant": "zkcrypto+hashed",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 6157873,
+      "kind": "finality",
+      "marked_cycles": 28446012,
+      "network": "mainnet",
+      "participation": 512,
+      "phases": {
+        "aggregate": 1155526,
+        "apply": 46856,
+        "checks": 368625,
+        "decode": 250881,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 911,
+        "miller": 9857681,
+        "sig_decode": 1499518
+      },
+      "session_user_cycles": 28555961,
+      "update": "finality_update_15637644",
+      "variant": "zkcrypto+cached",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 4730728,
+      "kind": "finality",
+      "marked_cycles": 14539074,
+      "network": "mainnet",
+      "participation": 512,
+      "phases": {
+        "aggregate": 52184,
+        "apply": 46857,
+        "checks": 368625,
+        "decode": 250881,
+        "final_exp": 5170497,
+        "hash_to_g2": 1518208,
+        "load": 1852096,
+        "miller": 4590992,
+        "sig_decode": 688734
+      },
+      "session_user_cycles": 14649022,
+      "update": "finality_update_15637644",
+      "variant": "blst+hashed",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 2879543,
+      "kind": "finality",
+      "marked_cycles": 12687889,
+      "network": "mainnet",
+      "participation": 512,
+      "phases": {
+        "aggregate": 52184,
+        "apply": 46857,
+        "checks": 368625,
+        "decode": 250881,
+        "final_exp": 5170497,
+        "hash_to_g2": 1518208,
+        "load": 911,
+        "miller": 4590992,
+        "sig_decode": 688734
+      },
+      "session_user_cycles": 12797835,
+      "update": "finality_update_15637644",
+      "variant": "blst+cached",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": null,
+      "kind": "finality",
+      "marked_cycles": 36643794,
+      "network": "mainnet",
+      "participation": 512,
+      "phases": {
+        "v2": 36643794
+      },
+      "session_user_cycles": 36801327,
+      "update": "finality_update_15637644",
+      "variant": "v2_today",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 15184268,
+      "kind": "period",
+      "marked_cycles": 37471298,
+      "network": "sepolia",
+      "participation": 507,
+      "phases": {
+        "aggregate": 6755633,
+        "apply": 45747,
+        "checks": 1994049,
+        "decode": 200554,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 1852098,
+        "miller": 9857681,
+        "sig_decode": 1499522
+      },
+      "session_user_cycles": 37661530,
+      "update": "update[0]",
+      "variant": "zkcrypto+hashed",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 13333083,
+      "kind": "period",
+      "marked_cycles": 35620113,
+      "network": "sepolia",
+      "participation": 507,
+      "phases": {
+        "aggregate": 6755633,
+        "apply": 45747,
+        "checks": 1994049,
+        "decode": 200554,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 913,
+        "miller": 9857681,
+        "sig_decode": 1499522
+      },
+      "session_user_cycles": 35810343,
+      "update": "update[0]",
+      "variant": "zkcrypto+cached",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 6367434,
+      "kind": "period",
+      "marked_cycles": 16174671,
+      "network": "sepolia",
+      "participation": 507,
+      "phases": {
+        "aggregate": 114059,
+        "apply": 45748,
+        "checks": 1994049,
+        "decode": 200554,
+        "final_exp": 5170497,
+        "hash_to_g2": 1517940,
+        "load": 1852098,
+        "miller": 4590992,
+        "sig_decode": 688734
+      },
+      "session_user_cycles": 16364900,
+      "update": "update[0]",
+      "variant": "blst+hashed",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 4516249,
+      "kind": "period",
+      "marked_cycles": 14323486,
+      "network": "sepolia",
+      "participation": 507,
+      "phases": {
+        "aggregate": 114059,
+        "apply": 45748,
+        "checks": 1994049,
+        "decode": 200554,
+        "final_exp": 5170497,
+        "hash_to_g2": 1517940,
+        "load": 913,
+        "miller": 4590992,
+        "sig_decode": 688734
+      },
+      "session_user_cycles": 14513713,
+      "update": "update[0]",
+      "variant": "blst+cached",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": null,
+      "kind": "period",
+      "marked_cycles": 49372446,
+      "network": "sepolia",
+      "participation": 507,
+      "phases": {
+        "v2": 49372446
+      },
+      "session_user_cycles": 49529402,
+      "update": "update[0]",
+      "variant": "v2_today",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 14064041,
+      "kind": "handoff",
+      "marked_cycles": 36351183,
+      "network": "sepolia",
+      "participation": 508,
+      "phases": {
+        "aggregate": 5635613,
+        "apply": 45859,
+        "checks": 1994059,
+        "decode": 200337,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 1852098,
+        "miller": 9857681,
+        "sig_decode": 1499522
+      },
+      "session_user_cycles": 36540309,
+      "update": "update[1]",
+      "variant": "zkcrypto+hashed",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 12212856,
+      "kind": "handoff",
+      "marked_cycles": 34499998,
+      "network": "sepolia",
+      "participation": 508,
+      "phases": {
+        "aggregate": 5635613,
+        "apply": 45859,
+        "checks": 1994059,
+        "decode": 200337,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 913,
+        "miller": 9857681,
+        "sig_decode": 1499522
+      },
+      "session_user_cycles": 34689122,
+      "update": "update[1]",
+      "variant": "zkcrypto+cached",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 6355675,
+      "kind": "handoff",
+      "marked_cycles": 16163024,
+      "network": "sepolia",
+      "participation": 508,
+      "phases": {
+        "aggregate": 101971,
+        "apply": 45860,
+        "checks": 1994059,
+        "decode": 200337,
+        "final_exp": 5170497,
+        "hash_to_g2": 1518476,
+        "load": 1852098,
+        "miller": 4590992,
+        "sig_decode": 688734
+      },
+      "session_user_cycles": 16352147,
+      "update": "update[1]",
+      "variant": "blst+hashed",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 4504490,
+      "kind": "handoff",
+      "marked_cycles": 14311839,
+      "network": "sepolia",
+      "participation": 508,
+      "phases": {
+        "aggregate": 101971,
+        "apply": 45860,
+        "checks": 1994059,
+        "decode": 200337,
+        "final_exp": 5170497,
+        "hash_to_g2": 1518476,
+        "load": 913,
+        "miller": 4590992,
+        "sig_decode": 688734
+      },
+      "session_user_cycles": 14500960,
+      "update": "update[1]",
+      "variant": "blst+cached",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": null,
+      "kind": "handoff",
+      "marked_cycles": 52377300,
+      "network": "sepolia",
+      "participation": 508,
+      "phases": {
+        "v2": 52377300
+      },
+      "session_user_cycles": 52627290,
+      "update": "update[1]",
+      "variant": "v2_today",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 12944021,
+      "kind": "handoff",
+      "marked_cycles": 35231163,
+      "network": "sepolia",
+      "participation": 509,
+      "phases": {
+        "aggregate": 4515593,
+        "apply": 45859,
+        "checks": 1994059,
+        "decode": 200337,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 1852098,
+        "miller": 9857681,
+        "sig_decode": 1499522
+      },
+      "session_user_cycles": 35419183,
+      "update": "update[2]",
+      "variant": "zkcrypto+hashed",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 11092836,
+      "kind": "handoff",
+      "marked_cycles": 33379978,
+      "network": "sepolia",
+      "participation": 509,
+      "phases": {
+        "aggregate": 4515593,
+        "apply": 45859,
+        "checks": 1994059,
+        "decode": 200337,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 913,
+        "miller": 9857681,
+        "sig_decode": 1499522
+      },
+      "session_user_cycles": 33567996,
+      "update": "update[2]",
+      "variant": "zkcrypto+cached",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 6343537,
+      "kind": "handoff",
+      "marked_cycles": 16150886,
+      "network": "sepolia",
+      "participation": 509,
+      "phases": {
+        "aggregate": 89883,
+        "apply": 45860,
+        "checks": 1994059,
+        "decode": 200337,
+        "final_exp": 5170497,
+        "hash_to_g2": 1518208,
+        "load": 1852098,
+        "miller": 4590992,
+        "sig_decode": 688952
+      },
+      "session_user_cycles": 16338903,
+      "update": "update[2]",
+      "variant": "blst+hashed",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 4492352,
+      "kind": "handoff",
+      "marked_cycles": 14299701,
+      "network": "sepolia",
+      "participation": 509,
+      "phases": {
+        "aggregate": 89883,
+        "apply": 45860,
+        "checks": 1994059,
+        "decode": 200337,
+        "final_exp": 5170497,
+        "hash_to_g2": 1518208,
+        "load": 913,
+        "miller": 4590992,
+        "sig_decode": 688952
+      },
+      "session_user_cycles": 14487716,
+      "update": "update[2]",
+      "variant": "blst+cached",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": null,
+      "kind": "handoff",
+      "marked_cycles": 51252967,
+      "network": "sepolia",
+      "participation": 509,
+      "phases": {
+        "v2": 51252967
+      },
+      "session_user_cycles": 51502957,
+      "update": "update[2]",
+      "variant": "v2_today",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 12944017,
+      "kind": "handoff",
+      "marked_cycles": 35231159,
+      "network": "sepolia",
+      "participation": 509,
+      "phases": {
+        "aggregate": 4515593,
+        "apply": 45859,
+        "checks": 1994059,
+        "decode": 200337,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 1852098,
+        "miller": 9857681,
+        "sig_decode": 1499518
+      },
+      "session_user_cycles": 35419179,
+      "update": "update[3]",
+      "variant": "zkcrypto+hashed",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 11092832,
+      "kind": "handoff",
+      "marked_cycles": 33379974,
+      "network": "sepolia",
+      "participation": 509,
+      "phases": {
+        "aggregate": 4515593,
+        "apply": 45859,
+        "checks": 1994059,
+        "decode": 200337,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 913,
+        "miller": 9857681,
+        "sig_decode": 1499518
+      },
+      "session_user_cycles": 33567992,
+      "update": "update[3]",
+      "variant": "zkcrypto+cached",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 6343805,
+      "kind": "handoff",
+      "marked_cycles": 16151154,
+      "network": "sepolia",
+      "participation": 509,
+      "phases": {
+        "aggregate": 89883,
+        "apply": 45860,
+        "checks": 1994059,
+        "decode": 200337,
+        "final_exp": 5170497,
+        "hash_to_g2": 1518476,
+        "load": 1852098,
+        "miller": 4590992,
+        "sig_decode": 688952
+      },
+      "session_user_cycles": 16339171,
+      "update": "update[3]",
+      "variant": "blst+hashed",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 4492620,
+      "kind": "handoff",
+      "marked_cycles": 14299969,
+      "network": "sepolia",
+      "participation": 509,
+      "phases": {
+        "aggregate": 89883,
+        "apply": 45860,
+        "checks": 1994059,
+        "decode": 200337,
+        "final_exp": 5170497,
+        "hash_to_g2": 1518476,
+        "load": 913,
+        "miller": 4590992,
+        "sig_decode": 688952
+      },
+      "session_user_cycles": 14487984,
+      "update": "update[3]",
+      "variant": "blst+cached",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": null,
+      "kind": "handoff",
+      "marked_cycles": 51252963,
+      "network": "sepolia",
+      "participation": 509,
+      "phases": {
+        "v2": 51252963
+      },
+      "session_user_cycles": 51502953,
+      "update": "update[3]",
+      "variant": "v2_today",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 11043130,
+      "kind": "finality",
+      "marked_cycles": 33329946,
+      "network": "sepolia",
+      "participation": 509,
+      "phases": {
+        "aggregate": 4515593,
+        "apply": 45533,
+        "checks": 116810,
+        "decode": 176695,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 1852098,
+        "miller": 9857681,
+        "sig_decode": 1499522
+      },
+      "session_user_cycles": 33442086,
+      "update": "finality_update_11561824",
+      "variant": "zkcrypto+hashed",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 9191945,
+      "kind": "finality",
+      "marked_cycles": 31478761,
+      "network": "sepolia",
+      "participation": 509,
+      "phases": {
+        "aggregate": 4515593,
+        "apply": 45533,
+        "checks": 116810,
+        "decode": 176695,
+        "final_exp": 12383602,
+        "hash_to_g2": 2882412,
+        "load": 913,
+        "miller": 9857681,
+        "sig_decode": 1499522
+      },
+      "session_user_cycles": 31590899,
+      "update": "finality_update_11561824",
+      "variant": "zkcrypto+cached",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 4442428,
+      "kind": "finality",
+      "marked_cycles": 14249451,
+      "network": "sepolia",
+      "participation": 509,
+      "phases": {
+        "aggregate": 89883,
+        "apply": 45534,
+        "checks": 116810,
+        "decode": 176695,
+        "final_exp": 5170497,
+        "hash_to_g2": 1518208,
+        "load": 1852098,
+        "miller": 4590992,
+        "sig_decode": 688734
+      },
+      "session_user_cycles": 14361588,
+      "update": "finality_update_11561824",
+      "variant": "blst+hashed",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": 2591243,
+      "kind": "finality",
+      "marked_cycles": 12398266,
+      "network": "sepolia",
+      "participation": 509,
+      "phases": {
+        "aggregate": 89883,
+        "apply": 45534,
+        "checks": 116810,
+        "decode": 176695,
+        "final_exp": 5170497,
+        "hash_to_g2": 1518208,
+        "load": 913,
+        "miller": 4590992,
+        "sig_decode": 688734
+      },
+      "session_user_cycles": 12510401,
+      "update": "finality_update_11561824",
+      "variant": "blst+cached",
+      "verdict_equals_v1": true
+    },
+    {
+      "begin_cycles": null,
+      "kind": "finality",
+      "marked_cycles": 39681251,
+      "network": "sepolia",
+      "participation": 509,
+      "phases": {
+        "v2": 39681251
+      },
+      "session_user_cycles": 39838187,
+      "update": "finality_update_11561824",
+      "variant": "v2_today",
+      "verdict_equals_v1": true
+    }
+  ]
+}

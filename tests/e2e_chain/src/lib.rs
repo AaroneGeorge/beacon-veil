@@ -151,3 +151,31 @@ pub fn mainnet_chain(verifiers: Vec<AccountId>) -> Result<FixtureChain> {
         updates,
     })
 }
+
+/// Sepolia chain (fixtures 2026-11-12, Gloas): bootstrap 11534336 (period 1408), `updates_by_range` 1408..1411,
+/// then finality update 11561824.
+pub fn sepolia_chain(verifiers: Vec<AccountId>) -> Result<FixtureChain> {
+    let bootstrap = fixture("sepolia", "bootstrap_11534336.ssz")?;
+    let config = config_from_beacon(
+        11_155_111,
+        &fixture("sepolia", "genesis.json")?,
+        &fixture("sepolia", "fork_schedule.json")?,
+        &bootstrap,
+        verifiers,
+        0,
+    )?;
+    let mut updates: Vec<(String, Vec<u8>)> = split_updates_by_range(&fixture("sepolia", "updates_1408_4.ssz")?)?
+        .into_iter()
+        .enumerate()
+        .map(|(i, u)| (format!("update[{i}]"), u))
+        .collect();
+    updates.push((
+        "finality_update_11561824".into(),
+        fixture("sepolia", "finality_update_11561824.ssz")?,
+    ));
+    Ok(FixtureChain {
+        config,
+        bootstrap,
+        updates,
+    })
+}

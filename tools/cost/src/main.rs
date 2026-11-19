@@ -3,6 +3,8 @@
 //! ```text
 //! cost exec-lc [--lc-elf P] [--attest-elf P] --json OUT
 //! cost sizes --json OUT
+//! cost bench-bls --elf P --out DIR
+//! cost exec-v3 --v3-elf P --trace-elf P --attest-elf P --json OUT
 //! ```
 //!
 //! `exec-lc` runs the real mainnet light-client chain (mainnet fixtures, via `e2e_chain::mainnet_chain`) through both
@@ -16,6 +18,9 @@
 //! `sizes` prints the borsh sizes of the stored states and of the messages (state growth, wire bytes).
 //!
 //! Default ELFs: `$CARGO_TARGET_DIR/riscv-guest/guest_methods/<pkg>/riscv32im-risc0-zkvm-elf/release/<bin>`.
+
+mod bench_bls;
+mod exec_v3;
 
 use std::time::Instant;
 
@@ -402,6 +407,10 @@ fn main() -> Result<()> {
     match args.get(1).map(String::as_str) {
         Some("exec-lc") => exec_lc(&args[2..]),
         Some("sizes") => sizes(&args[2..]),
-        _ => bail!("usage: cost exec-lc [--lc-elf P] [--attest-elf P] --json OUT | cost sizes --json OUT"),
+        Some("bench-bls") => bench_bls::bench_bls(&args[2..]),
+        Some("exec-v3") => exec_v3::exec_v3(&args[2..]),
+        _ => bail!(
+            "usage: cost exec-lc [--lc-elf P] [--attest-elf P] --json OUT | cost sizes --json OUT | cost bench-bls --elf P --out DIR | cost exec-v3 --v3-elf P --trace-elf P --attest-elf P --json OUT"
+        ),
     }
 }

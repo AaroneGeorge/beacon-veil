@@ -1,0 +1,1172 @@
+{
+  "cap": 10000000,
+  "declared_gas_note": "declared_gas is what attest_host::submit_update_staged declares per step (9,000,000); a step is charged the cycles it used; on-chain figures are recorded separately",
+  "every_three_step_row_within_step_limit": true,
+  "executor": "RISC Zero 3.0.5 executor, no proof, no sequencer. metered_cycles = user cycles of the deployed build of lc_verify_v3 for one step (LEZ meters execution gas as user cycles); tx_total_cycles adds the chained attest.Apply and WriteRecord of Finish. Phases come from a measurement build of the same program with cycle marks (--features cycle-trace); unmarked_cycles = metered_cycles minus their sum (program entry, message and job-state decode and encode, journal).",
+  "fixtures": "fixtures/mainnet (bootstrap_15605760, updates_1905_4, finality_update_15637644); fixtures/sepolia (bootstrap_11534336, updates_1408_4, finality_update_11561824); fabricated chain (tools/fixtures FabChain, seed beacon-veil/v3/floor) with participation bits set to the first 342 and re-signed",
+  "guests": {
+    "attest": {
+      "image_id": "9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d"
+    },
+    "lc_verify_v3": {
+      "image_id": "285d6b958fba255a48e58d6689636b96898c0f2ed27528651bfadf5be1ae72b9",
+      "path_kind": "user ELF",
+      "user_elf_bytes": 498960,
+      "user_elf_cap": 1966080
+    },
+    "lc_verify_v3_trace": {
+      "image_id": "f29ba6a49499cc6bfd6fadd63164495eaa49013f10b6cea43591fee79447a9e9",
+      "note": "measurement build, never deployed"
+    }
+  },
+  "measured": true,
+  "rows": [
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 4316376,
+      "job_state_bytes": 1395,
+      "kind": "period",
+      "layout": "three steps",
+      "marked_cycles": 4090873,
+      "message_bytes": 52098,
+      "metered_cycles": 4316376,
+      "network": "mainnet",
+      "participation": 511,
+      "phases": {
+        "aggregate": 227892,
+        "apply": 47535,
+        "checks": 1920597,
+        "committee_root": 1627756,
+        "decode": 258544,
+        "end": 8549
+      },
+      "share_of_cap": "43.2%",
+      "step": "Begin",
+      "tx_total_cycles": 4316376,
+      "unmarked_cycles": 225503,
+      "update": "update[0]",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 6792036,
+      "job_state_bytes": 1395,
+      "kind": "period",
+      "layout": "three steps",
+      "marked_cycles": 6775936,
+      "message_bytes": 1,
+      "metered_cycles": 6792036,
+      "network": "mainnet",
+      "participation": 511,
+      "phases": {
+        "end": 8387,
+        "hash_to_g2": 1506833,
+        "miller": 4544942,
+        "sig_decode": 715774
+      },
+      "share_of_cap": "67.9%",
+      "step": "Miller",
+      "tx_total_cycles": 6792036,
+      "unmarked_cycles": 16100,
+      "update": "update[0]",
+      "within_step_limit": true
+    },
+    {
+      "chained": [
+        {
+          "cycles": 54965,
+          "message": "Apply",
+          "program": "attest"
+        },
+        {
+          "cycles": 24047,
+          "message": "WriteRecord",
+          "program": "attest"
+        }
+      ],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 5272531,
+      "job_state_bytes": 1395,
+      "kind": "period",
+      "layout": "three steps",
+      "marked_cycles": 5172614,
+      "message_bytes": 1,
+      "metered_cycles": 5193519,
+      "network": "mainnet",
+      "participation": 511,
+      "phases": {
+        "end": 13350,
+        "final_exp": 5159264
+      },
+      "share_of_cap": "52.7%",
+      "step": "Finish",
+      "tx_total_cycles": 5272531,
+      "unmarked_cycles": 20905,
+      "update": "update[0]",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 4305107,
+      "job_state_bytes": 1395,
+      "kind": "handoff",
+      "layout": "three steps",
+      "marked_cycles": 4079865,
+      "message_bytes": 52014,
+      "metered_cycles": 4305107,
+      "network": "mainnet",
+      "participation": 512,
+      "phases": {
+        "aggregate": 214576,
+        "apply": 47627,
+        "checks": 1922803,
+        "committee_root": 1626885,
+        "decode": 259428,
+        "end": 8546
+      },
+      "share_of_cap": "43.1%",
+      "step": "Begin",
+      "tx_total_cycles": 4305107,
+      "unmarked_cycles": 225242,
+      "update": "update[1]",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 6792298,
+      "job_state_bytes": 1395,
+      "kind": "handoff",
+      "layout": "three steps",
+      "marked_cycles": 6776198,
+      "message_bytes": 1,
+      "metered_cycles": 6792298,
+      "network": "mainnet",
+      "participation": 512,
+      "phases": {
+        "end": 8387,
+        "hash_to_g2": 1507097,
+        "miller": 4544942,
+        "sig_decode": 715772
+      },
+      "share_of_cap": "67.9%",
+      "step": "Miller",
+      "tx_total_cycles": 6792298,
+      "unmarked_cycles": 16100,
+      "update": "update[1]",
+      "within_step_limit": true
+    },
+    {
+      "chained": [
+        {
+          "cycles": 54965,
+          "message": "Apply",
+          "program": "attest"
+        },
+        {
+          "cycles": 24047,
+          "message": "WriteRecord",
+          "program": "attest"
+        }
+      ],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 5272529,
+      "job_state_bytes": 1395,
+      "kind": "handoff",
+      "layout": "three steps",
+      "marked_cycles": 5172612,
+      "message_bytes": 1,
+      "metered_cycles": 5193517,
+      "network": "mainnet",
+      "participation": 512,
+      "phases": {
+        "end": 13350,
+        "final_exp": 5159262
+      },
+      "share_of_cap": "52.7%",
+      "step": "Finish",
+      "tx_total_cycles": 5272529,
+      "unmarked_cycles": 20905,
+      "update": "update[1]",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 4317570,
+      "job_state_bytes": 1395,
+      "kind": "handoff",
+      "layout": "three steps",
+      "marked_cycles": 4091994,
+      "message_bytes": 52104,
+      "metered_cycles": 4317570,
+      "network": "mainnet",
+      "participation": 511,
+      "phases": {
+        "aggregate": 227867,
+        "apply": 47618,
+        "checks": 1921697,
+        "committee_root": 1627603,
+        "decode": 258660,
+        "end": 8549
+      },
+      "share_of_cap": "43.2%",
+      "step": "Begin",
+      "tx_total_cycles": 4317570,
+      "unmarked_cycles": 225576,
+      "update": "update[2]",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 6791820,
+      "job_state_bytes": 1395,
+      "kind": "handoff",
+      "layout": "three steps",
+      "marked_cycles": 6775720,
+      "message_bytes": 1,
+      "metered_cycles": 6791820,
+      "network": "mainnet",
+      "participation": 511,
+      "phases": {
+        "end": 8387,
+        "hash_to_g2": 1506833,
+        "miller": 4544942,
+        "sig_decode": 715558
+      },
+      "share_of_cap": "67.9%",
+      "step": "Miller",
+      "tx_total_cycles": 6791820,
+      "unmarked_cycles": 16100,
+      "update": "update[2]",
+      "within_step_limit": true
+    },
+    {
+      "chained": [
+        {
+          "cycles": 54965,
+          "message": "Apply",
+          "program": "attest"
+        },
+        {
+          "cycles": 24047,
+          "message": "WriteRecord",
+          "program": "attest"
+        }
+      ],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 5272529,
+      "job_state_bytes": 1395,
+      "kind": "handoff",
+      "layout": "three steps",
+      "marked_cycles": 5172612,
+      "message_bytes": 1,
+      "metered_cycles": 5193517,
+      "network": "mainnet",
+      "participation": 511,
+      "phases": {
+        "end": 13350,
+        "final_exp": 5159262
+      },
+      "share_of_cap": "52.7%",
+      "step": "Finish",
+      "tx_total_cycles": 5272529,
+      "unmarked_cycles": 20905,
+      "update": "update[2]",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 4304266,
+      "job_state_bytes": 1395,
+      "kind": "handoff",
+      "layout": "three steps",
+      "marked_cycles": 4079032,
+      "message_bytes": 52010,
+      "metered_cycles": 4304266,
+      "network": "mainnet",
+      "participation": 512,
+      "phases": {
+        "aggregate": 214587,
+        "apply": 47618,
+        "checks": 1922066,
+        "committee_root": 1626880,
+        "decode": 259335,
+        "end": 8546
+      },
+      "share_of_cap": "43.0%",
+      "step": "Begin",
+      "tx_total_cycles": 4304266,
+      "unmarked_cycles": 225234,
+      "update": "update[3]",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 6792348,
+      "job_state_bytes": 1395,
+      "kind": "handoff",
+      "layout": "three steps",
+      "marked_cycles": 6776248,
+      "message_bytes": 1,
+      "metered_cycles": 6792348,
+      "network": "mainnet",
+      "participation": 512,
+      "phases": {
+        "end": 8387,
+        "hash_to_g2": 1507361,
+        "miller": 4544942,
+        "sig_decode": 715558
+      },
+      "share_of_cap": "67.9%",
+      "step": "Miller",
+      "tx_total_cycles": 6792348,
+      "unmarked_cycles": 16100,
+      "update": "update[3]",
+      "within_step_limit": true
+    },
+    {
+      "chained": [
+        {
+          "cycles": 54965,
+          "message": "Apply",
+          "program": "attest"
+        },
+        {
+          "cycles": 24047,
+          "message": "WriteRecord",
+          "program": "attest"
+        }
+      ],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 5272529,
+      "job_state_bytes": 1395,
+      "kind": "handoff",
+      "layout": "three steps",
+      "marked_cycles": 5172612,
+      "message_bytes": 1,
+      "metered_cycles": 5193517,
+      "network": "mainnet",
+      "participation": 512,
+      "phases": {
+        "end": 13350,
+        "final_exp": 5159262
+      },
+      "share_of_cap": "52.7%",
+      "step": "Finish",
+      "tx_total_cycles": 5272529,
+      "unmarked_cycles": 20905,
+      "update": "update[3]",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 2572270,
+      "job_state_bytes": 1395,
+      "kind": "finality",
+      "layout": "three steps",
+      "marked_cycles": 2451830,
+      "message_bytes": 27197,
+      "metered_cycles": 2572270,
+      "network": "mainnet",
+      "participation": 512,
+      "phases": {
+        "aggregate": 187860,
+        "apply": 47284,
+        "checks": 364410,
+        "committee_root": 1608279,
+        "decode": 235451,
+        "end": 8546
+      },
+      "share_of_cap": "25.7%",
+      "step": "Begin",
+      "tx_total_cycles": 2572270,
+      "unmarked_cycles": 120440,
+      "update": "finality_update_15637644",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 6792086,
+      "job_state_bytes": 1395,
+      "kind": "finality",
+      "layout": "three steps",
+      "marked_cycles": 6775986,
+      "message_bytes": 1,
+      "metered_cycles": 6792086,
+      "network": "mainnet",
+      "participation": 512,
+      "phases": {
+        "end": 8387,
+        "hash_to_g2": 1507097,
+        "miller": 4544942,
+        "sig_decode": 715560
+      },
+      "share_of_cap": "67.9%",
+      "step": "Miller",
+      "tx_total_cycles": 6792086,
+      "unmarked_cycles": 16100,
+      "update": "finality_update_15637644",
+      "within_step_limit": true
+    },
+    {
+      "chained": [
+        {
+          "cycles": 54965,
+          "message": "Apply",
+          "program": "attest"
+        },
+        {
+          "cycles": 24047,
+          "message": "WriteRecord",
+          "program": "attest"
+        }
+      ],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 5272531,
+      "job_state_bytes": 1395,
+      "kind": "finality",
+      "layout": "three steps",
+      "marked_cycles": 5172614,
+      "message_bytes": 1,
+      "metered_cycles": 5193519,
+      "network": "mainnet",
+      "participation": 512,
+      "phases": {
+        "end": 13350,
+        "final_exp": 5159264
+      },
+      "share_of_cap": "52.7%",
+      "step": "Finish",
+      "tx_total_cycles": 5272531,
+      "unmarked_cycles": 20905,
+      "update": "finality_update_15637644",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 4033935,
+      "job_state_bytes": 1395,
+      "kind": "period",
+      "layout": "three steps",
+      "marked_cycles": 3808640,
+      "message_bytes": 51992,
+      "metered_cycles": 4033935,
+      "network": "sepolia",
+      "participation": 507,
+      "phases": {
+        "aggregate": 274709,
+        "apply": 46058,
+        "checks": 1664663,
+        "committee_root": 1629828,
+        "decode": 184833,
+        "end": 8549
+      },
+      "share_of_cap": "40.3%",
+      "step": "Begin",
+      "tx_total_cycles": 4033935,
+      "unmarked_cycles": 225295,
+      "update": "update[0]",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 6791822,
+      "job_state_bytes": 1395,
+      "kind": "period",
+      "layout": "three steps",
+      "marked_cycles": 6775722,
+      "message_bytes": 1,
+      "metered_cycles": 6791822,
+      "network": "sepolia",
+      "participation": 507,
+      "phases": {
+        "end": 8387,
+        "hash_to_g2": 1506833,
+        "miller": 4544942,
+        "sig_decode": 715560
+      },
+      "share_of_cap": "67.9%",
+      "step": "Miller",
+      "tx_total_cycles": 6791822,
+      "unmarked_cycles": 16100,
+      "update": "update[0]",
+      "within_step_limit": true
+    },
+    {
+      "chained": [
+        {
+          "cycles": 54965,
+          "message": "Apply",
+          "program": "attest"
+        },
+        {
+          "cycles": 24047,
+          "message": "WriteRecord",
+          "program": "attest"
+        }
+      ],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 5272531,
+      "job_state_bytes": 1395,
+      "kind": "period",
+      "layout": "three steps",
+      "marked_cycles": 5172614,
+      "message_bytes": 1,
+      "metered_cycles": 5193519,
+      "network": "sepolia",
+      "participation": 507,
+      "phases": {
+        "end": 13350,
+        "final_exp": 5159264
+      },
+      "share_of_cap": "52.7%",
+      "step": "Finish",
+      "tx_total_cycles": 5272531,
+      "unmarked_cycles": 20905,
+      "update": "update[0]",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 4020791,
+      "job_state_bytes": 1395,
+      "kind": "handoff",
+      "layout": "three steps",
+      "marked_cycles": 3796004,
+      "message_bytes": 51896,
+      "metered_cycles": 4020791,
+      "network": "sepolia",
+      "participation": 508,
+      "phases": {
+        "aggregate": 262855,
+        "apply": 46137,
+        "checks": 1664669,
+        "committee_root": 1629177,
+        "decode": 184617,
+        "end": 8549
+      },
+      "share_of_cap": "40.2%",
+      "step": "Begin",
+      "tx_total_cycles": 4020791,
+      "unmarked_cycles": 224787,
+      "update": "update[1]",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 6792348,
+      "job_state_bytes": 1395,
+      "kind": "handoff",
+      "layout": "three steps",
+      "marked_cycles": 6776248,
+      "message_bytes": 1,
+      "metered_cycles": 6792348,
+      "network": "sepolia",
+      "participation": 508,
+      "phases": {
+        "end": 8387,
+        "hash_to_g2": 1507361,
+        "miller": 4544942,
+        "sig_decode": 715558
+      },
+      "share_of_cap": "67.9%",
+      "step": "Miller",
+      "tx_total_cycles": 6792348,
+      "unmarked_cycles": 16100,
+      "update": "update[1]",
+      "within_step_limit": true
+    },
+    {
+      "chained": [
+        {
+          "cycles": 54965,
+          "message": "Apply",
+          "program": "attest"
+        },
+        {
+          "cycles": 24047,
+          "message": "WriteRecord",
+          "program": "attest"
+        }
+      ],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 5272529,
+      "job_state_bytes": 1395,
+      "kind": "handoff",
+      "layout": "three steps",
+      "marked_cycles": 5172612,
+      "message_bytes": 1,
+      "metered_cycles": 5193517,
+      "network": "sepolia",
+      "participation": 508,
+      "phases": {
+        "end": 13350,
+        "final_exp": 5159262
+      },
+      "share_of_cap": "52.7%",
+      "step": "Finish",
+      "tx_total_cycles": 5272529,
+      "unmarked_cycles": 20905,
+      "update": "update[1]",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 4008110,
+      "job_state_bytes": 1395,
+      "kind": "handoff",
+      "layout": "three steps",
+      "marked_cycles": 3783607,
+      "message_bytes": 51800,
+      "metered_cycles": 4008110,
+      "network": "sepolia",
+      "participation": 509,
+      "phases": {
+        "aggregate": 251106,
+        "apply": 46137,
+        "checks": 1664669,
+        "committee_root": 1628529,
+        "decode": 184617,
+        "end": 8549
+      },
+      "share_of_cap": "40.1%",
+      "step": "Begin",
+      "tx_total_cycles": 4008110,
+      "unmarked_cycles": 224503,
+      "update": "update[2]",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 6792298,
+      "job_state_bytes": 1395,
+      "kind": "handoff",
+      "layout": "three steps",
+      "marked_cycles": 6776198,
+      "message_bytes": 1,
+      "metered_cycles": 6792298,
+      "network": "sepolia",
+      "participation": 509,
+      "phases": {
+        "end": 8387,
+        "hash_to_g2": 1507097,
+        "miller": 4544942,
+        "sig_decode": 715772
+      },
+      "share_of_cap": "67.9%",
+      "step": "Miller",
+      "tx_total_cycles": 6792298,
+      "unmarked_cycles": 16100,
+      "update": "update[2]",
+      "within_step_limit": true
+    },
+    {
+      "chained": [
+        {
+          "cycles": 54965,
+          "message": "Apply",
+          "program": "attest"
+        },
+        {
+          "cycles": 24047,
+          "message": "WriteRecord",
+          "program": "attest"
+        }
+      ],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 5272529,
+      "job_state_bytes": 1395,
+      "kind": "handoff",
+      "layout": "three steps",
+      "marked_cycles": 5172612,
+      "message_bytes": 1,
+      "metered_cycles": 5193517,
+      "network": "sepolia",
+      "participation": 509,
+      "phases": {
+        "end": 13350,
+        "final_exp": 5159262
+      },
+      "share_of_cap": "52.7%",
+      "step": "Finish",
+      "tx_total_cycles": 5272529,
+      "unmarked_cycles": 20905,
+      "update": "update[2]",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 4008005,
+      "job_state_bytes": 1395,
+      "kind": "handoff",
+      "layout": "three steps",
+      "marked_cycles": 3783502,
+      "message_bytes": 51800,
+      "metered_cycles": 4008005,
+      "network": "sepolia",
+      "participation": 509,
+      "phases": {
+        "aggregate": 251001,
+        "apply": 46137,
+        "checks": 1664669,
+        "committee_root": 1628529,
+        "decode": 184617,
+        "end": 8549
+      },
+      "share_of_cap": "40.1%",
+      "step": "Begin",
+      "tx_total_cycles": 4008005,
+      "unmarked_cycles": 224503,
+      "update": "update[3]",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 6792562,
+      "job_state_bytes": 1395,
+      "kind": "handoff",
+      "layout": "three steps",
+      "marked_cycles": 6776462,
+      "message_bytes": 1,
+      "metered_cycles": 6792562,
+      "network": "sepolia",
+      "participation": 509,
+      "phases": {
+        "end": 8387,
+        "hash_to_g2": 1507361,
+        "miller": 4544942,
+        "sig_decode": 715772
+      },
+      "share_of_cap": "67.9%",
+      "step": "Miller",
+      "tx_total_cycles": 6792562,
+      "unmarked_cycles": 16100,
+      "update": "update[3]",
+      "within_step_limit": true
+    },
+    {
+      "chained": [
+        {
+          "cycles": 54965,
+          "message": "Apply",
+          "program": "attest"
+        },
+        {
+          "cycles": 24047,
+          "message": "WriteRecord",
+          "program": "attest"
+        }
+      ],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 5272529,
+      "job_state_bytes": 1395,
+      "kind": "handoff",
+      "layout": "three steps",
+      "marked_cycles": 5172612,
+      "message_bytes": 1,
+      "metered_cycles": 5193517,
+      "network": "sepolia",
+      "participation": 509,
+      "phases": {
+        "end": 13350,
+        "final_exp": 5159262
+      },
+      "share_of_cap": "52.7%",
+      "step": "Finish",
+      "tx_total_cycles": 5272529,
+      "unmarked_cycles": 20905,
+      "update": "update[3]",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 2267733,
+      "job_state_bytes": 1395,
+      "kind": "finality",
+      "layout": "three steps",
+      "marked_cycles": 2147821,
+      "message_bytes": 26824,
+      "metered_cycles": 2267733,
+      "network": "sepolia",
+      "participation": 509,
+      "phases": {
+        "aggregate": 223445,
+        "apply": 45796,
+        "checks": 99239,
+        "committee_root": 1609800,
+        "decode": 160992,
+        "end": 8549
+      },
+      "share_of_cap": "22.7%",
+      "step": "Begin",
+      "tx_total_cycles": 2267733,
+      "unmarked_cycles": 119912,
+      "update": "finality_update_11561824",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 6792086,
+      "job_state_bytes": 1395,
+      "kind": "finality",
+      "layout": "three steps",
+      "marked_cycles": 6775986,
+      "message_bytes": 1,
+      "metered_cycles": 6792086,
+      "network": "sepolia",
+      "participation": 509,
+      "phases": {
+        "end": 8387,
+        "hash_to_g2": 1507097,
+        "miller": 4544942,
+        "sig_decode": 715560
+      },
+      "share_of_cap": "67.9%",
+      "step": "Miller",
+      "tx_total_cycles": 6792086,
+      "unmarked_cycles": 16100,
+      "update": "finality_update_11561824",
+      "within_step_limit": true
+    },
+    {
+      "chained": [
+        {
+          "cycles": 54965,
+          "message": "Apply",
+          "program": "attest"
+        },
+        {
+          "cycles": 24047,
+          "message": "WriteRecord",
+          "program": "attest"
+        }
+      ],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 5272531,
+      "job_state_bytes": 1395,
+      "kind": "finality",
+      "layout": "three steps",
+      "marked_cycles": 5172614,
+      "message_bytes": 1,
+      "metered_cycles": 5193519,
+      "network": "sepolia",
+      "participation": 509,
+      "phases": {
+        "end": 13350,
+        "final_exp": 5159264
+      },
+      "share_of_cap": "52.7%",
+      "step": "Finish",
+      "tx_total_cycles": 5272531,
+      "unmarked_cycles": 20905,
+      "update": "finality_update_11561824",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 6507521,
+      "job_state_bytes": 1395,
+      "kind": "period",
+      "layout": "three steps",
+      "marked_cycles": 6214226,
+      "message_bytes": 68280,
+      "metered_cycles": 6507521,
+      "network": "fabricated",
+      "participation": 342,
+      "phases": {
+        "aggregate": 2231453,
+        "apply": 47471,
+        "checks": 1912385,
+        "committee_root": 1758764,
+        "decode": 255604,
+        "end": 8549
+      },
+      "share_of_cap": "65.1%",
+      "step": "Begin",
+      "tx_total_cycles": 6507521,
+      "unmarked_cycles": 293295,
+      "update": "period_update_342",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 6792036,
+      "job_state_bytes": 1395,
+      "kind": "period",
+      "layout": "three steps",
+      "marked_cycles": 6775936,
+      "message_bytes": 1,
+      "metered_cycles": 6792036,
+      "network": "fabricated",
+      "participation": 342,
+      "phases": {
+        "end": 8387,
+        "hash_to_g2": 1506833,
+        "miller": 4544942,
+        "sig_decode": 715774
+      },
+      "share_of_cap": "67.9%",
+      "step": "Miller",
+      "tx_total_cycles": 6792036,
+      "unmarked_cycles": 16100,
+      "update": "period_update_342",
+      "within_step_limit": true
+    },
+    {
+      "chained": [
+        {
+          "cycles": 54965,
+          "message": "Apply",
+          "program": "attest"
+        },
+        {
+          "cycles": 24047,
+          "message": "WriteRecord",
+          "program": "attest"
+        }
+      ],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 5272531,
+      "job_state_bytes": 1395,
+      "kind": "period",
+      "layout": "three steps",
+      "marked_cycles": 5172614,
+      "message_bytes": 1,
+      "metered_cycles": 5193519,
+      "network": "fabricated",
+      "participation": 342,
+      "phases": {
+        "end": 13350,
+        "final_exp": 5159264
+      },
+      "share_of_cap": "52.7%",
+      "step": "Finish",
+      "tx_total_cycles": 5272531,
+      "unmarked_cycles": 20905,
+      "update": "period_update_342",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 4119208,
+      "job_state_bytes": 1395,
+      "kind": "period",
+      "layout": "four steps",
+      "marked_cycles": 3892956,
+      "message_bytes": 51956,
+      "metered_cycles": 4119208,
+      "network": "fabricated",
+      "participation": 342,
+      "phases": {
+        "apply": 47471,
+        "checks": 1912385,
+        "committee_root": 1626564,
+        "decode": 255604,
+        "end": 50932
+      },
+      "share_of_cap": "41.2%",
+      "step": "BeginPrepare",
+      "tx_total_cycles": 4119208,
+      "unmarked_cycles": 226252,
+      "update": "period_update_342",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 4158745,
+      "job_state_bytes": 1395,
+      "kind": "period",
+      "layout": "four steps",
+      "marked_cycles": 3968900,
+      "message_bytes": 40953,
+      "metered_cycles": 4158745,
+      "network": "fabricated",
+      "participation": 342,
+      "phases": {
+        "aggregate": 3960473,
+        "end": 8427
+      },
+      "share_of_cap": "41.6%",
+      "step": "BeginKeys",
+      "tx_total_cycles": 4158745,
+      "unmarked_cycles": 189845,
+      "update": "period_update_342",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 6792036,
+      "job_state_bytes": 1395,
+      "kind": "period",
+      "layout": "four steps",
+      "marked_cycles": 6775936,
+      "message_bytes": 1,
+      "metered_cycles": 6792036,
+      "network": "fabricated",
+      "participation": 342,
+      "phases": {
+        "end": 8387,
+        "hash_to_g2": 1506833,
+        "miller": 4544942,
+        "sig_decode": 715774
+      },
+      "share_of_cap": "67.9%",
+      "step": "Miller",
+      "tx_total_cycles": 6792036,
+      "unmarked_cycles": 16100,
+      "update": "period_update_342",
+      "within_step_limit": true
+    },
+    {
+      "chained": [
+        {
+          "cycles": 54965,
+          "message": "Apply",
+          "program": "attest"
+        },
+        {
+          "cycles": 24047,
+          "message": "WriteRecord",
+          "program": "attest"
+        }
+      ],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 5272531,
+      "job_state_bytes": 1395,
+      "kind": "period",
+      "layout": "four steps",
+      "marked_cycles": 5172614,
+      "message_bytes": 1,
+      "metered_cycles": 5193519,
+      "network": "fabricated",
+      "participation": 342,
+      "phases": {
+        "end": 13350,
+        "final_exp": 5159264
+      },
+      "share_of_cap": "52.7%",
+      "step": "Finish",
+      "tx_total_cycles": 5272531,
+      "unmarked_cycles": 20905,
+      "update": "period_update_342",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 4775183,
+      "job_state_bytes": 1395,
+      "kind": "finality",
+      "layout": "three steps",
+      "marked_cycles": 4585709,
+      "message_bytes": 43464,
+      "metered_cycles": 4775183,
+      "network": "fabricated",
+      "participation": 342,
+      "phases": {
+        "aggregate": 2204116,
+        "apply": 47209,
+        "checks": 354182,
+        "committee_root": 1740137,
+        "decode": 231516,
+        "end": 8549
+      },
+      "share_of_cap": "47.8%",
+      "step": "Begin",
+      "tx_total_cycles": 4775183,
+      "unmarked_cycles": 189474,
+      "update": "finality_update_342",
+      "within_step_limit": true
+    },
+    {
+      "chained": [],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 6792350,
+      "job_state_bytes": 1395,
+      "kind": "finality",
+      "layout": "three steps",
+      "marked_cycles": 6776250,
+      "message_bytes": 1,
+      "metered_cycles": 6792350,
+      "network": "fabricated",
+      "participation": 342,
+      "phases": {
+        "end": 8387,
+        "hash_to_g2": 1507361,
+        "miller": 4544942,
+        "sig_decode": 715560
+      },
+      "share_of_cap": "67.9%",
+      "step": "Miller",
+      "tx_total_cycles": 6792350,
+      "unmarked_cycles": 16100,
+      "update": "finality_update_342",
+      "within_step_limit": true
+    },
+    {
+      "chained": [
+        {
+          "cycles": 54965,
+          "message": "Apply",
+          "program": "attest"
+        },
+        {
+          "cycles": 24047,
+          "message": "WriteRecord",
+          "program": "attest"
+        }
+      ],
+      "declared_gas": 9000000,
+      "expected_charged_gas": 5272531,
+      "job_state_bytes": 1395,
+      "kind": "finality",
+      "layout": "three steps",
+      "marked_cycles": 5172614,
+      "message_bytes": 1,
+      "metered_cycles": 5193519,
+      "network": "fabricated",
+      "participation": 342,
+      "phases": {
+        "end": 13350,
+        "final_exp": 5159264
+      },
+      "share_of_cap": "52.7%",
+      "step": "Finish",
+      "tx_total_cycles": 5272531,
+      "unmarked_cycles": 20905,
+      "update": "finality_update_342",
+      "within_step_limit": true
+    }
+  ],
+  "step_limit": 9000000,
+  "tool": "tools/cost exec-v3",
+  "worst_case_three_steps": {
+    "Begin": 6507521,
+    "Finish": 5272531,
+    "Miller": 6792562
+  }
+}

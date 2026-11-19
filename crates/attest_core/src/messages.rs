@@ -52,3 +52,50 @@ pub enum LcVerifyMessage {
         update_ssz: Vec<u8>,
     },
 }
+
+/// Messages of program `lc_verify_v3` (feature `v3`): one update as up to three public transactions on a job
+/// account `PDA(lc_verify_v3, lc_v3::job_seed(instance, pre_store, update_ssz))`, the receiver of every step. Anyone
+/// may send any step. Refusals end the program with exit code = the `EsaError` number (cycle-counted refusal);
+/// `attest.Apply` refusals inside `Finish` still panic with `ESA:Exx`.
+#[cfg(feature = "v3")]
+#[derive(Debug, Clone, PartialEq, Eq, BorshSerialize, BorshDeserialize)]
+pub enum LcVerifyV3Message {
+    /// Checks the update, computes the `Apply` fields, aggregates the key and decodes the signature; writes the job
+    /// at stage `BEGUN`. Timestamp window: from `genesis_time + 12 * signature_slot` to the weak-subjectivity bound.
+    Begin {
+        attest_program: AccountId,
+        instance: AccountId,
+        config: InstanceConfig,
+        witness: crate::lc_v3::StoreWitnessV3,
+        update_ssz: Vec<u8>,
+        /// Uncompressed G1 keys of the cleared participation bits, in bit order (`lc_v3::absent_keys`).
+        absent_keys: Vec<[u8; 96]>,
+    },
+    /// Hash to G2 and the Miller loop; job stage `BEGUN` -> `MILLER`.
+    Miller,
+    /// Final exponentiation; on success sends sync `Apply` to the instance; job stage `MILLER` -> `DONE`.
+    Finish,
+    /// All steps in one execution (private path). Same checks and outcome as `Begin`, `Miller`, `Finish`.
+    VerifyOnce {
+        attest_program: AccountId,
+        instance: AccountId,
+        config: InstanceConfig,
+        witness: crate::lc_v3::StoreWitnessV3,
+        update_ssz: Vec<u8>,
+        absent_keys: Vec<[u8; 96]>,
+    },
+    /// Four-step path, first half of `Begin`: checks and `Apply` fields, no keys; job stage `PREPARED`.
+    BeginPrepare {
+        attest_program: AccountId,
+        instance: AccountId,
+        config: InstanceConfig,
+        witness: crate::lc_v3::StoreWitnessV3,
+        update_ssz: Vec<u8>,
+    },
+    /// Four-step path, second half of `Begin`: the signing committee again (its root must equal the job's) and the
+    /// absent keys; job stage `PREPARED` -> `BEGUN`.
+    BeginKeys {
+        committee_ssz: Vec<u8>,
+        absent_keys: Vec<[u8; 96]>,
+    },
+}

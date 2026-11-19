@@ -14,7 +14,7 @@
 # guests/IMAGE_IDS.expected.
 #
 # Outputs: attest, lc_verify, lc_verify_v2 (lc_verify --features v2), consumer_erc20, bridge, bridge_dev_source,
-# burn_proof (.bin + user ELF), SHA256SUMS, IMAGE_IDS, BUILD_INFO.
+# burn_proof, lc_verify_v3 (.bin + user ELF), SHA256SUMS, IMAGE_IDS, BUILD_INFO.
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=scripts/env.sh
@@ -50,7 +50,8 @@ RUN mkdir -p /out && R=target/$T/release && \\
     CARGO_MANIFEST_PATH=programs/bridge/Cargo.toml $build --manifest-path programs/bridge/Cargo.toml && cp \$R/bridge \$R/bridge_dev_source /out/ && \\
     CARGO_MANIFEST_PATH=guests/burn_proof/Cargo.toml $build --manifest-path guests/burn_proof/Cargo.toml && cp \$R/burn_proof /out/ && \\
     CARGO_MANIFEST_PATH=programs/lc_verify/Cargo.toml $build --manifest-path programs/lc_verify/Cargo.toml && cp \$R/lc_verify /out/ && \\
-    CARGO_MANIFEST_PATH=programs/lc_verify/Cargo.toml $build --manifest-path programs/lc_verify/Cargo.toml --features v2 && cp \$R/lc_verify /out/lc_verify_v2
+    CARGO_MANIFEST_PATH=programs/lc_verify/Cargo.toml $build --manifest-path programs/lc_verify/Cargo.toml --features v2 && cp \$R/lc_verify /out/lc_verify_v2 && \\
+    CARGO_MANIFEST_PATH=programs/lc_verify_v3/Cargo.toml $build --manifest-path programs/lc_verify_v3/Cargo.toml && cp \$R/lc_verify_v3 /out/
 
 FROM scratch as export
 COPY --from=build /out /
@@ -63,7 +64,7 @@ docker build --output="$out/elf" -f "$work/Dockerfile" "$src" > "$work/docker.lo
 # Wrap with the v1compat kernel (risc0-build's ProgramBinary) and record image ids.
 (cd "$BV_REPO" && RISC0_SKIP_BUILD=1 nice -n 15 cargo build -q --locked -p guest_ids)
 : > "$out/IMAGE_IDS"
-for g in attest lc_verify lc_verify_v2 consumer_erc20 bridge bridge_dev_source burn_proof; do
+for g in attest lc_verify lc_verify_v2 consumer_erc20 bridge bridge_dev_source burn_proof lc_verify_v3; do
   "$CARGO_TARGET_DIR/debug/guest-ids" "$out/elf/$g" "$out/$g.bin" | sed "s#^$out/##" >> "$out/IMAGE_IDS"
 done
 (cd "$out" && sha256sum ./*.bin elf/* > SHA256SUMS)

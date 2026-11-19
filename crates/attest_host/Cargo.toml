@@ -11,7 +11,7 @@ workspace = true
 
 [dependencies]
 anyhow.workspace = true
-attest_core = { workspace = true, features = ["lc"] }
+attest_core = { workspace = true, features = ["lc", "v3"] }
 attest_inclusion.workspace = true
 borsh.workspace = true
 common.workspace = true
@@ -21,3 +21,4 @@ program_loader_core.workspace = true
 sequencer_service_rpc = { workspace = true, features = ["client"] }
 wallet.workspace = true
 toml.workspace = true
+tokio.workspace = true

@@ -25,10 +25,16 @@ eyre = { version = "0.6", optional = true }
 bls12_381 = { version = "0.8", optional = true, features = ["experimental"] }
 sha2_v09 = { package = "sha2", version = "0.9", optional = true }
 risc0-zkvm = { workspace = true, optional = true }
+# V3 (`v3`, src/lc_v3.rs): the blst layer.
+bls_blst = { workspace = true, optional = true }
 
 [features]
 default = []
 cycle-trace = ["lc", "dep:bls12_381", "dep:sha2_v09", "dep:risc0-zkvm"]
 # V2 verifier (PLAN.md D4): Helios rules with the signature check replaced (src/lc_v2.rs).
 v2 = ["lc", "dep:bls12_381", "dep:sha2_v09"]
+# V3 verifier (public path, staged; src/lc_v3.rs): Helios's rules, blst, raw committees, apply on roots.
+v3 = ["lc", "dep:bls_blst", "dep:risc0-zkvm"]
+# Measurement build of lc_verify_v3 only: cycle marks on stderr (lc_v3::mark). Never deployed.
+v3-trace = ["v3"]
 lc = ["dep:alloy-primitives", "dep:helios-consensus-core", "dep:ethereum_ssz", "dep:tree_hash", "dep:eyre"]

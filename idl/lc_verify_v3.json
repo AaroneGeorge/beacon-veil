@@ -1,0 +1,380 @@
+{
+  "version": "0.1.0",
+  "name": "lc_verify_v3",
+  "instructions": [
+    {
+      "name": "begin",
+      "accounts": [
+        {
+          "name": "job",
+          "writable": true,
+          "signer": false,
+          "init": true
+        }
+      ],
+      "args": [
+        {
+          "name": "attest_program",
+          "type": "account_id"
+        },
+        {
+          "name": "instance",
+          "type": "account_id"
+        },
+        {
+          "name": "config",
+          "type": {
+            "defined": "InstanceConfig"
+          }
+        },
+        {
+          "name": "witness",
+          "type": {
+            "defined": "StoreWitnessV3"
+          }
+        },
+        {
+          "name": "update_ssz",
+          "type": "bytes"
+        },
+        {
+          "name": "absent_keys",
+          "type": {
+            "vec": {
+              "array": [
+                "u8",
+                96
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "miller",
+      "accounts": [
+        {
+          "name": "job",
+          "writable": true,
+          "signer": false,
+          "init": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "finish",
+      "accounts": [
+        {
+          "name": "job",
+          "writable": true,
+          "signer": false,
+          "init": false
+        },
+        {
+          "name": "instance",
+          "writable": true,
+          "signer": false,
+          "init": false
+        },
+        {
+          "name": "record",
+          "writable": true,
+          "signer": false,
+          "init": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "verify_once",
+      "accounts": [
+        {
+          "name": "verifier_actor",
+          "writable": false,
+          "signer": false,
+          "init": false
+        },
+        {
+          "name": "instance",
+          "writable": true,
+          "signer": false,
+          "init": false
+        },
+        {
+          "name": "record",
+          "writable": true,
+          "signer": false,
+          "init": true
+        }
+      ],
+      "args": [
+        {
+          "name": "attest_program",
+          "type": "account_id"
+        },
+        {
+          "name": "instance",
+          "type": "account_id"
+        },
+        {
+          "name": "config",
+          "type": {
+            "defined": "InstanceConfig"
+          }
+        },
+        {
+          "name": "witness",
+          "type": {
+            "defined": "StoreWitnessV3"
+          }
+        },
+        {
+          "name": "update_ssz",
+          "type": "bytes"
+        },
+        {
+          "name": "absent_keys",
+          "type": {
+            "vec": {
+              "array": [
+                "u8",
+                96
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "begin_prepare",
+      "accounts": [
+        {
+          "name": "job",
+          "writable": true,
+          "signer": false,
+          "init": true
+        }
+      ],
+      "args": [
+        {
+          "name": "attest_program",
+          "type": "account_id"
+        },
+        {
+          "name": "instance",
+          "type": "account_id"
+        },
+        {
+          "name": "config",
+          "type": {
+            "defined": "InstanceConfig"
+          }
+        },
+        {
+          "name": "witness",
+          "type": {
+            "defined": "StoreWitnessV3"
+          }
+        },
+        {
+          "name": "update_ssz",
+          "type": "bytes"
+        }
+      ]
+    },
+    {
+      "name": "begin_keys",
+      "accounts": [
+        {
+          "name": "job",
+          "writable": true,
+          "signer": false,
+          "init": false
+        }
+      ],
+      "args": [
+        {
+          "name": "committee_ssz",
+          "type": "bytes"
+        },
+        {
+          "name": "absent_keys",
+          "type": {
+            "vec": {
+              "array": [
+                "u8",
+                96
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "JobV3",
+      "note": "borsh(attest_core::lc_v3::JobV3) at PDA(lc_verify_v3, sha256(\"bv/job/v1\" || instance || pre_store || sha256(update_ssz)))"
+    }
+  ],
+  "types": [
+    {
+      "name": "InstanceConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "chain_id",
+          "type": "u64"
+        },
+        {
+          "name": "genesis_validators_root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "genesis_time",
+          "type": "u64"
+        },
+        {
+          "name": "forks",
+          "type": {
+            "vec": {
+              "tuple": [
+                "u64",
+                {
+                  "array": [
+                    "u8",
+                    4
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "checkpoint_root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "checkpoint_slot",
+          "type": "u64"
+        },
+        {
+          "name": "verifiers",
+          "type": {
+            "vec": "account_id"
+          }
+        },
+        {
+          "name": "min_participants",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "BeaconHeader",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "slot",
+          "type": "u64"
+        },
+        {
+          "name": "proposer_index",
+          "type": "u64"
+        },
+        {
+          "name": "parent_root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "state_root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "body_root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CommitteeSlot",
+      "kind": "enum",
+      "variants": [
+        {
+          "name": "Current"
+        },
+        {
+          "name": "Next"
+        }
+      ]
+    },
+    {
+      "name": "StoreWitnessV3",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "finalized",
+          "type": {
+            "defined": "BeaconHeader"
+          }
+        },
+        {
+          "name": "committee_ssz",
+          "type": "bytes"
+        },
+        {
+          "name": "signing",
+          "type": {
+            "defined": "CommitteeSlot"
+          }
+        },
+        {
+          "name": "other_root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "previous_max_active_participants",
+          "type": "u64"
+        },
+        {
+          "name": "current_max_active_participants",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "instruction_type": "attest_core::LcVerifyV3Message",
+  "errors_note": "a refusal ends the program with exit code = the EsaError number (1..=15, names as in idl/attest.json); attest.Apply refusals inside finish panic with ESA:Exx",
+  "notes": "Public path: begin, miller, finish (or begin_prepare, begin_keys, miller, finish), one public transaction each, at the job account. Private path: verify_once in a private actor. finish and verify_once send sync attest.Apply to the instance."
+}

@@ -5,10 +5,10 @@ SHELL := /usr/bin/env bash
 .SHELLFLAGS := -eu -o pipefail -c
 ENV := source scripts/env.sh &&
 NICE := nice -n 15
-GUESTS := attest lc_verify consumer_erc20 bridge bridge_dev_source burn_proof
+GUESTS := attest lc_verify consumer_erc20 bridge bridge_dev_source burn_proof lc_verify_v3
 
 .PHONY: help fmt fmt-check clippy test test-host guests guests-docker forge-test ci seq-dev-start seq-dev-stop \
-        deploy-local cost-exec cost-prove gate clean-guests
+        deploy-local cost-exec cost-prove bench-bls exec-v3 gate clean-guests
 
 help: ## List targets
 	@grep -E '^[a-zA-Z_-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-16s %s\n", $$1, $$2}'
@@ -52,6 +52,12 @@ deploy-local: guests ## Deploy attest and lc_verify to seq-dev, write deploy/ids
 
 cost-exec: ## deterministic cycles and gas (executor, real fixtures) -> evidence/cost/cost.{json,md}
 	tools/cost/cost_exec.sh
+
+bench-bls: ## BLS phases and whole-update variants, zkcrypto vs blst (executor) -> evidence/public-path/bench (BENCH_ROUTE=docker for the pinned image)
+	tools/cost/bench_bls.sh
+
+exec-v3: ## lc_verify_v3 per step in the executor (COST_BINS=<release set> for deployed ELFs) -> evidence/public-path/exec-steps.json
+	tools/cost/exec_v3.sh
 
 cost-prove: ## proof-window job, JOB=calib-seg20|calib-ppe|g1-real (needs BV_PROOF_WINDOW_OK=1); no JOB: summary
 	tools/cost/cost_prove.sh $(JOB) $(ARGS)

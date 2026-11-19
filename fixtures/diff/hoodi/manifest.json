@@ -1,0 +1,358 @@
+{
+  "chain": "hoodi",
+  "chain_id": 560048,
+  "files": {
+    "finality_update_4409029.json": {
+      "accept": "application/json",
+      "attested_slot": 4409029,
+      "bytes": 5053,
+      "content_type": "application/json; charset=utf-8",
+      "eth_consensus_version": "fulu",
+      "fetched_at_utc": "2026-11-19T20:57:28Z",
+      "finalized_slot": 4408960,
+      "http_status": 200,
+      "pair": "finality_update_4409029.ssz",
+      "pair_check": "ssz fetched before and after the json, identical",
+      "participants": 474,
+      "provider": "lodestar",
+      "sha256": "6e022a65201fe4e4d252ba03dce368bcdefd3a875e5464fc1e1271280384a366",
+      "signature_slot": 4409031,
+      "url": "https://lodestar-hoodi.chainsafe.io/eth/v1/beacon/light_client/finality_update"
+    },
+    "finality_update_4409029.ssz": {
+      "accept": "application/octet-stream",
+      "attested_slot": 4409029,
+      "bytes": 2093,
+      "content_type": "application/octet-stream",
+      "eth_consensus_version": "fulu",
+      "fetched_at_utc": "2026-11-19T20:57:28Z",
+      "finalized_slot": 4408960,
+      "http_status": 200,
+      "pair": "finality_update_4409029.json",
+      "pair_check": "ssz fetched before and after the json, identical",
+      "participants": 474,
+      "provider": "lodestar",
+      "sha256": "1fb69a47dea68845351bf6945e139b254f3caf0f6072b043d2296dd659abb57d",
+      "signature_slot": 4409031,
+      "url": "https://lodestar-hoodi.chainsafe.io/eth/v1/beacon/light_client/finality_update"
+    },
+    "finality_update_4409070.json": {
+      "accept": "application/json",
+      "attested_slot": 4409070,
+      "bytes": 5052,
+      "content_type": "application/json; charset=utf-8",
+      "eth_consensus_version": "fulu",
+      "fetched_at_utc": "2026-11-19T21:05:25Z",
+      "finalized_slot": 4408992,
+      "http_status": 200,
+      "pair": "finality_update_4409070.ssz",
+      "pair_check": "ssz fetched before and after the json, identical",
+      "participants": 474,
+      "provider": "lodestar",
+      "sha256": "a3e54b19b34bb4e8f1f078612b8391798f2105abefec443da227f0b9aecc9460",
+      "signature_slot": 4409071,
+      "url": "https://lodestar-hoodi.chainsafe.io/eth/v1/beacon/light_client/finality_update"
+    },
+    "finality_update_4409070.ssz": {
+      "accept": "application/octet-stream",
+      "attested_slot": 4409070,
+      "bytes": 2092,
+      "content_type": "application/octet-stream",
+      "eth_consensus_version": "fulu",
+      "fetched_at_utc": "2026-11-19T21:05:25Z",
+      "finalized_slot": 4408992,
+      "http_status": 200,
+      "pair": "finality_update_4409070.json",
+      "pair_check": "ssz fetched before and after the json, identical",
+      "participants": 474,
+      "provider": "lodestar",
+      "sha256": "b9e71c1e84111c63ed74d7c63c6f630b7791e61721e8a16eedc18ebe162bff8a",
+      "signature_slot": 4409071,
+      "url": "https://lodestar-hoodi.chainsafe.io/eth/v1/beacon/light_client/finality_update"
+    },
+    "finality_update_4409089.json": {
+      "accept": "application/json",
+      "attested_slot": 4409089,
+      "bytes": 5094,
+      "content_type": "application/json; charset=utf-8",
+      "eth_consensus_version": "fulu",
+      "fetched_at_utc": "2026-11-19T21:12:35Z",
+      "finalized_slot": 4409023,
+      "http_status": 200,
+      "pair": "finality_update_4409089.ssz",
+      "pair_check": "ssz fetched before and after the json, identical",
+      "participants": 466,
+      "provider": "lodestar",
+      "sha256": "c49d4c447b270ada960cc5730ae40d550c6d40e647ced743fb89762537f94141",
+      "signature_slot": 4409091,
+      "url": "https://lodestar-hoodi.chainsafe.io/eth/v1/beacon/light_client/finality_update"
+    },
+    "finality_update_4409089.ssz": {
+      "accept": "application/octet-stream",
+      "attested_slot": 4409089,
+      "bytes": 2111,
+      "content_type": "application/octet-stream",
+      "eth_consensus_version": "fulu",
+      "fetched_at_utc": "2026-11-19T21:12:35Z",
+      "finalized_slot": 4409023,
+      "http_status": 200,
+      "pair": "finality_update_4409089.json",
+      "pair_check": "ssz fetched before and after the json, identical",
+      "participants": 466,
+      "provider": "lodestar",
+      "sha256": "27d8e43171b45413173d82377c4e1976165f3f30aa934bd372e4b7cb8f415905",
+      "signature_slot": 4409091,
+      "url": "https://lodestar-hoodi.chainsafe.io/eth/v1/beacon/light_client/finality_update"
+    },
+    "fork_schedule.json": {
+      "accept": "application/json",
+      "bytes": 748,
+      "content_type": "application/json; charset=utf-8",
+      "cross_check": {
+        "equal_after_hex_lowercase": false,
+        "provider": "nimbus-unstable"
+      },
+      "eth_consensus_version": null,
+      "fetched_at_utc": "2026-11-19T20:55:56Z",
+      "http_status": 200,
+      "provider": "lodestar",
+      "sha256": "85c61359efb9f7a80631364f3c2fa691eded5758cbbb0c576a90c2a1044652e8",
+      "url": "https://lodestar-hoodi.chainsafe.io/eth/v1/config/fork_schedule"
+    },
+    "genesis.json": {
+      "accept": "application/json",
+      "bytes": 169,
+      "content_type": "application/json; charset=utf-8",
+      "cross_check": {
+        "equal_after_hex_lowercase": true,
+        "provider": "nimbus-unstable"
+      },
+      "eth_consensus_version": null,
+      "fetched_at_utc": "2026-11-19T20:55:24Z",
+      "http_status": 200,
+      "provider": "lodestar",
+      "sha256": "d240cc3a5e8f65e4cd37e9bd72fb2575e809ae66aa9af684b66d2a3356082e2b",
+      "url": "https://lodestar-hoodi.chainsafe.io/eth/v1/beacon/genesis"
+    },
+    "optimistic_update_4409040.json": {
+      "accept": "application/json",
+      "attested_slot": 4409040,
+      "bytes": 2500,
+      "content_type": "application/json; charset=utf-8",
+      "eth_consensus_version": "fulu",
+      "fetched_at_utc": "2026-11-19T20:58:20Z",
+      "http_status": 200,
+      "pair": "optimistic_update_4409040.ssz",
+      "pair_check": "ssz fetched before and after the json, identical",
+      "participants": 454,
+      "provider": "lodestar",
+      "sha256": "79365f2dfe37454e1fc15d4b86794a33f53b08d82deeaaaa4611e899219ab38d",
+      "signature_slot": 4409041,
+      "url": "https://lodestar-hoodi.chainsafe.io/eth/v1/beacon/light_client/optimistic_update"
+    },
+    "optimistic_update_4409040.ssz": {
+      "accept": "application/octet-stream",
+      "attested_slot": 4409040,
+      "bytes": 1017,
+      "content_type": "application/octet-stream",
+      "eth_consensus_version": "fulu",
+      "fetched_at_utc": "2026-11-19T20:58:20Z",
+      "http_status": 200,
+      "pair": "optimistic_update_4409040.json",
+      "pair_check": "ssz fetched before and after the json, identical",
+      "participants": 454,
+      "provider": "lodestar",
+      "sha256": "aa600c7a81d15b01f44abf8718b72c2f9ffed207d81d2b66efb2687d02a1cb20",
+      "signature_slot": 4409041,
+      "url": "https://lodestar-hoodi.chainsafe.io/eth/v1/beacon/light_client/optimistic_update"
+    },
+    "optimistic_update_4409076.json": {
+      "accept": "application/json",
+      "attested_slot": 4409076,
+      "bytes": 2501,
+      "content_type": "application/json; charset=utf-8",
+      "eth_consensus_version": "fulu",
+      "fetched_at_utc": "2026-11-19T21:05:30Z",
+      "http_status": 200,
+      "pair": "optimistic_update_4409076.ssz",
+      "pair_check": "ssz fetched before and after the json, identical",
+      "participants": 453,
+      "provider": "lodestar",
+      "sha256": "bc51dc9ba730c2d34c1a99f36547a1bdd08de061946ac2f1dde0bafa448972fd",
+      "signature_slot": 4409077,
+      "url": "https://lodestar-hoodi.chainsafe.io/eth/v1/beacon/light_client/optimistic_update"
+    },
+    "optimistic_update_4409076.ssz": {
+      "accept": "application/octet-stream",
+      "attested_slot": 4409076,
+      "bytes": 1018,
+      "content_type": "application/octet-stream",
+      "eth_consensus_version": "fulu",
+      "fetched_at_utc": "2026-11-19T21:05:30Z",
+      "http_status": 200,
+      "pair": "optimistic_update_4409076.json",
+      "pair_check": "ssz fetched before and after the json, identical",
+      "participants": 453,
+      "provider": "lodestar",
+      "sha256": "52fc5f608f5d1836b35263f706f1acbf191fb7ffb9a4df64d10b3f762a8c2a3b",
+      "signature_slot": 4409077,
+      "url": "https://lodestar-hoodi.chainsafe.io/eth/v1/beacon/light_client/optimistic_update"
+    },
+    "optimistic_update_4409112.json": {
+      "accept": "application/json",
+      "attested_slot": 4409112,
+      "bytes": 2494,
+      "content_type": "application/json; charset=utf-8",
+      "eth_consensus_version": "fulu",
+      "fetched_at_utc": "2026-11-19T21:12:40Z",
+      "http_status": 200,
+      "pair": "optimistic_update_4409112.ssz",
+      "pair_check": "ssz fetched before and after the json, identical",
+      "participants": 452,
+      "provider": "lodestar",
+      "sha256": "04bb470b03a5f4288f29d79423e076417bf7e798806020caa534fd12a399ef3b",
+      "signature_slot": 4409113,
+      "url": "https://lodestar-hoodi.chainsafe.io/eth/v1/beacon/light_client/optimistic_update"
+    },
+    "optimistic_update_4409112.ssz": {
+      "accept": "application/octet-stream",
+      "attested_slot": 4409112,
+      "bytes": 1017,
+      "content_type": "application/octet-stream",
+      "eth_consensus_version": "fulu",
+      "fetched_at_utc": "2026-11-19T21:12:40Z",
+      "http_status": 200,
+      "pair": "optimistic_update_4409112.json",
+      "pair_check": "ssz fetched before and after the json, identical",
+      "participants": 452,
+      "provider": "lodestar",
+      "sha256": "ab7b411a217f01f81e892412b4ab41115476b2666ab65a5004e3ba0dd2a2e0cd",
+      "signature_slot": 4409113,
+      "url": "https://lodestar-hoodi.chainsafe.io/eth/v1/beacon/light_client/optimistic_update"
+    },
+    "spec.json": {
+      "accept": "application/json",
+      "bytes": 8825,
+      "content_type": "application/json; charset=utf-8",
+      "eth_consensus_version": null,
+      "fetched_at_utc": "2026-11-19T20:56:00Z",
+      "http_status": 200,
+      "provider": "lodestar",
+      "sha256": "68cac52fa81c4e25ade06a82875483f22a84c6bc81aa42c679958165b9a9272e",
+      "url": "https://lodestar-hoodi.chainsafe.io/eth/v1/config/spec"
+    },
+    "updates_530_9.json": {
+      "accept": "application/json",
+      "bytes": 516289,
+      "content_type": "application/json; charset=utf-8",
+      "count": 9,
+      "cross_check": {
+        "checked_at_utc": "2026-11-19T21:18:00Z",
+        "equal_after_hex_lowercase": true,
+        "provider": "nimbus-testing",
+        "skipped": [
+          "nimbus-unstable: empty answer"
+        ]
+      },
+      "eth_consensus_version": "fulu,fulu,fulu,fulu,fulu,fulu,fulu,fulu,fulu",
+      "fetched_at_utc": "2026-11-19T20:56:02Z",
+      "http_status": 200,
+      "note": "recent hoodi periods (the last is the current one)",
+      "provider": "lodestar",
+      "sha256": "abd6690ef9850d220e39b1943dacd12eac93f5e0c99988f69169e9dce085f98b",
+      "start_period": 530,
+      "updates": [
+        {
+          "attested_slot": 4349254,
+          "finalized_slot": 4349184,
+          "participants": 458,
+          "signature_slot": 4349255,
+          "version": "fulu"
+        },
+        {
+          "attested_slot": 4354024,
+          "finalized_slot": 4353952,
+          "participants": 469,
+          "signature_slot": 4354026,
+          "version": "fulu"
+        },
+        {
+          "attested_slot": 4364876,
+          "finalized_slot": 4364800,
+          "participants": 476,
+          "signature_slot": 4364878,
+          "version": "fulu"
+        },
+        {
+          "attested_slot": 4366952,
+          "finalized_slot": 4366880,
+          "participants": 476,
+          "signature_slot": 4366954,
+          "version": "fulu"
+        },
+        {
+          "attested_slot": 4374603,
+          "finalized_slot": 4374528,
+          "participants": 461,
+          "signature_slot": 4374604,
+          "version": "fulu"
+        },
+        {
+          "attested_slot": 4385360,
+          "finalized_slot": 4385280,
+          "participants": 479,
+          "signature_slot": 4385361,
+          "version": "fulu"
+        },
+        {
+          "attested_slot": 4393890,
+          "finalized_slot": 4393824,
+          "participants": 481,
+          "signature_slot": 4393892,
+          "version": "fulu"
+        },
+        {
+          "attested_slot": 4399338,
+          "finalized_slot": 4399264,
+          "participants": 480,
+          "signature_slot": 4399340,
+          "version": "fulu"
+        },
+        {
+          "attested_slot": 4407449,
+          "finalized_slot": 4407359,
+          "participants": 478,
+          "signature_slot": 4407451,
+          "version": "fulu"
+        }
+      ],
+      "url": "https://lodestar-hoodi.chainsafe.io/eth/v1/beacon/light_client/updates?start_period=530&count=9"
+    },
+    "updates_530_9.ssz": {
+      "accept": "application/octet-stream",
+      "bytes": 242270,
+      "content_type": "application/octet-stream",
+      "count": 9,
+      "cross_check": {
+        "bytes_equal": true,
+        "checked_at_utc": "2026-11-19T21:18:03Z",
+        "provider": "nimbus-testing",
+        "skipped": [
+          "nimbus-unstable: empty answer"
+        ]
+      },
+      "eth_consensus_version": "fulu,fulu,fulu,fulu,fulu,fulu,fulu,fulu,fulu",
+      "fetched_at_utc": "2026-11-19T20:56:42Z",
+      "format": "Beacon API SSZ list response: per item u64-le length (fork digest + payload), 4-byte fork digest, SSZ LightClientUpdate",
+      "http_status": 200,
+      "pair": "updates_530_9.json",
+      "provider": "lodestar",
+      "sha256": "21761feffb6ab5fdcd5efb16cbe0fb906a96dff7b852dc8bfe74b8bd8e05a3b8",
+      "start_period": 530,
+      "url": "https://lodestar-hoodi.chainsafe.io/eth/v1/beacon/light_client/updates?start_period=530&count=9"
+    }
+  },
+  "note": "Bodies stored exactly as received. sha256 is over the stored file bytes.",
+  "tool": "tools/fixtures (fetch.py / fixtures fetch)",
+  "updated_at_utc": "2026-11-19T21:18:03Z"
+}

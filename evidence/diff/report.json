@@ -1,0 +1,650 @@
+{
+  "by_class": {
+    "attested_execution_changed": {
+      "cases": 43,
+      "expected": {
+        "E15": 43
+      },
+      "helios_verify": {
+        "InvalidExecutionPayloadProof": 43
+      },
+      "v1_seen": {
+        "E15": 43
+      }
+    },
+    "attested_field_changed": {
+      "cases": 43,
+      "expected": {
+        "E03": 43
+      },
+      "helios_verify": {
+        "InvalidSignature": 43
+      },
+      "v1_seen": {
+        "E03": 43
+      }
+    },
+    "bit_cleared": {
+      "cases": 43,
+      "expected": {
+        "E03": 43
+      },
+      "helios_verify": {
+        "InvalidSignature": 43
+      },
+      "v1_seen": {
+        "E03": 43
+      }
+    },
+    "bit_set": {
+      "cases": 32,
+      "expected": {
+        "E03": 32
+      },
+      "helios_verify": {
+        "InvalidSignature": 32
+      },
+      "v1_seen": {
+        "E03": 32
+      }
+    },
+    "extra_data_shortened": {
+      "cases": 26,
+      "expected": {
+        "E15": 26
+      },
+      "helios_verify": {
+        "InvalidExecutionPayloadProof": 26
+      },
+      "v1_seen": {
+        "E15": 26
+      }
+    },
+    "fab_against_real_store": {
+      "cases": 1,
+      "expected": {
+        "E03": 1
+      },
+      "helios_verify": {
+        "InvalidSignature": 1
+      },
+      "v1_seen": {
+        "E03": 1
+      }
+    },
+    "fab_empty_finalized_junk_branch": {
+      "cases": 1,
+      "expected": {
+        "E02": 1
+      },
+      "helios_verify": {
+        "ok": 1
+      },
+      "v1_seen": {
+        "E02": 1
+      }
+    },
+    "fab_finality_one_signer": {
+      "cases": 1,
+      "expected": {
+        "E04": 1
+      },
+      "helios_verify": {
+        "ok": 1
+      },
+      "v1_seen": {
+        "E04": 1
+      }
+    },
+    "fab_finality_update": {
+      "cases": 1,
+      "expected": {
+        "accept": 1
+      },
+      "helios_verify": {
+        "ok": 1,
+        "ok, store moved": 1
+      },
+      "v1_seen": {
+        "accept": 1
+      }
+    },
+    "fab_handoff_update": {
+      "cases": 1,
+      "expected": {
+        "accept": 1
+      },
+      "helios_verify": {
+        "ok": 1,
+        "ok, store moved": 1
+      },
+      "v1_seen": {
+        "accept": 1
+      }
+    },
+    "fab_identity_member": {
+      "cases": 2,
+      "expected": {
+        "accept": 2
+      },
+      "helios_verify": {
+        "ok": 2,
+        "ok, store moved": 2
+      },
+      "v1_seen": {
+        "accept": 2
+      }
+    },
+    "fab_no_finality": {
+      "cases": 1,
+      "expected": {
+        "E02": 1
+      },
+      "helios_verify": {
+        "ok": 1
+      },
+      "v1_seen": {
+        "E02": 1
+      }
+    },
+    "fab_no_finality_one_signer": {
+      "cases": 1,
+      "expected": {
+        "E02": 1
+      },
+      "helios_verify": {
+        "ok": 1
+      },
+      "v1_seen": {
+        "E02": 1
+      }
+    },
+    "fab_participation": {
+      "cases": 8,
+      "expected": {
+        "E04": 4,
+        "accept": 4
+      },
+      "helios_verify": {
+        "InsufficientParticipation": 1,
+        "ok": 7,
+        "ok, store moved": 4
+      },
+      "v1_seen": {
+        "E04": 4,
+        "accept": 4
+      }
+    },
+    "fab_period_update": {
+      "cases": 1,
+      "expected": {
+        "accept": 1
+      },
+      "helios_verify": {
+        "ok": 1,
+        "ok, store moved": 1
+      },
+      "v1_seen": {
+        "accept": 1
+      }
+    },
+    "fab_previous_committee": {
+      "cases": 1,
+      "expected": {
+        "E03": 1
+      },
+      "helios_verify": {
+        "InvalidSignature": 1
+      },
+      "v1_seen": {
+        "E03": 1
+      }
+    },
+    "finality_branch_node_changed": {
+      "cases": 43,
+      "expected": {
+        "E02": 43
+      },
+      "helios_verify": {
+        "InvalidFinalityProof": 43
+      },
+      "v1_seen": {
+        "E02": 43
+      }
+    },
+    "finalized_execution_changed": {
+      "cases": 43,
+      "expected": {
+        "E15": 43
+      },
+      "helios_verify": {
+        "InvalidExecutionPayloadProof": 43
+      },
+      "v1_seen": {
+        "E15": 43
+      }
+    },
+    "finalized_field_changed": {
+      "cases": 43,
+      "expected": {
+        "E02": 43
+      },
+      "helios_verify": {
+        "InvalidFinalityProof": 43
+      },
+      "v1_seen": {
+        "E02": 43
+      }
+    },
+    "finalized_header_zeroed": {
+      "cases": 43,
+      "expected": {
+        "E02": 43
+      },
+      "helios_verify": {
+        "ok": 43
+      },
+      "v1_seen": {
+        "E02": 43
+      }
+    },
+    "next_committee_branch_node_changed": {
+      "cases": 30,
+      "expected": {
+        "E05": 30
+      },
+      "helios_verify": {
+        "InvalidNextSyncCommitteeProof": 30
+      },
+      "v1_seen": {
+        "E05": 30
+      }
+    },
+    "next_committee_key_byte_changed": {
+      "cases": 30,
+      "expected": {
+        "E05": 30
+      },
+      "helios_verify": {
+        "InvalidNextSyncCommitteeProof": 30
+      },
+      "v1_seen": {
+        "E05": 30
+      }
+    },
+    "optimistic_update": {
+      "cases": 13,
+      "expected": {
+        "E02": 13
+      },
+      "helios_verify": {
+        "ok": 13
+      },
+      "v1_seen": {
+        "E02": 13
+      }
+    },
+    "other_network_genesis_root": {
+      "cases": 43,
+      "expected": {
+        "E03": 43
+      },
+      "helios_verify": {
+        "InvalidSignature": 43
+      },
+      "v1_seen": {
+        "E03": 43
+      }
+    },
+    "replay_after_apply": {
+      "cases": 43,
+      "expected": {
+        "E14": 43
+      },
+      "helios_verify": {
+        "ok": 43
+      },
+      "v1_seen": {
+        "E14": 43
+      }
+    },
+    "sig_byte_flipped": {
+      "cases": 43,
+      "expected": {
+        "E03": 43
+      },
+      "helios_verify": {
+        "InvalidSignature": 43
+      },
+      "v1_seen": {
+        "E03": 43
+      }
+    },
+    "sig_infinity": {
+      "cases": 43,
+      "expected": {
+        "E03": 43
+      },
+      "helios_verify": {
+        "InvalidSignature": 43
+      },
+      "v1_seen": {
+        "E03": 43
+      }
+    },
+    "signature_slot_not_after_attested": {
+      "cases": 43,
+      "expected": {
+        "E01": 43
+      },
+      "helios_verify": {
+        "InvalidTimestamp": 43
+      },
+      "v1_seen": {
+        "E01": 43
+      }
+    },
+    "truncated_ssz": {
+      "cases": 43,
+      "expected": {
+        "E01": 43
+      },
+      "helios_verify": {
+        "decode": 43
+      },
+      "v1_seen": {
+        "E01": 43
+      }
+    },
+    "two_periods_ahead": {
+      "cases": 39,
+      "expected": {
+        "E05": 39
+      },
+      "helios_verify": {
+        "InvalidPeriod": 39
+      },
+      "v1_seen": {
+        "E05": 39
+      }
+    },
+    "valid_handoff_finality": {
+      "cases": 13,
+      "expected": {
+        "accept": 13
+      },
+      "helios_verify": {
+        "ok": 13,
+        "ok, store moved": 13
+      },
+      "v1_seen": {
+        "accept": 13
+      }
+    },
+    "valid_handoff_update": {
+      "cases": 30,
+      "expected": {
+        "accept": 30
+      },
+      "helios_verify": {
+        "ok": 30,
+        "ok, store moved": 30
+      },
+      "v1_seen": {
+        "accept": 30
+      }
+    },
+    "valid_learn_next": {
+      "cases": 34,
+      "expected": {
+        "accept": 34
+      },
+      "helios_verify": {
+        "ok": 34,
+        "ok, store moved": 34
+      },
+      "v1_seen": {
+        "accept": 34
+      }
+    },
+    "valid_same_period_finality": {
+      "cases": 13,
+      "expected": {
+        "accept": 13
+      },
+      "helios_verify": {
+        "ok": 13,
+        "ok, store moved": 13
+      },
+      "v1_seen": {
+        "accept": 13
+      }
+    }
+  },
+  "by_kind": {
+    "fabricated": 19,
+    "optimistic": 13,
+    "tampered": 716,
+    "valid": 90
+  },
+  "columns": [
+    "v1",
+    "v2",
+    "v3",
+    "v3_staged"
+  ],
+  "disagreement_cases": {
+    "v2": [],
+    "v3": [],
+    "v3_staged": []
+  },
+  "disagreements_with_v1": {
+    "v2": 0,
+    "v3": 0,
+    "v3_staged": 0
+  },
+  "distinct_inputs": 838,
+  "executor_cases": null,
+  "executor_mismatches": null,
+  "expected_mismatches": [],
+  "fixtures": {
+    "hoodi": "4eb8a7f10477f19d5ee3c4df5a6e1c82e36b09b0025c27c3fa6028fa2683740a",
+    "mainnet": "b2597a0e81dffb43d82137fcb122f9998d14f18807afb2932ee560faa5f201f6",
+    "sepolia": "32ccb3697664d255a48cf8a05b741d3f22d41071caa298035a5635d713ceb7b9"
+  },
+  "fork_crossing": "sepolia",
+  "fork_crossing_cases": 17,
+  "fork_crossing_detail": "Sepolia period 1378 (Fulu) to 1379 (Gloas, epoch 353024); Hoodi (Fulu) has no Gloas fork scheduled (fork_schedule GLOAS epoch = far future at fetch time)",
+  "fork_crossing_valid": 1,
+  "generated_at_utc": "2026-11-19T23:36:40Z",
+  "gloas_cases": 315,
+  "helios": "a16z/helios tag 0.12.0 (2af9b41), helios-consensus-core unmodified",
+  "helios_accepts_we_refuse": {
+    "by_reason": {
+      "E02": 59,
+      "E04": 4,
+      "E14": 43
+    },
+    "cases": {
+      "E02": [
+        "mainnet/p1906/handoff/finalized_header_zeroed",
+        "mainnet/p1907/handoff/finalized_header_zeroed",
+        "mainnet/p1908/handoff/finalized_header_zeroed",
+        "mainnet/p1909/handoff/finalized_header_zeroed",
+        "mainnet/p1910/handoff/finalized_header_zeroed",
+        "mainnet/p1911/handoff/finalized_header_zeroed",
+        "mainnet/p1912/handoff/finalized_header_zeroed",
+        "mainnet/p1913/handoff/finalized_header_zeroed",
+        "mainnet/p1914/handoff/finalized_header_zeroed",
+        "mainnet/p1915/handoff/finalized_header_zeroed",
+        "mainnet/finality15691462/handoff/finalized_header_zeroed",
+        "mainnet/finality15691490/handoff/finalized_header_zeroed",
+        "mainnet/finality15691525/handoff/finalized_header_zeroed",
+        "mainnet/finality15691584/handoff/finalized_header_zeroed",
+        "mainnet/finality15691618/handoff/finalized_header_zeroed",
+        "mainnet/optimistic15691477/no_finality",
+        "mainnet/optimistic15691514/no_finality",
+        "mainnet/optimistic15691550/no_finality",
+        "mainnet/optimistic15691586/no_finality",
+        "mainnet/optimistic15691622/no_finality",
+        "sepolia/p1378/handoff/finalized_header_zeroed",
+        "sepolia/p1379/handoff/finalized_header_zeroed",
+        "sepolia/p1380/handoff/finalized_header_zeroed",
+        "sepolia/p1408/handoff/finalized_header_zeroed",
+        "sepolia/p1409/handoff/finalized_header_zeroed",
+        "sepolia/p1410/handoff/finalized_header_zeroed",
+        "sepolia/p1411/handoff/finalized_header_zeroed",
+        "sepolia/p1412/handoff/finalized_header_zeroed",
+        "sepolia/p1413/handoff/finalized_header_zeroed",
+        "sepolia/p1414/handoff/finalized_header_zeroed",
+        "sepolia/p1415/handoff/finalized_header_zeroed",
+        "sepolia/p1416/handoff/finalized_header_zeroed",
+        "sepolia/p1417/handoff/finalized_header_zeroed",
+        "sepolia/finality11615648/handoff/finalized_header_zeroed",
+        "sepolia/finality11615712/handoff/finalized_header_zeroed",
+        "sepolia/finality11615744/handoff/finalized_header_zeroed",
+        "sepolia/finality11615776/handoff/finalized_header_zeroed",
+        "sepolia/finality11615808/handoff/finalized_header_zeroed",
+        "sepolia/optimistic11615680/no_finality",
+        "sepolia/optimistic11615715/no_finality",
+        "sepolia/optimistic11615752/no_finality",
+        "sepolia/optimistic11615788/no_finality",
+        "sepolia/optimistic11615824/no_finality",
+        "hoodi/p532/handoff/finalized_header_zeroed",
+        "hoodi/p533/handoff/finalized_header_zeroed",
+        "hoodi/p534/handoff/finalized_header_zeroed",
+        "hoodi/p535/handoff/finalized_header_zeroed",
+        "hoodi/p536/handoff/finalized_header_zeroed",
+        "hoodi/p537/handoff/finalized_header_zeroed",
+        "hoodi/p538/handoff/finalized_header_zeroed",
+        "hoodi/finality4409029/handoff/finalized_header_zeroed",
+        "hoodi/finality4409070/handoff/finalized_header_zeroed",
+        "hoodi/finality4409089/handoff/finalized_header_zeroed",
+        "hoodi/optimistic4409041/no_finality",
+        "hoodi/optimistic4409077/no_finality",
+        "hoodi/optimistic4409113/no_finality",
+        "fabricated/no_finality",
+        "fabricated/no_finality_one_signer",
+        "fabricated/empty_finalized_junk_branch"
+      ],
+      "E04": [
+        "fabricated/participation341",
+        "fabricated/participation256",
+        "fabricated/participation1",
+        "fabricated/finality_one_signer"
+      ],
+      "E14": [
+        "mainnet/p1906/handoff/replay_after_apply",
+        "mainnet/p1907/handoff/replay_after_apply",
+        "mainnet/p1908/handoff/replay_after_apply",
+        "mainnet/p1909/handoff/replay_after_apply",
+        "mainnet/p1910/handoff/replay_after_apply",
+        "mainnet/p1911/handoff/replay_after_apply",
+        "mainnet/p1912/handoff/replay_after_apply",
+        "mainnet/p1913/handoff/replay_after_apply",
+        "mainnet/p1914/handoff/replay_after_apply",
+        "mainnet/p1915/handoff/replay_after_apply",
+        "mainnet/finality15691462/handoff/replay_after_apply",
+        "mainnet/finality15691490/handoff/replay_after_apply",
+        "mainnet/finality15691525/handoff/replay_after_apply",
+        "mainnet/finality15691584/handoff/replay_after_apply",
+        "mainnet/finality15691618/handoff/replay_after_apply",
+        "sepolia/p1378/handoff/replay_after_apply",
+        "sepolia/p1379/handoff/replay_after_apply",
+        "sepolia/p1380/handoff/replay_after_apply",
+        "sepolia/p1408/handoff/replay_after_apply",
+        "sepolia/p1409/handoff/replay_after_apply",
+        "sepolia/p1410/handoff/replay_after_apply",
+        "sepolia/p1411/handoff/replay_after_apply",
+        "sepolia/p1412/handoff/replay_after_apply",
+        "sepolia/p1413/handoff/replay_after_apply",
+        "sepolia/p1414/handoff/replay_after_apply",
+        "sepolia/p1415/handoff/replay_after_apply",
+        "sepolia/p1416/handoff/replay_after_apply",
+        "sepolia/p1417/handoff/replay_after_apply",
+        "sepolia/finality11615648/handoff/replay_after_apply",
+        "sepolia/finality11615712/handoff/replay_after_apply",
+        "sepolia/finality11615744/handoff/replay_after_apply",
+        "sepolia/finality11615776/handoff/replay_after_apply",
+        "sepolia/finality11615808/handoff/replay_after_apply",
+        "hoodi/p532/handoff/replay_after_apply",
+        "hoodi/p533/handoff/replay_after_apply",
+        "hoodi/p534/handoff/replay_after_apply",
+        "hoodi/p535/handoff/replay_after_apply",
+        "hoodi/p536/handoff/replay_after_apply",
+        "hoodi/p537/handoff/replay_after_apply",
+        "hoodi/p538/handoff/replay_after_apply",
+        "hoodi/finality4409029/handoff/replay_after_apply",
+        "hoodi/finality4409070/handoff/replay_after_apply",
+        "hoodi/finality4409089/handoff/replay_after_apply"
+      ]
+    },
+    "count": 106
+  },
+  "helios_refuses_we_accept": [],
+  "inputs_sha256": "72f32f75e862522d9e0ba2093ebcfdadd20386d59a4ea3f0e9aa1092135685c6",
+  "intended_divergences": [
+    {
+      "column": "v3",
+      "id": "fabricated/identity_member_counted",
+      "other": "E03",
+      "reason": "a participating committee key equal to the identity: Helios counts it, the staged verifier refuses it (a16z/helios issue #871 class)",
+      "v1": "accept:a4c98b8c86f0b37f"
+    },
+    {
+      "column": "v3_staged",
+      "id": "fabricated/identity_member_counted",
+      "other": "E03",
+      "reason": "a participating committee key equal to the identity: Helios counts it, the staged verifier refuses it (a16z/helios issue #871 class)",
+      "v1": "accept:a4c98b8c86f0b37f"
+    }
+  ],
+  "network_forks": {
+    "fabricated": [
+      "fulu"
+    ],
+    "hoodi": [
+      "fulu"
+    ],
+    "mainnet": [
+      "fulu"
+    ],
+    "sepolia": [
+      "fulu",
+      "gloas"
+    ]
+  },
+  "networks": {
+    "fabricated": {
+      "fabricated": 19,
+      "total": 19
+    },
+    "hoodi": {
+      "optimistic": 3,
+      "tampered": 173,
+      "total": 197,
+      "valid": 21
+    },
+    "mainnet": {
+      "optimistic": 5,
+      "tampered": 251,
+      "total": 287,
+      "valid": 31
+    },
+    "sepolia": {
+      "gloas": 315,
+      "optimistic": 5,
+      "tampered": 292,
+      "total": 335,
+      "valid": 38
+    }
+  },
+  "panics": [],
+  "pass": true,
+  "total": 838,
+  "v1_v2_disagreements": 0,
+  "v1_v3_disagreements": 0,
+  "valid": 90,
+  "valid_fabricated_positive_controls": 9,
+  "what": "Differential test: unmodified Helios 0.12.0 verify_*/apply_* and each verifier column on real, tampered and fabricated light-client updates. Reference column: v1."
+}

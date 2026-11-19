@@ -778,3 +778,279 @@ pub fn dry_run_attest(
 ) -> Result<Statement, EsaError> {
     attest_inclusion::verify_claim(*instance, record, claim, predicate)
 }
+
+// ------------------------------------------------------------------------------------------------------------------
+// V3: the staged public path (`lc_verify_v3`)
+// ------------------------------------------------------------------------------------------------------------------
+
+/// Gas limit declared for each V3 step: 90% of the cap. A `Begin` that does not fit is retried as `BeginPrepare` +
+/// `BeginKeys` (four steps in all).
+pub const V3_STEP_GAS: u64 = 9_000_000;
+
+/// [`esa_code`], plus the exit-code refusals of `lc_verify_v3` ("Program exited with non-zero code N ...", N = the
+/// `EsaError` number).
+#[must_use]
+pub fn esa_code_v3(err: &anyhow::Error) -> Option<EsaError> {
+    esa_code(err).or_else(|| {
+        err.chain().find_map(|e| {
+            let text = e.to_string();
+            let rest = text.split("non-zero code ").nth(1)?;
+            let n: u8 = rest.split(|c: char| !c.is_ascii_digit()).next()?.parse().ok()?;
+            EsaError::ALL.iter().copied().find(|c| *c as u8 == n)
+        })
+    })
+}
+
+/// [`chain_err`] that also reads `lc_verify_v3` exit-code refusals.
+fn chain_err_v3(what: &str, text: String) -> anyhow::Error {
+    let e = chain_err(what, text);
+    match esa_code_v3(&e) {
+        Some(code) if esa_code(&e).is_none() => anyhow::Error::new(code).context(format!("{e:#}")),
+        _ => e,
+    }
+}
+
+/// Sends a public transaction paid by [`payer`] with a declared gas limit of `gas_limit`, and waits for it.
+async fn send_public_limited(
+    w: &mut Wallet,
+    accounts: Vec<AccountMention>,
+    message: Vec<u8>,
+    gas_limit: u64,
+    what: &str,
+) -> anyhow::Result<TxOutcome> {
+    let payer = account_from_env_or_label(w, "BV_PAYER", "bv-payer")?;
+    if std::env::var("BV_ALLOW_REVERT").is_ok_and(|v| v == "1") {
+        w.set_allow_revert(true);
+    }
+    w.set_fee_params(wallet::FeeParams {
+        gas_limit: Some(gas_limit),
+        ..wallet::FeeParams::default()
+    });
+    let tx = w
+        .send_pub_tx_paid_by(accounts, 0, message, Some(payer))
+        .await
+        .map_err(|e| chain_err_v3(what, format!("{e:#}")))?;
+    let gas = gas_of(w);
+    confirm(w, tx, what).await?;
+    Ok(TxOutcome {
+        tx: tx.to_string(),
+        cycles: None,
+        gas,
+    })
+}
+
+/// Result of [`submit_update_staged`].
+#[derive(Debug, Clone)]
+pub struct StagedOutcome {
+    /// The job account (`PDA(lc_verify_v3, job_seed)`).
+    pub job: AccountId,
+    /// `(step name, outcome)` of every step this call sent, in order (steps already done before a restart are not
+    /// repeated).
+    pub steps: Vec<(String, TxOutcome)>,
+    /// The `Apply` fields.
+    pub outcome: attest_core::lc_v3::Outcome,
+    /// `Begin` did not fit [`V3_STEP_GAS`] and ran as `BeginPrepare` + `BeginKeys`.
+    pub four_steps: bool,
+}
+
+/// Reads a V3 job account. `None` if it does not exist.
+pub async fn read_job(v3: AccountId, job: &AccountId) -> anyhow::Result<Option<attest_core::lc_v3::JobV3>> {
+    let w = open_wallet()?;
+    let Some(account) = w.get_account_view(Actor::new(*job, v3)).await? else {
+        return Ok(None);
+    };
+    let state = account.data.actor_state(v3);
+    if state.is_empty() {
+        return Ok(None);
+    }
+    Ok(Some(borsh::from_slice(state).context("decoding V3 job state")?))
+}
+
+/// The V3 inputs for `update_ssz` on `instance`, checked natively with the guest's code: the store file (checked
+/// against the chain), its V3 witness, the absent keys, the outcome. Any refusal is returned before anything is sent.
+async fn v3_inputs(
+    ids: &DeployedIds,
+    instance: &AccountId,
+    update_ssz: &[u8],
+) -> anyhow::Result<(
+    InstanceConfig,
+    lc::UpdateOutcome,
+    attest_core::lc_v3::StoreWitnessV3,
+    Vec<[u8; 96]>,
+)> {
+    use attest_core::lc_v3;
+    let state = read_instance(ids, instance)
+        .await?
+        .ok_or_else(|| anyhow!("instance {instance} does not exist"))?;
+    let file = load_verified_store(instance, &state.head)?;
+    let v1 = lc::verify_and_apply(&state.config, &file.witness, update_ssz).map_err(|e| refuse(e, "update"))?;
+    let w3 = lc_v3::StoreWitnessV3::from_v1(&file.witness, v1.signature_slot);
+    let keys = lc_v3::absent_keys(&w3.committee_ssz, update_ssz);
+    let out = lc_v3::verify_once(&state.config, &w3, update_ssz, &keys).map_err(|e| refuse(e, "update (v3)"))?;
+    if (out.pre_store, out.post_store) != (v1.pre_store, v1.post_store) {
+        bail!("update: V3 and V1 disagree on the store commitments (local check)");
+    }
+    Ok((state.config, v1, w3, keys))
+}
+
+/// Attempts per step of [`submit_update_staged`] before it gives up.
+pub const V3_STEP_ATTEMPTS: u32 = 8;
+
+/// Submits one update through `lc_verify_v3` (program id `v3`, which must be in the instance's `verifiers`) as
+/// public transactions to its job account: `Begin`, `Miller`, `Finish`, each waited for. If `Begin` does not fit
+/// [`V3_STEP_GAS`], it is sent as `BeginPrepare` + `BeginKeys`.
+///
+/// The job's on-chain stage decides the next step, read again before every attempt. So a restart continues where the
+/// job stands, and two submitters racing the same update share one job: a step the other one already landed is
+/// skipped. LEZ caps a whole block at 10M cycles, so steps of different jobs often wait for separate blocks; a step
+/// that failed without changing the job (not included, a block that did not fit, a sequencer error) is retried, up
+/// to [`V3_STEP_ATTEMPTS`] times, 15 s apart. A refusal by the program on an unchanged job is returned. Updates the
+/// local store file once the job is done. Anyone may call it: the payer is [`payer`].
+pub async fn submit_update_staged(
+    ids: &DeployedIds,
+    v3: AccountId,
+    instance: &AccountId,
+    update_ssz: &[u8],
+) -> anyhow::Result<StagedOutcome> {
+    use attest_core::{LcVerifyV3Message as M, lc_v3, lc_v3::stage};
+    let (config, v1, w3, absent_keys) = v3_inputs(ids, instance, update_ssz).await?;
+    let seed = lc_v3::job_seed(instance, &v1.pre_store, update_ssz);
+    let job = lc_v3::job_id(&v3, &seed);
+    let job_mention = || pda(v3, seed).select_program_actor_state(v3);
+    let mut w = open_wallet()?;
+    let mut steps = Vec::new();
+    let mut four_steps = false;
+    let mut failures = 0u32;
+    loop {
+        let at = read_job(v3, &job).await?.map_or(0, |j| j.stage);
+        if at == stage::DONE {
+            break;
+        }
+        let (name, message, accounts) = match at {
+            0 if !four_steps => (
+                "Begin",
+                M::Begin {
+                    attest_program: ids.attest,
+                    instance: *instance,
+                    config: config.clone(),
+                    witness: w3.clone(),
+                    update_ssz: update_ssz.to_vec(),
+                    absent_keys: absent_keys.clone(),
+                },
+                vec![job_mention()],
+            ),
+            0 => (
+                "BeginPrepare",
+                M::BeginPrepare {
+                    attest_program: ids.attest,
+                    instance: *instance,
+                    config: config.clone(),
+                    witness: w3.clone(),
+                    update_ssz: update_ssz.to_vec(),
+                },
+                vec![job_mention()],
+            ),
+            stage::PREPARED => (
+                "BeginKeys",
+                M::BeginKeys {
+                    committee_ssz: w3.committee_ssz.clone(),
+                    absent_keys: absent_keys.clone(),
+                },
+                vec![job_mention()],
+            ),
+            stage::BEGUN => ("Miller", M::Miller, vec![job_mention()]),
+            stage::MILLER => (
+                "Finish",
+                M::Finish,
+                vec![
+                    job_mention(),
+                    AccountIdentity::PublicNoSign(*instance).select_program_actor_state(ids.attest),
+                    pda(ids.attest, record_seed(instance, v1.head.slot)).select_program_actor_state(ids.attest),
+                ],
+            ),
+            other => bail!("v3 job {job} at unknown stage {other}"),
+        };
+        let what = format!("v3 {name}");
+        match send_public_limited(&mut w, accounts, borsh::to_vec(&message)?, V3_STEP_GAS, &what).await {
+            Ok(o) => {
+                steps.push((name.to_owned(), o));
+                failures = 0;
+            }
+            Err(e) if name == "Begin" && format!("{e:#}").contains("exceeded its cycle budget") => {
+                four_steps = true;
+            }
+            Err(e) => {
+                let now = read_job(v3, &job).await?.map_or(0, |j| j.stage);
+                if now != at {
+                    // Another submitter moved the job meanwhile: continue from its new stage.
+                    continue;
+                }
+                failures += 1;
+                if esa_code_v3(&e).is_some() || failures >= V3_STEP_ATTEMPTS {
+                    return Err(e);
+                }
+                tokio::time::sleep(std::time::Duration::from_secs(15)).await;
+            }
+        }
+    }
+    let done = read_job(v3, &job)
+        .await?
+        .ok_or_else(|| anyhow!("v3 job {job} missing after Finish"))?;
+    four_steps |= steps.iter().any(|(n, _)| n == "BeginKeys");
+    write_store(
+        instance,
+        &StoreFile {
+            config,
+            witness: v1.new_witness(),
+        },
+    )?;
+    Ok(StagedOutcome {
+        job,
+        steps,
+        outcome: done.outcome,
+        four_steps,
+    })
+}
+
+/// Submits one update through `lc_verify_v3` `VerifyOnce` in a private actor of the submitter (`$BV_SUBMITTER` /
+/// label `bv-submitter`): one privacy-preserving transaction whose proof covers the whole update; `Apply` lands on
+/// the public instance. Updates the local store file.
+pub async fn submit_verify_once_private(
+    ids: &DeployedIds,
+    v3: AccountId,
+    instance: &AccountId,
+    update_ssz: &[u8],
+) -> anyhow::Result<TxOutcome> {
+    let (config, v1, witness, absent_keys) = v3_inputs(ids, instance, update_ssz).await?;
+    let mut w = open_wallet()?;
+    let submitter = account_from_env_or_label(&w, "BV_SUBMITTER", "bv-submitter")?;
+    let name = program_name(&v3).unwrap_or_else(|| "lc_verify_v3".to_owned());
+    let programs = ProgramCatalog::from([(ids.attest, load_program("attest")?), (v3, load_program(&name)?)]);
+    let accounts = vec![
+        AccountIdentity::PrivateOwned(submitter).select_program_actor_state(v3),
+        AccountIdentity::PublicNoSign(*instance).select_program_actor_state(ids.attest),
+        pda(ids.attest, record_seed(instance, v1.head.slot)).select_program_actor_state(ids.attest),
+    ];
+    let message = borsh::to_vec(&attest_core::LcVerifyV3Message::VerifyOnce {
+        attest_program: ids.attest,
+        instance: *instance,
+        config: config.clone(),
+        witness,
+        update_ssz: update_ssz.to_vec(),
+        absent_keys,
+    })?;
+    let out = send_private(&mut w, accounts, message, &programs, "v3 verify once (private)")
+        .await
+        .map_err(|e| match esa_code_v3(&e) {
+            Some(code) if esa_code(&e).is_none() => anyhow::Error::new(code).context(format!("{e:#}")),
+            _ => e,
+        })?;
+    write_store(
+        instance,
+        &StoreFile {
+            config,
+            witness: v1.new_witness(),
+        },
+    )?;
+    Ok(out)
+}

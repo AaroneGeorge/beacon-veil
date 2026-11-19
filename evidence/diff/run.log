@@ -1,0 +1,3 @@
+built 838 cases in 2.2s
+ran 838 cases x (helios + 4 columns) on 4 threads in 8.4s
+total 838 valid 90 gloas 315 v1_v2_disagreements 0 failures 0
