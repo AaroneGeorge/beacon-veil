@@ -1,0 +1,56 @@
+{
+  "bootstrap_provider": "lodestar",
+  "bootstrap_ssz_bytes": 25672,
+  "bootstrap_version": "fulu",
+  "config": {
+    "borsh_hex": "01000000000000004b363db94e286120d76eb905340fdd4e54bfe9f06bf33ff6cf5ad27f511bfe955730c65f000000000800000000000000000000000000000000220100000000000100000000360200000000000200000000f602000000000003000000001d04000000000004000000008e05000000000005000000004706000000000006000000ffffffffffffffff07000000b6deacff700f5b697c971461cc43e0c9ea9f85d21587d23af058470d71ff13680035ef0000000000010000001445ce7d8e7dc3404324fe8b2d07d1b13b0ffd6fa2ac1d4dc31a522def7dbe545601",
+    "chain_id": 1,
+    "checkpoint_root": "0xb6deacff700f5b697c971461cc43e0c9ea9f85d21587d23af058470d71ff1368",
+    "checkpoint_slot": 15676672,
+    "forks": [
+      [
+        0,
+        "0x00000000"
+      ],
+      [
+        74240,
+        "0x01000000"
+      ],
+      [
+        144896,
+        "0x02000000"
+      ],
+      [
+        194048,
+        "0x03000000"
+      ],
+      [
+        269568,
+        "0x04000000"
+      ],
+      [
+        364032,
+        "0x05000000"
+      ],
+      [
+        411392,
+        "0x06000000"
+      ],
+      [
+        18446744073709551615,
+        "0x07000000"
+      ]
+    ],
+    "genesis_time": 1606824023,
+    "genesis_validators_root": "0x4b363db94e286120d76eb905340fdd4e54bfe9f06bf33ff6cf5ad27f511bfe95",
+    "min_participants": 342,
+    "verifiers": [
+      "2N8thEJAgBRrGqfdJHgzjzy1dsnn5mTjGmZziae4q7Du"
+    ]
+  },
+  "cycles": null,
+  "gas": 10000000,
+  "instance": "HkTRK41GMDEpuNSP4wEbDhYEqw8pxmZhoJu3GXzZ4Exn",
+  "period": 1913,
+  "tx": "c6eba34fcf1fb62042b6bc9815b4df9d4f454b2eaa6cfbedd3bfec6283655c7b"
+}

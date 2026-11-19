@@ -37,7 +37,8 @@ case "${1:-}" in
     ;;
   probe)
     # One live light-client request through the module, the same call the follower makes. Prints one summary line.
-    ctl --json call beacon_api_module lc_request 11155111 str:getLightClientFinalityUpdate 'str:{}' 'str:' 30000 \
+    # Chain: $BV_CHAIN_ID (default 11155111 Sepolia; 1 = mainnet).
+    ctl --json call beacon_api_module lc_request "${BV_CHAIN_ID:-11155111}" str:getLightClientFinalityUpdate 'str:{}' 'str:' 30000 \
       | python3 -I -c '
 import json, sys
 o = json.load(sys.stdin)

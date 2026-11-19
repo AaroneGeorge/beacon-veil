@@ -1,0 +1,15 @@
+# Written by scripts/deploy_local.sh (merge mode unless --replace). Last update 2026-11-17T19:47:25Z. Do not edit by hand.
+[deploy]
+sequencer = "seq-main"
+rpc = "http://127.0.0.1:3042"
+lez = "v0.4.0-rc3"
+# Fallback only; per-program dirs are in [bins].
+bins = "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2"
+
+[programs]
+attest = "3fKaD7YYgsmtTikrPn3QHshBMGmdzNZNojaCk9rKS8Eq"   # sha256 4f59c574791bc06fb7b6b3b284726b04cc6276bfe486eb44c9af864bf0176849, 439124 bytes, 20261117T193954Z
+lc_verify = "2N8thEJAgBRrGqfdJHgzjzy1dsnn5mTjGmZziae4q7Du"   # sha256 31a3ff1d3eaa291566dd988d6c120a5d1eba1d99f37f6ab8d1e95e3ebb6b01e9, 787380 bytes, 20261117T193954Z
+
+[bins]
+attest = "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2"
+lc_verify = "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2"

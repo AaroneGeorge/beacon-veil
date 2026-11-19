@@ -11,6 +11,8 @@
 # Env: INSTANCE (base58; default: "instance" from $RUN_DIR/instance.json written by `attest init --out`),
 #      SOURCE_KIND (logos_module | direct_http; default logos_module), RUN_DIR (default $B/run/w4/run-a),
 #      RUN_A_FORCE=1 to move an existing log aside. Never restart run A by hand: G4 needs one PID.
+#      CFG_TEMPLATE (default examples/followerd.sepolia.toml; run C on mainnet: examples/followerd.mainnet.toml).
+#      SEQ (dev | main; default dev): the sequencer the instance lives on (run C: main, RPC 3042, ids in wallet.env BV_IDS).
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=/dev/null
@@ -39,7 +41,7 @@ start)
   [ -n "$INSTANCE" ] || { echo "no INSTANCE and no $RUN_DIR/instance.json (attest init --out)" >&2; exit 1; }
   case "$LEE_WALLET_HOME_DIR" in */wallet-dev) echo "run A needs its own wallet home: wallet_home.sh w4-runA > $RUN_DIR/wallet.env" >&2; exit 1 ;; esac
   [ -n "${BV_PAYER:-}" ] || { echo "BV_PAYER not set ($RUN_DIR/wallet.env)" >&2; exit 1; }
-  "$R/scripts/seq.sh" dev status >/dev/null || { echo "seq-dev is not running" >&2; exit 1; }
+  "$R/scripts/seq.sh" "${SEQ:-dev}" status >/dev/null || { echo "seq-${SEQ:-dev} is not running" >&2; exit 1; }
   ATTEST="$B/target/host/attest"; FD="$B/target/host/attest-followerd"
   [ -x "$ATTEST" ] && [ -x "$FD" ] || { echo "build first: nice -n 15 cargo build --profile host -p follower -p attest_cli" >&2; exit 1; }
   echo "preflight: instance status"; "$ATTEST" status --instance "$INSTANCE" | tee "$RUN_DIR/preflight-status.json"
@@ -54,7 +56,7 @@ start)
   mkdir -p "$B/run/w4/bin"; cp -f "$FD" "$BIN"
   sed -e "s|^state_dir = .*|state_dir = \"$RUN_DIR\"|" -e "s|^instance = .*|instance = \"$INSTANCE\"|" \
       -e "s|^kind = \"logos_module\".*|kind = \"$SOURCE_KIND\"|" -e "s|^echo = .*||" \
-      "$R/crates/follower/examples/followerd.sepolia.toml" > "$CFG"
+      "${CFG_TEMPLATE:-$R/crates/follower/examples/followerd.sepolia.toml}" > "$CFG"
   grep -q "^echo" "$CFG" || sed -i 's|^\[follower\]|[follower]\necho = false|' "$CFG"
   cd "$RUN_DIR"
   setsid nohup nice -n 5 "$BIN" --config "$CFG" > "$RUN_DIR/followerd.stdout" 2>&1 < /dev/null &

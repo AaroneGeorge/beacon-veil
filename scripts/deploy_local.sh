@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Deploys `attest` and `lc_verify` (immutable flag set) to a local sequencer and writes deploy/ids.toml.
 #
-#   scripts/deploy_local.sh [dev|real] [--bins DIR] [--programs "attest lc_verify ..."] [--ids FILE] [--replace]
+#   scripts/deploy_local.sh [dev|real|main] [--bins DIR] [--programs "attest lc_verify ..."] [--ids FILE] [--replace]
 #
 # --ids FILE: ids file to write, relative to the repo root unless absolute (default deploy/ids.toml; seq-real
 # deployments use e.g. deploy/ids-real.toml).
@@ -25,7 +25,7 @@ source "$here/env.sh"
 which_seq="dev"; bins="$B/target/guests"; programs="attest lc_verify"; replace=0; out="$BV_REPO/deploy/ids.toml"
 while [ $# -gt 0 ]; do
   case "$1" in
-    dev|real) which_seq="$1"; shift ;;
+    dev|real|main) which_seq="$1"; shift ;;
     --bins) bins="$2"; shift 2 ;;
     --programs) programs="$2"; shift 2 ;;
     --replace) replace=1; shift ;;

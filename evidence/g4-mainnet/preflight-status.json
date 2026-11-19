@@ -1,0 +1,20 @@
+{
+  "exists": true,
+  "head": {
+    "beacon_root": "b6deacff700f5b697c971461cc43e0c9ea9f85d21587d23af058470d71ff1368",
+    "exec_hash": "1b5b01a4115eb5c48409f0c287fade399a7318b0f268bfb5f191e39415707fc5",
+    "exec_number": 26436889,
+    "exec_receipts_root": "03fa211de8b937789102fc098a06653414c62827358cce9fccf87825aa6644c4",
+    "exec_state_root": "796031f1e6612ed15a8caa8fbb060d962733698927c03b6bb27dce0785173d56",
+    "period": 1913,
+    "slot": 15676672,
+    "store_commitment": "b187a88ed0dabdbff519cea4a9b0ced7e7c08d5edd2ca38354627d84ee4e9825"
+  },
+  "instance": "HkTRK41GMDEpuNSP4wEbDhYEqw8pxmZhoJu3GXzZ4Exn",
+  "store": {
+    "head_slot": 15676672,
+    "next_committee_known": false,
+    "period": 1913,
+    "verified": true
+  }
+}
