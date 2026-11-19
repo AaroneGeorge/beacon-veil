@@ -30,3 +30,8 @@ for _p in "$HOME/.risc0/bin" "$HOME/.cargo/bin" "$HOME/.foundry/bin" "$B/vendor/
 done
 export PATH
 unset _p _bv_repo
+
+# lc_verify_v3 only: the RISC Zero bigint shim (risc0-bigint2) at opt-level 3 instead of the release profile's "z"
+# (docs/DECISIONS.md D-56). Passed on the cargo command line for that one guest, never set in Cargo.toml, so no other
+# guest's image id moves.
+export BV_V3_CARGO_CONFIG='profile.release.package.risc0-bigint2.opt-level=3'

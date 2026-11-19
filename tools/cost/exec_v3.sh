@@ -21,11 +21,11 @@ if [ -e "$B/run/prove.lock" ] && ! flock -n "$B/run/prove.lock" true; then
   echo "exec-v3: a proof job holds $B/run/prove.lock; no builds now" >&2; exit 1
 fi
 g="$tdir/v3-guests"
-flock "$lock" scripts/build_guest.sh programs/lc_verify_v3/Cargo.toml lc_verify_v3 "$g/trace" cycle-trace
+flock "$lock" env GUEST_CARGO_CONFIG="$BV_V3_CARGO_CONFIG" scripts/build_guest.sh programs/lc_verify_v3/Cargo.toml lc_verify_v3 "$g/trace" cycle-trace
 if [ -n "${COST_BINS:-}" ]; then
   v3="$COST_BINS/elf/lc_verify_v3"; at="$COST_BINS/elf/attest"
 else
-  flock "$lock" scripts/build_guest.sh programs/lc_verify_v3/Cargo.toml lc_verify_v3 "$g/plain"
+  flock "$lock" env GUEST_CARGO_CONFIG="$BV_V3_CARGO_CONFIG" scripts/build_guest.sh programs/lc_verify_v3/Cargo.toml lc_verify_v3 "$g/plain"
   flock "$lock" scripts/build_guest.sh programs/attest/Cargo.toml attest "$g/attest"
   v3="$g/plain/lc_verify_v3"; at="$g/attest/attest"
 fi

@@ -388,3 +388,9 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 
 - Weak subjectivity. `Begin` and `Finish` set a timestamp window that ends 1,209,600 s (14 days, Helios's mainnet `max_checkpoint_age`) after the time of the store's finalized header. An instance left without updates for longer cannot be moved by updates; it needs a new instance from a fresh checkpoint (E06 when the window is empty).
 - Refusals. `lc_verify_v3` refuses by ending with exit code = the error number (1 to 15), not by a panic: LEZ charges a non-zero exit by the cycles used and a panic by the whole declared gas. A refusal of `attest.Apply` inside `Finish` still panics with `ESA:Exx` (the `attest` program is unchanged).
+
+## D-56. `lc_verify_v3` builds the bigint shim at opt-level 3
+
+- Date. 2026-11-20. Context. The guest release profile uses opt-level `"z"` (small ELFs, deployed-ELF cap). That profile also covers `risc0-bigint2`, the shim through which `blst`'s field arithmetic reaches the zkVM accelerator. Measured on the bench guest (executor, same fixtures): Miller loop 4.59M to 3.84M, final exponentiation 5.17M to 4.28M, hash to G2 1.52M to 1.33M cycles with the shim at opt-level 3.
+- Chosen. `lc_verify_v3` alone is built with `--config 'profile.release.package.risc0-bigint2.opt-level=3'` (`BV_V3_CARGO_CONFIG` in `scripts/env.sh`), in `scripts/guests_release.sh` and the measurement builds of `make exec-v3`. It is not set in `Cargo.toml`: there it would also change the image ids of `lc_verify`, `lc_verify_v2` and every other guest that links the shim. The release check confirms that their ids do not move.
+- Trade-off. A build of `lc_verify_v3` through `crates/guest_methods` (risc0-build, dev builds) does not pass the setting and gives a different image id; deployments and recorded evidence use the release set only.

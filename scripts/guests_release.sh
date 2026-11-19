@@ -14,7 +14,8 @@
 # guests/IMAGE_IDS.expected.
 #
 # Outputs: attest, lc_verify, lc_verify_v2 (lc_verify --features v2), consumer_erc20, bridge, bridge_dev_source,
-# burn_proof, lc_verify_v3 (.bin + user ELF), SHA256SUMS, IMAGE_IDS, BUILD_INFO.
+# burn_proof, lc_verify_v3 (.bin + user ELF). lc_verify_v3 alone is built with $BV_V3_CARGO_CONFIG (scripts/env.sh:
+# the bigint shim at opt-level 3), given on its cargo command line; the other guests are built exactly as before., SHA256SUMS, IMAGE_IDS, BUILD_INFO.
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=scripts/env.sh
@@ -51,7 +52,7 @@ RUN mkdir -p /out && R=target/$T/release && \\
     CARGO_MANIFEST_PATH=guests/burn_proof/Cargo.toml $build --manifest-path guests/burn_proof/Cargo.toml && cp \$R/burn_proof /out/ && \\
     CARGO_MANIFEST_PATH=programs/lc_verify/Cargo.toml $build --manifest-path programs/lc_verify/Cargo.toml && cp \$R/lc_verify /out/ && \\
     CARGO_MANIFEST_PATH=programs/lc_verify/Cargo.toml $build --manifest-path programs/lc_verify/Cargo.toml --features v2 && cp \$R/lc_verify /out/lc_verify_v2 && \\
-    CARGO_MANIFEST_PATH=programs/lc_verify_v3/Cargo.toml $build --manifest-path programs/lc_verify_v3/Cargo.toml && cp \$R/lc_verify_v3 /out/
+    CARGO_MANIFEST_PATH=programs/lc_verify_v3/Cargo.toml $build --manifest-path programs/lc_verify_v3/Cargo.toml --config '$BV_V3_CARGO_CONFIG' && cp \$R/lc_verify_v3 /out/
 
 FROM scratch as export
 COPY --from=build /out /

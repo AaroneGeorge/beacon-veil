@@ -30,5 +30,6 @@ eyre = "0.6"
 helios-consensus-core.workspace = true
 
 [features]
-# V3 columns (attest_core::lc_v3, frozen 2026-11-19).
+# V3 columns (attest_core::lc_v3). On by default, so every run (also `make test-host`) writes the same report.
+default = ["v3"]
 v3 = ["attest_core/v3"]
