@@ -1,8 +1,8 @@
 # beacon-veil
 
-beacon-veil is a working prototype for Logos RFP-021 (Trustless Ethereum State Attestation for LEZ) and RFP-022 (Privacy-Preserving Wrapped ERC-20 and Ether Bridge for LEZ). It runs the Ethereum light client from `a16z/helios` 0.12.0, unmodified, inside a RISC Zero 3.0.5 guest on LEZ v0.4.0-rc3, and builds a consumer, a follower daemon and a bridge spike on top of it. Both RFPs are bid together. The project name is beacon-veil.
+beacon-veil is a working prototype for Logos RFP-021 (Trustless Ethereum State Attestation for LEZ) and RFP-022 (Privacy-Preserving Wrapped ERC-20 and Ether Bridge for LEZ). It runs the Ethereum light client from `a16z/helios` 0.12.0, unmodified, inside a RISC Zero 3.0.5 guest on LEZ v0.4.0-rc3 (variant V1, privately proven), and a staged verifier, `lc_verify_v3`, that runs the same rules as three public transactions with no proof (`docs/PUBLIC-PATH.md`). It builds a consumer, a follower daemon and a bridge spike on top of them. Both RFPs are bid together. The project name is beacon-veil.
 
-Status: prototype, 2026-11-17. Each result in this file points to a raw file under `evidence/`. Section 6 lists what is not done.
+Status: prototype, 2026-11-17, with the public path added on 2026-11-20. Each result in this file points to a raw file under `evidence/`. Section 6 lists what is not done.
 
 ## 1. Clean-clone commands
 
@@ -50,7 +50,7 @@ If a step fails, compare with the logs of the green runs in `evidence/` (`eviden
 
 ## 2. What runs today
 
-Gate status on 2026-11-17, from `evidence/`. G1 to G5 all pass:
+Gate status on 2026-11-17 for G1 to G5 (all pass), with the public-path and differential rows of 2026-11-20, from `evidence/`:
 
 | Gate | Result | Evidence |
 |---|---|---|
@@ -61,11 +61,15 @@ Gate status on 2026-11-17, from `evidence/`. G1 to G5 all pass:
 | G3 consumer | PASS: one transfer consumed, identical replay refused with E11 | `evidence/g3/run.json` |
 | G3 real proof | PASS: a private `Attest` of a mainnet USDT transfer proven for real, 2,120.6 s (35.3 min), 9.207 GiB, block 1949, replay refused with E11. The sequencer excerpt in the JSON was filled by hand from the raw log, see the note | `evidence/g3/real-proof.json`, `evidence/g3/NOTE-real-proof.txt` |
 | G4 follower, 24 h | PASS on two runs, both following the Sepolia beacon chain (chain_id 11155111) through the Logos `logos_module` beacon source, with proofs in RISC Zero dev mode. Run B (primary): 34.49 h, 22 of 22 submitted updates applied, one live sync-committee handoff (period 1411 to 1412), longest gap between log lines 354 s, no error lines. Run A (backup): 35.8 h, 23 of 23 applied, one handoff, one transient `source_error` (a 20 s timeout of the module call). Each run had one process id, no restart and no manual help. Both stopped with a clean shutdown at 2026-11-13 23:00 UTC for a host reboot | `evidence/g4/run-b/g4-summary.json` (primary), `evidence/g4/run-a/g4-summary.json` |
+| Public path (`lc_verify_v3`), on a standalone sequencer with dev mode unset | PASS: 30 transactions, 9 each on mainnet, Sepolia (Gloas) and Hoodi data and 3 on a fabricated update signed by exactly 342 of 512 members. Every update is 3 public transactions and the head equals V1's after each. Largest step 6,327,247 gas, 63.3 percent of the 10M cap; largest on real data 5,765,037, 57.7 percent. Whole update 12,602,313 to 16,471,213 gas. No proof is made. 7 refusals as real transactions, head unchanged after each. Measured public execution, not a public testnet | `evidence/public-path/onchain/{mainnet,sepolia,hoodi,floor}/run.json`, `evidence/public-path/onchain/refusals.json`, `evidence/public-path/onchain/deployment.txt`, `docs/PUBLIC-PATH.md`; re-read with `scripts/gate/gp_onchain.sh` |
+| Differential test, Helios 0.12.0 against V1, V2, V3 | PASS: 881 cases (90 valid): 862 from mainnet, Sepolia and Hoodi, and 19 on a fabricated chain, 0 disagreements between V1 and V3; the deployed V3 guest ran all 881 in the executor with 0 mismatches; 44 designed differences, all refusals by V3 | `evidence/diff/report.json`, `evidence/diff/report.md`, `evidence/diff/executor.json` |
+| Public path, executor cost per step | `Begin` at most 6,327,326 cycles, `Miller` at most 5,765,197, `Finish` at most 4,378,929 (executor, no proof) | `evidence/public-path/exec-steps.json` (`make exec-v3`) |
 | G5 clean-clone cost reproduction | PASS: the cost table was regenerated from a clean clone (the commit is recorded in `evidence/g5/repro.json`) and equals the committed one, 31 rows. The three guest image ids match. The run used the prebuilt release guest set and did not rebuild the guests in Docker | `evidence/g5/repro.json`, `evidence/g5/repro.log`, `scripts/gate/g5_repro.sh` |
 
 | Piece | What it is | Evidence | State |
 |---|---|---|---|
 | Light client in a LEZ guest | `programs/lc_verify` runs `helios-consensus-core` 0.12.0 unmodified. Pre-checks for quorum and finality in front of it (`docs/TRUST.md` section 7) | `evidence/cost/cost.md`, `evidence/g1/real-proof.json` | Measured on 5 real mainnet updates, native and executor results equal. One update proven for real with V1 and again with V2 |
+| Public update path | `programs/lc_verify_v3`, `crates/attest_core/src/lc_v3.rs`, `crates/bls_blst`: one update as `Begin`, `Miller`, `Finish`, with the 14-day bound and refusals by exit code (`docs/DECISIONS.md` D-53 to D-59) | `evidence/public-path/` | Measured on a standalone sequencer, no proof. Not shown: a public testnet, and a day-long public run |
 | Instance program | `programs/attest`: init from a checkpoint, apply updates, write-once header records, attest a claim | `evidence/g1/chain.json` | Passed on `seq-dev` |
 | Inclusion and predicates | `crates/attest_inclusion`: account, storage and log proofs under a record, predicates, statement ids | `crates/attest_inclusion/tests/real_proofs.rs` | In tree, on real mainnet and Sepolia proofs. The consumer suite reports 22 tests green |
 | Adversarial suite | `tests/adversarial`: fabricated chain and six negative cases | `evidence/g2/` | 7 of 7 on the sequencer |
@@ -119,7 +123,8 @@ The K4 projection for the V1 finality update was 6.08 to 7.01 hours, an estimate
 | `crates/attest_inclusion` | Inclusion proofs, predicates, statements |
 | `crates/attest_host` | Host library over the LEZ wallet |
 | `crates/follower`, `crates/attest_cli` | Follower daemon and CLI |
-| `programs/` | `attest`, `lc_verify`, `consumer_erc20`, `bridge` (RISC Zero guests) |
+| `programs/` | `attest`, `lc_verify`, `lc_verify_v3`, `consumer_erc20`, `bridge` (RISC Zero guests) |
+| `crates/bls_blst` | Small layer over the `blst` BLS12-381 library (RISC Zero fork) for `lc_verify_v3` |
 | `guests/burn_proof` | Burn proof guest |
 | `contracts/` | Foundry project: `Vault.sol`, stub anchor, tests |
 | `modules/` | `attest_follower_module` (Logos core module), `bridge_ui` (skeleton) |
@@ -138,7 +143,8 @@ The K4 projection for the V1 finality update was 6.08 to 7.01 hours, an estimate
 | `docs/DECISIONS.md` | Design decision log | 021 S11, 022 S4 |
 | `docs/REUSE.md` | What is reused, what is ours, every licence | 021 R6 |
 | `docs/TRUST.md` | Trust assumptions of the attestation primitive | 021 S6, VS4, VS5 |
-| `docs/OPERATOR.md` | Running the update submitter | 021 S5, S7, U3 |
+| `docs/OPERATOR.md` | Running the update submitter, including public mode | 021 S5, S7, U3 |
+| `docs/PUBLIC-PATH.md` | The public path: three steps, measured numbers, refusals, how to re-run | 021 F1, P2 |
 | `docs/CONSUMER-PATTERN.md` | Recommended Consumer Pattern | 021 S3, S4 |
 | `docs/COVERAGE-021.md` | 59 requirements, milestone, evidence | 021 |
 | `docs/COVERAGE-022.md` | 68 requirements, milestone, evidence | 022 |
@@ -158,7 +164,7 @@ These are listed here so that no reader has to find them.
 - The G4 follower runs followed Sepolia, not mainnet, against a local standalone sequencer, with proofs in RISC Zero dev mode. They show that the submission loop and a live committee handoff work over 34 to 36 hours. They do not show proving time over a long run. Real proofs were run as separate jobs (section 3).
 - LEZ access is through the `wallet` crate, not Logos's LEZ module, which does not target v0.4 yet.
 - The Logos `beacon_api_module` and `verified_proxy_module` have no LICENSE file. We use them only as installed runtime dependencies (`docs/REUSE.md` section 4).
-- Path B (sequencer-executed verification split over public transactions) is measured for the monolithic case only. The split is milestone work.
+- The public path (Path B, `lc_verify_v3`) is measured on a standalone rc3 sequencer with dev mode unset, as 30 public transactions with no proof (`docs/PUBLIC-PATH.md`). It has not run on a public Logos testnet and has no day-long run recorded. Its BLS layer is the `blst` fork of RISC Zero, whose changes have no audit statement that we found (`docs/REUSE.md`). The 14-day bound is enforced by `lc_verify_v3`, not by V1 (`docs/TRUST.md` section 2.2).
 - Not done yet: a real proof of a private bridge `Claim`, and a claim to a public destination (`evidence/bridge/README.md`).
 - Native-ETH consumer, registry and cap libraries on RFP-001/002, relayer, module catalog, release action, macOS, public testnet deployment and the audit are milestone work and are not shown here.
 - No code here has been through a third-party audit.

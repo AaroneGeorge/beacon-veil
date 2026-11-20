@@ -2,13 +2,13 @@
 
 This guide is for anyone who runs the update-submitting component for an instance: what it costs, how often it submits, how to start one without permission, what to expect when others run one, and how to tell that an instance has stalled.
 
-Status: written 2026-11-12 from the follower source and `modules/attest_follower_module/RUNBOOK.md`. Figures from the G4 follower runs (`evidence/g4/`, 34.5 h and 35.8 h on Sepolia, proofs in dev mode) were added on 2026-11-17. Figures that the runs did not record are marked "Not measured".
+Status: written 2026-11-12 from the follower source and `modules/attest_follower_module/RUNBOOK.md`. Figures from the G4 follower runs (`evidence/g4/`, 34.5 h and 35.8 h on Sepolia, proofs in dev mode) were added on 2026-11-17. Figures that the runs did not record are marked "Not measured". Section 10 (public mode) and the bound in section 7 were added on 2026-11-20.
 
 ## 1. What an operator does
 
 An operator keeps one instance current. The follower reads the instance's verified head from LEZ, reads the newest light-client data from a beacon source, decides whether an update is needed, waits a short per-instance interval, checks again, and submits. Nothing in this role is trusted. The program checks every update. A bad update is rejected with a typed error. An operator can only stop (a liveness failure), and any other operator can take over.
 
-No party is obliged to operate. Liveness rests on interested parties choosing to spend the gas (section 9).
+No party is obliged to operate. Liveness rests on interested parties choosing to spend the gas (section 9). An operator can submit through one of two paths: Path A, a privately proven transaction (sections 2 to 6), or the public path, three public transactions with no proof (section 10).
 
 ## 2. Requirements and cost
 
@@ -81,6 +81,10 @@ A stalled instance loses nothing. Existing records still verify, and any party c
 
 The recommended rule for when to replace is in `docs/TRUST.md` section 2.2. The 14-day figure there is a working rule and is not derived from the consensus specs yet.
 
+The bound on the public path. `lc_verify_v3` enforces the 14 days. `Begin` and `Finish` carry a timestamp window that ends 1,209,600 s after the time of the store's finalized header, and the sequencer checks it when the transaction settles. A `Begin` or `Finish` sent after the end is included, reverted and charged its whole declared gas, and the instance does not move (measured: `evidence/public-path/onchain/refusals.json`, row "Begin on an instance whose store is older than 14 days", 10,000,000 gas charged at a declared limit of 10,000,000; `docs/DECISIONS.md` D-55). Only the sender of the late step pays. So an instance on the public path that has had no applied update for 14 days cannot be advanced again, and its operators must replace it before that. Our submitter refuses to send a step when the store's finalized header is within 10 minutes of the bound, before every step, and logs E06. If E06 appears, create a new instance as above and do not retry.
+
+The bound is a property of `lc_verify_v3`. `lc_verify` (V1) has no bound. It holds for the instance only when `lc_verify_v3` is the instance's only verifier. Create such an instance with `attest init --only-verifier <lc_verify_v3 program id> --checkpoint <root> --out new-instance.json` (it conflicts with `--extra-verifier`). The verifier list is part of the instance id and cannot change. On an instance that lists both, the bound holds on the public path only.
+
 ## 8. Running next to other operators
 
 Run your own follower with its own `follower.id`. Do not copy another operator's id: two followers with one id wait the same time and collide. Expect `skip_not_needed` lines when another operator was first. That is normal and cost you nothing.
@@ -90,3 +94,33 @@ Run your own follower with its own `follower.id`. Do not copy another operator's
 The design does not oblige anyone to submit updates. Liveness rests on interested parties, for example consumers whose users need fresh headers, choosing to spend the gas. The guarantee is not that someone will act. It is that a stalled instance can be advanced by any party willing to pay, without permission and without any prior relationship to it. The failure mode is delay, not loss. An operator incentive that keeps submission permissionless is a soft requirement that this proposal does not build (`docs/COVERAGE-021.md`).
 
 Our own commitment: during the support window we run one follower on testnet as one operator among any number.
+
+## 10. Public mode: three public transactions, no proof
+
+In public mode the follower sends each update as three public transactions to `lc_verify_v3` (`Begin`, `Miller`, `Finish`), executed by the sequencer. No proof is made, so the operator needs no prover and no private submitter, only a funded public payer. The steps, what each checks and the measured costs are in `docs/PUBLIC-PATH.md`. Anyone may send any step of an update's job, so two operators on one instance share the job and the second one's step is logged as `superseded`.
+
+Configure. Start from `crates/follower/examples/followerd.mainnet.public.toml` or `followerd.sepolia.public.toml`. The public part is in `[chain]`:
+
+```toml
+[chain]
+kind = "host"
+instance = "<instance id>"
+ids_file = "deploy/ids-pub.toml"   # program ids of the deployment
+mode = "public"                     # staged public path (attest_host::submit_update_staged)
+verifier = "lc_verify_v3"           # the verifier's name in [programs] of the ids file
+sequencer = "seq-pub"
+```
+
+Create the instance with `attest init --only-verifier <lc_verify_v3 program id> --out instance.json` so that the instance's only verifier is `lc_verify_v3` (section 7 says why). Dev mode must be unset: the launch script `crates/follower/scripts/run_a.sh` refuses to start a follower of a sequencer that runs with `RISC0_DEV_MODE` unset when the variable is set in its environment.
+
+Launch. `crates/follower/scripts/run_public.sh mainnet|sepolia session|wallet|start|status|stop|collect` is a thin layer over `run_a.sh` with the public defaults: `session` starts a Logos session of its own, `wallet` makes a wallet home with a funded public payer and writes `wallet.env`, `start` starts the follower detached, `collect` writes the summary to `evidence/g4-public/<network>/`. Never restart a run by hand: the long-run check needs one process id.
+
+Funding. The payer pays the fee of every step. The fee per update is not fixed. Over the 9 recorded updates that have a full fee record (the `Begin` of the first Hoodi update has no `fee_paid`, because its block held a second charged transaction), the three `fee_paid` fields add up to 101,057,784 (Sepolia finality update) to 133,121,828 (Sepolia handoff update `update_1417`); the mainnet finality update is 101,860,776 (`evidence/public-path/onchain/*/run.json`, sums of `fee_paid`; measured on the standalone sequencer). Fee per unit of gas, `fee_paid` divided by `charged_gas` on steps that were alone in their block (derived): 8.0 to 8.1 on 25 steps, and 9.0 to 10.1 on four Sepolia steps (blocks 464, 466, 468 and 470). The script's own estimate is about 1e8 per finality update at 8 per unit (its header comment). `run_public.sh wallet` funds the payer of the mainnet run with 30,000,000,000 and of the Sepolia run with 100,000,000,000 (`PUB_FUND` overrides), and tops an existing payer up under the deployment lock. A Sepolia run at a 1,536 s cadence is 56 updates a day, so budget the payer for the days the run is to last.
+
+The reserve and `payer_error`. The sequencer drops a transaction whose reserve the payer cannot cover (the declared gas at the fee per unit), and the follower cannot see the drop as an error. So the follower reads the payer balance before each submission. Below `min_payer_balance` it logs a `payer_error` line and sends nothing. The default is 216,000,000, the reserve of one update at three steps of 9,000,000 declared gas and 8 per unit (`crates/follower/src/config.rs`). It covers one update at 8 per unit only: at 10 per unit the reserve of three 9,000,000 steps is 270,000,000. Set `min_payer_balance` in `[chain]` to change it. Fund the payer when `payer_error` appears. Without funds the follower sends nothing, and the long-run check fails because no update is applied.
+
+Declared gas. A step declares 9.0M (`Begin`), 7.0M (`Miller`) and 5.5M (`Finish`), so one update has a limit of 21.5M declared gas across three blocks (`docs/DECISIONS.md` D-58). A block admits a transaction by its declared gas next to the gas already charged in it, so a step may wait a block or two. Events specific to this mode: `submit_deferred` and `submit_resume` (a step that did not fit its block is sent again in a later one), `superseded` (another submitter finished the update), `payer_error`.
+
+Never reset `seq-pub`. `scripts/seq.sh pub reset` wipes the chain: the deployed programs, the instances, the job accounts and every transaction that the evidence under `evidence/public-path/onchain/` records. Do not reset it, and do not restart it while a public run follows it.
+
+Check. `scripts/gate/g4_check.py` fails a public run on any applied update that is not three transactions, on any superseded submission, on a step without a cycle figure, on a step above 9,000,000 cycles, on a sequencer other than `seq-pub`, and on a dev-mode flag that is set.

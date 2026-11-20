@@ -5,8 +5,11 @@
 #   3. exact diff of the cycle and gas columns against the committed evidence/cost/cost.json;
 #   4. every real-proof record under evidence/prove/ in the clone has its raw files (log, time, RSS samples).
 #
-#   scripts/gate/g5_repro.sh [--against FILE] [--keep]
+#   scripts/gate/g5_repro.sh [--against FILE] [--keep] [--reuse-target]
 #
+# The clone's build folder ($B/.tmp/g5: target dir, tmp and run dirs) is deleted before every run, so every build is
+# cold; --reuse-target keeps it (faster, not a cold build) and repro.json then says "cold_build": false. The cargo
+# download cache (~/.cargo registry and git checkouts) is shared: sources, not build outputs.
 # --against: reference cost.json (default: the clone's own committed evidence/cost/cost.json).
 # The guest build mode is taken from the reference (`run.guest_build`): docker if the reference used the pinned image.
 # Writes evidence/g5/repro.json (+ repro.log). Exit 0 only on an exact match.
@@ -14,11 +17,12 @@ set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=scripts/env.sh
 source "$here/../env.sh"
-against="" keep=0
+against="" keep=0 reuse=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --against) against="$2"; shift 2 ;;
     --keep) keep=1; shift ;;
+    --reuse-target) reuse=1; shift ;;
     *) echo "g5_repro: unknown argument $1" >&2; exit 2 ;;
   esac
 done
@@ -40,7 +44,14 @@ python3 -I -c 'import json,sys; sys.exit(0 if "docker" in (json.load(open(sys.ar
 # deployed, pinned-image ones (their reproducibility is CI's scripts/check_image_ids.sh), and G5 checks the harness.
 bins="$(python3 -I -c 'import json,sys; g=(json.load(open(sys.argv[1])).get("run") or {}).get("guest_build",""); print(g[len("release bins "):] if g.startswith("release bins ") else "")' "$ref")"
 
+cold=1
+if [ "$reuse" = 1 ] && [ -d "$g5home/target" ]; then
+  cold=0
+else
+  rm -rf "$g5home"
+fi
 mkdir -p "$g5home"
+t0=$(date +%s)
 set +e
 (
   cd "$clean"
@@ -56,17 +67,20 @@ set +e
 ) >> "$log" 2>&1
 rc=$?
 set -e
-echo "g5: cost-exec in the clone exited $rc" | tee -a "$log"
+build_s=$(( $(date +%s) - t0 ))
+echo "g5: cost-exec in the clone exited $rc after ${build_s} s (cold build: $cold)" | tee -a "$log"
 
 set +e
-python3 -I - "$ref" "$clean/evidence/cost/cost.json" "$out/repro.json" "$rc" "$commit" "$started" "$clean" "$docker" "$bins" <<'EOF'
+python3 -I - "$ref" "$clean/evidence/cost/cost.json" "$out/repro.json" "$rc" "$commit" "$started" "$clean" "$docker" "$bins" "$cold" "$build_s" "${CARGO_BUILD_JOBS:-}" <<'EOF'
 import json, os, subprocess, sys
-ref_p, new_p, dst, rc, commit, started, clean, docker, bins = sys.argv[1:10]
+ref_p, new_p, dst, rc, commit, started, clean, docker, bins, cold, build_s, jobs = sys.argv[1:13]
 COLS = ("user_cycles", "total_cycles_padded", "segments", "gas_exec")
 def sh(c):
     return subprocess.run(c, shell=True, capture_output=True, text=True).stdout.strip()
 res = {"gate": "G5", "commit": commit, "started_utc": started, "reference": ref_p, "regenerated": new_p,
        "cost_exec_exit": int(rc), "guest_build_docker": docker == "1", "release_bins": bins or None,
+       "cold_build": cold == "1", "build_seconds": int(build_s), "cargo_build_jobs": jobs or None,
+       "build_note": "cold: the clone's target dir was empty (scripts/gate/g5_repro.sh deletes it first); the guests of the release set are prebuilt pinned-image ELFs (their reproducibility is CI's image-id check); the lc_verify_v3 measurement build is compiled in the clone",
        "machine": sh("lscpu | sed -n 's/^Model name: *//p'") + ", " + sh("uname -sr") + ", " + sh("r0vm --version")}
 fails = []
 if rc != "0" or not os.path.exists(new_p):
