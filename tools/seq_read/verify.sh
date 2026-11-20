@@ -114,8 +114,14 @@ def start_time(pid):
 results = {}
 report = {"url": URL, "via": f"public address {CONNECT_IP}" if CONNECT_IP else "system resolver",
           "started": now(), "tests": results}
-with open(os.path.join(REPO, "tools/seq_read/policy.py"), "rb") as f:
-    report["policy_sha256"] = hashlib.sha256(f.read()).hexdigest()
+# The policy as tested: the repository's file, and the copies running in the relay container.
+for name in ("policy.py", "relay.py"):
+    key = name.replace(".py", "")
+    with open(os.path.join(REPO, "tools/seq_read", name), "rb") as f:
+        report[f"{key}_sha256_repo"] = hashlib.sha256(f.read()).hexdigest()
+    got = subprocess.run(["docker", "exec", f"{os.environ['RELAY_APP']}.web.1", "sha256sum", f"/app/{name}"],
+                         capture_output=True, text=True, timeout=30, check=False).stdout.split()
+    report[f"{key}_sha256_deployed"] = got[0] if got else "not readable"
 seq_pid = os.environ.get("SEQ_PID", "")
 seq_start_before = start_time(seq_pid) if seq_pid else None
 

@@ -133,7 +133,11 @@ def check_request(body):
     out = {"jsonrpc": "2.0", "id": req_id, "method": method}
     if "params" in req:
         out["params"] = params
-    return method, json.dumps(out, separators=(",", ":")).encode()
+    try:
+        canonical = json.dumps(out, separators=(",", ":"), allow_nan=False)
+    except ValueError:  # 1e999 parses as infinity, which has no JSON form
+        raise Refused(INVALID_PARAMS, "numbers must be finite", req_id) from None
+    return method, canonical.encode()
 
 
 class TokenBucket:

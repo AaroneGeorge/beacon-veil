@@ -95,6 +95,14 @@ class PolicyTest(unittest.TestCase):
         self.assertEqual(refused_code(req("getAccountsNonces", ["a"])), policy.INVALID_PARAMS)
         self.assertEqual(refused_code(req("getAccountsNonces", [])), policy.INVALID_PARAMS)
 
+    def test_non_finite_numbers(self):
+        # 1e999 parses as infinity; it has no JSON form, so it must never be re-encoded and sent on.
+        for body in (b'{"jsonrpc":"2.0","id":1,"method":"getBlock","params":[1e999]}',
+                     b'{"jsonrpc":"2.0","id":1,"method":"getBlock","params":[-1e999]}',
+                     b'{"jsonrpc":"2.0","id":1,"method":"getAccountView","params":[{"account_id":1e999}]}'):
+            self.assertEqual(refused_code(body), policy.INVALID_PARAMS, body)
+        self.assertIsNone(refused_code(b'{"jsonrpc":"2.0","id":1,"method":"getBlock","params":[1e308]}'))
+
     def test_params_type(self):
         self.assertEqual(refused_code(req("getBlock", 5)), policy.INVALID_PARAMS)
         self.assertEqual(refused_code(req("getBlock", "355")), policy.INVALID_PARAMS)
@@ -277,6 +285,19 @@ class DialerAgainstForgedRelay(unittest.TestCase):
         if os.path.exists(stats_path):
             os.remove(stats_path)
 
+    def test_refusal_counters_have_fixed_keys(self):
+        a = dialer_mod.Dialer("http://127.0.0.1:9", "x", TOKEN, "", dialer_mod.Stats(os.devnull))
+        for i in range(500):
+            a.handle(req(f"madeUpMethod{i}", []))
+        a.handle(req("x" * 60, []))
+        a.handle(req("sendTransaction", []))
+        a.handle(req("getBlockRange", [0, 99]))
+        a.handle(b"[1,2]")
+        a.handle(b"\xff")
+        self.assertEqual(a.stats.snapshot()["refused"],
+                         {"<other>": 502, "sendTransaction": 1, "getBlockRange": 1, "<unparsable>": 1})
+        self.assertEqual(a.stats.snapshot()["forwarded"], {})
+
     def test_sequencer_url_must_be_loopback(self):
         with self.assertRaises(SystemExit):
             dialer_mod.Dialer("http://10.0.0.1:3043", "x", TOKEN, "", None)
@@ -306,6 +327,33 @@ class DialerAgainstForgedRelay(unittest.TestCase):
             self.assertEqual(a.handle(req("getBlock", [1]))[0], 504)
         finally:
             slow.close()
+
+
+class VisitorKey(unittest.TestCase):
+    @staticmethod
+    def key(xff, peer="172.31.128.2"):
+        h = relay_mod.Public.__new__(relay_mod.Public)
+        h.headers = {} if xff is None else {"X-Forwarded-For": xff}
+        h.client_address = (peer, 40000)
+        return h.visitor()
+
+    def test_last_entry_is_the_key(self):
+        self.assertEqual(self.key("198.51.100.7"), "198.51.100.7")
+        self.assertEqual(self.key("10.9.9.9, 198.51.100.7"), "198.51.100.7")
+        self.assertEqual(self.key(" 198.51.100.7 "), "198.51.100.7")
+
+    def test_not_an_address_falls_back_to_the_peer(self):
+        self.assertEqual(self.key("x" * 5000), "172.31.128.2")
+        self.assertEqual(self.key("198.51.100.7, not-an-ip"), "172.31.128.2")
+        self.assertEqual(self.key(None), "172.31.128.2")
+        self.assertEqual(self.key("garbage", peer="also garbage"), "unknown")
+
+    def test_ipv6_keyed_by_its_64(self):
+        a = self.key("2001:db8:1:2::5")
+        self.assertEqual(a, "2001:db8:1:2::/64")
+        self.assertEqual(self.key("2001:db8:1:2:ffff:ffff:ffff:1"), a)
+        self.assertNotEqual(self.key("2001:db8:1:3::5"), a)
+        self.assertEqual(self.key("::ffff:192.0.2.1"), "192.0.2.1")
 
 
 class RelayEndToEnd(unittest.TestCase):

@@ -125,4 +125,4 @@ Never reset `seq-pub`. `scripts/seq.sh pub reset` wipes the chain: the deployed 
 
 Check. `scripts/gate/g4_check.py` fails a public run on any applied update that is not three transactions, on any superseded submission, on a step without a cycle figure, on a step above 9,000,000 cycles, on a sequencer other than `seq-pub`, and on a dev-mode flag that is set.
 
-The public read-only endpoint has two parts, the hosted relay and the host dialer: `tools/seq_read/README.md` gives the commands to start and stop them.
+The public read-only endpoint has two parts, the hosted relay and the host dialer: `tools/seq_read/README.md` describes how to run, start and stop them.

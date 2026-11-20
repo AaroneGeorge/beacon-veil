@@ -1,13 +1,13 @@
 # v3_onchain check through the public read-only endpoint
-started: 2026-11-20T11:51:39Z
-seconds: 8
+started: 2026-11-20T14:48:10Z
+seconds: 7
 sequencer_addr in the wallet config: https://beacon-veil-seq.tailcdec7a.ts.net
 wallet: a new empty wallet (no funds); the check sends no transaction
 command: v3_onchain check evidence/public-path/onchain/mainnet/run.json evidence/public-path/onchain/sepolia/run.json evidence/public-path/onchain/hoodi/run.json
 binary: v3_onchain built from tools/cost (cargo build -p cost --bin v3_onchain), sha256 8e86acce58a80274aead6882ad0e95e0444acb9f0b1c5f2d272a12b03eaa44f7
 route: this machine resolves the name to its tailnet address, so these calls reached the endpoint's HTTPS sidecar over the tailnet, then the same relay and host dialer as public visitors (verify-*.json covers the Funnel route)
-host dialer counters, forwarded, before: {'getAccountView': 7, 'getBlock': 31, 'getLastBlockId': 162, 'getProgramIds': 4, 'getTransaction': 32}
-host dialer counters, forwarded, after:  {'getAccountView': 10, 'getBlock': 58, 'getLastBlockId': 162, 'getProgramIds': 4, 'getTransaction': 59}
+host dialer counters, forwarded, before: {'getAccountView': 1, 'getBlock': 1, 'getLastBlockId': 41, 'getProgramIds': 1, 'getTransaction': 1}
+host dialer counters, forwarded, after:  {'getAccountView': 4, 'getBlock': 28, 'getLastBlockId': 41, 'getProgramIds': 1, 'getTransaction': 28}
 exit code: 0
 --- output
 PASS: 27 transactions re-read from the sequencer match the records

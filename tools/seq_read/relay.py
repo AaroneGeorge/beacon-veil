@@ -12,6 +12,7 @@ Standard library only.
 
 import collections
 import hmac
+import ipaddress
 import json
 import os
 import secrets
@@ -173,9 +174,21 @@ class Base(BaseHTTPRequestHandler):
 
 class Public(Base):
     def visitor(self):
-        # The sidecar's proxy appends the visitor's address last; earlier entries come from the visitor and are ignored.
-        xff = self.headers.get("X-Forwarded-For", "")
-        return xff.rsplit(",", 1)[-1].strip() or self.client_address[0]
+        """The rate-limit key: the visitor's address as the sidecar's proxy gives it (the last X-Forwarded-For entry;
+        earlier entries come from the visitor), else the peer address. IPv6 is keyed by its /64, which one visitor
+        usually holds whole."""
+        last = self.headers.get("X-Forwarded-For", "").rsplit(",", 1)[-1].strip()
+        for text in (last, self.client_address[0]):
+            try:
+                ip = ipaddress.ip_address(text)
+            except ValueError:
+                continue
+            if ip.version == 6:
+                if ip.ipv4_mapped:
+                    return str(ip.ipv4_mapped)
+                return str(ipaddress.ip_network(f"{ip}/64", strict=False))
+            return str(ip)
+        return "unknown"
 
     def do_GET(self):
         path = self.path.split("?", 1)[0]

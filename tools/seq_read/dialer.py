@@ -151,13 +151,17 @@ class Dialer:
         self.stats.add(self.stats.forwarded, method)
         return status, reply
 
-    @staticmethod
-    def method_of(raw):
+    KNOWN = frozenset(policy.ALLOWED | set(policy.WRITES) | set(policy.REFUSED_READS))
+
+    @classmethod
+    def method_of(cls, raw):
+        """A counter key from a fixed set, so a relay sending made-up names cannot grow the counters."""
         try:
-            m = json.loads(raw).get("method")
-            return m if isinstance(m, str) and len(m) <= 64 else "<other>"
-        except (ValueError, AttributeError):
+            doc = json.loads(raw)
+        except (ValueError, RecursionError):
             return "<unparsable>"
+        m = doc.get("method") if isinstance(doc, dict) else None
+        return m if isinstance(m, str) and m in cls.KNOWN else "<other>"
 
     def worker(self):
         backoff = 1.0

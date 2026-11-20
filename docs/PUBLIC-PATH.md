@@ -87,4 +87,4 @@ The sequencer that holds every transaction cited on this page (`seq-pub`, LEZ v0
 curl -s -H 'content-type: application/json' -d '{"jsonrpc":"2.0","id":1,"method":"getTransaction","params":["a018aa6bccba64e417eb0e3dc5045f66f96ee6a2a9bf3e4a66a9de7df017ddc2"]}' https://beacon-veil-seq.tailcdec7a.ts.net
 ```
 
-This is the first step of `evidence/public-path/onchain/mainnet/run.json`. The answer is the transaction (base64 of its borsh bytes) and its block id. `v3_onchain check` re-reads the 27 mainnet, Sepolia and Hoodi transactions through this address: `evidence/public-path/endpoint/check-through-endpoint.txt`. The endpoint may be away between 19:00 and 03:00 UTC on nights when proofs run on the same machine.
+This is the first step of `evidence/public-path/onchain/mainnet/run.json`. The answer is the transaction (base64 of its borsh bytes) and its block id. `v3_onchain check` re-reads the 27 mainnet, Sepolia and Hoodi transactions through this address: `evidence/public-path/endpoint/check-through-endpoint.txt`. The endpoint is switched off during proof windows, when proofs run on the same machine.
