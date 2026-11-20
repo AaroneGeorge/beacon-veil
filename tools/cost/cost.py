@@ -118,6 +118,99 @@ def rows_from_attest_exec(doc, raw_name):
     return out
 
 
+# Gas the staged submitter declares per step (attest_host V3_STEP_GAS, V3_MILLER_GAS, V3_FINISH_GAS). The on-chain
+# runs of evidence/public-path/onchain/ were sent before the per-step values, with 9,000,000 for every step.
+V3_DECLARED = {"Begin": 9_000_000, "BeginPrepare": 9_000_000, "BeginKeys": 9_000_000, "Miller": 7_000_000,
+               "Finish": 5_500_000}
+V3_STEP_LIMIT = 9_000_000
+
+
+def rows_from_exec_v3(doc, raw_name):
+    """lc_verify_v3 per step (tools/cost exec-v3). user_cycles = the program's own cycles; gas_exec = what the step's
+    public transaction meters (Finish adds the chained attest Apply and WriteRecord)."""
+    out = []
+    for r in doc["rows"]:
+        lay = "4s" if r["layout"] == "four steps" else "3s"
+        out.append({
+            "id": f"lc_verify_v3.{lay}.{r['network']}.{r['update']}.{r['step']}", "program": "lc_verify_v3",
+            "message": f"{r['step']} (V3)", "step": r["update"], "user_cycles": r["metered_cycles"],
+            "total_cycles_padded": r.get("total_cycles_padded"), "segments": r.get("segments"),
+            "message_bytes": r.get("message_bytes"), "gas_exec": r["tx_total_cycles"], "label": "measured",
+            "raw": raw_name,
+            "extra": {"network": r["network"], "kind": r["kind"], "participation": r["participation"],
+                      "layout": r["layout"], "v3_step": r["step"], "marked_cycles": r.get("marked_cycles"),
+                      "unmarked_cycles": r.get("unmarked_cycles"), "chained": r.get("chained")},
+        })
+    return out
+
+
+def onchain_runs(out_dir):
+    """evidence/public-path/onchain/*/run.json next to evidence/cost (committed records of real public transactions)."""
+    base = os.path.join(os.path.dirname(os.path.abspath(out_dir.rstrip("/"))), "public-path", "onchain")
+    runs = []
+    if os.path.isdir(base):
+        for net in sorted(os.listdir(base)):
+            p = os.path.join(base, net, "run.json")
+            if os.path.isfile(p):
+                runs.append((f"evidence/public-path/onchain/{net}/run.json", load(p)))
+    return runs
+
+
+def derive_path_b(rows, runs):
+    """Section 8: the staged public path, executor and on-chain side by side."""
+    v3 = [r for r in rows if r["program"] == "lc_verify_v3" and r["extra"]["layout"] == "three steps"]
+    worst = {}
+    for r in v3:
+        k = r["extra"]["v3_step"]
+        if r["gas_exec"] > worst.get(k, {}).get("gas_exec", -1):
+            worst[k] = r
+    ex_rows = []
+    for k in ("Begin", "Miller", "Finish"):
+        if k in worst:
+            r = worst[k]
+            ex_rows.append({"step": k, "worst_update": f"{r['extra']['network']} {r['step']}",
+                            "signers": r["extra"]["participation"], "gas_exec": r["gas_exec"],
+                            "declared_gas": V3_DECLARED[k], "pct_of_cap": round(100 * r["gas_exec"] / LEZ["MAX_GAS_EXEC"], 1),
+                            "pct_of_declared": round(100 * r["gas_exec"] / V3_DECLARED[k], 1),
+                            "label": "measured (executor)"})
+    oc_rows = []
+    max_diff = 0
+    for path, doc in runs:
+        for u in doc.get("updates", []):
+            steps = {s["step"]: s for s in u["steps"]}
+            row = {"network": doc.get("network"), "update": u["update"], "kind": u["kind"],
+                   "signers": u["participation"], "txs": len(u["steps"]), "source": path}
+            total = 0
+            for k in ("Begin", "Miller", "Finish"):
+                s = steps.get(k)
+                if not s:
+                    continue
+                charged = s.get("charged_gas")
+                metered = s.get("metered_cycles_total")
+                row[f"{k.lower()}_charged"] = charged
+                row[f"{k.lower()}_metered"] = metered
+                if charged is not None and metered is not None:
+                    max_diff = max(max_diff, abs(charged - metered))
+                total += charged if charged is not None else 0
+            row["update_charged"] = total
+            row["max_step_pct_of_cap"] = round(100 * max((row.get(f"{k}_charged") or 0) for k in ("begin", "miller", "finish")) / LEZ["MAX_GAS_EXEC"], 1)
+            oc_rows.append(row)
+    return {
+        "executor_worst_case": ex_rows,
+        "onchain": oc_rows,
+        "onchain_charged_minus_metered_max": max_diff,
+        "declared_gas_per_step": V3_DECLARED,
+        "note": "On chain: charged = the block's charged execution gas (fee summary; one charged transaction per block, "
+                "or the block total minus the other transactions re-executed); metered = the same transaction re-executed "
+                "in the RISC Zero executor with the deployed ELFs. Executor rows: the fixture updates of section 1 "
+                "(fixtures/mainnet, fixtures/sepolia, fabricated 342-signer updates), not the same updates as on chain, "
+                "so their cycles differ by the input (committee root, signers, period or finality update), not by an "
+                "overhead: per transaction, charged equals metered to the cycle. The recorded on-chain transactions "
+                "declared 9,000,000 gas for every step (they predate the per-step values).",
+        "label": "measured",
+    }
+
+
 def rows_generic(doc, raw_name):
     """Rows from any other harness that writes {"rows": [{id, program, message, step, user_cycles, ...}]}."""
     out = []
@@ -311,6 +404,9 @@ def cmd_build(a):
         if name.startswith("exec-lc"):
             rows += rows_from_exec_lc(doc, name)
             meta["guests"] = doc.get("guests")
+        elif name.startswith("exec-v3"):
+            rows += rows_from_exec_v3(doc, name)
+            meta["v3_guest"] = doc.get("guests", {}).get("lc_verify_v3")
         elif name.startswith("attest-exec"):
             rows += rows_from_attest_exec(doc, name)
             meta["attest_exec_guests"] = {"attest_elf_bytes": doc.get("attest_elf_bytes"),
@@ -329,12 +425,18 @@ def cmd_build(a):
     derived = derive(rows, sizes, meta.get("b0_phases"))
     if "b0_phases" in meta:
         derived["b0_phases"] = meta["b0_phases"]
+    if any(r["program"] == "lc_verify_v3" for r in rows):
+        derived["path_b_three_public_transactions"] = derive_path_b(rows, onchain_runs(a.out))
+    guests = dict(meta.get("guests") or {})
+    if meta.get("v3_guest"):
+        v = meta["v3_guest"]
+        guests["lc_verify_v3"] = {"image_id": v.get("image_id"), "elf_bytes": v.get("user_elf_bytes")}
     doc = {
         "what": "beacon-veil cost table (make cost-exec). Cycles are deterministic for the recorded guest image ids.",
         "generated_utc": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "machine": machine_line(),
         "run": meta.get("run"),
-        "guests": meta.get("guests"),
+        "guests": guests or None,
         "raw_files": sources,
         "sizes": sizes,
         "rows": rows,
@@ -361,7 +463,8 @@ def render_md(doc):
         out.append("Guest images: " + "; ".join(
             f"`{k}` {v.get('image_id', '?')[:16]}... ({fmt(v.get('elf_bytes'))} ELF bytes)" for k, v in doc["guests"].items()) + "\n")
     out.append("## 1. Measured cycles (RISC Zero 3.0.5 executor, real mainnet fixtures)\n")
-    out.append(md_table(doc["rows"], [("id", "id"), ("message", "message"), ("user cycles", "user_cycles"),
+    out.append(md_table([r for r in doc["rows"] if r["program"] != "lc_verify_v3"],
+                        [("id", "id"), ("message", "message"), ("user cycles", "user_cycles"),
                                        ("padded", "total_cycles_padded"), ("segments", "segments"),
                                        ("gas (public)", "gas_exec"), ("msg bytes", "message_bytes"),
                                        ("label", "label"), ("raw", "raw")]))
@@ -426,6 +529,33 @@ def render_md(doc):
                                      ("precompile charge P", "precompile_charge"),
                                      ("update gas after", "update_gas_after"), ("x cap after", "x_cap_after")])
                if pd["rows"] else "_Pending: W1's per-phase trace (raw/b0-phases.json) has not landed._\n")
+    pb = d.get("path_b_three_public_transactions")
+    if pb:
+        out.append("\n## 8. Path B measured: three public transactions\n")
+        out.append("One update is three public transactions of `lc_verify_v3` (Begin, Miller, Finish) on a job account; "
+                   "Finish sends `Apply` to the unchanged `attest` program. Executor: RISC Zero 3.0.5, deployed release "
+                   "ELFs. On chain: `seq-pub` (LEZ v0.4.0-rc3 standalone, RISC0_DEV_MODE unset: public transactions are "
+                   "executed by the sequencer, no proofs involved).\n")
+        out.append("Executor, worst case per step over the fixture updates (all rows: `raw/exec-v3.json`; declared gas = "
+                   "what the staged submitter declares per step):\n")
+        out.append(md_table(pb["executor_worst_case"], [("step", "step"), ("worst update", "worst_update"),
+                                                        ("signers", "signers"), ("gas (tx)", "gas_exec"),
+                                                        ("declared", "declared_gas"), ("% of cap", "pct_of_cap"),
+                                                        ("% of declared", "pct_of_declared"), ("label", "label")]))
+        out.append("\nOn chain, every recorded update (charged gas per step; the executor re-run of each same transaction "
+                   f"differs from the charge by at most {fmt(pb['onchain_charged_minus_metered_max'])} gas):\n")
+        out.append(md_table(pb["onchain"], [("network", "network"), ("update", "update"), ("kind", "kind"),
+                                            ("signers", "signers"), ("txs", "txs"), ("Begin", "begin_charged"),
+                                            ("Miller", "miller_charged"), ("Finish", "finish_charged"),
+                                            ("update total", "update_charged"),
+                                            ("largest step % of cap", "max_step_pct_of_cap"), ("source", "source")]))
+        out.append(f"\n{pb['note']}\n")
+        v3 = [r for r in doc["rows"] if r["program"] == "lc_verify_v3"]
+        out.append("\nExecutor rows of `lc_verify_v3` (user cycles = the program; gas (tx) = the transaction, Finish with "
+                   "the chained `attest` Apply and WriteRecord):\n")
+        out.append(md_table(v3, [("id", "id"), ("message", "message"), ("user cycles", "user_cycles"),
+                                 ("padded", "total_cycles_padded"), ("segments", "segments"), ("gas (tx)", "gas_exec"),
+                                 ("msg bytes", "message_bytes"), ("label", "label"), ("raw", "raw")]))
     out.append(f"\nConstants: {LEZ_SRC}.\n")
     return "\n".join(out)
 

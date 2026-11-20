@@ -41,6 +41,8 @@ const V3: AccountId = AccountId::new([0x33; 32]);
 
 struct Exec {
     cycles: u64,
+    padded: u64,
+    segments: usize,
     post_state: Vec<u8>,
     sync: Vec<(Actor, Vec<u8>)>,
     stderr: String,
@@ -58,6 +60,8 @@ fn run(g: &Guest, input: &ReceiveInput) -> Result<Exec> {
     let t: lee_core::program::Transition = borsh::from_slice(journal).context("transition")?;
     Ok(Exec {
         cycles: info.cycles(),
+        padded: info.segments.iter().map(|s| 1u64 << s.po2).sum(),
+        segments: info.segments.len(),
         post_state: state_of(&t),
         sync: t
             .response
@@ -237,6 +241,7 @@ fn update_rows(
             "network": network, "update": label, "kind": kind, "participation": native.participation,
             "layout": if four_steps { "four steps" } else { "three steps" },
             "step": name, "metered_cycles": e.cycles,
+            "total_cycles_padded": e.padded, "segments": e.segments,
             "phases": Value::Object(phases), "marked_cycles": sum, "unmarked_cycles": e.cycles.saturating_sub(sum),
             "chained": chained_rows, "tx_total_cycles": total,
             "declared_gas": DECLARED, "expected_charged_gas": total,

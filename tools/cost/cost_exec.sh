@@ -10,6 +10,8 @@
 #   cost exec-lc     (tools/cost)         lc_verify Verify V1 per mainnet step; attest Init, Apply, WriteRecord, CheckHeader
 #   cost sizes       (tools/cost)         borsh sizes of stored states and inputs
 #   attest_exec      (tests/e2e_consumer)      attest Attest (log, storage, account), consumer_erc20 Statement, MarkConsumed
+#   cost exec-v3     (tools/cost/exec_v3.sh)   lc_verify_v3 per step (Begin, Miller, Finish; with COST_BINS only: the
+#                                              release set's lc_verify_v3 and attest, plus a local measurement build)
 # Optional raw files dropped into evidence/cost/raw/ by hand are kept and merged (b0-phases.json, ...).
 # Cycles depend only on the guest image and the input; the image ids are recorded in cost.json.
 set -euo pipefail
@@ -60,6 +62,13 @@ if [ "$have_attest_exec" = 1 ] && [ -f "$co" ]; then
   echo "cost-exec: attest_exec"
   nice -n 15 "$bin/attest_exec" --attest-elf "$at" --consumer-elf "$co" --json "$raw/attest-exec.json" \
     > "$raw/attest-exec.log" 2>&1 || { echo "cost-exec: attest_exec failed (rows skipped)" >&2; rm -f "$raw/attest-exec.json"; }
+fi
+
+# lc_verify_v3 (the staged public path): from the release set only, so its image id is the deployed one.
+if [ -n "${COST_BINS:-}" ] && [ -f "$COST_BINS/elf/lc_verify_v3" ]; then
+  echo "cost-exec: exec-v3"
+  BV_LOCK_HELD="${BV_LOCK_HELD:-0}" BENCH_TARGET_DIR="$CARGO_TARGET_DIR" EXEC_V3_OUT="$raw/exec-v3.json" \
+    "$here/exec_v3.sh" > "$raw/exec-v3.log" 2>&1 || { tail -20 "$raw/exec-v3.log" >&2; exit 1; }
 fi
 
 python3 -I - "$raw/run-meta.json" "$started" <<EOF

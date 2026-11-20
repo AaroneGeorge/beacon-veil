@@ -49,13 +49,22 @@ async fn main() -> Result<()> {
     let claim = f.bytes("claim")?;
     let topics = f.0["expected"]["topics"].as_array().context("topics")?;
     let predicate = Predicate::All(vec![
-        Predicate::LogTopicEq { i: 0, v: f.word(&topics[0])? },
-        Predicate::LogTopicEq { i: 2, v: f.word(&topics[2])? },
+        Predicate::LogTopicEq {
+            i: 0,
+            v: f.word(&topics[0])?,
+        },
+        Predicate::LogTopicEq {
+            i: 2,
+            v: f.word(&topics[2])?,
+        },
     ]);
-    let st = attest_host::dry_run_attest(&instance, &record, &claim, &predicate).map_err(|e| anyhow!("dry run: {e}"))?;
+    let st =
+        attest_host::dry_run_attest(&instance, &record, &claim, &predicate).map_err(|e| anyhow!("dry run: {e}"))?;
 
     // Consumer instance (public Init, no proof).
-    let salt = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH)?.as_secs();
+    let salt = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)?
+        .as_secs();
     let config = f.consumer_config(ids.attest, instance, salt)?;
     let me = consumer_instance_id(&cprog, &config);
     let mut w = attest_host::open_wallet()?;
@@ -67,13 +76,21 @@ async fn main() -> Result<()> {
     )
     .await?;
     println!("consumer instance {me}: init tx {}", init.tx);
-    let before = read_consumer(&w, cprog, me).await?.context("consumer state after init")?;
+    let before = read_consumer(&w, cprog, me)
+        .await?
+        .context("consumer state after init")?;
 
     // The private Attest: root actor = the user's private account under `attest`.
     let submitter = attest_host::account_from_env_or_label(&w, "BV_SUBMITTER", "bv-submitter")?;
     let programs = attest_host::lee::privacy_preserving_transaction::circuit::ProgramCatalog::from([
-        (ids.attest, attest_host::program_from(&attest_host::guest_dir_for("attest"), "attest")?),
-        (cprog, attest_host::program_from(&attest_host::guest_dir_for("consumer_erc20"), "consumer_erc20")?),
+        (
+            ids.attest,
+            attest_host::program_from(&attest_host::guest_dir_for("attest"), "attest")?,
+        ),
+        (
+            cprog,
+            attest_host::program_from(&attest_host::guest_dir_for("consumer_erc20"), "consumer_erc20")?,
+        ),
     ]);
     let accounts = || {
         vec![
@@ -98,8 +115,16 @@ async fn main() -> Result<()> {
 
     let hash = common::HashType::from_str(&out.tx).map_err(|e| anyhow!("tx hash: {e:?}"))?;
     let block_id = attest_host::confirm(&w, hash, "g3 real").await?;
-    let block = w.get_block(block_id).await?.ok_or_else(|| anyhow!("block {block_id}"))?;
-    let tx = block.body.transactions.iter().find(|t| t.hash() == hash).context("tx not in block")?;
+    let block = w
+        .get_block(block_id)
+        .await?
+        .ok_or_else(|| anyhow!("block {block_id}"))?;
+    let tx = block
+        .body
+        .transactions
+        .iter()
+        .find(|t| t.hash() == hash)
+        .context("tx not in block")?;
     let tx_bytes = borsh::to_vec(tx)?.len();
     let witness_bytes = match tx {
         common::transaction::LeeTransaction::PrivacyPreserving(p) => Some(borsh::to_vec(&p.witness_set)?.len()),
@@ -142,9 +167,15 @@ async fn main() -> Result<()> {
 }
 
 async fn read_consumer(w: &attest_host::Wallet, program: AccountId, id: AccountId) -> Result<Option<ConsumerState>> {
-    let Some(view) = w.get_account_view(Actor::new(id, program)).await? else { return Ok(None) };
+    let Some(view) = w.get_account_view(Actor::new(id, program)).await? else {
+        return Ok(None);
+    };
     let s = view.data.actor_state(program);
-    if s.is_empty() { Ok(None) } else { Ok(Some(borsh::from_slice(s)?)) }
+    if s.is_empty() {
+        Ok(None)
+    } else {
+        Ok(Some(borsh::from_slice(s)?))
+    }
 }
 
 /// The on-chain program header of `consumer_erc20` holds the release image id (same check as g1_real_proof).

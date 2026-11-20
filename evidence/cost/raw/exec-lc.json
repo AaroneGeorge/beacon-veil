@@ -5,19 +5,19 @@
     "attest": {
       "elf_bytes": 406700,
       "image_id": "9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d",
-      "path": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2/elf/attest",
+      "path": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/attest",
       "program_binary_bytes": 439124
     },
     "lc_verify": {
       "elf_bytes": 754956,
       "image_id": "c7b5f2191f133026017c09072e883217dfe3785450d40d081718b0fd204878ba",
-      "path": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2/elf/lc_verify",
+      "path": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/lc_verify",
       "program_binary_bytes": 787380
     },
     "lc_verify_v2": {
       "elf_bytes": 716792,
       "image_id": "18684beee3e973a2f1391c9bdb9108743c71e6f216bb5fba88bc0443403e8230",
-      "path": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2/elf/lc_verify_v2",
+      "path": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/lc_verify_v2",
       "program_binary_bytes": 749216
     }
   },
@@ -25,7 +25,7 @@
   "rows": [
     {
       "bootstrap_bytes": 25675,
-      "executor_ms": 268,
+      "executor_ms": 274,
       "id": "attest.init",
       "instance_state_bytes": 410,
       "message": "Init",
@@ -40,7 +40,7 @@
       "user_cycles": 4926875
     },
     {
-      "executor_ms": 67,
+      "executor_ms": 62,
       "id": "attest.write_record.checkpoint",
       "message": "WriteRecord",
       "message_bytes": 153,
@@ -55,7 +55,7 @@
       "user_cycles": 24047
     },
     {
-      "executor_ms": 2404,
+      "executor_ms": 2479,
       "handoff": false,
       "head_slot": 15605824,
       "id": "lc_verify.v1.verify.update[0]",
@@ -76,7 +76,7 @@
       "variant": "V1"
     },
     {
-      "executor_ms": 1896,
+      "executor_ms": 1932,
       "handoff": false,
       "id": "lc_verify.v2.verify.update[0]",
       "message": "Verify (V2)",
@@ -94,7 +94,7 @@
       "variant": "V2"
     },
     {
-      "executor_ms": 62,
+      "executor_ms": 66,
       "id": "attest.apply.update[0]",
       "message": "Apply",
       "message_bytes": 401,
@@ -109,7 +109,7 @@
       "writes_record": true
     },
     {
-      "executor_ms": 61,
+      "executor_ms": 62,
       "id": "attest.write_record.update[0]",
       "message": "WriteRecord",
       "message_bytes": 153,
@@ -124,7 +124,7 @@
       "user_cycles": 24047
     },
     {
-      "executor_ms": 2540,
+      "executor_ms": 2690,
       "handoff": true,
       "head_slot": 15613952,
       "id": "lc_verify.v1.verify.update[1]",
@@ -145,7 +145,7 @@
       "variant": "V1"
     },
     {
-      "executor_ms": 1940,
+      "executor_ms": 2021,
       "handoff": true,
       "id": "lc_verify.v2.verify.update[1]",
       "message": "Verify (V2)",
@@ -178,7 +178,7 @@
       "writes_record": true
     },
     {
-      "executor_ms": 61,
+      "executor_ms": 62,
       "id": "attest.write_record.update[1]",
       "message": "WriteRecord",
       "message_bytes": 153,
@@ -193,7 +193,7 @@
       "user_cycles": 24047
     },
     {
-      "executor_ms": 2575,
+      "executor_ms": 2665,
       "handoff": true,
       "head_slot": 15622144,
       "id": "lc_verify.v1.verify.update[2]",
@@ -214,7 +214,7 @@
       "variant": "V1"
     },
     {
-      "executor_ms": 1972,
+      "executor_ms": 2057,
       "handoff": true,
       "id": "lc_verify.v2.verify.update[2]",
       "message": "Verify (V2)",
@@ -247,7 +247,7 @@
       "writes_record": true
     },
     {
-      "executor_ms": 61,
+      "executor_ms": 62,
       "id": "attest.write_record.update[2]",
       "message": "WriteRecord",
       "message_bytes": 153,
@@ -262,7 +262,7 @@
       "user_cycles": 24047
     },
     {
-      "executor_ms": 2514,
+      "executor_ms": 2567,
       "handoff": true,
       "head_slot": 15631808,
       "id": "lc_verify.v1.verify.update[3]",
@@ -283,7 +283,7 @@
       "variant": "V1"
     },
     {
-      "executor_ms": 2024,
+      "executor_ms": 2050,
       "handoff": true,
       "id": "lc_verify.v2.verify.update[3]",
       "message": "Verify (V2)",
@@ -301,7 +301,7 @@
       "variant": "V2"
     },
     {
-      "executor_ms": 63,
+      "executor_ms": 64,
       "id": "attest.apply.update[3]",
       "message": "Apply",
       "message_bytes": 401,
@@ -316,7 +316,7 @@
       "writes_record": true
     },
     {
-      "executor_ms": 61,
+      "executor_ms": 62,
       "id": "attest.write_record.update[3]",
       "message": "WriteRecord",
       "message_bytes": 153,
@@ -331,7 +331,7 @@
       "user_cycles": 24047
     },
     {
-      "executor_ms": 1875,
+      "executor_ms": 1941,
       "handoff": false,
       "head_slot": 15637568,
       "id": "lc_verify.v1.verify.finality_update_15637644",
@@ -352,7 +352,7 @@
       "variant": "V1"
     },
     {
-      "executor_ms": 1537,
+      "executor_ms": 1650,
       "handoff": false,
       "id": "lc_verify.v2.verify.finality_update_15637644",
       "message": "Verify (V2)",
@@ -370,7 +370,7 @@
       "variant": "V2"
     },
     {
-      "executor_ms": 63,
+      "executor_ms": 66,
       "id": "attest.apply.finality_update_15637644",
       "message": "Apply",
       "message_bytes": 401,
@@ -385,7 +385,7 @@
       "writes_record": true
     },
     {
-      "executor_ms": 61,
+      "executor_ms": 62,
       "id": "attest.write_record.finality_update_15637644",
       "message": "WriteRecord",
       "message_bytes": 153,
@@ -400,7 +400,7 @@
       "user_cycles": 24047
     },
     {
-      "executor_ms": 67,
+      "executor_ms": 61,
       "id": "attest.check_header",
       "message": "CheckHeader",
       "message_bytes": 33,

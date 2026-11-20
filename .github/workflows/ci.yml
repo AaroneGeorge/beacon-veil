@@ -54,6 +54,11 @@ jobs:
         env:
           RISC0_SKIP_BUILD: "1"
         run: cargo nextest run --workspace --locked --no-fail-fast
+      - name: nextest, staged verifier V3 against V1 (e2e_chain v3 tests)
+        if: success() || failure()
+        env:
+          RISC0_SKIP_BUILD: "1"
+        run: cargo nextest run -p e2e_chain --features v3 --locked --no-fail-fast
 
   guests:
     name: guest build (docker r0.1.91.1) + image-id check
@@ -74,6 +79,11 @@ jobs:
         run: scripts/guests_release.sh
       - name: Image ids equal guests/IMAGE_IDS.expected
         run: scripts/check_image_ids.sh "${{ runner.temp }}/guests"
+      - name: lc_verify_v3 built with its shim setting and its image id checked
+        # guests_release.sh builds lc_verify_v3 with BV_V3_CARGO_CONFIG and fails if the setting matched no package.
+        run: |
+          grep -q '^lc_verify_v3 ' guests/IMAGE_IDS.expected
+          scripts/check_image_ids.sh "${{ runner.temp }}/guests" | grep '^OK       lc_verify_v3 ' 
       - name: ELF sizes (deployed-ELF cap 1,966,080 bytes)
         run: |
           ls -l "${{ runner.temp }}/guests/elf" | tee guest-sizes.txt

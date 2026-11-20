@@ -257,14 +257,29 @@ fn exec_lc(args: &[String]) -> Result<()> {
 
         if let Some(g2) = &lc2 {
             let r2 = execute(g2, &input, &format!("lc_verify_v2.{label}"))?;
-            let sm2 = r2.transition.response.sync_messages.first().ok_or_else(|| anyhow!("{label}: V2 no Apply"))?;
+            let sm2 = r2
+                .transition
+                .response
+                .sync_messages
+                .first()
+                .ok_or_else(|| anyhow!("{label}: V2 no Apply"))?;
             if sm2.message != apply_bytes {
                 bail!("{label}: V2 Apply differs from V1");
             }
-            println!("{label}: Verify V2 user cycles {} ({} segments)", r2.user_cycles, r2.segments);
-            rows.push(row(&format!("lc_verify.v2.verify.{label}"), "lc_verify_v2", "Verify (V2)", label, &r2,
-                vbytes.len(), json!({"variant": "V2", "update_bytes": update.len(), "participation": native.participation,
-                "handoff": native.handoff, "path": "private on Path A"})));
+            println!(
+                "{label}: Verify V2 user cycles {} ({} segments)",
+                r2.user_cycles, r2.segments
+            );
+            rows.push(row(
+                &format!("lc_verify.v2.verify.{label}"),
+                "lc_verify_v2",
+                "Verify (V2)",
+                label,
+                &r2,
+                vbytes.len(),
+                json!({"variant": "V2", "update_bytes": update.len(), "participation": native.participation,
+                "handoff": native.handoff, "path": "private on Path A"}),
+            ));
         }
         // Apply, as the instance actor receives it: from the private lc_verify actor.
         let input = ReceiveInput {

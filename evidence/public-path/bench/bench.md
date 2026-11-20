@@ -90,6 +90,8 @@ Participation bits rewritten (all set, then the first k cleared); the signature 
 | sepolia | finality_update_11561824 | 170 | zkcrypto | 1.85M | 0.18M | 0.12M | 191.56M | 1.50M | 2.88M | 9.86M | 12.38M | 198.09M | E03BadSignature |
 | sepolia | finality_update_11561824 | 170 | blst | 1.85M | 0.18M | 0.12M | 2.11M | 0.69M | 1.52M | 4.59M | 5.17M | 6.46M | E03BadSignature |
 
+Steps of the deployed `lc_verify_v3` as public transactions, executor and on chain side by side: `evidence/cost/cost.md` section 8 (per transaction the charge equals the executor's cycles). In `lc_verify_v3` the program's entry, message and job-state handling take about 0.02M to 0.3M per step beyond its marked phases (`unmarked_cycles` in `evidence/public-path/exec-steps.json`); it also builds the bigint shim at opt-level 3, which this bench guest does not (`docs/DECISIONS.md` D-56), so its BLS phases are lower than the ones above.
+
 ## 5. How to re-run
 
 `BENCH_ROUTE=docker make bench-bls` (guest built in `risczero/risc0-guest-builder:r0.1.91.1` from the committed tree; the image id above is that build's) or `make bench-bls` (local rzup toolchain; image id differs, cycles may differ slightly). Raw data: `phases.json` next to this file; build record: `build.log`.

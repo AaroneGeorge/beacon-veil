@@ -10,7 +10,8 @@ export R="$BV_REPO"
 
 # One shared target dir: cargo's lock serialises parallel builds.
 export CARGO_TARGET_DIR="$B/target"
-export CARGO_BUILD_JOBS=4
+# Default 4; a caller may lower it (for example 2 while long runs share the machine).
+export CARGO_BUILD_JOBS="${CARGO_BUILD_JOBS:-4}"
 # /tmp is a 7.8 GB tmpfs with a per-user quota: keep temp files on disk.
 export TMPDIR="$B/.tmp"
 mkdir -p "$TMPDIR"

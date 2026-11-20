@@ -36,7 +36,7 @@ user_elf_bytes=831576
 docker_build_1_image_id=5004156fed0dfeecedf4aae49adae675699e681d06605a2dd3b913743a9cd91f
 docker_build_2_image_id=5004156fed0dfeecedf4aae49adae675699e681d06605a2dd3b913743a9cd91f
 docker_builds_equal=yes (user ELF sha256 equal too: 4559a9601b9584ab...)
-phases.json and bench.md were generated from the docker build (5004156fed0dfeecedf4aae49adae675699e681d06605a2dd3b913743a9cd91f): BENCH_ROUTE=docker BENCH_NO_GUEST_BUILD=1 make bench-bls, run twice, outputs byte-identical (sha256 phases.json 2fac81ae39fc5de4..., bench.md 11dac1294d1ba81e...; regenerated 2026-11-20 with the key-figures and three-layout report, same guest)
+phases.json and bench.md were generated from the docker build (5004156fed0dfeecedf4aae49adae675699e681d06605a2dd3b913743a9cd91f): BENCH_ROUTE=docker BENCH_NO_GUEST_BUILD=1 make bench-bls, run twice, outputs byte-identical (sha256 phases.json 2fac81ae39fc5de4..., bench.md 8f0e0ede7af774f4...; regenerated 2026-11-20: key figures, three layouts, pointer to the cost table's section 8; same guest)
 
 ## Dockerfile (docker builds)
 FROM risczero/risc0-guest-builder:r0.1.91.1 as build

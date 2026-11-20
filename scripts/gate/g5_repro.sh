@@ -91,6 +91,12 @@ else:
         if ra.get(s, {}).get("gas_exec") != na.get(s, {}).get("gas_exec"):
             fails.append(f"path A gas {s}: {ra.get(s, {}).get('gas_exec')} != {na.get(s, {}).get('gas_exec')}")
     res["rows_compared"] = len(r_rows)
+    by_prog = {}
+    for r in r_rows.values():
+        by_prog[r["program"]] = by_prog.get(r["program"], 0) + 1
+    res["rows_by_program"] = by_prog
+    if "lc_verify_v3" not in by_prog:
+        fails.append("no lc_verify_v3 rows in the reference (cost-exec with COST_BINS of a release set that has lc_verify_v3)")
     res["image_ids"] = {"reference": {k: v.get("image_id") for k, v in (ref.get("guests") or {}).items()},
                         "regenerated": {k: v.get("image_id") for k, v in (new.get("guests") or {}).items()}}
 # Real-proof rows must carry raw logs.
@@ -107,7 +113,7 @@ if missing:
 res["pass"] = not fails
 res["failures"] = fails
 json.dump(res, open(dst, "w"), indent=2)
-print(json.dumps({"G5": "PASS" if not fails else "FAIL", "rows_compared": res.get("rows_compared"), "failures": fails[:10]}))
+print(json.dumps({"G5": "PASS" if not fails else "FAIL", "rows_compared": res.get("rows_compared"), "rows_by_program": res.get("rows_by_program"), "failures": fails[:10]}))
 sys.exit(0 if not fails else 1)
 EOF
 st=$?

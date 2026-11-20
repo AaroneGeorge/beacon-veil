@@ -1,8 +1,6 @@
-   Compiling cost v0.1.0 (/home/lechuuu/hackathons/logos-rfp/build/repo/tools/cost)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.49s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.83s
 warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
 note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
-   Compiling e2e_consumer v0.1.0 (/home/lechuuu/hackathons/logos-rfp/build/repo/tests/e2e_consumer)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.37s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.81s
 warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
 note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`

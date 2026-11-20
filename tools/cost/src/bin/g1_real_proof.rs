@@ -55,7 +55,11 @@ async fn main() -> Result<()> {
     if let Ok(v2) = attest_host::deployed_program("lc_verify_v2") {
         verifiers.push(v2);
     }
-    let verifier = if verifier_name == "lc_verify" { ids.lc_verify } else { attest_host::deployed_program(&verifier_name)? };
+    let verifier = if verifier_name == "lc_verify" {
+        ids.lc_verify
+    } else {
+        attest_host::deployed_program(&verifier_name)?
+    };
     let mut chain = e2e_chain::mainnet_chain(verifiers.clone())?;
     // --bootstrap NAME: a mainnet fixture bootstrap (e.g. bootstrap_15631808.ssz, period 1908) instead of 15605760,
     // so a finality update of the same period is the first update.
@@ -71,7 +75,11 @@ async fn main() -> Result<()> {
         )?;
         chain.bootstrap = bootstrap;
     }
-    let idx = chain.updates.iter().position(|(l, _)| *l == step).ok_or_else(|| anyhow!("unknown step {step}"))?;
+    let idx = chain
+        .updates
+        .iter()
+        .position(|(l, _)| *l == step)
+        .ok_or_else(|| anyhow!("unknown step {step}"))?;
     let t0 = std::time::Instant::now();
 
     let (instance, init_tx) = match arg("--instance") {
@@ -81,12 +89,19 @@ async fn main() -> Result<()> {
             if let Some(m) = arg("--min-participants") {
                 config.min_participants = m.parse()?;
             }
-            let (instance, out) = attest_host::init(&ids, &config, &chain.bootstrap).await.context("init")?;
-            println!("init: instance {instance} tx {} (checkpoint slot {}, min_participants {})", out.tx,
-                config.checkpoint_slot, config.min_participants);
-            println!("G1INIT {}", json!({"instance": instance.to_string(), "init_tx": out.tx,
+            let (instance, out) = attest_host::init(&ids, &config, &chain.bootstrap)
+                .await
+                .context("init")?;
+            println!(
+                "init: instance {instance} tx {} (checkpoint slot {}, min_participants {})",
+                out.tx, config.checkpoint_slot, config.min_participants
+            );
+            println!(
+                "G1INIT {}",
+                json!({"instance": instance.to_string(), "init_tx": out.tx,
                 "checkpoint_slot": config.checkpoint_slot, "min_participants": config.min_participants,
-                "verifiers": verifiers.iter().map(ToString::to_string).collect::<Vec<_>>()}));
+                "verifiers": verifiers.iter().map(ToString::to_string).collect::<Vec<_>>()})
+            );
             (instance, Some(out.tx))
         }
     };
@@ -146,19 +161,30 @@ async fn check_images(image_ids_file: &str) -> Result<()> {
     let w = attest_host::open_wallet()?;
     let mut ok = true;
     for name in ["attest", "lc_verify", "lc_verify_v2"] {
-        let Ok(header) = attest_host::deployed_program(name) else { continue };
+        let Ok(header) = attest_host::deployed_program(name) else {
+            continue;
+        };
         let want = text
             .lines()
             .find(|l| l.starts_with(&format!("{name}.bin:")))
             .and_then(|l| l.rsplit("image id ").next())
             .map(str::trim)
             .ok_or_else(|| anyhow!("{name} not in {image_ids_file}"))?;
-        let want_bytes: Vec<u8> = (0..want.len()).step_by(2).map(|i| u8::from_str_radix(&want[i..i + 2], 16)).collect::<Result<_, _>>()?;
+        let want_bytes: Vec<u8> = (0..want.len())
+            .step_by(2)
+            .map(|i| u8::from_str_radix(&want[i..i + 2], 16))
+            .collect::<Result<_, _>>()?;
         let loader = lee_core::program::PROGRAM_LOADER_ACCOUNT_ID;
-        let view = w.get_account_view(lee_core::account::Actor::new(header, loader)).await?;
+        let view = w
+            .get_account_view(lee_core::account::Actor::new(header, loader))
+            .await?;
         let state = view.map(|a| a.data.actor_state(loader).to_vec()).unwrap_or_default();
         let found = state.windows(32).any(|win| win == want_bytes.as_slice());
-        println!("{name}: header {header} state {} bytes, image id {want}: {}", state.len(), if found { "MATCH" } else { "NOT FOUND" });
+        println!(
+            "{name}: header {header} state {} bytes, image id {want}: {}",
+            state.len(),
+            if found { "MATCH" } else { "NOT FOUND" }
+        );
         ok &= found;
     }
     if !ok {

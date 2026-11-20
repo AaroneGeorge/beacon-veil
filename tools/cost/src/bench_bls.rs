@@ -539,6 +539,16 @@ fn report(doc: &Value) -> String {
         p(&mut s, &line);
     }
     p(&mut s, "");
+    p(
+        &mut s,
+        "Steps of the deployed `lc_verify_v3` as public transactions, executor and on chain side by side: \
+         `evidence/cost/cost.md` section 8 (per transaction the charge equals the executor's cycles). In \
+         `lc_verify_v3` the program's entry, message and job-state handling take about 0.02M to 0.3M per step \
+         beyond its marked phases (`unmarked_cycles` in `evidence/public-path/exec-steps.json`); it also builds the \
+         bigint shim at opt-level 3, which this bench guest does not (`docs/DECISIONS.md` D-56), so its BLS phases \
+         are lower than the ones above.",
+    );
+    p(&mut s, "");
     p(&mut s, "## 5. How to re-run");
     p(&mut s, "");
     p(

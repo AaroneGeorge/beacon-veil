@@ -1,17 +1,17 @@
 {
   "what": "beacon-veil cost table (make cost-exec). Cycles are deterministic for the recorded guest image ids.",
-  "generated_utc": "2026-11-12T20:20:57Z",
+  "generated_utc": "2026-11-20T03:05:19Z",
   "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
   "run": {
     "command": "make cost-exec (tools/cost/cost_exec.sh)",
-    "started_utc": "2026-11-12T20:20:30Z",
-    "guest_build": "release bins /home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2",
+    "started_utc": "2026-11-20T03:01:42Z",
+    "guest_build": "release bins /home/lechuuu/hackathons/logos-rfp/build/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e",
     "guests": {
-      "lc_verify": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2/elf/lc_verify",
-      "attest": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2/elf/attest",
-      "consumer_erc20": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2/elf/consumer_erc20"
+      "lc_verify": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/lc_verify",
+      "attest": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/attest",
+      "consumer_erc20": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/consumer_erc20"
     },
-    "repo_commit": "ee8f2a1 (dirty)",
+    "repo_commit": "0b940b6 (dirty)",
     "risc0_dev_mode": "1",
     "r0vm": "risc0-r0vm 3.0.5"
   },
@@ -19,26 +19,31 @@
     "attest": {
       "elf_bytes": 406700,
       "image_id": "9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d",
-      "path": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2/elf/attest",
+      "path": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/attest",
       "program_binary_bytes": 439124
     },
     "lc_verify": {
       "elf_bytes": 754956,
       "image_id": "c7b5f2191f133026017c09072e883217dfe3785450d40d081718b0fd204878ba",
-      "path": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2/elf/lc_verify",
+      "path": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/lc_verify",
       "program_binary_bytes": 787380
     },
     "lc_verify_v2": {
       "elf_bytes": 716792,
       "image_id": "18684beee3e973a2f1391c9bdb9108743c71e6f216bb5fba88bc0443403e8230",
-      "path": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2/elf/lc_verify_v2",
+      "path": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/lc_verify_v2",
       "program_binary_bytes": 749216
+    },
+    "lc_verify_v3": {
+      "image_id": "cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510",
+      "elf_bytes": 498916
     }
   },
   "raw_files": [
     "cost/raw/attest-exec.json",
     "cost/raw/b0-phases.json",
     "cost/raw/exec-lc.json",
+    "cost/raw/exec-v3.json",
     "cost/raw/sizes.json",
     "cost/raw/v2-exec.json",
     "cost/raw/w3-attest_exec.json"
@@ -680,6 +685,1069 @@
         "update_bytes": 26922,
         "variant": "V2"
       }
+    },
+    {
+      "id": "lc_verify_v3.3s.fabricated.finality_update_342.Begin",
+      "program": "lc_verify_v3",
+      "message": "Begin (V3)",
+      "step": "finality_update_342",
+      "user_cycles": 4595014,
+      "total_cycles_padded": 5242880,
+      "segments": 5,
+      "message_bytes": 43464,
+      "gas_exec": 4595014,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "fabricated",
+        "kind": "finality",
+        "participation": 342,
+        "layout": "three steps",
+        "v3_step": "Begin",
+        "marked_cycles": 4405543,
+        "unmarked_cycles": 189471,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.fabricated.finality_update_342.Finish",
+      "program": "lc_verify_v3",
+      "message": "Finish (V3)",
+      "step": "finality_update_342",
+      "user_cycles": 4299917,
+      "total_cycles_padded": 4718592,
+      "segments": 5,
+      "message_bytes": 1,
+      "gas_exec": 4378929,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "fabricated",
+        "kind": "finality",
+        "participation": 342,
+        "layout": "three steps",
+        "v3_step": "Finish",
+        "marked_cycles": 4279015,
+        "unmarked_cycles": 20902,
+        "chained": [
+          {
+            "cycles": 54965,
+            "message": "Apply",
+            "program": "attest"
+          },
+          {
+            "cycles": 24047,
+            "message": "WriteRecord",
+            "program": "attest"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.fabricated.finality_update_342.Miller",
+      "program": "lc_verify_v3",
+      "message": "Miller (V3)",
+      "step": "finality_update_342",
+      "user_cycles": 5765037,
+      "total_cycles_padded": 6291456,
+      "segments": 6,
+      "message_bytes": 1,
+      "gas_exec": 5765037,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "fabricated",
+        "kind": "finality",
+        "participation": 342,
+        "layout": "three steps",
+        "v3_step": "Miller",
+        "marked_cycles": 5748940,
+        "unmarked_cycles": 16097,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.fabricated.period_update_342.Begin",
+      "program": "lc_verify_v3",
+      "message": "Begin (V3)",
+      "step": "period_update_342",
+      "user_cycles": 6327326,
+      "total_cycles_padded": 7340032,
+      "segments": 7,
+      "message_bytes": 68280,
+      "gas_exec": 6327326,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "fabricated",
+        "kind": "period",
+        "participation": 342,
+        "layout": "three steps",
+        "v3_step": "Begin",
+        "marked_cycles": 6034034,
+        "unmarked_cycles": 293292,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.fabricated.period_update_342.Finish",
+      "program": "lc_verify_v3",
+      "message": "Finish (V3)",
+      "step": "period_update_342",
+      "user_cycles": 4299917,
+      "total_cycles_padded": 4718592,
+      "segments": 5,
+      "message_bytes": 1,
+      "gas_exec": 4378929,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "fabricated",
+        "kind": "period",
+        "participation": 342,
+        "layout": "three steps",
+        "v3_step": "Finish",
+        "marked_cycles": 4279015,
+        "unmarked_cycles": 20902,
+        "chained": [
+          {
+            "cycles": 54965,
+            "message": "Apply",
+            "program": "attest"
+          },
+          {
+            "cycles": 24047,
+            "message": "WriteRecord",
+            "program": "attest"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.fabricated.period_update_342.Miller",
+      "program": "lc_verify_v3",
+      "message": "Miller (V3)",
+      "step": "period_update_342",
+      "user_cycles": 5764775,
+      "total_cycles_padded": 6291456,
+      "segments": 6,
+      "message_bytes": 1,
+      "gas_exec": 5764775,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "fabricated",
+        "kind": "period",
+        "participation": 342,
+        "layout": "three steps",
+        "v3_step": "Miller",
+        "marked_cycles": 5748678,
+        "unmarked_cycles": 16097,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.mainnet.finality_update_15637644.Begin",
+      "program": "lc_verify_v3",
+      "message": "Begin (V3)",
+      "step": "finality_update_15637644",
+      "user_cycles": 2563937,
+      "total_cycles_padded": 3145728,
+      "segments": 3,
+      "message_bytes": 27197,
+      "gas_exec": 2563937,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "mainnet",
+        "kind": "finality",
+        "participation": 512,
+        "layout": "three steps",
+        "v3_step": "Begin",
+        "marked_cycles": 2443500,
+        "unmarked_cycles": 120437,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.mainnet.finality_update_15637644.Finish",
+      "program": "lc_verify_v3",
+      "message": "Finish (V3)",
+      "step": "finality_update_15637644",
+      "user_cycles": 4299917,
+      "total_cycles_padded": 4718592,
+      "segments": 5,
+      "message_bytes": 1,
+      "gas_exec": 4378929,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "mainnet",
+        "kind": "finality",
+        "participation": 512,
+        "layout": "three steps",
+        "v3_step": "Finish",
+        "marked_cycles": 4279015,
+        "unmarked_cycles": 20902,
+        "chained": [
+          {
+            "cycles": 54965,
+            "message": "Apply",
+            "program": "attest"
+          },
+          {
+            "cycles": 24047,
+            "message": "WriteRecord",
+            "program": "attest"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.mainnet.finality_update_15637644.Miller",
+      "program": "lc_verify_v3",
+      "message": "Miller (V3)",
+      "step": "finality_update_15637644",
+      "user_cycles": 5764825,
+      "total_cycles_padded": 6291456,
+      "segments": 6,
+      "message_bytes": 1,
+      "gas_exec": 5764825,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "mainnet",
+        "kind": "finality",
+        "participation": 512,
+        "layout": "three steps",
+        "v3_step": "Miller",
+        "marked_cycles": 5748728,
+        "unmarked_cycles": 16097,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.mainnet.update[0].Begin",
+      "program": "lc_verify_v3",
+      "message": "Begin (V3)",
+      "step": "update[0]",
+      "user_cycles": 4306871,
+      "total_cycles_padded": 5242880,
+      "segments": 5,
+      "message_bytes": 52098,
+      "gas_exec": 4306871,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "mainnet",
+        "kind": "period",
+        "participation": 511,
+        "layout": "three steps",
+        "v3_step": "Begin",
+        "marked_cycles": 4081371,
+        "unmarked_cycles": 225500,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.mainnet.update[0].Finish",
+      "program": "lc_verify_v3",
+      "message": "Finish (V3)",
+      "step": "update[0]",
+      "user_cycles": 4299917,
+      "total_cycles_padded": 4718592,
+      "segments": 5,
+      "message_bytes": 1,
+      "gas_exec": 4378929,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "mainnet",
+        "kind": "period",
+        "participation": 511,
+        "layout": "three steps",
+        "v3_step": "Finish",
+        "marked_cycles": 4279015,
+        "unmarked_cycles": 20902,
+        "chained": [
+          {
+            "cycles": 54965,
+            "message": "Apply",
+            "program": "attest"
+          },
+          {
+            "cycles": 24047,
+            "message": "WriteRecord",
+            "program": "attest"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.mainnet.update[0].Miller",
+      "program": "lc_verify_v3",
+      "message": "Miller (V3)",
+      "step": "update[0]",
+      "user_cycles": 5764775,
+      "total_cycles_padded": 6291456,
+      "segments": 6,
+      "message_bytes": 1,
+      "gas_exec": 5764775,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "mainnet",
+        "kind": "period",
+        "participation": 511,
+        "layout": "three steps",
+        "v3_step": "Miller",
+        "marked_cycles": 5748678,
+        "unmarked_cycles": 16097,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.mainnet.update[1].Begin",
+      "program": "lc_verify_v3",
+      "message": "Begin (V3)",
+      "step": "update[1]",
+      "user_cycles": 4296774,
+      "total_cycles_padded": 5242880,
+      "segments": 5,
+      "message_bytes": 52014,
+      "gas_exec": 4296774,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "mainnet",
+        "kind": "handoff",
+        "participation": 512,
+        "layout": "three steps",
+        "v3_step": "Begin",
+        "marked_cycles": 4071535,
+        "unmarked_cycles": 225239,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.mainnet.update[1].Finish",
+      "program": "lc_verify_v3",
+      "message": "Finish (V3)",
+      "step": "update[1]",
+      "user_cycles": 4299915,
+      "total_cycles_padded": 4718592,
+      "segments": 5,
+      "message_bytes": 1,
+      "gas_exec": 4378927,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "mainnet",
+        "kind": "handoff",
+        "participation": 512,
+        "layout": "three steps",
+        "v3_step": "Finish",
+        "marked_cycles": 4279013,
+        "unmarked_cycles": 20902,
+        "chained": [
+          {
+            "cycles": 54965,
+            "message": "Apply",
+            "program": "attest"
+          },
+          {
+            "cycles": 24047,
+            "message": "WriteRecord",
+            "program": "attest"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.mainnet.update[1].Miller",
+      "program": "lc_verify_v3",
+      "message": "Miller (V3)",
+      "step": "update[1]",
+      "user_cycles": 5764985,
+      "total_cycles_padded": 6291456,
+      "segments": 6,
+      "message_bytes": 1,
+      "gas_exec": 5764985,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "mainnet",
+        "kind": "handoff",
+        "participation": 512,
+        "layout": "three steps",
+        "v3_step": "Miller",
+        "marked_cycles": 5748888,
+        "unmarked_cycles": 16097,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.mainnet.update[2].Begin",
+      "program": "lc_verify_v3",
+      "message": "Begin (V3)",
+      "step": "update[2]",
+      "user_cycles": 4308065,
+      "total_cycles_padded": 5242880,
+      "segments": 5,
+      "message_bytes": 52104,
+      "gas_exec": 4308065,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "mainnet",
+        "kind": "handoff",
+        "participation": 511,
+        "layout": "three steps",
+        "v3_step": "Begin",
+        "marked_cycles": 4082492,
+        "unmarked_cycles": 225573,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.mainnet.update[2].Finish",
+      "program": "lc_verify_v3",
+      "message": "Finish (V3)",
+      "step": "update[2]",
+      "user_cycles": 4299915,
+      "total_cycles_padded": 4718592,
+      "segments": 5,
+      "message_bytes": 1,
+      "gas_exec": 4378927,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "mainnet",
+        "kind": "handoff",
+        "participation": 511,
+        "layout": "three steps",
+        "v3_step": "Finish",
+        "marked_cycles": 4279013,
+        "unmarked_cycles": 20902,
+        "chained": [
+          {
+            "cycles": 54965,
+            "message": "Apply",
+            "program": "attest"
+          },
+          {
+            "cycles": 24047,
+            "message": "WriteRecord",
+            "program": "attest"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.mainnet.update[2].Miller",
+      "program": "lc_verify_v3",
+      "message": "Miller (V3)",
+      "step": "update[2]",
+      "user_cycles": 5764611,
+      "total_cycles_padded": 6291456,
+      "segments": 6,
+      "message_bytes": 1,
+      "gas_exec": 5764611,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "mainnet",
+        "kind": "handoff",
+        "participation": 511,
+        "layout": "three steps",
+        "v3_step": "Miller",
+        "marked_cycles": 5748514,
+        "unmarked_cycles": 16097,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.mainnet.update[3].Begin",
+      "program": "lc_verify_v3",
+      "message": "Begin (V3)",
+      "step": "update[3]",
+      "user_cycles": 4295933,
+      "total_cycles_padded": 5242880,
+      "segments": 5,
+      "message_bytes": 52010,
+      "gas_exec": 4295933,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "mainnet",
+        "kind": "handoff",
+        "participation": 512,
+        "layout": "three steps",
+        "v3_step": "Begin",
+        "marked_cycles": 4070702,
+        "unmarked_cycles": 225231,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.mainnet.update[3].Finish",
+      "program": "lc_verify_v3",
+      "message": "Finish (V3)",
+      "step": "update[3]",
+      "user_cycles": 4299915,
+      "total_cycles_padded": 4718592,
+      "segments": 5,
+      "message_bytes": 1,
+      "gas_exec": 4378927,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "mainnet",
+        "kind": "handoff",
+        "participation": 512,
+        "layout": "three steps",
+        "v3_step": "Finish",
+        "marked_cycles": 4279013,
+        "unmarked_cycles": 20902,
+        "chained": [
+          {
+            "cycles": 54965,
+            "message": "Apply",
+            "program": "attest"
+          },
+          {
+            "cycles": 24047,
+            "message": "WriteRecord",
+            "program": "attest"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.mainnet.update[3].Miller",
+      "program": "lc_verify_v3",
+      "message": "Miller (V3)",
+      "step": "update[3]",
+      "user_cycles": 5765035,
+      "total_cycles_padded": 6291456,
+      "segments": 6,
+      "message_bytes": 1,
+      "gas_exec": 5765035,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "mainnet",
+        "kind": "handoff",
+        "participation": 512,
+        "layout": "three steps",
+        "v3_step": "Miller",
+        "marked_cycles": 5748938,
+        "unmarked_cycles": 16097,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.sepolia.finality_update_11561824.Begin",
+      "program": "lc_verify_v3",
+      "message": "Begin (V3)",
+      "step": "finality_update_11561824",
+      "user_cycles": 2256234,
+      "total_cycles_padded": 3145728,
+      "segments": 3,
+      "message_bytes": 26824,
+      "gas_exec": 2256234,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "sepolia",
+        "kind": "finality",
+        "participation": 509,
+        "layout": "three steps",
+        "v3_step": "Begin",
+        "marked_cycles": 2136325,
+        "unmarked_cycles": 119909,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.sepolia.finality_update_11561824.Finish",
+      "program": "lc_verify_v3",
+      "message": "Finish (V3)",
+      "step": "finality_update_11561824",
+      "user_cycles": 4299917,
+      "total_cycles_padded": 4718592,
+      "segments": 5,
+      "message_bytes": 1,
+      "gas_exec": 4378929,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "sepolia",
+        "kind": "finality",
+        "participation": 509,
+        "layout": "three steps",
+        "v3_step": "Finish",
+        "marked_cycles": 4279015,
+        "unmarked_cycles": 20902,
+        "chained": [
+          {
+            "cycles": 54965,
+            "message": "Apply",
+            "program": "attest"
+          },
+          {
+            "cycles": 24047,
+            "message": "WriteRecord",
+            "program": "attest"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.sepolia.finality_update_11561824.Miller",
+      "program": "lc_verify_v3",
+      "message": "Miller (V3)",
+      "step": "finality_update_11561824",
+      "user_cycles": 5764825,
+      "total_cycles_padded": 6291456,
+      "segments": 6,
+      "message_bytes": 1,
+      "gas_exec": 5764825,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "sepolia",
+        "kind": "finality",
+        "participation": 509,
+        "layout": "three steps",
+        "v3_step": "Miller",
+        "marked_cycles": 5748728,
+        "unmarked_cycles": 16097,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.sepolia.update[0].Begin",
+      "program": "lc_verify_v3",
+      "message": "Begin (V3)",
+      "step": "update[0]",
+      "user_cycles": 4020416,
+      "total_cycles_padded": 5242880,
+      "segments": 5,
+      "message_bytes": 51992,
+      "gas_exec": 4020416,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "sepolia",
+        "kind": "period",
+        "participation": 507,
+        "layout": "three steps",
+        "v3_step": "Begin",
+        "marked_cycles": 3795124,
+        "unmarked_cycles": 225292,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.sepolia.update[0].Finish",
+      "program": "lc_verify_v3",
+      "message": "Finish (V3)",
+      "step": "update[0]",
+      "user_cycles": 4299917,
+      "total_cycles_padded": 4718592,
+      "segments": 5,
+      "message_bytes": 1,
+      "gas_exec": 4378929,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "sepolia",
+        "kind": "period",
+        "participation": 507,
+        "layout": "three steps",
+        "v3_step": "Finish",
+        "marked_cycles": 4279015,
+        "unmarked_cycles": 20902,
+        "chained": [
+          {
+            "cycles": 54965,
+            "message": "Apply",
+            "program": "attest"
+          },
+          {
+            "cycles": 24047,
+            "message": "WriteRecord",
+            "program": "attest"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.sepolia.update[0].Miller",
+      "program": "lc_verify_v3",
+      "message": "Miller (V3)",
+      "step": "update[0]",
+      "user_cycles": 5764613,
+      "total_cycles_padded": 6291456,
+      "segments": 6,
+      "message_bytes": 1,
+      "gas_exec": 5764613,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "sepolia",
+        "kind": "period",
+        "participation": 507,
+        "layout": "three steps",
+        "v3_step": "Miller",
+        "marked_cycles": 5748516,
+        "unmarked_cycles": 16097,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.sepolia.update[1].Begin",
+      "program": "lc_verify_v3",
+      "message": "Begin (V3)",
+      "step": "update[1]",
+      "user_cycles": 4008282,
+      "total_cycles_padded": 5242880,
+      "segments": 5,
+      "message_bytes": 51896,
+      "gas_exec": 4008282,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "sepolia",
+        "kind": "handoff",
+        "participation": 508,
+        "layout": "three steps",
+        "v3_step": "Begin",
+        "marked_cycles": 3783498,
+        "unmarked_cycles": 224784,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.sepolia.update[1].Finish",
+      "program": "lc_verify_v3",
+      "message": "Finish (V3)",
+      "step": "update[1]",
+      "user_cycles": 4299915,
+      "total_cycles_padded": 4718592,
+      "segments": 5,
+      "message_bytes": 1,
+      "gas_exec": 4378927,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "sepolia",
+        "kind": "handoff",
+        "participation": 508,
+        "layout": "three steps",
+        "v3_step": "Finish",
+        "marked_cycles": 4279013,
+        "unmarked_cycles": 20902,
+        "chained": [
+          {
+            "cycles": 54965,
+            "message": "Apply",
+            "program": "attest"
+          },
+          {
+            "cycles": 24047,
+            "message": "WriteRecord",
+            "program": "attest"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.sepolia.update[1].Miller",
+      "program": "lc_verify_v3",
+      "message": "Miller (V3)",
+      "step": "update[1]",
+      "user_cycles": 5765035,
+      "total_cycles_padded": 6291456,
+      "segments": 6,
+      "message_bytes": 1,
+      "gas_exec": 5765035,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "sepolia",
+        "kind": "handoff",
+        "participation": 508,
+        "layout": "three steps",
+        "v3_step": "Miller",
+        "marked_cycles": 5748938,
+        "unmarked_cycles": 16097,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.sepolia.update[2].Begin",
+      "program": "lc_verify_v3",
+      "message": "Begin (V3)",
+      "step": "update[2]",
+      "user_cycles": 3996585,
+      "total_cycles_padded": 5242880,
+      "segments": 5,
+      "message_bytes": 51800,
+      "gas_exec": 3996585,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "sepolia",
+        "kind": "handoff",
+        "participation": 509,
+        "layout": "three steps",
+        "v3_step": "Begin",
+        "marked_cycles": 3772085,
+        "unmarked_cycles": 224500,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.sepolia.update[2].Finish",
+      "program": "lc_verify_v3",
+      "message": "Finish (V3)",
+      "step": "update[2]",
+      "user_cycles": 4299915,
+      "total_cycles_padded": 4718592,
+      "segments": 5,
+      "message_bytes": 1,
+      "gas_exec": 4378927,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "sepolia",
+        "kind": "handoff",
+        "participation": 509,
+        "layout": "three steps",
+        "v3_step": "Finish",
+        "marked_cycles": 4279013,
+        "unmarked_cycles": 20902,
+        "chained": [
+          {
+            "cycles": 54965,
+            "message": "Apply",
+            "program": "attest"
+          },
+          {
+            "cycles": 24047,
+            "message": "WriteRecord",
+            "program": "attest"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.sepolia.update[2].Miller",
+      "program": "lc_verify_v3",
+      "message": "Miller (V3)",
+      "step": "update[2]",
+      "user_cycles": 5764985,
+      "total_cycles_padded": 6291456,
+      "segments": 6,
+      "message_bytes": 1,
+      "gas_exec": 5764985,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "sepolia",
+        "kind": "handoff",
+        "participation": 509,
+        "layout": "three steps",
+        "v3_step": "Miller",
+        "marked_cycles": 5748888,
+        "unmarked_cycles": 16097,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.sepolia.update[3].Begin",
+      "program": "lc_verify_v3",
+      "message": "Begin (V3)",
+      "step": "update[3]",
+      "user_cycles": 3996506,
+      "total_cycles_padded": 5242880,
+      "segments": 5,
+      "message_bytes": 51800,
+      "gas_exec": 3996506,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "sepolia",
+        "kind": "handoff",
+        "participation": 509,
+        "layout": "three steps",
+        "v3_step": "Begin",
+        "marked_cycles": 3772006,
+        "unmarked_cycles": 224500,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.sepolia.update[3].Finish",
+      "program": "lc_verify_v3",
+      "message": "Finish (V3)",
+      "step": "update[3]",
+      "user_cycles": 4299915,
+      "total_cycles_padded": 4718592,
+      "segments": 5,
+      "message_bytes": 1,
+      "gas_exec": 4378927,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "sepolia",
+        "kind": "handoff",
+        "participation": 509,
+        "layout": "three steps",
+        "v3_step": "Finish",
+        "marked_cycles": 4279013,
+        "unmarked_cycles": 20902,
+        "chained": [
+          {
+            "cycles": 54965,
+            "message": "Apply",
+            "program": "attest"
+          },
+          {
+            "cycles": 24047,
+            "message": "WriteRecord",
+            "program": "attest"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lc_verify_v3.3s.sepolia.update[3].Miller",
+      "program": "lc_verify_v3",
+      "message": "Miller (V3)",
+      "step": "update[3]",
+      "user_cycles": 5765197,
+      "total_cycles_padded": 6291456,
+      "segments": 6,
+      "message_bytes": 1,
+      "gas_exec": 5765197,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "sepolia",
+        "kind": "handoff",
+        "participation": 509,
+        "layout": "three steps",
+        "v3_step": "Miller",
+        "marked_cycles": 5749100,
+        "unmarked_cycles": 16097,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.4s.fabricated.period_update_342.BeginKeys",
+      "program": "lc_verify_v3",
+      "message": "BeginKeys (V3)",
+      "step": "period_update_342",
+      "user_cycles": 3978565,
+      "total_cycles_padded": 4718592,
+      "segments": 5,
+      "message_bytes": 40953,
+      "gas_exec": 3978565,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "fabricated",
+        "kind": "period",
+        "participation": 342,
+        "layout": "four steps",
+        "v3_step": "BeginKeys",
+        "marked_cycles": 3788723,
+        "unmarked_cycles": 189842,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.4s.fabricated.period_update_342.BeginPrepare",
+      "program": "lc_verify_v3",
+      "message": "BeginPrepare (V3)",
+      "step": "period_update_342",
+      "user_cycles": 4119190,
+      "total_cycles_padded": 5242880,
+      "segments": 5,
+      "message_bytes": 51956,
+      "gas_exec": 4119190,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "fabricated",
+        "kind": "period",
+        "participation": 342,
+        "layout": "four steps",
+        "v3_step": "BeginPrepare",
+        "marked_cycles": 3892941,
+        "unmarked_cycles": 226249,
+        "chained": []
+      }
+    },
+    {
+      "id": "lc_verify_v3.4s.fabricated.period_update_342.Finish",
+      "program": "lc_verify_v3",
+      "message": "Finish (V3)",
+      "step": "period_update_342",
+      "user_cycles": 4299917,
+      "total_cycles_padded": 4718592,
+      "segments": 5,
+      "message_bytes": 1,
+      "gas_exec": 4378929,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "fabricated",
+        "kind": "period",
+        "participation": 342,
+        "layout": "four steps",
+        "v3_step": "Finish",
+        "marked_cycles": 4279015,
+        "unmarked_cycles": 20902,
+        "chained": [
+          {
+            "cycles": 54965,
+            "message": "Apply",
+            "program": "attest"
+          },
+          {
+            "cycles": 24047,
+            "message": "WriteRecord",
+            "program": "attest"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lc_verify_v3.4s.fabricated.period_update_342.Miller",
+      "program": "lc_verify_v3",
+      "message": "Miller (V3)",
+      "step": "period_update_342",
+      "user_cycles": 5764775,
+      "total_cycles_padded": 6291456,
+      "segments": 6,
+      "message_bytes": 1,
+      "gas_exec": 5764775,
+      "label": "measured",
+      "raw": "exec-v3.json",
+      "extra": {
+        "network": "fabricated",
+        "kind": "period",
+        "participation": 342,
+        "layout": "four steps",
+        "v3_step": "Miller",
+        "marked_cycles": 5748678,
+        "unmarked_cycles": 16097,
+        "chained": []
+      }
     }
   ],
   "derived": {
@@ -1223,6 +2291,212 @@
           "bls_sum": 36841207
         }
       ]
+    },
+    "path_b_three_public_transactions": {
+      "executor_worst_case": [
+        {
+          "step": "Begin",
+          "worst_update": "fabricated period_update_342",
+          "signers": 342,
+          "gas_exec": 6327326,
+          "declared_gas": 9000000,
+          "pct_of_cap": 63.3,
+          "pct_of_declared": 70.3,
+          "label": "measured (executor)"
+        },
+        {
+          "step": "Miller",
+          "worst_update": "sepolia update[3]",
+          "signers": 509,
+          "gas_exec": 5765197,
+          "declared_gas": 7000000,
+          "pct_of_cap": 57.7,
+          "pct_of_declared": 82.4,
+          "label": "measured (executor)"
+        },
+        {
+          "step": "Finish",
+          "worst_update": "fabricated finality_update_342",
+          "signers": 342,
+          "gas_exec": 4378929,
+          "declared_gas": 5500000,
+          "pct_of_cap": 43.8,
+          "pct_of_declared": 79.6,
+          "label": "measured (executor)"
+        }
+      ],
+      "onchain": [
+        {
+          "network": "floor",
+          "update": "period_update_342",
+          "kind": "period",
+          "signers": 342,
+          "txs": 3,
+          "source": "evidence/public-path/onchain/floor/run.json",
+          "begin_charged": 6327247,
+          "begin_metered": 6327247,
+          "miller_charged": 5765037,
+          "miller_metered": 5765037,
+          "finish_charged": 4378929,
+          "finish_metered": 4378929,
+          "update_charged": 16471213,
+          "max_step_pct_of_cap": 63.3
+        },
+        {
+          "network": "hoodi",
+          "update": "update_537",
+          "kind": "period",
+          "signers": 480,
+          "txs": 3,
+          "source": "evidence/public-path/onchain/hoodi/run.json",
+          "begin_charged": 4679020,
+          "begin_metered": 4679020,
+          "miller_charged": 5765037,
+          "miller_metered": 5765037,
+          "finish_charged": 4378929,
+          "finish_metered": 4378929,
+          "update_charged": 14822986,
+          "max_step_pct_of_cap": 57.7
+        },
+        {
+          "network": "hoodi",
+          "update": "update_538",
+          "kind": "handoff",
+          "signers": 478,
+          "txs": 3,
+          "source": "evidence/public-path/onchain/hoodi/run.json",
+          "begin_charged": 4700889,
+          "begin_metered": 4700889,
+          "miller_charged": 5764985,
+          "miller_metered": 5764985,
+          "finish_charged": 4378927,
+          "finish_metered": 4378927,
+          "update_charged": 14844801,
+          "max_step_pct_of_cap": 57.6
+        },
+        {
+          "network": "hoodi",
+          "update": "finality_update_4409089",
+          "kind": "finality",
+          "signers": 466,
+          "txs": 3,
+          "source": "evidence/public-path/onchain/hoodi/run.json",
+          "begin_charged": 3121826,
+          "begin_metered": 3121826,
+          "miller_charged": 5765037,
+          "miller_metered": 5765037,
+          "finish_charged": 4378929,
+          "finish_metered": 4378929,
+          "update_charged": 13265792,
+          "max_step_pct_of_cap": 57.7
+        },
+        {
+          "network": "mainnet",
+          "update": "update_1914",
+          "kind": "period",
+          "signers": 511,
+          "txs": 3,
+          "source": "evidence/public-path/onchain/mainnet/run.json",
+          "begin_charged": 4309071,
+          "begin_metered": 4309071,
+          "miller_charged": 5764775,
+          "miller_metered": 5764775,
+          "finish_charged": 4378929,
+          "finish_metered": 4378929,
+          "update_charged": 14452775,
+          "max_step_pct_of_cap": 57.6
+        },
+        {
+          "network": "mainnet",
+          "update": "update_1915",
+          "kind": "handoff",
+          "signers": 512,
+          "txs": 3,
+          "source": "evidence/public-path/onchain/mainnet/run.json",
+          "begin_charged": 4295619,
+          "begin_metered": 4295619,
+          "miller_charged": 5764985,
+          "miller_metered": 5764985,
+          "finish_charged": 4378927,
+          "finish_metered": 4378927,
+          "update_charged": 14439531,
+          "max_step_pct_of_cap": 57.6
+        },
+        {
+          "network": "mainnet",
+          "update": "finality_update_15691618",
+          "kind": "finality",
+          "signers": 512,
+          "txs": 3,
+          "source": "evidence/public-path/onchain/mainnet/run.json",
+          "begin_charged": 2560204,
+          "begin_metered": 2560204,
+          "miller_charged": 5764825,
+          "miller_metered": 5764825,
+          "finish_charged": 4378929,
+          "finish_metered": 4378929,
+          "update_charged": 12703958,
+          "max_step_pct_of_cap": 57.6
+        },
+        {
+          "network": "sepolia",
+          "update": "update_1416",
+          "kind": "period",
+          "signers": 506,
+          "txs": 3,
+          "source": "evidence/public-path/onchain/sepolia/run.json",
+          "begin_charged": 4031288,
+          "begin_metered": 4031288,
+          "miller_charged": 5764827,
+          "miller_metered": 5764827,
+          "finish_charged": 4345704,
+          "finish_metered": 4345704,
+          "update_charged": 14141819,
+          "max_step_pct_of_cap": 57.6
+        },
+        {
+          "network": "sepolia",
+          "update": "update_1417",
+          "kind": "handoff",
+          "signers": 497,
+          "txs": 3,
+          "source": "evidence/public-path/onchain/sepolia/run.json",
+          "begin_charged": 4139283,
+          "begin_metered": 4139283,
+          "miller_charged": 5764823,
+          "miller_metered": 5764823,
+          "finish_charged": 4378927,
+          "finish_metered": 4378927,
+          "update_charged": 14283033,
+          "max_step_pct_of_cap": 57.6
+        },
+        {
+          "network": "sepolia",
+          "update": "finality_update_11615808",
+          "kind": "finality",
+          "signers": 492,
+          "txs": 3,
+          "source": "evidence/public-path/onchain/sepolia/run.json",
+          "begin_charged": 2458609,
+          "begin_metered": 2458609,
+          "miller_charged": 5764775,
+          "miller_metered": 5764775,
+          "finish_charged": 4378929,
+          "finish_metered": 4378929,
+          "update_charged": 12602313,
+          "max_step_pct_of_cap": 57.6
+        }
+      ],
+      "onchain_charged_minus_metered_max": 0,
+      "declared_gas_per_step": {
+        "Begin": 9000000,
+        "BeginPrepare": 9000000,
+        "BeginKeys": 9000000,
+        "Miller": 7000000,
+        "Finish": 5500000
+      },
+      "note": "On chain: charged = the block's charged execution gas (fee summary; one charged transaction per block, or the block total minus the other transactions re-executed); metered = the same transaction re-executed in the RISC Zero executor with the deployed ELFs. Executor rows: the fixture updates of section 1 (fixtures/mainnet, fixtures/sepolia, fabricated 342-signer updates), not the same updates as on chain, so their cycles differ by the input (committee root, signers, period or finality update), not by an overhead: per transaction, charged equals metered to the cycle. The recorded on-chain transactions declared 9,000,000 gas for every step (they predate the per-step values).",
+      "label": "measured"
     }
   }
 }
