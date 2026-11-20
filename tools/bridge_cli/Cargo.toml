@@ -30,3 +30,5 @@ alloy-primitives.workspace = true
 bip39 = "2.2.2"
 # Host prover (r0vm over IPC) for guest burn_proof.
 risc0-zkvm = { workspace = true, features = ["client"] }
+# Guest burn_chain witness (src/chain.rs): LEZ's own block types, already in the graph through attest_host.
+common.workspace = true

@@ -1732,6 +1732,7 @@ dependencies = [
  "borsh",
  "bridge_program",
  "clap",
+ "common",
  "hex",
  "lee_core",
  "reqwest 0.12.28",

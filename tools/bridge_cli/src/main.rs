@@ -11,6 +11,7 @@
 //! Defaults follow U5/U6: the claim destination and the burn source default to a private account; a public one needs
 //! `--public`, and every command prints what it leaks.
 
+mod chain;
 mod eth;
 mod keys;
 mod lezops;
@@ -181,6 +182,26 @@ enum Cmd {
     ImageId,
     /// Cross-language test vectors for contracts/test/BridgeVectors.t.sol.
     Vectors {
+        #[arg(long)]
+        out: PathBuf,
+    },
+    /// Witness of guest burn_chain for burn `index`: blocks `pinned ..= tip` read from the sequencer, the burn
+    /// transaction located and checked in them; prove with `burn_chain_host` (guests/burn_chain).
+    ChainWitness {
+        #[arg(long)]
+        index: u64,
+        /// Hash of the burn transaction (hex).
+        #[arg(long)]
+        burn_tx: String,
+        /// The pinned block (the vault's `pinnedId`); the burn must be in a later block.
+        #[arg(long)]
+        pinned: u64,
+        /// Last block of the chain (default: the sequencer's last block).
+        #[arg(long)]
+        tip: Option<u64>,
+        /// Sequencer JSON-RPC (read only).
+        #[arg(long, env = "BV_SEQ_RPC", default_value = "http://127.0.0.1:3043")]
+        seq_rpc: String,
         #[arg(long)]
         out: PathBuf,
     },
@@ -427,6 +448,19 @@ async fn main() -> Result<()> {
             println!("{}", hex0x(risc0_zkvm::compute_image_id(&elf)?.as_bytes()));
         }
         Cmd::Vectors { out } => prove::vectors(&out)?,
+        Cmd::ChainWitness {
+            index,
+            burn_tx,
+            pinned,
+            tip,
+            seq_rpc,
+            out,
+        } => {
+            let cf = ConfigFile::load(cli.config.as_ref())?;
+            let key = keys::load_key()?;
+            let tx = parse_b32(&burn_tx)?;
+            chain::chain_witness(&cf, &key, index, tx, pinned, tip, &seq_rpc, &out).await?;
+        }
     }
     Ok(())
 }
