@@ -1,0 +1,216 @@
+{
+ "url": "https://beacon-veil-seq.tailcdec7a.ts.net",
+ "via": "public address 176.58.90.46",
+ "started": "2026-11-20T11:49:48Z",
+ "tests": {
+  "2_refusals": {
+   "pass": true,
+   "cases": [
+    {
+     "case": "method getPublications",
+     "http": 200,
+     "code": -32601,
+     "want_http": 200,
+     "want_code": -32601,
+     "pass": true
+    },
+    {
+     "case": "method getMessagePath",
+     "http": 200,
+     "code": -32601,
+     "want_http": 200,
+     "want_code": -32601,
+     "pass": true
+    },
+    {
+     "case": "method getProofsAndRoot",
+     "http": 200,
+     "code": -32601,
+     "want_http": 200,
+     "want_code": -32601,
+     "pass": true
+    },
+    {
+     "case": "method getRecoveryBinding",
+     "http": 200,
+     "code": -32601,
+     "want_http": 200,
+     "want_code": -32601,
+     "pass": true
+    },
+    {
+     "case": "method getCrossZoneDeadLetters",
+     "http": 200,
+     "code": -32601,
+     "want_http": 200,
+     "want_code": -32601,
+     "pass": true
+    },
+    {
+     "case": "method noSuchMethod",
+     "http": 200,
+     "code": -32601,
+     "want_http": 200,
+     "want_code": -32601,
+     "pass": true
+    },
+    {
+     "case": "method rpc.discover",
+     "http": 200,
+     "code": -32601,
+     "want_http": 200,
+     "want_code": -32601,
+     "pass": true
+    },
+    {
+     "case": "batch of two",
+     "http": 200,
+     "code": -32600,
+     "want_http": 200,
+     "want_code": -32600,
+     "pass": true
+    },
+    {
+     "case": "3 KiB body",
+     "http": 413,
+     "code": -32600,
+     "want_http": 413,
+     "want_code": null,
+     "pass": true
+    },
+    {
+     "case": "getBlockRange over 17 blocks",
+     "http": 200,
+     "code": -32602,
+     "want_http": 200,
+     "want_code": -32602,
+     "pass": true
+    },
+    {
+     "case": "non-JSON body",
+     "http": 200,
+     "code": -32700,
+     "want_http": 200,
+     "want_code": -32700,
+     "pass": true
+    },
+    {
+     "case": "GET with a path",
+     "http": 404,
+     "code": null,
+     "want_http": 404,
+     "want_code": null,
+     "pass": true
+    }
+   ]
+  },
+  "1_writes_refused": {
+   "pass": true,
+   "cases": [
+    {
+     "method": "sendTransaction",
+     "http": 200,
+     "code": -32601,
+     "pass": true
+    },
+    {
+     "method": "requeueCrossZoneDeadLetter",
+     "http": 200,
+     "code": -32601,
+     "pass": true
+    }
+   ],
+   "forwarded_counter": {
+    "sendTransaction": 0,
+    "requeueCrossZoneDeadLetter": 0,
+    "getPublications": 0,
+    "getMessagePath": 0,
+    "getProofsAndRoot": 0,
+    "getRecoveryBinding": 0,
+    "getCrossZoneDeadLetters": 0
+   },
+   "dialer_forwarded_all": {
+    "getAccountView": 7,
+    "getBlock": 31,
+    "getLastBlockId": 115,
+    "getProgramIds": 4,
+    "getTransaction": 32
+   }
+  },
+  "3_reads_equal_direct": {
+   "pass": true,
+   "cases": [
+    {
+     "method": "getBlock",
+     "params": [
+      355
+     ],
+     "bytes": 71080,
+     "sha256": "c8406ea4ba82627eaf72576b6f9523daae22beda61c0293d11b983b8a3701ead",
+     "equal_to_direct": true
+    },
+    {
+     "method": "getTransaction",
+     "params": [
+      "a018aa6bccba64e417eb0e3dc5045f66f96ee6a2a9bf3e4a66a9de7df017ddc2"
+     ],
+     "bytes": 70138,
+     "sha256": "a60af8676618d5f3e2348914435b24f8e4f8937fd6de0e23a74c72a041e7e269",
+     "equal_to_direct": true
+    },
+    {
+     "method": "getAccountView",
+     "params": [
+      {
+       "account_id": "4pBpX9WzjPJp2SR958X9zkcVcS5vYBNWo8SWHtnebZyM",
+       "program_account_id": "735RSWK5eYrZDnpJVvpVwrkDa93AXQNS7avFjAUeWEH8"
+      }
+     ],
+     "bytes": 1385,
+     "sha256": "e42118e65632c684f8d6152573170ac41dac6bd9a15083ccaecfe79995dbbda0",
+     "equal_to_direct": true
+    },
+    {
+     "method": "getProgramIds",
+     "params": [],
+     "bytes": 152,
+     "sha256": "5b1ff6f4c8f395042fb16330c58d6e02538f1aea497a480e4d80d708b30276d9",
+     "equal_to_direct": true
+    },
+    {
+     "method": "getLastBlockId",
+     "direct_before": 2857,
+     "through_endpoint": 2857,
+     "not_lower": true
+    }
+   ],
+   "step": {
+    "tx": "a018aa6bccba64e417eb0e3dc5045f66f96ee6a2a9bf3e4a66a9de7df017ddc2",
+    "block": 355
+   }
+  },
+  "4_rate_limit": {
+   "pass": true,
+   "statuses": {
+    "200": 44,
+    "429": 16
+   },
+   "seconds": 5.25,
+   "after_5s": 200
+  },
+  "7_memory_and_sequencer": {
+   "pass": true,
+   "relay_container": "43.15MiB",
+   "https_sidecar": "29.77MiB",
+   "dialer_rss_mib": 20.7,
+   "seq_pub": {
+    "pid": "1386665",
+    "start_ticks_before": 52175799,
+    "start_ticks_after": 52175799
+   }
+  }
+ },
+ "policy_sha256": "0925fd9dce75880ee973f9f0e4761b0ada44d5c621481cbbdf7f74f2fa9e9171",
+ "finished": "2026-11-20T11:50:54Z",
+ "pass": true
+}
