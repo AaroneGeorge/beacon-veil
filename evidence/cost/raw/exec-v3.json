@@ -6,12 +6,12 @@
   "fixtures": "fixtures/mainnet (bootstrap_15605760, updates_1905_4, finality_update_15637644); fixtures/sepolia (bootstrap_11534336, updates_1408_4, finality_update_11561824); fabricated chain (tools/fixtures FabChain, seed beacon-veil/v3/floor) with participation bits set to the first 342 and re-signed",
   "guests": {
     "attest": {
-      "image_id": "2499f41e72e992cce81689fb4824b4b3eb0be171749f4ad8707f22d78fae074b"
+      "image_id": "9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d"
     },
     "lc_verify_v3": {
-      "image_id": "a3713dc27af7c983f8c5a22fa190dec640e2572b9cd182d3aa1beaf819c8222b",
+      "image_id": "cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510",
       "path_kind": "user ELF",
-      "user_elf_bytes": 499156,
+      "user_elf_bytes": 498916,
       "user_elf_cap": 1966080
     },
     "lc_verify_v3_trace": {

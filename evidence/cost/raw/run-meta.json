@@ -1,6 +1,6 @@
 {
   "command": "make cost-exec (tools/cost/cost_exec.sh)",
-  "started_utc": "2026-11-20T04:00:38Z",
+  "started_utc": "2026-11-20T04:30:04Z",
   "guest_build": "release set d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e (scripts/guests_release.sh d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e, ${BUILD}/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e)",
   "release_commit": "d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e",
   "guests": {
@@ -8,7 +8,7 @@
     "attest": "${BUILD}/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/attest",
     "consumer_erc20": "${BUILD}/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/consumer_erc20"
   },
-  "repo_commit": "a3ffd69",
+  "repo_commit": "0b9e631",
   "risc0_dev_mode": "1",
   "r0vm": "risc0-r0vm 3.0.5"
 }

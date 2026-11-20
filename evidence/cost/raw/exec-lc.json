@@ -25,7 +25,7 @@
   "rows": [
     {
       "bootstrap_bytes": 25675,
-      "executor_ms": 274,
+      "executor_ms": 277,
       "id": "attest.init",
       "instance_state_bytes": 410,
       "message": "Init",
@@ -40,7 +40,7 @@
       "user_cycles": 4926875
     },
     {
-      "executor_ms": 63,
+      "executor_ms": 61,
       "id": "attest.write_record.checkpoint",
       "message": "WriteRecord",
       "message_bytes": 153,
@@ -55,7 +55,7 @@
       "user_cycles": 24047
     },
     {
-      "executor_ms": 2489,
+      "executor_ms": 2546,
       "handoff": false,
       "head_slot": 15605824,
       "id": "lc_verify.v1.verify.update[0]",
@@ -76,7 +76,7 @@
       "variant": "V1"
     },
     {
-      "executor_ms": 1930,
+      "executor_ms": 1866,
       "handoff": false,
       "id": "lc_verify.v2.verify.update[0]",
       "message": "Verify (V2)",
@@ -94,7 +94,7 @@
       "variant": "V2"
     },
     {
-      "executor_ms": 65,
+      "executor_ms": 64,
       "id": "attest.apply.update[0]",
       "message": "Apply",
       "message_bytes": 401,
@@ -109,7 +109,7 @@
       "writes_record": true
     },
     {
-      "executor_ms": 62,
+      "executor_ms": 63,
       "id": "attest.write_record.update[0]",
       "message": "WriteRecord",
       "message_bytes": 153,
@@ -124,7 +124,7 @@
       "user_cycles": 24047
     },
     {
-      "executor_ms": 2568,
+      "executor_ms": 2574,
       "handoff": true,
       "head_slot": 15613952,
       "id": "lc_verify.v1.verify.update[1]",
@@ -145,7 +145,7 @@
       "variant": "V1"
     },
     {
-      "executor_ms": 2047,
+      "executor_ms": 1973,
       "handoff": true,
       "id": "lc_verify.v2.verify.update[1]",
       "message": "Verify (V2)",
@@ -178,7 +178,7 @@
       "writes_record": true
     },
     {
-      "executor_ms": 62,
+      "executor_ms": 65,
       "id": "attest.write_record.update[1]",
       "message": "WriteRecord",
       "message_bytes": 153,
@@ -193,7 +193,7 @@
       "user_cycles": 24047
     },
     {
-      "executor_ms": 2607,
+      "executor_ms": 2706,
       "handoff": true,
       "head_slot": 15622144,
       "id": "lc_verify.v1.verify.update[2]",
@@ -214,7 +214,7 @@
       "variant": "V1"
     },
     {
-      "executor_ms": 2053,
+      "executor_ms": 2074,
       "handoff": true,
       "id": "lc_verify.v2.verify.update[2]",
       "message": "Verify (V2)",
@@ -232,7 +232,7 @@
       "variant": "V2"
     },
     {
-      "executor_ms": 64,
+      "executor_ms": 63,
       "id": "attest.apply.update[2]",
       "message": "Apply",
       "message_bytes": 401,
@@ -262,7 +262,7 @@
       "user_cycles": 24047
     },
     {
-      "executor_ms": 2600,
+      "executor_ms": 2582,
       "handoff": true,
       "head_slot": 15631808,
       "id": "lc_verify.v1.verify.update[3]",
@@ -283,7 +283,7 @@
       "variant": "V1"
     },
     {
-      "executor_ms": 2026,
+      "executor_ms": 1987,
       "handoff": true,
       "id": "lc_verify.v2.verify.update[3]",
       "message": "Verify (V2)",
@@ -301,7 +301,7 @@
       "variant": "V2"
     },
     {
-      "executor_ms": 64,
+      "executor_ms": 65,
       "id": "attest.apply.update[3]",
       "message": "Apply",
       "message_bytes": 401,
@@ -331,7 +331,7 @@
       "user_cycles": 24047
     },
     {
-      "executor_ms": 1972,
+      "executor_ms": 1917,
       "handoff": false,
       "head_slot": 15637568,
       "id": "lc_verify.v1.verify.finality_update_15637644",
@@ -352,7 +352,7 @@
       "variant": "V1"
     },
     {
-      "executor_ms": 1627,
+      "executor_ms": 1575,
       "handoff": false,
       "id": "lc_verify.v2.verify.finality_update_15637644",
       "message": "Verify (V2)",
@@ -370,7 +370,7 @@
       "variant": "V2"
     },
     {
-      "executor_ms": 64,
+      "executor_ms": 65,
       "id": "attest.apply.finality_update_15637644",
       "message": "Apply",
       "message_bytes": 401,
@@ -400,7 +400,7 @@
       "user_cycles": 24047
     },
     {
-      "executor_ms": 63,
+      "executor_ms": 62,
       "id": "attest.check_header",
       "message": "CheckHeader",
       "message_bytes": 33,

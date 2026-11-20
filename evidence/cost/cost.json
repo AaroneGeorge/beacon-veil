@@ -1,10 +1,10 @@
 {
   "what": "beacon-veil cost table (make cost-exec). Cycles are deterministic for the recorded guest image ids.",
-  "generated_utc": "2026-11-20T04:01:39Z",
+  "generated_utc": "2026-11-20T04:31:03Z",
   "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
   "run": {
     "command": "make cost-exec (tools/cost/cost_exec.sh)",
-    "started_utc": "2026-11-20T04:00:38Z",
+    "started_utc": "2026-11-20T04:30:04Z",
     "guest_build": "release set d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e (scripts/guests_release.sh d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e, ${BUILD}/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e)",
     "release_commit": "d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e",
     "guests": {
@@ -12,7 +12,7 @@
       "attest": "${BUILD}/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/attest",
       "consumer_erc20": "${BUILD}/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/consumer_erc20"
     },
-    "repo_commit": "a3ffd69",
+    "repo_commit": "0b9e631",
     "risc0_dev_mode": "1",
     "r0vm": "risc0-r0vm 3.0.5"
   },
@@ -36,8 +36,8 @@
       "program_binary_bytes": 749216
     },
     "lc_verify_v3": {
-      "image_id": "a3713dc27af7c983f8c5a22fa190dec640e2572b9cd182d3aa1beaf819c8222b",
-      "elf_bytes": 499156
+      "image_id": "cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510",
+      "elf_bytes": 498916
     }
   },
   "raw_files": [
