@@ -1,6 +1,6 @@
 # Differential test: Helios 0.12.0 against our verifiers
 
-Generated 2026-11-20T01:21:36Z by `cargo nextest run -p diff_helios` (or `cargo run -p diff_helios --bin diff_report`). Every row of `cases.tsv` is one case with the SHA-256 of its input (config, store witness, update bytes).
+Generated 2026-11-20T02:20:01Z by `cargo nextest run -p diff_helios` (or `cargo run -p diff_helios --bin diff_report`). Every row of `cases.tsv` is one case with the SHA-256 of its input (config, store witness, update bytes).
 
 Pass rule: every column agrees with V1 on every case (accept or refuse, error code, and on accept the pre-store and post-store commitments, head and record). Columns: v1, v2, v3, v3_staged.
 
@@ -18,8 +18,8 @@ Pass rule: every column agrees with V1 on every case (accept or refuse, error co
 | fork_crossing_cases | 18 |
 | v1_v2_disagreements | 0 |
 | v1_v3_disagreements | 0 |
-| executor_cases | null |
-| executor_mismatches | null |
+| executor_cases | 881 |
+| executor_mismatches | 0 |
 | pass | true |
 
 ## Cases by network
@@ -189,3 +189,68 @@ None.
 ## Panics
 
 None.
+
+## Executor pass
+
+Each case also ran through the `lc_verify_v3` guest as one `VerifyOnce` message in the RISC Zero executor (risc0-zkvm 3.0.5 default_executor (external r0vm 3.0.5); no proof), framed as LEZ frames an actor input. User ELF sha256 `b819a01c3de3c36414bd7a7ee7573c47c4986155bef5d649299b0e4af686e17a`, image id `cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510`. A case counts when its input hash equals the one recorded by the executor run.
+
+| | |
+|---|---|
+| cases | 881 |
+| valid_cases | 90 |
+| accepted | 98 |
+| refused | 783 |
+| mismatches | 0 |
+| missing | 0 |
+| max_cycles_accepted | 16239602 |
+
+## Executor results different from V1
+
+None.
+
+## Executor designed differences
+
+- `{"executor":"E14","id":"mainnet/p1906/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"mainnet/p1907/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"mainnet/p1908/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"mainnet/p1909/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"mainnet/p1910/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"mainnet/p1911/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"mainnet/p1912/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"mainnet/p1913/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"mainnet/p1914/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"mainnet/p1915/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"mainnet/finality15691462/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"mainnet/finality15691490/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"mainnet/finality15691525/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"mainnet/finality15691584/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"mainnet/finality15691618/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"sepolia/p1378/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"sepolia/p1379/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"sepolia/p1380/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"sepolia/p1408/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"sepolia/p1409/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"sepolia/p1410/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"sepolia/p1411/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"sepolia/p1412/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"sepolia/p1413/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"sepolia/p1414/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"sepolia/p1415/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"sepolia/p1416/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"sepolia/p1417/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"sepolia/finality11615648/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"sepolia/finality11615712/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"sepolia/finality11615744/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"sepolia/finality11615776/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"sepolia/finality11615808/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"hoodi/p532/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"hoodi/p533/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"hoodi/p534/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"hoodi/p535/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"hoodi/p536/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"hoodi/p537/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"hoodi/p538/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"hoodi/finality4409029/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"hoodi/finality4409070/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E14","id":"hoodi/finality4409089/handoff/replay_bad_signature","reason":"a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature","v1":"E03"}`
+- `{"executor":"E03","id":"fabricated/identity_member_counted","reason":"a participating committee key equal to the identity: Helios counts it, the staged verifier refuses it (a16z/helios issue #871 class)","v1":"accept:a4c98b8c86f0b37f"}`

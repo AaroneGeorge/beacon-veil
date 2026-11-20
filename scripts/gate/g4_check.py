@@ -9,12 +9,20 @@ PASS needs all of:
   2. one PID, exactly one `start` line, no `resume` line (no restart, no manual help);
   3. last ts minus first ts >= --min-hours (default 24);
   4. no gap between consecutive lines above 2x cadence (cadence from the `start` line, or --cadence);
-  5. every `submit` line is followed by its outcome (same `n`): `applied`, or `noop` (refused before submission, so
-     no transaction was sent); any `submit_failed`, or a submit with no outcome, fails;
+  5. every `submit` line is followed by its outcome (same `n`): `applied`, `noop` (refused before submission, so
+     no transaction was sent) or `superseded` (public path: another submitter moved the store first); any
+     `submit_failed`, or a submit with no outcome, fails. A `submit_deferred` line (public path: a step did not land
+     after the submitter's retries; the job stays on chain) is not an outcome: the same `n` is sent again
+     (`submit_resume`) until it has one;
   6. one beacon_source for the whole run, `logos_module` or `direct_http` (reported, so README and proposal state it);
   7. the chain is `host` (attest_host to a LEZ sequencer), not the test mock, unless --allow-mock;
   8. at least one update applied, applied head slots never decrease, and no stretch without an applied update
      longer than 3x cadence (the follower kept up, not only kept logging).
+Public path (`mode: "public"` in the start line) adds, from the `steps` of each outcome line: transactions sent
+(`txs`, and `txs_per_applied`), steps by name, four-step updates, the largest declared gas limit of a step, the
+metered cycles of a step (the charged execution gas of the step's block when the step was its only charged
+transaction, read back by the follower; min, median, max), reverted steps (a failure), deferrals and superseded
+submissions.
 Prints a JSON summary; exit 0 on PASS, 1 on FAIL, 2 on usage errors.
 """
 
@@ -25,6 +33,7 @@ from datetime import datetime
 
 REQUIRED = ("ts", "pid", "event", "slot", "period", "tx", "beacon_source", "uptime_s")
 SOURCES = ("logos_module", "direct_http")
+BLOCK_CAP = 10_000_000
 
 
 def parse_ts(s):
@@ -101,7 +110,7 @@ def check(lines, min_hours, cadence_override, allow_mock):
     # 5. submissions and outcomes.
     outcomes = {}
     for r in recs:
-        if r["event"] in ("applied", "noop", "submit_failed") and r.get("n") is not None:
+        if r["event"] in ("applied", "noop", "superseded", "submit_failed") and r.get("n") is not None:
             outcomes.setdefault(r["n"], r)
     submits = [r for r in recs if r["event"] == "submit"]
     applied = [r for r in recs if r["event"] == "applied"]
@@ -115,6 +124,7 @@ def check(lines, min_hours, cadence_override, allow_mock):
         elif o["event"] == "submit_failed":
             failed.append((s["_line"], o.get("code"), (o.get("detail") or "")[:200]))
     info["submits"], info["applied"], info["noops"] = len(submits), len(applied), len(noops)
+    info["superseded"] = sum(1 for s in submits if (outcomes.get(s.get("n")) or {}).get("event") == "superseded")
     info["handoffs"] = sum(1 for r in applied if (r.get("extra") or {}).get("handoff"))
     info["period_updates"] = sum(1 for r in applied if r.get("kind") == "period")
     if failed:
@@ -148,7 +158,8 @@ def check(lines, min_hours, cadence_override, allow_mock):
     # 7. chain.
     chain = start_extra.get("chain")
     info["chain"] = chain
-    info["risc0_dev_mode"] = start_extra.get("risc0_dev_mode")
+    # The follower records its own RISC0_DEV_MODE; null means it was not set.
+    info["risc0_dev_mode"] = (start_extra.get("risc0_dev_mode") or "unset") if "risc0_dev_mode" in start_extra else None
     if chain != "host" and not allow_mock:
         fails.append(f"chain is {chain!r}, not 'host' (a mock run is not G4 evidence)")
 
@@ -158,6 +169,50 @@ def check(lines, min_hours, cadence_override, allow_mock):
             errs[r["event"]] = errs.get(r["event"], 0) + 1
     info["error_lines"] = errs
     info["lines"] = len(recs)
+
+    # Public path (staged verifier): transactions per update and per step.
+    info["mode"] = start_extra.get("mode")
+    info["sequencer"] = start_extra.get("sequencer")
+    if info["mode"] == "public":
+        info["verifier"] = start_extra.get("verifier")
+        steps, sent_by_outcome = [], []
+        for r in recs:
+            if r["event"] in ("applied", "superseded"):
+                st = (r.get("extra") or {}).get("steps") or []
+                steps.extend(st)
+                if r["event"] == "applied":
+                    sent_by_outcome.append(len(st))
+                    if not st:
+                        fails.append(f"line {r['_line']}: applied on the public path without steps")
+        names = {}
+        for x in steps:
+            names[x.get("name")] = names.get(x.get("name"), 0) + 1
+        # Metered cycles of a step: the charged execution gas of its block when it was the block's only charged
+        # transaction (follower `charge`), else cycles the submitter reported, if any.
+        def step_cycles(x):
+            c = x.get("charge") or {}
+            return c.get("gas_exec") if c.get("gas_exec") is not None else x.get("cycles")
+        cycles = sorted(step_cycles(x) for x in steps if step_cycles(x) is not None)
+        info["steps_with_cycles"] = len(cycles)
+        info["reverted_steps"] = sum(1 for x in steps if (x.get("charge") or {}).get("reverted"))
+        if info["reverted_steps"]:
+            fails.append(f"{info['reverted_steps']} steps reverted on chain")
+        gas = [x["gas"] for x in steps if x.get("gas") is not None]
+        info["txs"] = len(steps)
+        info["txs_applied_updates"] = sum(sent_by_outcome)
+        info["txs_per_applied"] = sorted(set(sent_by_outcome))
+        info["steps_by_name"] = names
+        info["four_step_updates"] = sum(1 for r in applied if (r.get("extra") or {}).get("four_steps"))
+        info["max_step_gas_limit"] = max(gas) if gas else None
+        info["step_cycles"] = ({"min": cycles[0], "median": cycles[len(cycles) // 2], "max": cycles[-1]}
+                               if cycles else None)
+        info["max_step_cycles"] = cycles[-1] if cycles else None
+        # LEZ caps a block (and a transaction) at 10M metered cycles: one step per block.
+        info["block_cap_cycles"] = BLOCK_CAP
+        info["max_step_share_of_block"] = round(cycles[-1] / BLOCK_CAP, 3) if cycles else None
+        info["max_step_gas_limit_share_of_block"] = round(max(gas) / BLOCK_CAP, 3) if gas else None
+        info["deferrals"] = sum(1 for r in recs if r["event"] == "submit_deferred")
+        info["resumes"] = sum(1 for r in recs if r["event"] == "submit_resume")
     return not fails, fails, info
 
 

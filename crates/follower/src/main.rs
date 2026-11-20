@@ -9,7 +9,7 @@ use std::path::{Path, PathBuf};
 use std::time::Duration;
 
 use anyhow::{Context, Result, bail};
-use follower::chain::{HostChain, MockChain};
+use follower::chain::{HostChain, HostMode, MockChain};
 use follower::config::Config;
 use follower::follower::{Follower, Params};
 use follower::log::Logger;
@@ -19,6 +19,18 @@ use tokio::signal::unix::{SignalKind, signal};
 fn usage() -> ! {
     eprintln!("usage: attest-followerd --config <file.toml> [--once]");
     std::process::exit(2)
+}
+
+/// The program id under `[programs] <name>` in an ids file (`deploy/ids-pub.toml`, ...).
+fn program_id(ids_file: &Path, name: &str) -> Result<attest_core::AccountId> {
+    let text = std::fs::read_to_string(ids_file).with_context(|| format!("read {}", ids_file.display()))?;
+    let doc: toml::Table = toml::from_str(&text).with_context(|| format!("parse {}", ids_file.display()))?;
+    doc.get("programs")
+        .and_then(|p| p.get(name))
+        .and_then(toml::Value::as_str)
+        .with_context(|| format!("{}: [programs] {name} missing", ids_file.display()))?
+        .parse()
+        .map_err(|e| anyhow::anyhow!("{}: [programs] {name}: {e:?}", ids_file.display()))
 }
 
 struct PidLock(PathBuf);
@@ -77,7 +89,13 @@ async fn main() -> Result<()> {
                 .instance
                 .clone()
                 .unwrap_or_else(|| format!("mock:{}", path.display()));
-            run(&cfg, &cfg_path, source, MockChain::new(path), instance, once).await
+            let mock = MockChain::new(path);
+            let mock = if cfg.chain.mode == "public" {
+                mock.staged()
+            } else {
+                mock
+            };
+            run(&cfg, &cfg_path, source, mock, instance, once).await
         }
         _ => {
             let ids = match &cfg.chain.ids_file {
@@ -88,10 +106,17 @@ async fn main() -> Result<()> {
             let instance = instance_s
                 .parse()
                 .map_err(|e| anyhow::anyhow!("chain.instance: {e:?}"))?;
+            let ids_file = cfg.chain.ids_file.clone().unwrap_or_else(attest_host::ids_path);
             let mode = match cfg.chain.mode.as_str() {
-                "private" => attest_host::SubmitMode::Private,
-                "public_probe" => attest_host::SubmitMode::PublicProbe,
-                m => bail!("chain.mode '{m}': expected private or public_probe"),
+                "private" => HostMode::Single(attest_host::SubmitMode::Private),
+                "public_probe" => HostMode::Single(attest_host::SubmitMode::PublicProbe),
+                "public" => {
+                    let name = cfg.chain.verifier.as_deref().unwrap_or("lc_verify_v3");
+                    HostMode::Public {
+                        v3: program_id(&ids_file, name)?,
+                    }
+                }
+                m => bail!("chain.mode '{m}': expected private, public_probe or public"),
             };
             run(
                 &cfg,
@@ -131,6 +156,8 @@ async fn run<C: Chain + Sync>(
         "chain": chain.name(),
         "instance": instance,
         "mode": cfg.chain.mode,
+        "verifier": (cfg.chain.mode == "public").then(|| cfg.chain.verifier.clone().unwrap_or_else(|| "lc_verify_v3".into())),
+        "sequencer": cfg.chain.sequencer,
         "cadence_s": cfg.follower.cadence_s,
         "poll_s": cfg.follower.poll_s,
         "jitter_max_s": cfg.follower.jitter_max_s,

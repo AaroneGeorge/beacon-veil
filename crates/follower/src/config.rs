@@ -75,9 +75,16 @@ pub struct ChainCfg {
     /// `deploy/ids.toml`; default: `attest_host::ids_path()` ($BV_IDS or $BV_REPO/deploy/ids.toml).
     #[serde(default)]
     pub ids_file: Option<PathBuf>,
-    /// `private` (Path A) or `public_probe` (B0).
+    /// `private` (Path A), `public_probe` (B0) or `public` (the staged public path through `lc_verify_v3`: three
+    /// public transactions per update).
     #[serde(default = "d_mode")]
     pub mode: String,
+    /// `public` mode: the verifier program's name under `[programs]` in the ids file. Default `lc_verify_v3`.
+    #[serde(default)]
+    pub verifier: Option<String>,
+    /// Name of the sequencer the instance lives on (`seq-pub`), written into the `start` line for the run summary.
+    #[serde(default)]
+    pub sequencer: Option<String>,
     /// Mock state file; default `<state_dir>/mock-chain.json`.
     #[serde(default)]
     pub mock_file: Option<PathBuf>,
@@ -132,6 +139,10 @@ impl Config {
             "host" if self.chain.instance.is_none() => bail!("chain.instance is required for chain.kind = host"),
             "host" | "mock" => {}
             k => bail!("chain.kind '{k}': expected host or mock"),
+        }
+        match self.chain.mode.as_str() {
+            "private" | "public_probe" | "public" => {}
+            m => bail!("chain.mode '{m}': expected private, public_probe or public"),
         }
         Ok(())
     }

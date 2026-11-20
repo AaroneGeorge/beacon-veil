@@ -17,6 +17,28 @@ fn helios_v1_v2_differential() {
     assert!(j["gloas_cases"].as_u64().unwrap() >= 60, "gloas {}", j["gloas_cases"]);
     assert!(j["fork_crossing_valid"].as_u64().unwrap() >= 1, "no valid crossing");
     assert_eq!(j["v1_v2_disagreements"], 0);
+    // The executor pass (`diff_exec`, evidence/diff/executor.json): every case through the lc_verify_v3 guest, each
+    // equal to V1 except the designed difference, and no case newer than the recorded run.
+    let e = &j["executor"];
+    assert!(e.is_object(), "evidence/diff/executor.json missing: run diff_exec");
+    assert_eq!(
+        e["missing"], 0,
+        "cases without an executor result for their current input"
+    );
+    assert!(j["executor_cases"].as_u64().unwrap() >= j["valid"].as_u64().unwrap() + 100);
+    assert_eq!(j["executor_mismatches"], 0);
+    // The executor's designed differences are exactly the native V3 column's.
+    let ids = |v: &serde_json::Value, column: Option<&str>| -> Vec<String> {
+        v.as_array()
+            .unwrap()
+            .iter()
+            .filter(|d| column.is_none_or(|c| d["column"] == c))
+            .map(|d| d["id"].as_str().unwrap().to_string())
+            .collect()
+    };
+    let designed = ids(&e["designed_differences"], None);
+    assert!(designed.contains(&"fabricated/identity_member_counted".to_string()));
+    assert_eq!(designed, ids(&j["intended_divergences"], Some("v3")));
     // The deliberate refusals: sub-quorum (E04) and no finality (E02) are each present.
     for r in ["E02", "E04"] {
         assert!(

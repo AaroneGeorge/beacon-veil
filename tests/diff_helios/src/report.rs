@@ -392,6 +392,33 @@ fn markdown(j: &Value, columns: &[&str]) -> String {
     list(&mut m, "V1 different from the expected code", &j["expected_mismatches"]);
     list(&mut m, "Helios refuses, V1 accepts", &j["helios_refuses_we_accept"]);
     list(&mut m, "Panics", &j["panics"]);
+    if j["executor"].is_object() {
+        let e = &j["executor"];
+        let _ = writeln!(m, "\n## Executor pass\n");
+        let _ = writeln!(
+            m,
+            "Each case also ran through the `lc_verify_v3` guest as one `VerifyOnce` message in the RISC Zero \
+             executor ({}; no proof), framed as LEZ frames an actor input. User ELF sha256 `{}`, image id `{}`. \
+             A case counts when its input hash equals the one recorded by the executor run.\n",
+            e["executor"].as_str().unwrap_or_default(),
+            e["elf_sha256"].as_str().unwrap_or_default(),
+            e["image_id"].as_str().unwrap_or_default()
+        );
+        let _ = writeln!(m, "| | |\n|---|---|");
+        for k in [
+            "cases",
+            "valid_cases",
+            "accepted",
+            "refused",
+            "mismatches",
+            "missing",
+            "max_cycles_accepted",
+        ] {
+            let _ = writeln!(m, "| {k} | {} |", e[k]);
+        }
+        list(&mut m, "Executor results different from V1", &e["mismatch_cases"]);
+        list(&mut m, "Executor designed differences", &e["designed_differences"]);
+    }
     m
 }
 
@@ -421,4 +448,78 @@ pub fn write(dir: &Path, s: &Summary, log: &str) -> std::io::Result<()> {
 #[must_use]
 pub fn evidence_dir() -> std::path::PathBuf {
     fixtures::fixtures_dir().join("../evidence/diff")
+}
+
+/// Merges an executor run (`evidence/diff/executor.json`, written by `diff_exec`) into the summary: every case whose
+/// input hash equals the recorded one is compared with V1 by [`Verdict::digest`]. A difference is a failure unless
+/// the case carries a designed difference for `v3*` columns (the executor column is `v3_exec`).
+pub fn add_executor(s: &mut Summary, cases: &[Case], outcomes: &[Outcome], columns: &[&str], exec: &Value) {
+    let by_id: BTreeMap<&str, &Value> = exec["cases"]
+        .as_array()
+        .map(|a| a.iter().filter_map(|e| Some((e["id"].as_str()?, e))).collect())
+        .unwrap_or_default();
+    let (mut n, mut valid, mut accepted, mut refused, mut missing, mut max_cycles) =
+        (0u64, 0u64, 0u64, 0u64, 0u64, 0u64);
+    let mut mismatches = Vec::new();
+    let mut designed = Vec::new();
+    for (c, o) in cases.iter().zip(outcomes) {
+        let Some(e) = by_id
+            .get(c.id.as_str())
+            .filter(|e| e["input_sha256"].as_str() == Some(&c.input_sha256()))
+        else {
+            missing += 1;
+            continue;
+        };
+        n += 1;
+        valid += u64::from(c.kind == Kind::Valid);
+        let got = e["digest"].as_str().unwrap_or_default();
+        let cycles = e["cycles"].as_u64().unwrap_or(0);
+        if got.starts_with("accept:") {
+            accepted += 1;
+            max_cycles = max_cycles.max(cycles);
+        } else {
+            refused += 1;
+        }
+        let want = o.verdicts[0].digest();
+        if got != want {
+            let row = json!({"id": c.id, "v1": o.verdicts[0].short(), "executor": e["verdict"]});
+            match c.divergence {
+                Some(reason) if divergence_applies("v3_exec") => {
+                    let mut r = row;
+                    r["reason"] = json!(reason);
+                    designed.push(r);
+                }
+                _ => {
+                    s.failures.push(format!(
+                        "{}: executor {} but v1 {}",
+                        c.id,
+                        e["verdict"],
+                        o.verdicts[0].short()
+                    ));
+                    mismatches.push(row);
+                }
+            }
+        }
+    }
+    let j = &mut s.json;
+    j["executor_cases"] = json!(n);
+    j["executor_mismatches"] = json!(mismatches.len());
+    j["executor"] = json!({
+        "executor": exec["executor"],
+        "elf": exec["elf"],
+        "elf_sha256": exec["elf_sha256"],
+        "image_id": exec["image_id"],
+        "generated_at_utc": exec["generated_at_utc"],
+        "cases": n,
+        "valid_cases": valid,
+        "accepted": accepted,
+        "refused": refused,
+        "missing": missing,
+        "max_cycles_accepted": max_cycles,
+        "mismatches": mismatches.len(),
+        "mismatch_cases": mismatches,
+        "designed_differences": designed,
+    });
+    j["pass"] = json!(s.failures.is_empty());
+    s.markdown = markdown(&s.json, columns);
 }

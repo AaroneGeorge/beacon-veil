@@ -1,0 +1,78 @@
+{
+  "gate": "G4",
+  "result": "PASS",
+  "log": "evidence/g4-public/dry-run-20261120/run-dry-e/follower.single.jsonl",
+  "failures": [],
+  "pids": [
+    1596593
+  ],
+  "start_lines": 1,
+  "start": {
+    "cadence_s": 600,
+    "chain": "host",
+    "chain_id": 11155111,
+    "config": "/home/lechuuu/hackathons/logos-rfp/build/run/w4/run-dry-e/followerd.toml",
+    "endpoints": [
+      "https://lodestar-sepolia.chainsafe.io",
+      "http://unstable.sepolia.beacon-api.nimbus.team"
+    ],
+    "follower_id": "run-dry-e",
+    "instance": "7bYsJLGb32uVQeehJNKRAETssUJQ6xpABB8yWB93VoYQ",
+    "jitter_max_s": 10,
+    "mode": "public",
+    "poll_s": 60,
+    "risc0_dev_mode": null,
+    "sequencer": "seq-pub",
+    "source_kind": "direct_http",
+    "verifier": "lc_verify_v3",
+    "version": "0.1.0"
+  },
+  "first_ts": "2026-11-20T01:54:56.038Z",
+  "last_ts": "2026-11-20T01:56:55.394Z",
+  "hours": 0.033,
+  "cadence_s": 600,
+  "max_gap_s": 93.2,
+  "max_gap_before_line": 6,
+  "submits": 1,
+  "applied": 1,
+  "noops": 0,
+  "superseded": 0,
+  "handoffs": 0,
+  "period_updates": 0,
+  "head_first": 11617088,
+  "head_last": 11617088,
+  "max_applied_gap_s": 95.0,
+  "beacon_source": "direct_http",
+  "chain": "host",
+  "risc0_dev_mode": "unset",
+  "error_lines": {},
+  "lines": 7,
+  "mode": "public",
+  "sequencer": "seq-pub",
+  "verifier": "lc_verify_v3",
+  "steps_with_cycles": 3,
+  "reverted_steps": 0,
+  "txs": 3,
+  "txs_applied_updates": 3,
+  "txs_per_applied": [
+    3
+  ],
+  "steps_by_name": {
+    "Begin": 1,
+    "Miller": 1,
+    "Finish": 1
+  },
+  "four_step_updates": 0,
+  "max_step_gas_limit": 9000000,
+  "step_cycles": {
+    "min": 2435679,
+    "median": 4379765,
+    "max": 5764613
+  },
+  "max_step_cycles": 5764613,
+  "block_cap_cycles": 10000000,
+  "max_step_share_of_block": 0.576,
+  "max_step_gas_limit_share_of_block": 0.9,
+  "deferrals": 0,
+  "resumes": 0
+}

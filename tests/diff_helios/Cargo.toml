@@ -13,6 +13,12 @@ workspace = true
 name = "diff_report"
 path = "src/bin/diff_report.rs"
 
+# The executor pass: every case through the lc_verify_v3 guest in the RISC Zero executor (slow; separate run).
+[[bin]]
+name = "diff_exec"
+path = "src/bin/diff_exec.rs"
+required-features = ["executor"]
+
 [dependencies]
 anyhow.workspace = true
 attest_core = { workspace = true, features = ["lc", "v2"] }
@@ -29,7 +35,14 @@ ethereum_ssz = "0.9"
 eyre = "0.6"
 helios-consensus-core.workspace = true
 
+# Executor pass only (feature `executor`): the external r0vm executor (`client`, no `prove`), LEZ input framing.
+lee_core = { workspace = true, optional = true }
+risc0-zkvm = { workspace = true, features = ["client"], optional = true }
+risc0-binfmt = { version = "=3.0.4", optional = true }
+risc0-zkos-v1compat = { version = "=2.2.2", optional = true }
+
 [features]
 # V3 columns (attest_core::lc_v3). On by default, so every run (also `make test-host`) writes the same report.
 default = ["v3"]
 v3 = ["attest_core/v3"]
+executor = ["v3", "dep:lee_core", "dep:risc0-zkvm", "dep:risc0-binfmt", "dep:risc0-zkos-v1compat"]

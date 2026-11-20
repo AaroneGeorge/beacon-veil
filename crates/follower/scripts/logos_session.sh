@@ -4,7 +4,9 @@
 #
 #   crates/follower/scripts/logos_session.sh start|install|load|probe|status|stop
 #
-# Env overrides: W4_LOGOS_SESSION (session dir), W4_LOGOSCTL (logosctl binary), BEACON_LGX, FOLLOWER_LGX (.lgx files).
+# Env overrides: W4_LOGOS_SESSION (session dir), W4_LOGOSCTL (logosctl binary), BEACON_LGX, FOLLOWER_LGX (.lgx files),
+# W4_LOGOS_TMPDIR and W4_LOGOS_HOME (a second session beside run C's: its own temp dir, where the daemon's local
+# endpoint lives, and its own storage-node home).
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=/dev/null
@@ -15,7 +17,8 @@ CTL="${W4_LOGOSCTL:-$B/run/w4/logosctl/squashfs-root/AppRun}"
 BEACON_LGX="${BEACON_LGX:-$(ls "$B"/run/w4/nix/beacon-api-lgx-portable/*.lgx 2>/dev/null | head -1)}"
 FOLLOWER_LGX="${FOLLOWER_LGX:-$(ls "$B"/run/w4/nix/attest-follower-lgx-portable/*.lgx 2>/dev/null | head -1)}"
 # The bundled package downloader starts a storage node in $HOME: keep it out of the real one.
-export HOME="$B/run/w4/logos-home"
+export HOME="${W4_LOGOS_HOME:-$B/run/w4/logos-home}"
+if [ -n "${W4_LOGOS_TMPDIR:-}" ]; then export TMPDIR="$W4_LOGOS_TMPDIR"; mkdir -p "$TMPDIR"; fi
 mkdir -p "$S" "$HOME"
 ctl() { "$CTL" --config-dir "$S" "$@"; }
 

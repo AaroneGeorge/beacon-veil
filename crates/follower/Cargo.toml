@@ -15,7 +15,9 @@ path = "src/main.rs"
 
 [dependencies]
 anyhow.workspace = true
-attest_core.workspace = true
+borsh.workspace = true
+common.workspace = true
+attest_core = { workspace = true, features = ["v3"] }
 attest_host.workspace = true
 hex.workspace = true
 reqwest.workspace = true

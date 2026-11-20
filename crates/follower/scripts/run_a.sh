@@ -12,7 +12,8 @@
 #      SOURCE_KIND (logos_module | direct_http; default logos_module), RUN_DIR (default $B/run/w4/run-a),
 #      RUN_A_FORCE=1 to move an existing log aside. Never restart run A by hand: G4 needs one PID.
 #      CFG_TEMPLATE (default examples/followerd.sepolia.toml; run C on mainnet: examples/followerd.mainnet.toml).
-#      SEQ (dev | main; default dev): the sequencer the instance lives on (run C: main, RPC 3042, ids in wallet.env BV_IDS).
+#      SEQ (dev | main | pub; default dev): the sequencer the instance lives on (run C: main, RPC 3042, ids in wallet.env BV_IDS).
+#      EVIDENCE_DIR: where `collect` copies the run (default evidence/g4/<run>).
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=/dev/null
@@ -89,7 +90,7 @@ stop)
   ;;
 collect)
   # evidence/g4/<run>/ for every run; PRIMARY=1 also makes it evidence/g4/follower.jsonl, the file G4 names.
-  run="$(basename "$RUN_DIR")"; E="$R/evidence/g4/$run"
+  run="$(basename "$RUN_DIR")"; E="${EVIDENCE_DIR:-$R/evidence/g4/$run}"
   mkdir -p "$E"
   cp -f "$LOG" "$E/follower.jsonl"; cp -f "$RUN_DIR/run.json" "$E/run.json"; cp -f "$CFG" "$E/followerd.toml"
   cp -f "$RUN_DIR/instance.json" "$E/instance.json" 2>/dev/null || true

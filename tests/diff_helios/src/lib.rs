@@ -11,6 +11,8 @@
 #![forbid(unsafe_code)]
 
 pub mod cases;
+#[cfg(feature = "executor")]
+pub mod exec;
 pub mod layout;
 pub mod load;
 pub mod report;
@@ -134,6 +136,23 @@ impl Verdict {
             Self::Accept(a) => format!("accept:{}", hex::encode(&a.post_store[..8])),
             Self::Refuse(e) => e.code().into(),
             Self::Panic(_) => "panic".into(),
+        }
+    }
+
+    /// `short()` for a refusal; for an accept, `accept:` and the SHA-256 of `borsh(pre_store, post_store, head,
+    /// record)`, so two accepts compare equal exactly when every field `attest.Apply` reads is equal.
+    #[must_use]
+    pub fn digest(&self) -> String {
+        match self {
+            Self::Accept(a) => {
+                let mut h = Sha256::new();
+                h.update(a.pre_store);
+                h.update(a.post_store);
+                h.update(borsh::to_vec(&a.head).expect("borsh head"));
+                h.update(borsh::to_vec(&a.record).expect("borsh record"));
+                format!("accept:{}", hex::encode(h.finalize()))
+            }
+            other => other.short(),
         }
     }
 
@@ -481,6 +500,16 @@ pub fn run_and_report(columns: &[&dyn Column], threads: usize) -> anyhow::Result
         s.json["v1_v2_disagreements"],
         s.failures.len()
     ));
+    let mut s = s;
+    let exec_path = report::evidence_dir().join("executor.json");
+    if let Ok(b) = std::fs::read(&exec_path) {
+        let exec: serde_json::Value = serde_json::from_slice(&b)?;
+        report::add_executor(&mut s, &cases, &outcomes, &names, &exec);
+        log.push_str(&format!(
+            "executor.json: executor_cases {} executor_mismatches {} (image {})\n",
+            s.json["executor_cases"], s.json["executor_mismatches"], s.json["executor"]["image_id"]
+        ));
+    }
     for f in &s.failures {
         log.push_str(&format!("FAIL {f}\n"));
     }

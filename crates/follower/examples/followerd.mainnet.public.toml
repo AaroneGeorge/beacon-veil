@@ -1,0 +1,33 @@
+# attest-followerd config: run D, Ethereum MAINNET (chain_id 1) beacon chain into an instance on seq-pub through
+# the public path: each update is three public transactions to lc_verify_v3 (Begin, Miller, Finish), executed by the
+# sequencer (RISC0_DEV_MODE unset; public transactions carry no proof). The instance's verifiers include lc_verify_v3.
+# crates/follower/scripts/run_public.sh mainnet start writes the real config into the state dir.
+
+[follower]
+echo = false
+id = "run-d"
+chain_id = 1
+state_dir = "/home/lechuuu/hackathons/logos-rfp/build/run/w4/run-d"
+# log_file defaults to <state_dir>/follower.jsonl
+cadence_s = 6144        # 16 epochs, same as run C, so the two runs compare; handoffs go at once
+poll_s = 300            # one tick line every 5 min
+jitter_max_s = 60       # per-instance deferral before each submission
+min_participation = 342 # 2/3 of 512 (Helios applies only with a supermajority)
+
+[source]
+kind = "logos_module"   # Logos beacon_api_module through logosctl, in its own session (not run C's); or "direct_http"
+logosctl = "/home/lechuuu/hackathons/logos-rfp/build/run/w4/logosctl/squashfs-root/AppRun"  # logosctl 0.3.2
+logosctl_config_dir = "/home/lechuuu/hackathons/logos-rfp/build/run/w4/logos-session-pub"
+logosctl_tmpdir = "/home/lechuuu/hackathons/logos-rfp/build/.tmp-pub"   # TMPDIR the public-runs session daemon was started with
+provider = ""           # module's order: lodestar (https) first
+timeout_s = 60
+# Used only when kind = "direct_http".
+endpoints = ["https://lodestar-mainnet.chainsafe.io", "http://unstable.mainnet.beacon-api.nimbus.team"]
+
+[chain]
+kind = "host"
+instance = "REPLACE_WITH_INSTANCE_ID"
+ids_file = "/home/lechuuu/hackathons/logos-rfp/build/repo/deploy/ids-pub.toml"
+mode = "public"         # staged public path (lc_verify_v3, attest_host::submit_update_staged)
+verifier = "lc_verify_v3"
+sequencer = "seq-pub"

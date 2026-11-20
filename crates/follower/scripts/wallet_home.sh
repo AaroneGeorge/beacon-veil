@@ -4,10 +4,13 @@
 #
 #   crates/follower/scripts/wallet_home.sh <name> [public_amount] [private_amount]
 #     name: w4 (dev testing) or w4-runA (run A). Creates $B/run/wallet-<name> with:
-#       - wallet_config.json copied from $B/run/wallet-dev (seq-dev RPC)
+#       - wallet_config.json copied from $WALLET_CONFIG_FROM (default $B/run/wallet-dev: seq-dev RPC; the public
+#         runs use $B/run/wallet-pub: seq-pub RPC 3043)
 #       - bv-payer (LEZ local genesis test key, public, not a secret): funding source only
 #       - <name>-payer (public), funded from bv-payer under flock: BV_PAYER
-#       - bv-submitter (private), funded from <name>-payer: BV_SUBMITTER (Path A in-proof fee)
+#       - bv-submitter (private), funded from <name>-payer: BV_SUBMITTER (Path A in-proof fee); skipped when
+#         private_amount is 0 (the public path needs no private account, and on a sequencer with dev mode unset the
+#         private transfer would need a real proof)
 #   Prints the env lines to use. Idempotent: existing labels are kept.
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -18,7 +21,7 @@ pub_amount="${2:-10000000000}"; priv_amount="${3:-1000000000}"  # a private tx r
 export LEE_WALLET_HOME_DIR="$B/run/wallet-$name"
 export LEE_WALLET_PASSWORD="${LEE_WALLET_PASSWORD:-}"
 mkdir -p "$LEE_WALLET_HOME_DIR"
-[ -f "$LEE_WALLET_HOME_DIR/wallet_config.json" ] || cp "$B/run/wallet-dev/wallet_config.json" "$LEE_WALLET_HOME_DIR/"
+[ -f "$LEE_WALLET_HOME_DIR/wallet_config.json" ] || cp "${WALLET_CONFIG_FROM:-$B/run/wallet-dev}/wallet_config.json" "$LEE_WALLET_HOME_DIR/"
 command -v wallet >/dev/null || { echo "wallet binary not on PATH" >&2; exit 1; }
 
 LEZ_TEST_KEY="7f273098f25b71e6c005a9519f2678da8d1c7f01f6a27778e2d9948abdf901fb" # LEZ Justfile, local genesis
@@ -36,11 +39,11 @@ if ! has "$payer"; then
   wallet account new public --label "$payer" >/dev/null
   flock "$R/deploy/ids.toml.lock" wallet auth-transfer send --from bv-payer --to "$payer" --amount "$pub_amount"
 fi
-if ! has bv-submitter; then
+if [ "$priv_amount" != 0 ] && ! has bv-submitter; then
   wallet account new private --label bv-submitter >/dev/null
   wallet auth-transfer send --from "$payer" --to bv-submitter --amount "$priv_amount"
 fi
 echo "export LEE_WALLET_HOME_DIR=$LEE_WALLET_HOME_DIR"
 echo "export BV_PAYER=$(id_of "$payer")"
-echo "export BV_SUBMITTER=$(id_of bv-submitter)"
+[ "$priv_amount" = 0 ] || echo "export BV_SUBMITTER=$(id_of bv-submitter)"
 wallet account get --account-id "$payer" || true

@@ -1,0 +1,33 @@
+# attest-followerd config: run E, Ethereum SEPOLIA (chain_id 11155111) beacon chain into an instance on seq-pub through
+# the public path: each update is three public transactions to lc_verify_v3 (Begin, Miller, Finish), executed by the
+# sequencer (RISC0_DEV_MODE unset; public transactions carry no proof). The instance's verifiers include lc_verify_v3.
+# crates/follower/scripts/run_public.sh sepolia start writes the real config into the state dir.
+
+[follower]
+echo = false
+id = "run-dry-e2"
+chain_id = 11155111
+state_dir = "~/hackathons/logos-rfp/build/run/w4/run-dry-e2"
+# log_file defaults to <state_dir>/follower.jsonl
+cadence_s = 120
+poll_s = 60
+jitter_max_s = 0
+min_participation = 342 # 2/3 of 512 (Helios applies only with a supermajority)
+
+[source]
+kind = "direct_http"
+logosctl = "~/hackathons/logos-rfp/build/run/w4/logosctl/squashfs-root/AppRun"  # logosctl 0.3.2
+logosctl_config_dir = "~/hackathons/logos-rfp/build/run/w4/logos-session-pub"
+logosctl_tmpdir = "~/hackathons/logos-rfp/build/.tmp-pub"   # TMPDIR the public-runs session daemon was started with
+provider = ""           # module's order: lodestar (https) first
+timeout_s = 60
+# Used only when kind = "direct_http".
+endpoints = ["https://lodestar-sepolia.chainsafe.io", "http://unstable.sepolia.beacon-api.nimbus.team"]
+
+[chain]
+kind = "host"
+instance = "7bYsJLGb32uVQeehJNKRAETssUJQ6xpABB8yWB93VoYQ"
+ids_file = "~/hackathons/logos-rfp/build/repo/deploy/ids-pub.toml"
+mode = "public"         # staged public path (lc_verify_v3, attest_host::submit_update_staged)
+verifier = "lc_verify_v3"
+sequencer = "seq-pub"

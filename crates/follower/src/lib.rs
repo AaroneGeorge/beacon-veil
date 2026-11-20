@@ -11,6 +11,7 @@
 #![forbid(unsafe_code)]
 
 pub mod chain;
+pub mod charge;
 pub mod config;
 pub mod follower;
 pub mod log;
