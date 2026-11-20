@@ -1,4 +1,4 @@
-g5: clone of cbde35b3609aed5da0c463864369bc645b99b390 in ${BUILD}/.tmp/clean
+g5: clone of 193a692dd1b0b4ba2664251181b4092d79089ee0 in ${BUILD}/.tmp/clean
 tools/cost/cost_exec.sh
 cost-exec: building harnesses
 cost-exec: exec-lc
@@ -6,4 +6,9 @@ cost-exec: attest_exec
 cost-exec: exec-v3
 import-trace: 5 steps -> ${BUILD}/.tmp/clean/evidence/cost/raw/b0-phases.json
 cost: 71 rows -> ${BUILD}/.tmp/clean/evidence/cost/cost.json, cost.md
-g5: cost-exec in the clone exited 0 after 1257 s (cold build: 1)
+cost-exec: image lc_verify in exec-lc.json: c7b5f2191f133026017c09072e883217dfe3785450d40d081718b0fd204878ba OK
+cost-exec: image lc_verify_v2 in exec-lc.json: 18684beee3e973a2f1391c9bdb9108743c71e6f216bb5fba88bc0443403e8230 OK
+cost-exec: image attest in exec-lc.json: 9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d OK
+cost-exec: image lc_verify_v3 in exec-v3.json: cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510 OK
+cost-exec: image attest in exec-v3.json: 9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d OK
+g5: cost-exec in the clone exited 0 after 1265 s (cold build: 1)

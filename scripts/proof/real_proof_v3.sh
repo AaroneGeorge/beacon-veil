@@ -49,7 +49,11 @@ check() {
   return "$fail"
 }
 
+# The submitter is funded with 1.1e9 and must hold at least 9e8: the private transfer's fee comes out of the private
+# side (1e9 sent left 994,929,384 in an earlier run), and one private transaction reserves about 5e6.
+FUND_AMOUNT=1100000000 FUND_MIN=900000000
 submitter_balance() {
+  wallet account sync-private >/dev/null 2>&1 || true
   wallet account get --account-id bv-submitter 2>/dev/null | sed -n 's/.*Balance \([0-9]*\).*/\1/p' | head -1 | grep . || echo 0
 }
 finalized_slot() { # newest finalized slot a mainnet finality update names
@@ -156,21 +160,21 @@ case "${1:-}" in
     # 2. The private submitter, funded by a private transfer: a real proof, made right here under the proving job
     #    runner with RISC0_DEV_MODE unset (checked again by no_dev_mode.sh where the wallet proves).
     [ -n "$(wallet account list 2>/dev/null | grep '\[bv-submitter\]')" ] || wallet account new private --label bv-submitter
-    if [ "$(submitter_balance)" -lt 1000000000 ]; then
+    if [ "$(submitter_balance)" -lt "$FUND_MIN" ]; then
       BV_REAL_PROOF=1 "$BV_REPO/tools/cost/prove_job.sh" --wait --foreground --name real-proof-v3-fund \
         --note "fund the private submitter on seq-pub" -- \
-        "$here/no_dev_mode.sh" wallet auth-transfer send --from "$name-payer" --to bv-submitter --amount 1000000000
+        "$here/no_dev_mode.sh" wallet auth-transfer send --from "$name-payer" --to bv-submitter --amount "$FUND_AMOUNT"
     fi
     sub="$(wallet account list 2>/dev/null | grep '\[bv-submitter\]' | grep -o 'Private/[A-Za-z0-9]*' | cut -d/ -f2)"
     grep -q '^export BV_SUBMITTER=' "$D/wallet.env" || echo "export BV_SUBMITTER=$sub" >> "$D/wallet.env"
     echo "submitter $sub balance $(submitter_balance)"; cat "$D/wallet.env"
-    [ "$(submitter_balance)" -ge 1000000000 ] ;;
+    [ "$(submitter_balance)" -ge "$FUND_MIN" ] ;;
   --init)
     [ -f "$D/instance.json" ] && { echo "$D/instance.json exists: $(instance)"; exit 0; }
     [ -s "$D/wallet.env" ] || { echo "no wallet: --wallet first" >&2; exit 1; }
     # shellcheck source=/dev/null
     source <(grep '^export ' "$D/wallet.env")
-    [ "$(submitter_balance)" -ge 1000000000 ] || { echo "the private submitter is not funded: --wallet first" >&2; exit 1; }
+    [ "$(submitter_balance)" -ge "$FUND_MIN" ] || { echo "the private submitter is not funded: --wallet first" >&2; exit 1; }
     "$ATTEST" --chain-id 1 init --only-verifier "$V3" --out "$D/instance.json"
     echo "instance $(instance): no follower may use it" ;;
   --prove)
@@ -188,13 +192,24 @@ case "${1:-}" in
       sleep 60
     done
     [ "${fin:-0}" -gt "$head" ] || { echo "no finality update newer than the instance head ($head) after ${BV_RP_WAIT_TRIES:-20} min" >&2; exit 1; }
-    job="$BV_REPO/evidence/prove/real-proof-v3/$(date -u +%Y%m%dT%H%M%SZ)"
+    # `attest update` reads its own beacon source, which can lag the endpoints above by a few seconds: an E14 (the
+    # update moves nothing) comes before any proof, so it is retried every 60 s within the same 20-minute limit.
+    deadline=$(( $(date +%s) + 60 * ${BV_RP_WAIT_TRIES:-20} ))
     set +e
-    BV_REAL_PROOF=1 BV_FOREGROUND=1 "$BV_REPO/tools/cost/prove_job.sh" --wait --foreground --name real-proof-v3 \
-      --out "$job" --note "lc_verify_v3 VerifyOnce, private actor, mainnet finality update, seq-pub" -- \
-      "$here/no_dev_mode.sh" "$ATTEST" --chain-id 1 update --instance "$(instance)" --mode v3-private --v3 "$V3" \
-      --save-inputs "$job/inputs"
-    rc=$?
+    while :; do
+      job="$BV_REPO/evidence/prove/real-proof-v3/$(date -u +%Y%m%dT%H%M%SZ)"
+      BV_REAL_PROOF=1 BV_FOREGROUND=1 "$BV_REPO/tools/cost/prove_job.sh" --wait --foreground --name real-proof-v3 \
+        --out "$job" --note "lc_verify_v3 VerifyOnce, private actor, mainnet finality update, seq-pub" -- \
+        "$here/no_dev_mode.sh" "$ATTEST" --chain-id 1 update --instance "$(instance)" --mode v3-private --v3 "$V3" \
+        --save-inputs "$job/inputs"
+      rc=$?
+      if [ "$rc" != 0 ] && grep -qE 'E14' "$job/output.log" 2>/dev/null && [ "$(date +%s)" -lt "$deadline" ]; then
+        mkdir -p "$D/e14-attempts"; mv "$job" "$D/e14-attempts/"
+        echo "$(date -u +%T) E14 before any proof (the update moves nothing yet): retrying in 60 s"
+        sleep 60; continue
+      fi
+      break
+    done
     record "$job"; rrc=$?
     set -e
     [ "$rc" = 0 ] || exit "$rc"

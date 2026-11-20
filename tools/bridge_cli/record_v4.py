@@ -30,11 +30,27 @@ def env(flow):
 
 
 def load(flow, name):
+    """The JSON object in a stage file; with other output around it (a wallet prints "Latest block is N" on stdout),
+    the last JSON object that starts a line."""
     p = name if os.path.isabs(name) else os.path.join(flow, name)
     try:
-        return json.load(open(p))
-    except (OSError, ValueError):
+        t = open(p, errors="replace").read()
+    except OSError:
         return None
+    try:
+        return json.loads(t)
+    except ValueError:
+        pass
+    dec, last = json.JSONDecoder(), None
+    for i, line in enumerate(t.splitlines(keepends=True)):
+        if line.startswith("{"):
+            start = sum(len(l) for l in t.splitlines(keepends=True)[:i])
+            try:
+                obj, _ = dec.raw_decode(t[start:])
+                last = obj
+            except ValueError:
+                continue
+    return last
 
 
 def text(flow, name):
@@ -196,7 +212,9 @@ def self_test():
                   open(os.path.join(d, "claim1-tx.json"), "w"))
         open(os.path.join(d, "claim2.txt"), "w").write("panicked at ...\nESA:E11\nE11_ALREADY_CONSUMED\n")
         open(os.path.join(d, "claim2-seconds.txt"), "w").write("3.4\n")
-        json.dump({"balance": "0"}, open(os.path.join(d, "balance-before-claim.json"), "w"))
+        # Noisy input, as a stage writes it when the wallet prints sync lines on stdout.
+        open(os.path.join(d, "balance-before-claim.json"), "w").write(
+            "Latest block is 1143\nSyncing to block 1143. Blocks to sync: 3\n{\"balance\": \"0\", \"kind\": \"private\"}\n")
         json.dump({"balance": "1000000000000000"}, open(os.path.join(d, "balance-after-claim.json"), "w"))
         json.dump({"balance": "0"}, open(os.path.join(d, "balance-after-burn.json"), "w"))
         out = os.path.join(d, "claim.json")

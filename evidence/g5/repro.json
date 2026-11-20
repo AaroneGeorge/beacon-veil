@@ -1,15 +1,15 @@
 {
   "gate": "G5",
-  "commit": "cbde35b3609aed5da0c463864369bc645b99b390",
-  "started_utc": "2026-11-20T04:02:10Z",
+  "commit": "193a692dd1b0b4ba2664251181b4092d79089ee0",
+  "started_utc": "2026-11-20T04:31:16Z",
   "reference": "${BUILD}/.tmp/g5-reference.json",
-  "reference_source": "git show cbde35b3609aed5da0c463864369bc645b99b390:evidence/cost/cost.json, saved outside the clone before cost-exec",
+  "reference_source": "git show 193a692dd1b0b4ba2664251181b4092d79089ee0:evidence/cost/cost.json, saved outside the clone before cost-exec",
   "regenerated": "${BUILD}/.tmp/clean/evidence/cost/cost.json",
   "cost_exec_exit": 0,
   "guest_build_docker": false,
   "release_bins": "${BUILD}/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e",
   "cold_build": true,
-  "build_seconds": 1257,
+  "build_seconds": 1265,
   "cargo_build_jobs": "2",
   "build_note": "cold: the clone's target dir was empty (scripts/gate/g5_repro.sh deletes it first); the guests of the release set are prebuilt pinned-image ELFs (their reproducibility is CI's image-id check); the lc_verify_v3 measurement build is compiled in the clone",
   "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, Linux 7.0.0-43-generic, risc0-r0vm 3.0.5",
@@ -31,7 +31,7 @@
       "attest": "9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d",
       "lc_verify": "c7b5f2191f133026017c09072e883217dfe3785450d40d081718b0fd204878ba",
       "lc_verify_v2": "18684beee3e973a2f1391c9bdb9108743c71e6f216bb5fba88bc0443403e8230",
-      "lc_verify_v3": "a3713dc27af7c983f8c5a22fa190dec640e2572b9cd182d3aa1beaf819c8222b"
+      "lc_verify_v3": "cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510"
     },
     "regenerated": {
       "attest": "9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d",

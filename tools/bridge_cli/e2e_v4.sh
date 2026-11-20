@@ -128,16 +128,22 @@ check)
 vault)
   # Never a second vault (and anchor and token) for the same flow; BV_FORCE_NEW_VAULT=1 to start over on purpose.
   [ -z "${VAULT:-}" ] || [ "${BV_FORCE_NEW_VAULT:-0}" = 1 ] || { echo "vault exists ($VAULT): not deploying another" >&2; exit 0; }
+  # An attempt marker is saved before the broadcast: if forge sent and then failed, no result is recorded and a resume
+  # must not deploy again (inspect forge-Deploy-*.txt and the deployer's nonce; BV_FORCE_NEW_VAULT=1 to deploy anyway).
+  [ -z "${VAULT_ATTEMPT:-}" ] || [ "${BV_FORCE_NEW_VAULT:-0}" = 1 ] || {
+    echo "a deploy was attempted at $VAULT_ATTEMPT without a recorded result: check $S/forge-Deploy-*.txt first" >&2; exit 1; }
   ensure_anvil
   IMAGE=$(env "${R31_ENV[@]}" "$R31_BIN" image-id)
   export VERIFIER=$VERIFIER_31_ESTOP BURN_IMAGE_ID=$IMAGE LEZ_PROGRAM=$(b58hex "$BRIDGE") ANCHOR_DELAY=600
+  save VAULT_ATTEMPT "$(date -u +%FT%TZ)"
   forge_s Deploy > /dev/null
   out=$(grep -o '{"admin".*}' "$S"/forge-Deploy-*.txt | tail -1 | sed 's/^[^{]*//')
   echo "$out" | tee "$S/deploy-v4.json"
-  [ "$(jq -r .verifier <<<"$out")" = "$VERIFIER_31_ESTOP" ] || { echo "verifier is not the 3.1.0 estop wrapper" >&2; exit 1; }
-  [ "$(jq -r .burn_image_id <<<"$out")" = "$IMAGE" ] || { echo "burn image id differs" >&2; exit 1; }
+  # Record what was deployed first, then check it.
   save VAULT "$(jq -r .vault <<<"$out")"; save ANCHOR "$(jq -r .anchor_stub <<<"$out")"
-  save USDT "$(jq -r .test_usdt <<<"$out")"; save VAULT_BLOCK "$(jq -r .block <<<"$out")"; save CHAIN_ID "$(chain_id)" ;;
+  save USDT "$(jq -r .test_usdt <<<"$out")"; save VAULT_BLOCK "$(jq -r .block <<<"$out")"; save CHAIN_ID "$(chain_id)"
+  [ "$(jq -r .verifier <<<"$out")" = "$VERIFIER_31_ESTOP" ] || { echo "verifier is not the 3.1.0 estop wrapper" >&2; exit 1; }
+  [ "$(jq -r .burn_image_id <<<"$out")" = "$IMAGE" ] || { echo "burn image id differs" >&2; exit 1; } ;;
 config)
   : "${VAULT:?run the vault stage first}"
   "$CLI" config --out "$S/config.json" --bridge-program "$BRIDGE" --chain-id 11155111 --vault "$VAULT" \
@@ -156,6 +162,8 @@ config)
 deposit)
   # One deposit per flow: a second one would send another 0.001 ETH. BV_FORCE_NEW_DEPOSIT=1 to send one on purpose.
   [ -z "${DEPOSIT_TX:-}" ] || [ "${BV_FORCE_NEW_DEPOSIT:-0}" = 1 ] || { echo "deposit exists ($DEPOSIT_TX): not sending another" >&2; exit 0; }
+  [ -z "${DEPOSIT_ATTEMPT:-}" ] || [ "${BV_FORCE_NEW_DEPOSIT:-0}" = 1 ] || {
+    echo "a deposit was attempted at $DEPOSIT_ATTEMPT without a recorded result: check $S/forge-DepositOne-*.txt first" >&2; exit 1; }
   ensure_anvil
   export BV_BRIDGE_CONFIG="$S/config.json"
   CLAIMER="${BV_CLAIMER:-$(label_id w6-claimer)}"
@@ -163,6 +171,7 @@ deposit)
   IDX="${DEPOSIT_INDEX_NEXT:-0}"
   C=$("$CLI" commitment --index "$IDX" --dest "$CLAIMER" --token eth --denom 1000000000000000 | tee "$S/commit-$IDX.json")
   export VAULT TOKEN=0x0000000000000000000000000000000000000000 DENOM_INDEX=0 COMMITMENT=$(jq -r .commitment <<<"$C")
+  save DEPOSIT_ATTEMPT "$(date -u +%FT%TZ)"
   forge_s DepositOne | tee "$S/deposit-$IDX.txt"
   save DEPOSIT_INDEX "$IDX"; save DEPOSIT_INDEX_NEXT "$((IDX + 1))"
   save DEPOSIT_TX "$(jq -r '.receipts[-1].transactionHash' "$S/broadcast-DepositOne-latest.json")"
@@ -208,7 +217,7 @@ claim)
   echo "claim stage start UTC $(date -u +%FT%TZ)"
   A=$("$CLI" attest-root --min-eth-block "$DEPOSIT_BLOCK" | tee "$S/attest-root.json")
   ROOT=$(jq -r .root <<<"$A"); save ROOT "$ROOT"
-  "$CLI" balance --account "$CLAIMER" > "$S/balance-before-claim.json"
+  "$CLI" balance --account "$CLAIMER" | grep '^{' | tail -1 > "$S/balance-before-claim.json"
   job=$(proof_job bridge-claim-v4 "private claim of deposit $DEPOSIT_INDEX on seq-pub" -- \
     "$CLI" claim --index "$DEPOSIT_INDEX" --dest "$CLAIMER" --root "$ROOT")
   save CLAIM_JOB "$job"
@@ -218,7 +227,7 @@ for m in re.finditer(r"^\{", t, re.M):
     try: o,_=d.raw_decode(t[m.start():]); print(json.dumps(o)); break
     except ValueError: pass' "$job/output.log" > "$S/claim1.json"
   "$ATTEST" tx --tx "$(jq -r .tx "$S/claim1.json")" > "$S/claim1-tx.json"
-  "$CLI" balance --account "$CLAIMER" > "$S/balance-after-claim.json"
+  "$CLI" balance --account "$CLAIMER" | grep '^{' | tail -1 > "$S/balance-after-claim.json"
   # The repeat is refused while the program runs, before any proof is made (E11); its seconds show that.
   t0=$(date +%s.%N)
   if "$CLI" claim --index "$DEPOSIT_INDEX" --dest "$CLAIMER" --root "$ROOT" --force > "$S/claim2.txt" 2>&1; then
@@ -239,7 +248,7 @@ burn)
   save BURN_JOB "$job"; save BURN_INDEX "$J"
   grep -o 'burn tx [0-9a-f]*' "$job/output.log" | awk '{print $3}' | head -1 > "$S/burn-tx.txt"
   "$ATTEST" tx --tx "$(cat "$S/burn-tx.txt")" > "$S/burn-tx.json"
-  "$CLI" balance --account "$CLAIMER" > "$S/balance-after-burn.json" ;;
+  "$CLI" balance --account "$CLAIMER" | grep '^{' | tail -1 > "$S/balance-after-burn.json" ;;
 post-root)
   ensure_anvil
   export BV_BRIDGE_CONFIG="$S/config.json"

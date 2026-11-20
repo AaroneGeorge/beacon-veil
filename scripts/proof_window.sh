@@ -41,7 +41,7 @@ while [ $# -gt 0 ]; do
     *) sed -n '2,32p' "$0"; exit 2 ;;
   esac
 done
-if [ -n "$FROM" ] && ! grep -qw -- "$FROM" <<<"$STAGES"; then
+if [ -n "$FROM" ] && [[ " $STAGES " != *" $FROM "* ]]; then
   echo "unknown stage '$FROM' (stages: $STAGES)" >&2; exit 2
 fi
 FLOW_ENV="$B/run/w6/v4-sepolia/flow.env"
@@ -80,8 +80,13 @@ own_cgroup_ok() { # not lechu-tmux.service, and not the cgroup of seq-pub or a f
   return 0
 }
 recipient_ok() { [[ "${BV_RELEASE_RECIPIENT:-}" =~ ^0x[0-9a-fA-F]{40}$ ]]; }
-no_sepolia_repeat() { # a fresh start (or --from claim-prep) must not find a vault or a deposit of an earlier window
-  case "$FROM" in ""|claim-prep) ! grep -qE '^(VAULT|DEPOSIT_TX)=' "$FLOW_ENV" 2>/dev/null ;; *) return 0 ;; esac
+no_sepolia_repeat() { # a fresh start (or --from claim-prep) must not find a vault, a deposit or any forge attempt
+  case "$FROM" in
+    ""|claim-prep)
+      ! grep -qE '^(VAULT|DEPOSIT_TX|VAULT_ATTEMPT|DEPOSIT_ATTEMPT)=' "$FLOW_ENV" 2>/dev/null \
+        && ! compgen -G "$(dirname "$FLOW_ENV")/forge-*.txt" >/dev/null ;;
+    *) return 0 ;;
+  esac
 }
 
 echo "proof window plan ($(date -u +%FT%TZ)), repo $(git -C "$BV_REPO" rev-parse --short HEAD), dirty $(git -C "$BV_REPO" status --porcelain | wc -l)"
@@ -118,7 +123,7 @@ check "own cgroup ($(cut -d: -f3 /proc/self/cgroup)) is not lechu-tmux.service n
 check "stage names valid${FROM:+ (--from $FROM)}" true
 if [ "${BV_OWNER_D3:-}" = yes ]; then
   check "BV_RELEASE_RECIPIENT is an Ethereum address (${BV_RELEASE_RECIPIENT:-unset})" recipient_ok
-  check "no vault or deposit of an earlier window in $FLOW_ENV (else resume with --from claim-wait or later)" no_sepolia_repeat
+  check "no vault, deposit or forge attempt of an earlier window in $(dirname "$FLOW_ENV") (else resume with --from claim-wait or later)" no_sepolia_repeat
 fi
 echo "stage scripts:"
 if [ "${BV_OWNER_D3:-}" = yes ]; then e2e_target=sepolia; else e2e_target=anvil-fork; fi
