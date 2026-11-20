@@ -1,0 +1,49 @@
+{
+  "chain": "hoodi",
+  "chain_id": 560048,
+  "files": {
+    "bootstrap_4399104.json": {
+      "accept": "application/json",
+      "block_root": "0xfc79cc57875200a9f50119bbd9113b553ad9b937f967abaace5992fb602ee269",
+      "block_root_from": "https://lodestar-hoodi.chainsafe.io/eth/v1/beacon/headers/4399104",
+      "bytes": 54403,
+      "content_type": "application/json; charset=utf-8",
+      "cross_check": {
+        "equal_after_hex_lowercase": true,
+        "provider": "nimbus-testing"
+      },
+      "eth_consensus_version": "fulu",
+      "fetched_at_utc": "2026-11-20T02:10:07Z",
+      "http_status": 200,
+      "pair": "bootstrap_4399104.ssz",
+      "period": 537,
+      "provider": "lodestar",
+      "sha256": "7e696ef939adc7bac213b59c179cfe01943fd892dfc40ab55aee79d3fa964900",
+      "slot": 4399104,
+      "url": "https://lodestar-hoodi.chainsafe.io/eth/v1/beacon/light_client/bootstrap/0xfc79cc57875200a9f50119bbd9113b553ad9b937f967abaace5992fb602ee269"
+    },
+    "bootstrap_4399104.ssz": {
+      "accept": "application/octet-stream",
+      "block_root": "0xfc79cc57875200a9f50119bbd9113b553ad9b937f967abaace5992fb602ee269",
+      "block_root_from": "https://lodestar-hoodi.chainsafe.io/eth/v1/beacon/headers/4399104",
+      "bytes": 25674,
+      "content_type": "application/octet-stream",
+      "cross_check": {
+        "bytes_equal": true,
+        "provider": "nimbus-testing"
+      },
+      "eth_consensus_version": "fulu",
+      "fetched_at_utc": "2026-11-20T02:10:07Z",
+      "http_status": 200,
+      "pair": "bootstrap_4399104.json",
+      "period": 537,
+      "provider": "lodestar",
+      "sha256": "ec9206b9d0136f5f6b2392051ea628e43c2f9c9c98177982eebb398c9d90cea4",
+      "slot": 4399104,
+      "url": "https://lodestar-hoodi.chainsafe.io/eth/v1/beacon/light_client/bootstrap/0xfc79cc57875200a9f50119bbd9113b553ad9b937f967abaace5992fb602ee269"
+    }
+  },
+  "note": "Bodies stored exactly as received. sha256 is over the stored file bytes.",
+  "tool": "tools/fixtures (fetch.py / fixtures fetch)",
+  "updated_at_utc": "2026-11-20T02:10:48Z"
+}

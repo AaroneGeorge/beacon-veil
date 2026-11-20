@@ -887,6 +887,23 @@ async fn v3_inputs(
     let w3 = lc_v3::StoreWitnessV3::from_v1(&file.witness, v1.signature_slot);
     let keys = lc_v3::absent_keys(&w3.committee_ssz, update_ssz);
     let out = lc_v3::verify_once(&state.config, &w3, update_ssz, &keys).map_err(|e| refuse(e, "update (v3)"))?;
+    // The steps carry a timestamp window that ends 14 days after the store's finalized header. A step sent after
+    // that is included and charged the whole declared gas, so refuse it here (E06): the instance needs a new
+    // checkpoint.
+    let job =
+        lc_v3::prepare(ids.attest, *instance, &state.config, &w3, update_ssz).map_err(|e| refuse(e, "update (v3)"))?;
+    let now_ms = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map_or(0, |d| u64::try_from(d.as_millis()).unwrap_or(u64::MAX));
+    if now_ms >= job.not_after_ms {
+        return Err(refuse(
+            EsaError::E06StaleCheckpoint,
+            format!(
+                "the store's finalized header is older than the {} s bound",
+                lc_v3::WS_PERIOD_SECS
+            ),
+        ));
+    }
     if (out.pre_store, out.post_store) != (v1.pre_store, v1.post_store) {
         bail!("update: V3 and V1 disagree on the store commitments (local check)");
     }

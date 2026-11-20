@@ -1,0 +1,107 @@
+{
+  "checkpoint_slot": 15679552,
+  "config_chain_id": 1,
+  "every_step_within_step_limit": true,
+  "executor_images": {
+    "attest": "9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d",
+    "lc_verify_v3": "cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510"
+  },
+  "final_head": {
+    "period": 1914,
+    "slot": 15679616,
+    "store_commitment": "58a5c0a0236582d297f757dc86278277ad1f139403c4718b0e96c7ddbc1999d7"
+  },
+  "init": {
+    "block": 382,
+    "tx": "926af6088447ca7bbcffc8fd9e9f45f2f0f7822f8d5cf73aa94510be59da9476"
+  },
+  "instance": "Ao4vBLB89BpDY6fXXCP4UYL5dacCV363nAtAYpP1rYpM",
+  "max_charged_gas": 6327247,
+  "network": "floor",
+  "programs": {
+    "attest": "735RSWK5eYrZDnpJVvpVwrkDa93AXQNS7avFjAUeWEH8",
+    "lc_verify": "DsepngAaEk8UnvYgUMZA1KJcfyr7Cs3fGnR9qDct9CH5",
+    "lc_verify_v3": "8niQPec4Ng9yrm17Aj3VFbtebrXPxd6JVhhdZsAXQ1Tq"
+  },
+  "sequencer": "seq-pub",
+  "tool": "tools/cost v3_onchain run",
+  "txs": 3,
+  "updates": [
+    {
+      "four_steps": false,
+      "head_after": {
+        "beacon_root": "3bc345c202e2ce0dbda0c8035dfc8a7db0c505789dd5d61f289017c1f4f7862a",
+        "period": 1914,
+        "slot": 15679616,
+        "store_commitment": "58a5c0a0236582d297f757dc86278277ad1f139403c4718b0e96c7ddbc1999d7"
+      },
+      "head_equals_v1": true,
+      "job": "9yL6UDbEu4R4i8vdMzthTmYnytRYAkCspRsSY8HtoTw",
+      "kind": "period",
+      "participation": 342,
+      "signature_slot": 15679649,
+      "steps": [
+        {
+          "block": 384,
+          "block_gas_used_exec": 6327247,
+          "block_gas_used_stor": 68743,
+          "block_timestamp_ms": 1795138318853,
+          "charged_gas": 6327247,
+          "charged_txs_in_block": 1,
+          "declared_gas": 9000000,
+          "message_bytes": 68280,
+          "metered_cycles_chained_attest": 0,
+          "metered_cycles_total": 6327247,
+          "metered_cycles_v3": 6327247,
+          "position": 0,
+          "reverted": false,
+          "share_of_cap": "63.3%",
+          "step": "Begin",
+          "tx": "1aa18a9146da13491308865ee58c1486f77e5bf14632a634a1b58f657c25bba7",
+          "within_step_limit": true
+        },
+        {
+          "block": 386,
+          "block_gas_used_exec": 5765037,
+          "block_gas_used_stor": 399,
+          "block_timestamp_ms": 1795138348854,
+          "charged_gas": 5765037,
+          "charged_txs_in_block": 1,
+          "declared_gas": 9000000,
+          "message_bytes": 1,
+          "metered_cycles_chained_attest": 0,
+          "metered_cycles_total": 5765037,
+          "metered_cycles_v3": 5765037,
+          "position": 0,
+          "reverted": false,
+          "share_of_cap": "57.7%",
+          "step": "Miller",
+          "tx": "16b192f610ba143a1578aeb294cb13a8b2708de3a0d067660a36223ff5e2f370",
+          "within_step_limit": true
+        },
+        {
+          "block": 388,
+          "block_gas_used_exec": 4378929,
+          "block_gas_used_stor": 592,
+          "block_timestamp_ms": 1795138378853,
+          "charged_gas": 4378929,
+          "charged_txs_in_block": 1,
+          "declared_gas": 9000000,
+          "message_bytes": 1,
+          "metered_cycles_chained_attest": 79012,
+          "metered_cycles_total": 4378929,
+          "metered_cycles_v3": 4299917,
+          "position": 0,
+          "reverted": false,
+          "share_of_cap": "43.8%",
+          "step": "Finish",
+          "tx": "517f05b74f9dc3c52a5cdd6dccba094fca3ff5660dfef17652e908a015bfd9ad",
+          "within_step_limit": true
+        }
+      ],
+      "txs_per_update": 3,
+      "update": "period_update_342"
+    }
+  ],
+  "what": "lc_verify_v3 updates as real public transactions on seq-pub (LEZ v0.4.0-rc3 standalone, RISC0_DEV_MODE unset: public transactions are executed by the sequencer, no proofs involved)"
+}

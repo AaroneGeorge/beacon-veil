@@ -308,6 +308,18 @@
         "E14": 43
       }
     },
+    "replay_bad_signature": {
+      "cases": 43,
+      "expected": {
+        "E03": 43
+      },
+      "helios_verify": {
+        "InvalidSignature": 43
+      },
+      "v1_seen": {
+        "E03": 43
+      }
+    },
     "sig_byte_flipped": {
       "cases": 43,
       "expected": {
@@ -424,7 +436,7 @@
   "by_kind": {
     "fabricated": 19,
     "optimistic": 13,
-    "tampered": 716,
+    "tampered": 759,
     "valid": 90
   },
   "columns": [
@@ -443,7 +455,7 @@
     "v3": 0,
     "v3_staged": 0
   },
-  "distinct_inputs": 838,
+  "distinct_inputs": 881,
   "executor_cases": null,
   "executor_mismatches": null,
   "expected_mismatches": [],
@@ -453,11 +465,11 @@
     "sepolia": "32ccb3697664d255a48cf8a05b741d3f22d41071caa298035a5635d713ceb7b9"
   },
   "fork_crossing": "sepolia",
-  "fork_crossing_cases": 17,
+  "fork_crossing_cases": 18,
   "fork_crossing_detail": "Sepolia period 1378 (Fulu) to 1379 (Gloas, epoch 353024); Hoodi (Fulu) has no Gloas fork scheduled (fork_schedule GLOAS epoch = far future at fetch time)",
   "fork_crossing_valid": 1,
-  "generated_at_utc": "2026-11-19T23:36:40Z",
-  "gloas_cases": 315,
+  "generated_at_utc": "2026-11-20T01:21:36Z",
+  "gloas_cases": 332,
   "helios": "a16z/helios tag 0.12.0 (2af9b41), helios-consensus-core unmodified",
   "helios_accepts_we_refuse": {
     "by_reason": {
@@ -582,8 +594,610 @@
     "count": 106
   },
   "helios_refuses_we_accept": [],
-  "inputs_sha256": "72f32f75e862522d9e0ba2093ebcfdadd20386d59a4ea3f0e9aa1092135685c6",
+  "inputs_sha256": "83b8f21e01a6dfbdd9976232696ec43fcbf9129df78bada9ac779b4d2d42888a",
   "intended_divergences": [
+    {
+      "column": "v3",
+      "id": "mainnet/p1906/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "mainnet/p1906/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "mainnet/p1907/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "mainnet/p1907/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "mainnet/p1908/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "mainnet/p1908/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "mainnet/p1909/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "mainnet/p1909/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "mainnet/p1910/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "mainnet/p1910/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "mainnet/p1911/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "mainnet/p1911/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "mainnet/p1912/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "mainnet/p1912/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "mainnet/p1913/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "mainnet/p1913/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "mainnet/p1914/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "mainnet/p1914/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "mainnet/p1915/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "mainnet/p1915/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "mainnet/finality15691462/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "mainnet/finality15691462/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "mainnet/finality15691490/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "mainnet/finality15691490/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "mainnet/finality15691525/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "mainnet/finality15691525/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "mainnet/finality15691584/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "mainnet/finality15691584/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "mainnet/finality15691618/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "mainnet/finality15691618/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "sepolia/p1378/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "sepolia/p1378/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "sepolia/p1379/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "sepolia/p1379/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "sepolia/p1380/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "sepolia/p1380/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "sepolia/p1408/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "sepolia/p1408/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "sepolia/p1409/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "sepolia/p1409/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "sepolia/p1410/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "sepolia/p1410/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "sepolia/p1411/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "sepolia/p1411/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "sepolia/p1412/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "sepolia/p1412/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "sepolia/p1413/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "sepolia/p1413/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "sepolia/p1414/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "sepolia/p1414/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "sepolia/p1415/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "sepolia/p1415/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "sepolia/p1416/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "sepolia/p1416/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "sepolia/p1417/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "sepolia/p1417/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "sepolia/finality11615648/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "sepolia/finality11615648/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "sepolia/finality11615712/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "sepolia/finality11615712/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "sepolia/finality11615744/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "sepolia/finality11615744/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "sepolia/finality11615776/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "sepolia/finality11615776/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "sepolia/finality11615808/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "sepolia/finality11615808/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "hoodi/p532/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "hoodi/p532/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "hoodi/p533/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "hoodi/p533/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "hoodi/p534/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "hoodi/p534/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "hoodi/p535/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "hoodi/p535/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "hoodi/p536/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "hoodi/p536/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "hoodi/p537/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "hoodi/p537/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "hoodi/p538/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "hoodi/p538/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "hoodi/finality4409029/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "hoodi/finality4409029/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "hoodi/finality4409070/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "hoodi/finality4409070/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3",
+      "id": "hoodi/finality4409089/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
+    {
+      "column": "v3_staged",
+      "id": "hoodi/finality4409089/handoff/replay_bad_signature",
+      "other": "E14",
+      "reason": "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), the staged verifier reports the replay (E14) because it checks replay before it decodes the signature",
+      "v1": "E03"
+    },
     {
       "column": "v3",
       "id": "fabricated/identity_member_counted",
@@ -621,27 +1235,27 @@
     },
     "hoodi": {
       "optimistic": 3,
-      "tampered": 173,
-      "total": 197,
+      "tampered": 183,
+      "total": 207,
       "valid": 21
     },
     "mainnet": {
       "optimistic": 5,
-      "tampered": 251,
-      "total": 287,
+      "tampered": 266,
+      "total": 302,
       "valid": 31
     },
     "sepolia": {
-      "gloas": 315,
+      "gloas": 332,
       "optimistic": 5,
-      "tampered": 292,
-      "total": 335,
+      "tampered": 310,
+      "total": 353,
       "valid": 38
     }
   },
   "panics": [],
   "pass": true,
-  "total": 838,
+  "total": 881,
   "v1_v2_disagreements": 0,
   "v1_v3_disagreements": 0,
   "valid": 90,

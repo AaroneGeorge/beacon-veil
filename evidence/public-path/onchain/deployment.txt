@@ -1,0 +1,42 @@
+# lc_verify_v3 deployment on seq-pub (LEZ v0.4.0-rc3 standalone sequencer, local), written 2026-11-20T01:33:36Z
+
+## sequencer
+=== 2026-11-19T23:56:11Z start seq-pub RISC0_DEV_MODE=unset
+binary: $B/vendor/lez/target/release/sequencer_service (LEZ tag v0.4.0-rc3, commit bafd07be0701398f9bc435f73ab05e9a7936c301)
+rpc: 127.0.0.1:3043; process environment RISC0_DEV_MODE: 0 occurrences
+
+## release set (scripts/guests_release.sh, docker risczero/risc0-guest-builder:r0.1.91.1)
+commit=d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e
+image=docker.io/risczero/risc0-guest-builder:r0.1.91.1@sha256:fafb377a44e1cfca415577c48d2f7012bda99ed36f2fae27f9a663b9fe6048f0
+note_burn_proof=burn_proof.bin is built with risc0-zkvm 3.0.5 like the rest; the deployed burn_proof is built with risc0 3.1.0 (advisory GHSA-g6qg-9j8p-7j87), so this one is NOT the vault's
+attest.bin: user ELF 406700 bytes, bin 439124 bytes, image id 9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d
+lc_verify.bin: user ELF 754956 bytes, bin 787380 bytes, image id c7b5f2191f133026017c09072e883217dfe3785450d40d081718b0fd204878ba
+lc_verify_v2.bin: user ELF 716792 bytes, bin 749216 bytes, image id 18684beee3e973a2f1391c9bdb9108743c71e6f216bb5fba88bc0443403e8230
+consumer_erc20.bin: user ELF 258736 bytes, bin 291160 bytes, image id 3f86d4c96631191e94edb5377fa559c0b24fd2409815c5f97ca752eaa7df0794
+bridge.bin: user ELF 299436 bytes, bin 331860 bytes, image id fa3bd9c34fe6c82498396d99f9499688ec57e84463be2fc3abbe0bc944466fc5
+bridge_dev_source.bin: user ELF 225548 bytes, bin 257972 bytes, image id 9866d2346df2a2b3cd2214b07777182f5d1e75cac355d88ba45961543ecc3ca5
+burn_proof.bin: user ELF 237856 bytes, bin 270280 bytes, image id 0bf5772add481b578a470b044efb3fb6e9dfda4e32dd4e9828e7d7fa42a3a833
+lc_verify_v3.bin: user ELF 498916 bytes, bin 531340 bytes, image id cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510
+
+## deploy/ids-pub.toml (scripts/deploy_local.sh pub --replace)
+# Written by scripts/deploy_local.sh (merge mode unless --replace). Last update 2026-11-20T01:23:53Z. Do not edit by hand.
+[deploy]
+sequencer = "seq-pub"
+rpc = "http://127.0.0.1:3043"
+lez = "v0.4.0-rc3"
+# Fallback only; per-program dirs are in [bins].
+
+[programs]
+attest = "735RSWK5eYrZDnpJVvpVwrkDa93AXQNS7avFjAUeWEH8"   # sha256 4f59c574791bc06fb7b6b3b284726b04cc6276bfe486eb44c9af864bf0176849, 439124 bytes, 20261120T010821Z
+lc_verify = "DsepngAaEk8UnvYgUMZA1KJcfyr7Cs3fGnR9qDct9CH5"   # sha256 31a3ff1d3eaa291566dd988d6c120a5d1eba1d99f37f6ab8d1e95e3ebb6b01e9, 787380 bytes, 20261120T010821Z
+lc_verify_v3 = "8niQPec4Ng9yrm17Aj3VFbtebrXPxd6JVhhdZsAXQ1Tq"   # sha256 ac1ee0a0d9343719dcea40cecaade68c6d46fd28e83a3b427a084beef20d5e80, 531340 bytes, 20261120T010821Z
+consumer_erc20 = "DuLyPuxyAx9SubR6xBpZ3dHqLfve8C9LoKS49X8yV524"   # sha256 a86e69e70745bb7aab3b4f8d094d9a1ddecd764a6dd7d326e152900de77181fc, 291160 bytes, 20261120T010821Z
+bridge = "3qvsTrgUDBJe5x1JUGiyRWvPv6gx2sR7mauu4ciabeib"   # sha256 359933b97729ce40a7f8d611f4b51bc06be1da59fafa6fe1414d746be6aca109, 331860 bytes, 20261120T010821Z
+
+
+## on-chain program headers hold the release image ids (v3_onchain check-images)
+attest: header 735RSWK5eYrZDnpJVvpVwrkDa93AXQNS7avFjAUeWEH8 image id 9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d: MATCH
+lc_verify: header DsepngAaEk8UnvYgUMZA1KJcfyr7Cs3fGnR9qDct9CH5 image id c7b5f2191f133026017c09072e883217dfe3785450d40d081718b0fd204878ba: MATCH
+lc_verify_v3: header 8niQPec4Ng9yrm17Aj3VFbtebrXPxd6JVhhdZsAXQ1Tq image id cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510: MATCH
+consumer_erc20: header DuLyPuxyAx9SubR6xBpZ3dHqLfve8C9LoKS49X8yV524 image id 3f86d4c96631191e94edb5377fa559c0b24fd2409815c5f97ca752eaa7df0794: MATCH
+bridge: header 3qvsTrgUDBJe5x1JUGiyRWvPv6gx2sR7mauu4ciabeib image id fa3bd9c34fe6c82498396d99f9499688ec57e84463be2fc3abbe0bc944466fc5: MATCH

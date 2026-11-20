@@ -83,7 +83,7 @@ pub fn fork_name(config: &InstanceConfig, slot: u64) -> &'static str {
 
 /// The tamper classes, in report order, with the code expected for each. `n/a` cases (a bit to set when
 /// all 512 signed, a committee in a finality update) are not generated.
-pub const TAMPER_CLASSES: [(&str, EsaError); 19] = [
+pub const TAMPER_CLASSES: [(&str, EsaError); 20] = [
     ("sig_byte_flipped", EsaError::E03BadSignature),
     ("sig_infinity", EsaError::E03BadSignature),
     ("bit_cleared", EsaError::E03BadSignature),

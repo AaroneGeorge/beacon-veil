@@ -252,20 +252,97 @@ type JobInputs = (
     Vec<[u8; 96]>,
 );
 
+/// Fresh public data (fetched 18-19 Nov 2026): the bootstrap at the first slot of a period (`fixtures/pub/<net>`), the
+/// best updates of that period and the next (`fixtures/diff/<net>/updates_*`), and the finality updates of the next
+/// period (`fixtures/diff/<net>/finality_update_*`), oldest first.
+struct PubData {
+    config: InstanceConfig,
+    bootstrap: Vec<u8>,
+    period_update: Vec<u8>,
+    handoff_update: Vec<u8>,
+    finality: Vec<(String, Vec<u8>)>,
+}
+
+fn pub_data(network: &str, v3: AccountId) -> Result<PubData> {
+    let (chain_id, bootstrap, range, first, period) = match network {
+        "mainnet" => (1u64, "bootstrap_15679488.ssz", "updates_1904_12.ssz", 1904u64, 1914u64),
+        "sepolia" => (11_155_111, "bootstrap_11599872.ssz", "updates_1406_12.ssz", 1406, 1416),
+        "hoodi" => (560_048, "bootstrap_4399104.ssz", "updates_530_9.ssz", 530, 537),
+        _ => bail!("network: mainnet | sepolia | hoodi"),
+    };
+    let dir = format!("pub/{network}");
+    let bootstrap = e2e_chain::fixture(&dir, bootstrap)?;
+    let config = e2e_chain::config_from_beacon(
+        chain_id,
+        &e2e_chain::fixture(&dir, "genesis.json")?,
+        &e2e_chain::fixture(&dir, "fork_schedule.json")?,
+        &bootstrap,
+        vec![v3],
+        0,
+    )?;
+    let diff = format!("diff/{network}");
+    let ups = e2e_chain::split_updates_by_range(&e2e_chain::fixture(&diff, range)?)?;
+    let at = |p: u64| -> Result<Vec<u8>> {
+        ups.get(usize::try_from(p - first)?)
+            .cloned()
+            .ok_or_else(|| anyhow!("no update for period {p}"))
+    };
+    let mut names: Vec<String> = std::fs::read_dir(e2e_chain::fixtures_dir().join(&diff))?
+        .filter_map(|e| e.ok().map(|e| e.file_name().to_string_lossy().into_owned()))
+        .filter(|n| n.starts_with("finality_update_") && n.ends_with(".ssz"))
+        .collect();
+    names.sort();
+    let finality = names
+        .into_iter()
+        .map(|n| Ok((n.trim_end_matches(".ssz").to_string(), e2e_chain::fixture(&diff, &n)?)))
+        .collect::<Result<Vec<_>>>()?;
+    Ok(PubData {
+        config,
+        bootstrap,
+        period_update: at(period)?,
+        handoff_update: at(period + 1)?,
+        finality,
+    })
+}
+
+/// A fabricated chain (our own keys) impersonating the network of `real`, checkpoint at the first slot of `period`
+/// plus two epochs.
+fn fab_chain(real: &InstanceConfig, period: u64, seed: &[u8]) -> fixtures::fabricate::FabChain {
+    use fixtures::fabricate::{FabChain, FabParams, SLOTS_PER_EPOCH, SLOTS_PER_PERIOD};
+    let mut c = real.clone();
+    c.checkpoint_slot = period * SLOTS_PER_PERIOD + 2 * SLOTS_PER_EPOCH;
+    FabChain::build(FabParams::impersonating(&c, seed))
+}
+
 fn net_updates(network: &str, v3: AccountId) -> Result<NetUpdates> {
     match network {
-        "mainnet" | "sepolia" => {
-            let c = if network == "mainnet" {
-                e2e_chain::mainnet_chain(vec![v3])?
-            } else {
-                e2e_chain::sepolia_chain(vec![v3])?
-            };
-            Ok((c.config, c.bootstrap, c.updates))
+        "mainnet" | "sepolia" | "hoodi" => {
+            let d = pub_data(network, v3)?;
+            let p = calc_period(&d.config, &d.period_update)?;
+            let mut ups = vec![
+                (format!("update_{p}"), d.period_update.clone()),
+                (format!("update_{}", p + 1), d.handoff_update.clone()),
+            ];
+            // The newest finality update that applies after the two.
+            let (mut w, _) = lc::init_store(&d.config, &d.bootstrap).map_err(|e| anyhow!("init: {e}"))?;
+            for (_, u) in &ups {
+                w = lc::verify_and_apply(&d.config, &w, u)
+                    .map_err(|e| anyhow!("{network}: {e}"))?
+                    .new_witness();
+            }
+            let f = d
+                .finality
+                .iter()
+                .rev()
+                .find(|(_, u)| lc::verify_and_apply(&d.config, &w, u).is_ok())
+                .ok_or_else(|| anyhow!("{network}: no finality update applies after the period updates"))?;
+            ups.push(f.clone());
+            Ok((d.config, d.bootstrap, ups))
         }
         "floor" => {
-            use fixtures::fabricate::{FabChain, FabParams, bits_first};
-            let real = e2e_chain::mainnet_chain(vec![v3])?;
-            let chain = FabChain::build(FabParams::impersonating(&real.config, b"beacon-veil/v3/floor"));
+            use fixtures::fabricate::bits_first;
+            let real = pub_data("mainnet", v3)?;
+            let chain = fab_chain(&real.config, 1914, b"beacon-veil/v3/floor");
             let mut u0 = chain.updates[0].clone();
             u0.bits = bits_first(342);
             chain.resign(&mut u0);
@@ -275,8 +352,14 @@ fn net_updates(network: &str, v3: AccountId) -> Result<NetUpdates> {
                 vec![("period_update_342".into(), u0.ssz())],
             ))
         }
-        _ => bail!("network: mainnet | sepolia | floor"),
+        _ => bail!("network: mainnet | sepolia | hoodi | floor"),
     }
+}
+
+/// Sync period of an update's signature slot.
+fn calc_period(config: &InstanceConfig, u: &[u8]) -> Result<u64> {
+    let f = lc::forks(config).map_err(|e| anyhow!("{e}"))?;
+    Ok(lc::decode_update(u, &f).map_err(|e| anyhow!("{e}"))?.signature_slot() / 8192)
 }
 
 /// A config whose instance does not exist yet on this chain (the instance address is the PDA of the config).
@@ -334,7 +417,14 @@ async fn run(args: &[String]) -> Result<()> {
         let head = attest_host::read_head(&ids, &instance)
             .await?
             .ok_or_else(|| anyhow!("instance missing"))?;
-        ensure!(head == native.head, "{label}: on-chain head differs from V1");
+        // attest.Apply replaces the whole head when the finalized slot moves; when the update only teaches the next
+        // committee it keeps the head and sets the new store commitment.
+        let want_ok = if native.new_slot {
+            head == native.head
+        } else {
+            head.store_commitment == native.post_store && head.slot == native.head.slot
+        };
+        ensure!(want_ok, "{label}: on-chain head differs from V1");
         // Re-execute each step with the deployed ELFs on the same inputs.
         let mut job_state: Vec<u8> = Vec::new();
         let mut steps = Vec::new();
@@ -393,6 +483,7 @@ async fn run(args: &[String]) -> Result<()> {
             "head_after": {"slot": head.slot, "period": head.period, "beacon_root": hex::encode(head.beacon_root),
                            "store_commitment": hex::encode(head.store_commitment)},
             "head_equals_v1": true,
+            "finalized_slot_moved": native.new_slot,
             "steps": steps,
         }));
         witness = native.new_witness();
@@ -481,24 +572,6 @@ async fn check(paths: &[String]) -> Result<()> {
     Ok(())
 }
 
-/// The `LightClientFinalityUpdate` inside an Electra `LightClientUpdate` (the update without its next committee and
-/// branch; the two offsets move by the cut).
-fn finality_part_electra(u: &[u8]) -> Result<Vec<u8>> {
-    let cut = lc::COMMITTEE_SSZ_LEN + 6 * 32;
-    ensure!(
-        u.len() > 4 + cut && u32::from_le_bytes(u[..4].try_into()?) as usize == 4 + cut + 4 + 7 * 32 + 168,
-        "not an Electra update"
-    );
-    let mut f = Vec::with_capacity(u.len() - cut);
-    f.extend_from_slice(&u[..4]);
-    f.extend_from_slice(&u[4 + cut..]);
-    for at in [0usize, 4] {
-        let o = u32::from_le_bytes(f[at..at + 4].try_into()?) - u32::try_from(cut)?;
-        f[at..at + 4].copy_from_slice(&o.to_le_bytes());
-    }
-    Ok(f)
-}
-
 /// Sends one raw V3 step (the wallet must allow reverts: `BV_ALLOW_REVERT=1`); returns the tx hash and whether the
 /// transaction landed reverted, with the refusal text.
 async fn send_step(
@@ -546,14 +619,18 @@ async fn refusals(args: &[String]) -> Result<()> {
     let ids = DeployedIds::from_env()?;
     let v3 = attest_host::deployed_program("lc_verify_v3")?;
     let w = attest_host::open_wallet()?;
-    let chain = e2e_chain::mainnet_chain(vec![v3])?;
-    let config = fresh_config(&ids, &chain.config).await?;
-    let (instance, _) = attest_host::init(&ids, &config, &chain.bootstrap).await?;
-    let mut witness = lc::init_store(&config, &chain.bootstrap).map_err(|e| anyhow!("{e}"))?.0;
+    let d = pub_data("mainnet", v3)?;
+    let config = fresh_config(&ids, &d.config).await?;
+    let (instance, _) = attest_host::init(&ids, &config, &d.bootstrap).await?;
+    let mut witness = lc::init_store(&config, &d.bootstrap).map_err(|e| anyhow!("{e}"))?.0;
     let mut rows = Vec::new();
-    let head_now = |ids: &DeployedIds| {
+    let head_now = || {
         let ids = ids.clone();
-        async move { attest_host::read_head(&ids, &instance).await }
+        async move {
+            attest_host::read_head(&ids, &instance)
+                .await?
+                .ok_or_else(|| anyhow!("head"))
+        }
     };
     let job_of = |w: &StoreWitness, u: &[u8]| -> Result<JobInputs> {
         let n = lc::verify_and_apply(&config, w, u).map_err(|e| anyhow!("{e}"))?;
@@ -562,67 +639,75 @@ async fn refusals(args: &[String]) -> Result<()> {
         let seed = lc_v3::job_seed(&instance, &n.pre_store, u);
         Ok((seed, lc_v3::job_id(&v3, &seed), n.head.slot, w3, keys))
     };
-    let begin = |w3: &lc_v3::StoreWitnessV3, u: &[u8], keys: &[[u8; 96]]| LcVerifyV3Message::Begin {
-        attest_program: ids.attest,
-        instance,
-        config: config.clone(),
-        witness: w3.clone(),
-        update_ssz: u.to_vec(),
-        absent_keys: keys.to_vec(),
-    };
-    let mut record = |case: &str,
-                      want: &str,
-                      hash: &str,
-                      reverted: bool,
-                      text: &str,
-                      t: &TxInBlock,
-                      before: &attest_core::Head,
-                      after: &attest_core::Head| {
-        println!(
-            "{case}: tx {hash} block {} reverted {reverted} charged {:?} (charged txs {})",
-            t.block, t.block_gas_exec, t.charged_txs
-        );
-        rows.push(json!({
-            "case": case, "expected": want, "tx": hash, "block": t.block, "reverted": reverted,
+    let begin =
+        |config: &InstanceConfig, instance: AccountId, w3: &lc_v3::StoreWitnessV3, u: &[u8], keys: &[[u8; 96]]| {
+            LcVerifyV3Message::Begin {
+                attest_program: ids.attest,
+                instance,
+                config: config.clone(),
+                witness: w3.clone(),
+                update_ssz: u.to_vec(),
+                absent_keys: keys.to_vec(),
+            }
+        };
+    let mut record =
+        |case: &str, want: &str, hash: &str, reverted: bool, text: &str, t: Option<&TxInBlock>, unchanged: bool| {
+            match t {
+                Some(t) => println!(
+                    "{case}: tx {hash} block {} reverted {reverted} charged {:?}",
+                    t.block, t.block_gas_exec
+                ),
+                None => println!("{case}: not included: {}", text.lines().last().unwrap_or_default()),
+            }
+            rows.push(json!({
+            "case": case, "expected": want, "tx": if t.is_some() { json!(hash) } else { Value::Null },
+            "included": t.is_some(), "block": t.map(|t| t.block), "reverted": reverted,
             "refusal_text": text.lines().last().unwrap_or_default(),
-            "block_gas_used_exec": t.block_gas_exec, "charged_txs_in_block": t.charged_txs,
-            "charged_gas": if t.charged_txs == 1 { json!(t.block_gas_exec) } else { Value::Null },
-            "head_unchanged": before == after, "head_slot": after.slot,
+            "block_gas_used_exec": t.and_then(|t| t.block_gas_exec), "charged_txs_in_block": t.map(|t| t.charged_txs),
+            "charged_gas": t.filter(|t| t.charged_txs == 1).and_then(|t| t.block_gas_exec),
+            "head_unchanged": unchanged,
         }));
+        };
+    let sig_of = |u: &[u8]| -> Result<Vec<u8>> {
+        use ssz::Encode;
+        let f = lc::forks(&config).map_err(|e| anyhow!("{e}"))?;
+        Ok(match lc::decode_update(u, &f).map_err(|e| anyhow!("{e}"))? {
+            lc::AnyUpdate::Full(x) => x.sync_aggregate().sync_committee_signature.as_ssz_bytes(),
+            lc::AnyUpdate::Finality(x) => x.sync_aggregate().sync_committee_signature.as_ssz_bytes(),
+        })
     };
 
-    // update[0] through all three steps (the job is then done).
-    let u0 = chain.updates[0].1.clone();
-    let (seed0, _, slot0, w3, keys) = job_of(&witness, &u0)?;
+    // The period update through all three steps (the job is then done).
+    let u0 = d.period_update.clone();
+    let (seed0, _, slot0, w30, keys0) = job_of(&witness, &u0)?;
     attest_host::submit_update_staged(&ids, v3, &instance, &u0).await?;
     witness = lc::verify_and_apply(&config, &witness, &u0)
         .map_err(|e| anyhow!("{e}"))?
         .new_witness();
     // 1. Begin again on the done job: E14 (exit code).
-    let before = head_now(&ids).await?.ok_or_else(|| anyhow!("head"))?;
+    let before = head_now().await?;
     let (h, rev, text) = send_step(
         &ids,
         v3,
         seed0,
         &instance,
         slot0,
-        &begin(&w3, &u0, &keys),
+        &begin(&config, instance, &w30, &u0, &keys0),
         "duplicate begin",
     )
     .await?;
     let t = tx_in_block(&w, &h).await?;
-    let after = head_now(&ids).await?.ok_or_else(|| anyhow!("head"))?;
     record(
-        "duplicate Begin on a done job",
+        "Begin again on a done job",
         "E14 (exit code 14)",
         &h,
         rev,
         &text,
-        &t,
-        &before,
-        &after,
+        Some(&t),
+        before == head_now().await?,
     );
     // 2. Miller on the done job: E14.
+    let before = head_now().await?;
     let (h, rev, text) = send_step(
         &ids,
         v3,
@@ -630,28 +715,35 @@ async fn refusals(args: &[String]) -> Result<()> {
         &instance,
         slot0,
         &LcVerifyV3Message::Miller,
-        "miller on done job",
+        "miller on a done job",
     )
     .await?;
     let t = tx_in_block(&w, &h).await?;
-    let after2 = head_now(&ids).await?.ok_or_else(|| anyhow!("head"))?;
     record(
         "Miller on a done job",
         "E14 (exit code 14)",
         &h,
         rev,
         &text,
-        &t,
-        &after,
-        &after2,
+        Some(&t),
+        before == head_now().await?,
     );
 
-    // 3. Finish before Miller on update[1]'s job: E01; then the job completes normally.
-    let u1 = chain.updates[1].1.clone();
+    // 3. Finish before Miller on the handoff update's job: E01; then the job completes normally.
+    let u1 = d.handoff_update.clone();
     let (seed1, _, slot1, w31, keys1) = job_of(&witness, &u1)?;
-    let (hb, revb, _) = send_step(&ids, v3, seed1, &instance, slot1, &begin(&w31, &u1, &keys1), "begin u1").await?;
-    ensure!(!revb, "Begin of update[1] reverted ({hb})");
-    let before = head_now(&ids).await?.ok_or_else(|| anyhow!("head"))?;
+    let (hb, revb, _) = send_step(
+        &ids,
+        v3,
+        seed1,
+        &instance,
+        slot1,
+        &begin(&config, instance, &w31, &u1, &keys1),
+        "begin",
+    )
+    .await?;
+    ensure!(!revb, "Begin of the handoff update reverted ({hb})");
+    let before = head_now().await?;
     let (h, rev, text) = send_step(
         &ids,
         v3,
@@ -663,60 +755,53 @@ async fn refusals(args: &[String]) -> Result<()> {
     )
     .await?;
     let t = tx_in_block(&w, &h).await?;
-    let after = head_now(&ids).await?.ok_or_else(|| anyhow!("head"))?;
     record(
         "Finish before Miller",
         "E01 (exit code 1)",
         &h,
         rev,
         &text,
-        &t,
-        &before,
-        &after,
+        Some(&t),
+        before == head_now().await?,
     );
     attest_host::submit_update_staged(&ids, v3, &instance, &u1).await?;
     witness = lc::verify_and_apply(&config, &witness, &u1)
         .map_err(|e| anyhow!("{e}"))?
         .new_witness();
 
-    // 4. Forged signature (update[2] carrying update[3]'s signature): Begin and Miller land, Finish refuses E03.
-    let u2 = chain.updates[2].1.clone();
-    let sig_of = |u: &[u8]| -> Result<Vec<u8>> {
-        use ssz::Encode;
-        let f = lc::forks(&config).map_err(|e| anyhow!("{e}"))?;
-        Ok(match lc::decode_update(u, &f).map_err(|e| anyhow!("{e}"))? {
-            lc::AnyUpdate::Full(x) => x.sync_aggregate().sync_committee_signature.as_ssz_bytes(),
-            lc::AnyUpdate::Finality(x) => x.sync_aggregate().sync_committee_signature.as_ssz_bytes(),
-        })
-    };
-    let own = sig_of(&u2)?;
-    let at = u2
+    // Two finality updates that both apply on this store, with different results.
+    let valid: Vec<&(String, Vec<u8>)> = d
+        .finality
+        .iter()
+        .filter(|(_, u)| lc::verify_and_apply(&config, &witness, u).is_ok())
+        .collect();
+    ensure!(
+        valid.len() >= 2,
+        "need two finality updates that apply on the store after the handoff"
+    );
+    let (fa, fb) = (&valid[0].1, &valid[valid.len() - 1].1);
+
+    // 4. Forged signature (the older finality update carrying the period update's signature): Begin and Miller land,
+    //    Finish refuses E03 and the head does not move.
+    let own = sig_of(fa)?;
+    let at = fa
         .windows(96)
         .position(|x| x == own.as_slice())
         .ok_or_else(|| anyhow!("signature bytes"))?;
-    let mut forged = u2.clone();
-    forged[at..at + 96].copy_from_slice(&sig_of(&chain.updates[3].1)?);
+    let mut forged = fa.clone();
+    forged[at..at + 96].copy_from_slice(&sig_of(&u0)?);
     ensure!(lc::verify_and_apply(&config, &witness, &forged).err() == Some(attest_core::EsaError::E03BadSignature));
-    let w3f = lc_v3::StoreWitnessV3::from_v1(
-        &witness,
-        lc::verify_and_apply(&config, &witness, &u2)
-            .map_err(|e| anyhow!("{e}"))?
-            .signature_slot,
-    );
+    let na = lc::verify_and_apply(&config, &witness, fa).map_err(|e| anyhow!("{e}"))?;
+    let w3f = lc_v3::StoreWitnessV3::from_v1(&witness, na.signature_slot);
     let keysf = lc_v3::absent_keys(&w3f.committee_ssz, &forged);
-    let pre = w3f.commitment().map_err(|e| anyhow!("{e}"))?;
-    let seedf = lc_v3::job_seed(&instance, &pre, &forged);
-    let slotf = lc::verify_and_apply(&config, &witness, &u2)
-        .map_err(|e| anyhow!("{e}"))?
-        .head
-        .slot;
+    let seedf = lc_v3::job_seed(&instance, &na.pre_store, &forged);
     let (hb, revb, _) = send_step(
         &ids,
         v3,
         seedf,
         &instance,
-        slotf,
-        &begin(&w3f, &forged, &keysf),
+        na.head.slot,
+        &begin(&config, instance, &w3f, &forged, &keysf),
         "forged begin",
     )
     .await?;
@@ -725,46 +810,44 @@ async fn refusals(args: &[String]) -> Result<()> {
         v3,
         seedf,
         &instance,
-        slotf,
+        na.head.slot,
         &LcVerifyV3Message::Miller,
         "forged miller",
     )
     .await?;
     ensure!(!revb && !revm, "forged Begin/Miller reverted ({hb}, {hm})");
-    let before = head_now(&ids).await?.ok_or_else(|| anyhow!("head"))?;
+    let before = head_now().await?;
     let (h, rev, text) = send_step(
         &ids,
         v3,
         seedf,
         &instance,
-        slotf,
+        na.head.slot,
         &LcVerifyV3Message::Finish,
         "forged finish",
     )
     .await?;
     let t = tx_in_block(&w, &h).await?;
-    let after = head_now(&ids).await?.ok_or_else(|| anyhow!("head"))?;
     record(
         "forged signature, refused at Finish",
         "E03 (exit code 3)",
         &h,
         rev,
         &text,
-        &t,
-        &before,
-        &after,
+        Some(&t),
+        before == head_now().await?,
     );
 
-    // 5. Stale job: update[2]'s job runs Begin and Miller on store S; then the finality part of update[2] (a different
-    //    update) moves the store; the stale job's Finish sends an Apply that attest refuses (E13, panic).
-    let (seeds, _, slots, w3s, keyss) = job_of(&witness, &u2)?;
+    // 5. Stale job: the older finality update's job runs Begin and Miller; the newer one moves the store first; the
+    //    stale job's Finish sends an Apply that attest refuses (E13, panic).
+    let (seeds, _, slots, w3s, keyss) = job_of(&witness, fa)?;
     let (hb, revb, _) = send_step(
         &ids,
         v3,
         seeds,
         &instance,
         slots,
-        &begin(&w3s, &u2, &keyss),
+        &begin(&config, instance, &w3s, fa, &keyss),
         "stale begin",
     )
     .await?;
@@ -779,11 +862,11 @@ async fn refusals(args: &[String]) -> Result<()> {
     )
     .await?;
     ensure!(!revb && !revm, "stale Begin/Miller reverted ({hb}, {hm})");
-    let fin = finality_part_electra(&u2)?;
-    let moved = lc::verify_and_apply(&config, &witness, &fin).map_err(|e| anyhow!("finality part: {e}"))?;
-    attest_host::submit_update_staged(&ids, v3, &instance, &fin).await?;
-    witness = moved.new_witness();
-    let before = head_now(&ids).await?.ok_or_else(|| anyhow!("head"))?;
+    attest_host::submit_update_staged(&ids, v3, &instance, fb).await?;
+    witness = lc::verify_and_apply(&config, &witness, fb)
+        .map_err(|e| anyhow!("{e}"))?
+        .new_witness();
+    let before = head_now().await?;
     let (h, rev, text) = send_step(
         &ids,
         v3,
@@ -795,43 +878,95 @@ async fn refusals(args: &[String]) -> Result<()> {
     )
     .await?;
     let t = tx_in_block(&w, &h).await?;
-    let after = head_now(&ids).await?.ok_or_else(|| anyhow!("head"))?;
     record(
-        "job whose store has moved (stale), refused by attest.Apply",
+        "a job whose store has moved (stale): attest.Apply refuses",
         "E13 (attest panic ESA:E13)",
         &h,
         rev,
         &text,
-        &t,
-        &before,
-        &after,
+        Some(&t),
+        before == head_now().await?,
     );
 
     // 6. A Sepolia update sent to this mainnet instance: refused at Begin.
-    let sep = e2e_chain::sepolia_chain(vec![v3])?;
-    let us = sep.updates[4].1.clone();
+    let sep = pub_data("sepolia", v3)?;
+    let us = sep.period_update.clone();
     let native = lc::verify_and_apply(&config, &witness, &us).err();
     let w3x = lc_v3::StoreWitnessV3::from_v1(&witness, 0);
     let prex = w3x.commitment().map_err(|e| anyhow!("{e}"))?;
     let seedx = lc_v3::job_seed(&instance, &prex, &us);
-    let before = head_now(&ids).await?.ok_or_else(|| anyhow!("head"))?;
-    let (h, rev, text) = send_step(&ids, v3, seedx, &instance, 0, &begin(&w3x, &us, &[]), "other network").await?;
+    let before = head_now().await?;
+    let (h, rev, text) = send_step(
+        &ids,
+        v3,
+        seedx,
+        &instance,
+        0,
+        &begin(&config, instance, &w3x, &us, &[]),
+        "other network",
+    )
+    .await?;
     let t = tx_in_block(&w, &h).await?;
-    let after = head_now(&ids).await?.ok_or_else(|| anyhow!("head"))?;
     record(
-        "Sepolia update sent to a mainnet instance",
-        &format!("V1 native: {native:?}"),
+        "a Sepolia update sent to a mainnet instance",
+        &format!("refused at Begin (V1 natively: {native:?})"),
         &h,
         rev,
         &text,
-        &t,
-        &before,
-        &after,
+        Some(&t),
+        before == head_now().await?,
     );
+
+    // 7. An instance whose store is older than the 14-day bound: its Begin is outside the timestamp window.
+    let fab = fab_chain(&d.config, 1900, b"beacon-veil/v3/old-store");
+    let old_cfg = fresh_config(&ids, &fab.config(vec![v3], 0)).await?;
+    let (old_instance, _) = attest_host::init(&ids, &old_cfg, &fab.bootstrap.ssz()).await?;
+    let (ow, _) = lc::init_store(&old_cfg, &fab.bootstrap.ssz()).map_err(|e| anyhow!("{e}"))?;
+    let uo = fab.updates[0].ssz();
+    let no = lc::verify_and_apply(&old_cfg, &ow, &uo).map_err(|e| anyhow!("{e}"))?;
+    let w3o = lc_v3::StoreWitnessV3::from_v1(&ow, no.signature_slot);
+    let keyso = lc_v3::absent_keys(&w3o.committee_ssz, &uo);
+    let seedo = lc_v3::job_seed(&old_instance, &no.pre_store, &uo);
+    let before = attest_host::read_head(&ids, &old_instance).await?;
+    let r = send_step(
+        &ids,
+        v3,
+        seedo,
+        &old_instance,
+        no.head.slot,
+        &begin(&old_cfg, old_instance, &w3o, &uo, &keyso),
+        "old store begin",
+    )
+    .await;
+    let after = attest_host::read_head(&ids, &old_instance).await?;
+    match r {
+        Ok((h, rev, text)) => {
+            let t = tx_in_block(&w, &h).await?;
+            record(
+                "Begin on an instance whose store is older than 14 days",
+                "outside the timestamp window",
+                &h,
+                rev,
+                &text,
+                Some(&t),
+                before == after,
+            );
+        }
+        Err(e) => record(
+            "Begin on an instance whose store is older than 14 days",
+            "outside the timestamp window",
+            "",
+            true,
+            &format!("{e:#}"),
+            None,
+            before == after,
+        ),
+    }
 
     let doc = json!({
         "tool": "tools/cost v3_onchain refusals", "sequencer": "seq-pub", "instance": instance.to_string(),
         "programs": {"attest": ids.attest.to_string(), "lc_verify_v3": v3.to_string()},
+        "data": "fixtures/pub/mainnet bootstrap_15679488 (period 1914), fixtures/diff/mainnet updates 1914 and 1915 and finality updates, fixtures/diff/sepolia update 1416; fabricated chain (checkpoint period 1900) for the old store",
         "note": "lc_verify_v3 refuses by exit code (charged the cycles used); attest.Apply refuses by panic (charged the declared gas). charged_gas is the block's charged execution gas when the block holds one charged transaction.",
         "rows": rows,
     });

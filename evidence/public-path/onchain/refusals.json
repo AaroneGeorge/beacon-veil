@@ -1,0 +1,104 @@
+{
+  "data": "fixtures/pub/mainnet bootstrap_15679488 (period 1914), fixtures/diff/mainnet updates 1914 and 1915 and finality updates, fixtures/diff/sepolia update 1416; fabricated chain (checkpoint period 1900) for the old store",
+  "instance": "77ooFhT6YCa55NDvna1o41mZYk2nb9DdPGn3JY6Wy6Ub",
+  "note": "lc_verify_v3 refuses by exit code (charged the cycles used); attest.Apply refuses by panic (charged the declared gas). charged_gas is the block's charged execution gas when the block holds one charged transaction.",
+  "programs": {
+    "attest": "735RSWK5eYrZDnpJVvpVwrkDa93AXQNS7avFjAUeWEH8",
+    "lc_verify_v3": "8niQPec4Ng9yrm17Aj3VFbtebrXPxd6JVhhdZsAXQ1Tq"
+  },
+  "rows": [
+    {
+      "block": 486,
+      "block_gas_used_exec": 163275,
+      "case": "Begin again on a done job",
+      "charged_gas": 163275,
+      "charged_txs_in_block": 1,
+      "expected": "E14 (exit code 14)",
+      "head_unchanged": true,
+      "included": true,
+      "refusal_text": "duplicate begin: tx 907d4e59e25abef21125c1cba34caf610ddff5adf462469c735fa22f001ee5f9 reverted in block 486 (the panic code is in the sequencer log)",
+      "reverted": true,
+      "tx": "907d4e59e25abef21125c1cba34caf610ddff5adf462469c735fa22f001ee5f9"
+    },
+    {
+      "block": 488,
+      "block_gas_used_exec": 37003,
+      "case": "Miller on a done job",
+      "charged_gas": 37003,
+      "charged_txs_in_block": 1,
+      "expected": "E14 (exit code 14)",
+      "head_unchanged": true,
+      "included": true,
+      "refusal_text": "miller on a done job: tx 496d6bb860dd7736cfe3744b2e75e03c6734aae93df21e739b8db9469d204159 reverted in block 488 (the panic code is in the sequencer log)",
+      "reverted": true,
+      "tx": "496d6bb860dd7736cfe3744b2e75e03c6734aae93df21e739b8db9469d204159"
+    },
+    {
+      "block": 493,
+      "block_gas_used_exec": 37064,
+      "case": "Finish before Miller",
+      "charged_gas": 37064,
+      "charged_txs_in_block": 1,
+      "expected": "E01 (exit code 1)",
+      "head_unchanged": true,
+      "included": true,
+      "refusal_text": "finish before miller: tx 2409daad1555359e998d2cc2844e38bf8510935d77d319c8d16f9ada624a49ae reverted in block 493 (the panic code is in the sequencer log)",
+      "reverted": true,
+      "tx": "2409daad1555359e998d2cc2844e38bf8510935d77d319c8d16f9ada624a49ae"
+    },
+    {
+      "block": 503,
+      "block_gas_used_exec": 4273741,
+      "case": "forged signature, refused at Finish",
+      "charged_gas": 4273741,
+      "charged_txs_in_block": 1,
+      "expected": "E03 (exit code 3)",
+      "head_unchanged": true,
+      "included": true,
+      "refusal_text": "forged finish: tx 84a62698ce309d1e4a71a7de5ce222c654c70e0a16cda393dcc7eae8187b1767 reverted in block 503 (the panic code is in the sequencer log)",
+      "reverted": true,
+      "tx": "84a62698ce309d1e4a71a7de5ce222c654c70e0a16cda393dcc7eae8187b1767"
+    },
+    {
+      "block": 515,
+      "block_gas_used_exec": 10000000,
+      "case": "a job whose store has moved (stale): attest.Apply refuses",
+      "charged_gas": 10000000,
+      "charged_txs_in_block": 1,
+      "expected": "E13 (attest panic ESA:E13)",
+      "head_unchanged": true,
+      "included": true,
+      "refusal_text": "stale finish: tx 74aa841eeeb196f7263447a0ae9f1a9a12dad420d5188bb99f37c91ab63bbfd6 reverted in block 515 (the panic code is in the sequencer log)",
+      "reverted": true,
+      "tx": "74aa841eeeb196f7263447a0ae9f1a9a12dad420d5188bb99f37c91ab63bbfd6"
+    },
+    {
+      "block": 517,
+      "block_gas_used_exec": 3413535,
+      "case": "a Sepolia update sent to a mainnet instance",
+      "charged_gas": 3413535,
+      "charged_txs_in_block": 1,
+      "expected": "refused at Begin (V1 natively: Some(E01Malformed))",
+      "head_unchanged": true,
+      "included": true,
+      "refusal_text": "other network: tx 3fdda983dc7eebc2672f620a3b1f925994ecb279eede3858f40283f1b512895d reverted in block 517 (the panic code is in the sequencer log)",
+      "reverted": true,
+      "tx": "3fdda983dc7eebc2672f620a3b1f925994ecb279eede3858f40283f1b512895d"
+    },
+    {
+      "block": 521,
+      "block_gas_used_exec": 10000000,
+      "case": "Begin on an instance whose store is older than 14 days",
+      "charged_gas": 10000000,
+      "charged_txs_in_block": 1,
+      "expected": "outside the timestamp window",
+      "head_unchanged": true,
+      "included": true,
+      "refusal_text": "old store begin: tx 482980cd5b8fd1ad273a5cfffee9bc399ef1d08d50a3b1fca975c8a2c985a08c reverted in block 521 (the panic code is in the sequencer log)",
+      "reverted": true,
+      "tx": "482980cd5b8fd1ad273a5cfffee9bc399ef1d08d50a3b1fca975c8a2c985a08c"
+    }
+  ],
+  "sequencer": "seq-pub",
+  "tool": "tools/cost v3_onchain refusals"
+}

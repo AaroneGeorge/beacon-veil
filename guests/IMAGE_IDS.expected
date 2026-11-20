@@ -8,5 +8,5 @@ lc_verify_v2 18684beee3e973a2f1391c9bdb9108743c71e6f216bb5fba88bc0443403e8230
 consumer_erc20 3f86d4c96631191e94edb5377fa559c0b24fd2409815c5f97ca752eaa7df0794
 bridge fa3bd9c34fe6c82498396d99f9499688ec57e84463be2fc3abbe0bc944466fc5
 bridge_dev_source 9866d2346df2a2b3cd2214b07777182f5d1e75cac355d88ba45961543ecc3ca5
-# lc_verify_v3 (staged public verifier): release set of commit aaf94c663088a5eb2aba2474636ce7f1d10f61ce, built 2026-11-20 with $BV_V3_CARGO_CONFIG (docs/DECISIONS.md D-56).
-lc_verify_v3 0a08637cd5546fc5d3bae244e6e206b839b528e295595e18d200c79d0843d78a
+# lc_verify_v3 (staged public verifier): release set of commit d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e, built 2026-11-20 with $BV_V3_CARGO_CONFIG (docs/DECISIONS.md D-56).
+lc_verify_v3 cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510
