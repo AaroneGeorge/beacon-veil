@@ -1,6 +1,6 @@
 # Differential test: Helios 0.12.0 against our verifiers
 
-Generated 2026-11-20T02:20:01Z by `cargo nextest run -p diff_helios` (or `cargo run -p diff_helios --bin diff_report`). Every row of `cases.tsv` is one case with the SHA-256 of its input (config, store witness, update bytes).
+Generated 2026-11-20T02:42:26Z by `cargo nextest run -p diff_helios` (or `cargo run -p diff_helios --bin diff_report`). Every row of `cases.tsv` is one case with the SHA-256 of its input (config, store witness, update bytes).
 
 Pass rule: every column agrees with V1 on every case (accept or refuse, error code, and on accept the pre-store and post-store commitments, head and record). Columns: v1, v2, v3, v3_staged.
 
@@ -203,8 +203,13 @@ Each case also ran through the `lc_verify_v3` guest as one `VerifyOnce` message 
 | mismatches | 0 |
 | missing | 0 |
 | max_cycles_accepted | 16239602 |
+| image_id_matches_expected | true |
 
 ## Executor results different from V1
+
+None.
+
+## Executor results different from the native V3 column
 
 None.
 

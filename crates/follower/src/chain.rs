@@ -10,7 +10,7 @@
 use std::path::{Path, PathBuf};
 
 use anyhow::{Context, Result, anyhow, bail};
-use attest_core::{AccountId, EsaError, lc_v3};
+use attest_core::{AccountId, EsaError};
 use attest_host::{DeployedIds, StoreStatus, SubmitMode, TxOutcome};
 use serde::{Deserialize, Serialize};
 
@@ -71,11 +71,29 @@ impl Candidate {
 pub struct Step {
     /// `Begin`, `BeginPrepare`, `BeginKeys`, `Miller`, `Finish`.
     pub name: String,
-    /// `None` for a step this follower landed in an earlier attempt whose result was lost (the job's on-chain stage
-    /// shows it landed; its hash is in the `submit_deferred` line's sequencer log, not here).
+    /// The transaction (hash, declared gas). `None` only on the staged mock for a step it did not send.
     pub tx: Option<TxOutcome>,
     /// What the sequencer charged, read back from the step's block (public path, when readable).
     pub charge: Option<crate::charge::Charge>,
+    /// The transaction was sent but not included, or included and reverted (it is paid either way).
+    pub error: Option<String>,
+}
+
+impl Step {
+    /// A transaction `attest_host` reports as sent.
+    #[must_use]
+    pub fn from_sent(s: &attest_host::StagedSent) -> Self {
+        Self {
+            name: s.name.clone(),
+            tx: Some(TxOutcome {
+                tx: s.tx.clone(),
+                cycles: None,
+                gas: s.gas,
+            }),
+            charge: None,
+            error: s.error.clone(),
+        }
+    }
 }
 
 /// An accepted submission.
@@ -109,8 +127,16 @@ pub enum Submitted {
     Superseded { detail: String, steps: Vec<Step> },
     /// Public path: a step failed without a refusal (not included, the block was full, a sequencer error) after
     /// `attest_host`'s own retries, and the store did not move. The job stays on chain at its stage; the follower
-    /// sends the same update again at the next poll, which continues the job where it stands.
+    /// sends the same update again at the next poll, which continues the job where it stands. `landed`: every
+    /// transaction sent for this update so far.
     Deferred { detail: String, landed: Vec<Step> },
+    /// Public path: refused (an `EsaError`) while the store stayed where it was; the transactions sent for it are
+    /// listed (they are paid).
+    Failed {
+        code: Option<String>,
+        detail: String,
+        steps: Vec<Step>,
+    },
 }
 
 pub trait Chain {
@@ -129,6 +155,8 @@ pub trait Chain {
         bootstrap_ssz: &[u8],
         updates: &[Vec<u8>],
     ) -> impl std::future::Future<Output = Result<StoreStatus>> + Send;
+    /// Native balance of the account that pays the transactions, when the chain has one (`None` on the mock).
+    fn payer_balance(&self) -> impl std::future::Future<Output = Option<u128>> + Send;
 }
 
 /// True if `e` is the "changes nothing" refusal (E14): `attest_host` gives every refusal its `EsaError` as root cause
@@ -163,78 +191,58 @@ impl HostMode {
     }
 }
 
-/// Step names for the job stages a staged submission passed, from `before` (exclusive) to `after` (inclusive).
-#[must_use]
-pub fn steps_between(before: u8, after: u8, four_steps: bool) -> Vec<&'static str> {
-    use lc_v3::stage::{BEGUN, DONE, MILLER, PREPARED};
-    let all: &[(u8, &str)] = if four_steps {
-        &[
-            (PREPARED, "BeginPrepare"),
-            (BEGUN, "BeginKeys"),
-            (MILLER, "Miller"),
-            (DONE, "Finish"),
-        ]
-    } else {
-        &[(BEGUN, "Begin"), (MILLER, "Miller"), (DONE, "Finish")]
-    };
-    all.iter()
-        .filter(|(s, _)| *s > before && *s <= after)
-        .map(|(_, n)| *n)
-        .collect()
-}
-
-/// Classifies a staged submission that this follower started on a store at `pre` (head slot, next committee known)
-/// with the job at stage `stage_before`: the job's stage now, the store now, and the result.
+/// Classifies a staged submission: its result, every transaction it sent (`attest_host::submit_update_staged_traced`),
+/// whether the instance's store moved during it, and the transactions sent for the same update in earlier, deferred
+/// attempts. Applied only when this follower's own `Finish` was included; the store moving is checked before any
+/// refusal code, so an E14 from a store another submitter moved is `Superseded`, and `NoOp` means nothing was sent.
 pub fn classify_staged(
     result: Result<attest_host::StagedOutcome>,
-    stage_before: u8,
-    stage_after: u8,
+    sent: &[attest_host::StagedSent],
     store_moved: bool,
     earlier: &[Step],
-) -> Result<Submitted> {
+) -> Submitted {
+    let mut steps = earlier.to_vec();
+    steps.extend(sent.iter().map(Step::from_sent));
+    let finish = sent.iter().rev().find(|s| s.name == "Finish" && s.error.is_none());
     match result {
-        Ok(o) => {
-            let mut steps = earlier.to_vec();
-            steps.extend(o.steps.iter().map(|(name, tx)| Step {
-                name: name.clone(),
-                tx: Some(tx.clone()),
-                charge: None,
-            }));
-            let finish = o.steps.iter().find(|(n, _)| n == "Finish").map(|(_, t)| t.clone());
-            match finish {
-                Some(tx) => Ok(Submitted::Applied(AppliedTx {
-                    tx,
-                    steps,
-                    job: Some(o.job.to_string()),
-                    four_steps: o.four_steps,
-                })),
-                None => Ok(Submitted::Superseded {
-                    detail: format!("job {} finished by another submitter", o.job),
-                    steps,
-                }),
+        Ok(o) => match finish {
+            Some(f) => Submitted::Applied(AppliedTx {
+                tx: TxOutcome {
+                    tx: f.tx.clone(),
+                    cycles: None,
+                    gas: f.gas,
+                },
+                steps,
+                job: Some(o.job.to_string()),
+                four_steps: o.four_steps,
+            }),
+            None => Submitted::Superseded {
+                detail: format!("job {} finished by another submitter", o.job),
+                steps,
+            },
+        },
+        Err(e) if store_moved => Submitted::Superseded {
+            detail: format!("the store moved during the submission (another submitter): {e:#}"),
+            steps,
+        },
+        Err(e) if is_noop(&e) && steps.is_empty() => Submitted::NoOp(format!("{e:#}")),
+        // A refusal, or a step that was included and reverted (charged its whole declared gas, never sent again).
+        Err(e)
+            if attest_host::esa_code_v3(&e).is_some()
+                || sent
+                    .iter()
+                    .any(|s| s.error.as_deref().is_some_and(|x| x.contains(" reverted in block "))) =>
+        {
+            Submitted::Failed {
+                code: esa_code(&e),
+                detail: format!("{e:#}"),
+                steps,
             }
         }
-        Err(e) if store_moved => Ok(Submitted::Superseded {
-            detail: format!("the store moved during the submission (another submitter): {e:#}"),
-            steps: earlier.to_vec(),
-        }),
-        Err(e) if attest_host::esa_code_v3(&e).is_some() => Err(e),
-        Err(e) => {
-            let mut landed = earlier.to_vec();
-            landed.extend(
-                steps_between(stage_before, stage_after, stage_after == lc_v3::stage::PREPARED)
-                    .into_iter()
-                    .map(|n| Step {
-                        name: n.into(),
-                        tx: None,
-                        charge: None,
-                    }),
-            );
-            Ok(Submitted::Deferred {
-                detail: format!("job at stage {stage_after} (was {stage_before}): {e:#}"),
-                landed,
-            })
-        }
+        Err(e) => Submitted::Deferred {
+            detail: format!("{e:#}"),
+            landed: steps,
+        },
     }
 }
 
@@ -250,19 +258,6 @@ pub struct HostChain {
 }
 
 impl HostChain {
-    /// `(job account, its stage)` of `update_ssz` on the instance's current store (0 when the job does not exist).
-    async fn job_stage(&self, v3: AccountId, update_ssz: &[u8]) -> Result<(AccountId, u8)> {
-        let head = attest_host::read_head(&self.ids, &self.instance)
-            .await?
-            .ok_or_else(|| anyhow!("instance {} does not exist", self.instance))?;
-        let job = lc_v3::job_id(
-            &v3,
-            &lc_v3::job_seed(&self.instance, &head.store_commitment, update_ssz),
-        );
-        let stage = attest_host::read_job(v3, &job).await?.map_or(0, |j| j.stage);
-        Ok((job, stage))
-    }
-
     async fn head_mark(&self) -> Option<(u64, [u8; 32])> {
         attest_host::read_head(&self.ids, &self.instance)
             .await
@@ -293,31 +288,25 @@ impl Chain for HostChain {
             HostMode::Public { v3 } => v3,
         };
         let before = self.head_mark().await;
-        let stage_before = match self.job_stage(v3, &c.ssz).await {
-            Ok((_, s)) => s,
-            Err(_) => 0,
-        };
-        let result = attest_host::submit_update_staged(&self.ids, v3, &self.instance, &c.ssz).await;
-        if let Err(e) = &result
-            && is_noop(e)
-        {
-            return Ok(Submitted::NoOp(format!("{e:#}")));
-        }
+        let mut sent = Vec::new();
+        let result = attest_host::submit_update_staged_traced(&self.ids, v3, &self.instance, &c.ssz, &mut sent).await;
         let after = self.head_mark().await;
-        let store_moved = before.is_some() && after.is_some() && before != after;
-        // The job of the old store, to see how far it got (only meaningful when the store did not move).
-        let stage_after = if result.is_err() && !store_moved {
-            self.job_stage(v3, &c.ssz).await.map_or(stage_before, |(_, s)| s)
-        } else {
-            stage_before
-        };
         // `store_moved` matters only for an error (an applied result moved the store by construction).
-        let mut out = classify_staged(result, stage_before, stage_after, store_moved, earlier)?;
-        if let Submitted::Applied(AppliedTx { steps, .. }) | Submitted::Superseded { steps, .. } = &mut out {
-            for s in steps.iter_mut().filter(|s| s.charge.is_none()) {
-                if let Some(tx) = &s.tx {
-                    s.charge = crate::charge::charge_of(&tx.tx).await.ok();
-                }
+        let store_moved = before.is_some() && after.is_some() && before != after;
+        let mut out = classify_staged(result, &sent, store_moved, earlier);
+        let steps = match &mut out {
+            Submitted::Applied(AppliedTx { steps, .. })
+            | Submitted::Superseded { steps, .. }
+            | Submitted::Failed { steps, .. }
+            | Submitted::Deferred { landed: steps, .. } => steps,
+            Submitted::NoOp(_) => return Ok(out),
+        };
+        // Read the block of every included transaction (a reverted one is included; one that was never included
+        // would make the read wait for blocks, so it is skipped).
+        for s in steps.iter_mut().filter(|s| s.charge.is_none()) {
+            let included = s.error.as_deref().is_none_or(|e| e.contains("reverted"));
+            if let (Some(tx), true) = (&s.tx, included) {
+                s.charge = crate::charge::charge_of(&tx.tx).await.ok();
             }
         }
         Ok(out)
@@ -331,6 +320,12 @@ impl Chain for HostChain {
 
     async fn rebuild(&self, bootstrap_ssz: &[u8], updates: &[Vec<u8>]) -> Result<StoreStatus> {
         attest_host::rebuild_store(&self.ids, &self.instance, bootstrap_ssz, updates).await
+    }
+
+    async fn payer_balance(&self) -> Option<u128> {
+        let w = attest_host::open_wallet().ok()?;
+        let payer = attest_host::payer().ok()?;
+        w.get_account_balance(payer).await.ok()
     }
 }
 
@@ -347,6 +342,9 @@ pub struct MockState {
     /// Staged mock only (tests): another submitter applies the next submission first.
     #[serde(default)]
     pub race_next: bool,
+    /// Tests: the payer's balance the mock reports (`None`: no payer).
+    #[serde(default)]
+    pub payer_balance: Option<u128>,
 }
 
 /// File-backed mock chain (Helios store rules on metadata; no signature checks). `staged`: answer as the public path
@@ -479,6 +477,7 @@ impl Chain for MockChain {
                     name: "Begin".into(),
                     tx: None,
                     charge: None,
+                    error: None,
                 });
             }
             return Ok(Submitted::Deferred {
@@ -499,6 +498,7 @@ impl Chain for MockChain {
                             name: name.into(),
                             tx: Some(tx(name)),
                             charge: None,
+                            error: None,
                         });
                     }
                 }
@@ -521,6 +521,10 @@ impl Chain for MockChain {
     async fn rebuild(&self, _bootstrap_ssz: &[u8], _updates: &[Vec<u8>]) -> Result<StoreStatus> {
         bail!("the mock chain has no local store to rebuild")
     }
+
+    async fn payer_balance(&self) -> Option<u128> {
+        self.load().ok().flatten().and_then(|s| s.payer_balance)
+    }
 }
 
 /// Write-then-rename, fsynced.
@@ -537,4 +541,152 @@ pub fn write_atomic(path: &Path, bytes: &[u8]) -> Result<()> {
     }
     std::fs::rename(&tmp, path).with_context(|| format!("rename to {}", path.display()))?;
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use attest_core::lc_v3::Outcome;
+    use attest_host::{StagedOutcome, StagedSent};
+
+    use super::*;
+
+    fn sent(name: &str, error: Option<&str>) -> StagedSent {
+        StagedSent {
+            name: name.into(),
+            tx: format!("tx-{name}"),
+            gas: Some(9_000_000),
+            error: error.map(Into::into),
+        }
+    }
+
+    fn outcome() -> StagedOutcome {
+        StagedOutcome {
+            job: AccountId::new([7; 32]),
+            steps: Vec::new(),
+            outcome: Outcome {
+                pre_store: [0; 32],
+                post_store: [1; 32],
+                head: attest_core::Head::default(),
+                record: attest_core::HeaderRecord::default(),
+                signature_slot: 0,
+                participation: 512,
+                new_slot: true,
+                handoff: false,
+            },
+            four_steps: false,
+        }
+    }
+
+    fn names(steps: &[Step]) -> Vec<&str> {
+        steps.iter().map(|s| s.name.as_str()).collect()
+    }
+
+    fn refused(code: EsaError) -> anyhow::Error {
+        anyhow::Error::new(code).context("v3 Finish: refused")
+    }
+
+    #[test]
+    fn own_finish_applies() {
+        let all = [sent("Begin", None), sent("Miller", None), sent("Finish", None)];
+        let Submitted::Applied(a) = classify_staged(Ok(outcome()), &all, true, &[]) else {
+            panic!()
+        };
+        assert_eq!(a.tx.tx, "tx-Finish");
+        assert_eq!(names(&a.steps), ["Begin", "Miller", "Finish"]);
+        assert_eq!(a.job.as_deref(), Some(AccountId::new([7; 32]).to_string().as_str()));
+    }
+
+    #[test]
+    fn job_finished_by_another_submitter_is_superseded() {
+        // This follower sent Begin and Miller; the other one landed Finish (its own Finish reverted).
+        let mine = [
+            sent("Begin", None),
+            sent("Miller", None),
+            sent("Finish", Some("reverted in block 9")),
+        ];
+        let Submitted::Superseded { steps, .. } = classify_staged(Ok(outcome()), &mine, true, &[]) else {
+            panic!()
+        };
+        assert_eq!(names(&steps), ["Begin", "Miller", "Finish"]);
+        assert!(steps[2].error.is_some(), "the paid, reverted Finish is listed");
+    }
+
+    #[test]
+    fn store_moved_wins_over_a_refusal_code() {
+        // E14 after Begin and Miller were paid, because another update moved the store: superseded, not a no-op.
+        let mine = [sent("Begin", None), sent("Miller", None)];
+        let r = classify_staged(Err(refused(EsaError::E14AlreadyApplied)), &mine, true, &[]);
+        let Submitted::Superseded { steps, .. } = r else {
+            panic!("{r:?}")
+        };
+        assert_eq!(steps.len(), 2);
+    }
+
+    #[test]
+    fn e14_before_anything_was_sent_is_a_noop() {
+        let r = classify_staged(Err(refused(EsaError::E14AlreadyApplied)), &[], false, &[]);
+        assert!(matches!(r, Submitted::NoOp(_)), "{r:?}");
+        // The same code after a paid step is a failure, with the step listed.
+        let r = classify_staged(
+            Err(refused(EsaError::E14AlreadyApplied)),
+            &[sent("Begin", None)],
+            false,
+            &[],
+        );
+        assert!(
+            matches!(r, Submitted::Failed { ref steps, .. } if steps.len() == 1),
+            "{r:?}"
+        );
+    }
+
+    #[test]
+    fn refusal_on_an_unmoved_store_fails_with_its_steps() {
+        let mine = [
+            sent("Begin", None),
+            sent("Miller", None),
+            sent("Finish", Some("reverted in block 4")),
+        ];
+        let r = classify_staged(Err(refused(EsaError::E03BadSignature)), &mine, false, &[]);
+        let Submitted::Failed { code, steps, .. } = r else {
+            panic!("{r:?}")
+        };
+        assert_eq!(code.as_deref(), Some("E03"));
+        assert_eq!(names(&steps), ["Begin", "Miller", "Finish"]);
+    }
+
+    #[test]
+    fn reverted_step_fails_and_is_not_deferred() {
+        // A window miss: included, reverted, no code in the error text.
+        let mine = [sent(
+            "Begin",
+            Some("v3 Begin: tx tx-Begin reverted in block 7 (the panic code ...)"),
+        )];
+        let r = classify_staged(
+            Err(anyhow!("v3 Begin: tx tx-Begin reverted in block 7")),
+            &mine,
+            false,
+            &[],
+        );
+        assert!(
+            matches!(r, Submitted::Failed { code: None, ref steps, .. } if steps.len() == 1),
+            "{r:?}"
+        );
+    }
+
+    #[test]
+    fn transient_failure_defers_with_every_sent_step() {
+        let earlier = vec![Step::from_sent(&sent("Begin", None))];
+        let mine = [sent("Miller", Some("not included"))];
+        let r = classify_staged(Err(anyhow!("v3 Miller: tx not included")), &mine, false, &earlier);
+        let Submitted::Deferred { landed, .. } = r else {
+            panic!("{r:?}")
+        };
+        assert_eq!(names(&landed), ["Begin", "Miller"]);
+        // The resumed attempt that lands the rest applies, listing the earlier steps first.
+        let rest = [sent("Miller", None), sent("Finish", None)];
+        let Submitted::Applied(a) = classify_staged(Ok(outcome()), &rest, true, &landed) else {
+            panic!()
+        };
+        assert_eq!(names(&a.steps), ["Begin", "Miller", "Miller", "Finish"]);
+    }
 }

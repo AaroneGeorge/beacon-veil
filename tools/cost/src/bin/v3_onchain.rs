@@ -6,6 +6,7 @@
 //! v3_onchain check run.json [run.json ...]
 //! v3_onchain check-images <release IMAGE_IDS>
 //! BV_ALLOW_REVERT=1 v3_onchain refusals --out refusals.json     # refused steps as real transactions
+//! v3_onchain annotate --v3-elf P --seq-log P FILE...            # read-only: payer, fee, codes into the records
 //! ```
 //!
 //! Environment as `attest_host` (`BV_IDS`, `LEE_WALLET_HOME_DIR`, `BV_STORE_DIR`, `BV_PAYER`).
@@ -482,7 +483,7 @@ async fn run(args: &[String]) -> Result<()> {
             "txs_per_update": staged.steps.len(),
             "head_after": {"slot": head.slot, "period": head.period, "beacon_root": hex::encode(head.beacon_root),
                            "store_commitment": hex::encode(head.store_commitment)},
-            "head_equals_v1": true,
+            "head_equals_v1": want_ok,
             "finalized_slot_moved": native.new_slot,
             "steps": steps,
         }));
@@ -660,9 +661,9 @@ async fn refusals(args: &[String]) -> Result<()> {
                 None => println!("{case}: not included: {}", text.lines().last().unwrap_or_default()),
             }
             rows.push(json!({
-            "case": case, "expected": want, "tx": if t.is_some() { json!(hash) } else { Value::Null },
+            "case": case, "expected_code": want, "tx": if t.is_some() { json!(hash) } else { Value::Null },
             "included": t.is_some(), "block": t.map(|t| t.block), "reverted": reverted,
-            "refusal_text": text.lines().last().unwrap_or_default(),
+            "wallet_message": text.lines().last().unwrap_or_default(),
             "block_gas_used_exec": t.and_then(|t| t.block_gas_exec), "charged_txs_in_block": t.map(|t| t.charged_txs),
             "charged_gas": t.filter(|t| t.charged_txs == 1).and_then(|t| t.block_gas_exec),
             "head_unchanged": unchanged,
@@ -909,7 +910,10 @@ async fn refusals(args: &[String]) -> Result<()> {
     let t = tx_in_block(&w, &h).await?;
     record(
         "a Sepolia update sent to a mainnet instance",
-        &format!("refused at Begin (V1 natively: {native:?})"),
+        &format!(
+            "E01 (exit code 1; V1 natively: {})",
+            native.map_or("accepts", |e| e.code())
+        ),
         &h,
         rev,
         &text,
@@ -978,6 +982,348 @@ async fn refusals(args: &[String]) -> Result<()> {
     Ok(())
 }
 
+// ---- annotate (read-only: blocks over RPC, the executor, native code; no transaction) ----
+
+/// One transaction of a block, as `annotate` needs it.
+struct BlockTx {
+    hash: String,
+    to: Option<Actor>,
+    message: Vec<u8>,
+    fee: Option<(AccountId, u64)>,
+    reverted: bool,
+}
+
+struct BlockView {
+    txs: Vec<BlockTx>,
+    timestamp: u64,
+    gas_exec: Option<u64>,
+    revenue: Option<u128>,
+}
+
+async fn block_view(w: &attest_host::Wallet, b: u64) -> Result<BlockView> {
+    let block = w.get_block(b).await?.ok_or_else(|| anyhow!("block {b} not found"))?;
+    let fee_program = AccountId::from_builtin_program_name(b"fee");
+    let mut v = BlockView {
+        txs: Vec::new(),
+        timestamp: block.header.timestamp,
+        gas_exec: None,
+        revenue: None,
+    };
+    for (i, t) in block.body.transactions.iter().enumerate() {
+        let reverted = block.body.is_reverted(i);
+        match t {
+            common::transaction::LeeTransaction::Public(p) => {
+                let ex = &p.message.execution;
+                if ex.fee.is_none()
+                    && ex.root.to.program_account_id == fee_program
+                    && let Ok(FeeMessage::Distribute { summary, .. }) = borsh::from_slice(&ex.root.message)
+                {
+                    v.gas_exec = Some(summary.gas_used_exec);
+                    v.revenue = Some(summary.revenue_base + summary.revenue_tip);
+                }
+                v.txs.push(BlockTx {
+                    hash: t.hash().to_string(),
+                    to: Some(ex.root.to),
+                    message: ex.root.message.clone(),
+                    fee: ex.fee.as_ref().map(|f| (f.payer, f.gas_limit)),
+                    reverted,
+                });
+            }
+            common::transaction::LeeTransaction::PrivacyPreserving(_) => v.txs.push(BlockTx {
+                hash: t.hash().to_string(),
+                to: None,
+                message: Vec::new(),
+                fee: Some((AccountId::new([0; 32]), 0)),
+                reverted,
+            }),
+        }
+    }
+    Ok(v)
+}
+
+/// Executor run that also reports a non-zero exit (a refusal by exit code).
+fn exec_any(g: &Guest, input: &ReceiveInput) -> Result<(u64, String)> {
+    let frame = lee_core::to_frame(&borsh::to_vec(input)?);
+    let env = ExecutorEnv::builder().write_slice(&frame).build()?;
+    let info = default_executor().execute(env, &g.program)?;
+    Ok((info.cycles(), format!("{:?}", info.exit_code)))
+}
+
+/// The job state before block `before` at `receiver`: every earlier included, not reverted transaction to that actor,
+/// replayed with the program logic.
+fn job_state_before(chain: &[(u64, BlockView)], receiver: Actor, before: u64) -> Vec<u8> {
+    let mut state = Vec::new();
+    for (b, v) in chain {
+        if *b >= before {
+            break;
+        }
+        for t in &v.txs {
+            if t.to == Some(receiver)
+                && !t.reverted
+                && let Ok(m) = borsh::from_slice::<LcVerifyV3Message>(&t.message)
+                && let Ok(e) = attest_core::lc_v3::handle(&receiver.program_account_id, &receiver.account_id, &state, m)
+                && let Some(s) = e.state
+            {
+                state = s;
+            }
+        }
+    }
+    state
+}
+
+/// `ESA:Exx` panic lines the sequencer printed while it built block `b`.
+fn panics_in_block(log: &str, b: u64) -> Vec<String> {
+    let start = format!("Publishing block {} ", b.saturating_sub(1));
+    let end = format!("Publishing block {b} ");
+    let mut on = false;
+    let mut out = Vec::new();
+    for l in log.lines() {
+        if l.contains(&start) {
+            on = true;
+            continue;
+        }
+        if l.contains(&end) {
+            break;
+        }
+        if on && l.starts_with("ESA:") {
+            out.push(l.trim().to_string());
+        }
+    }
+    out
+}
+
+async fn annotate(args: &[String]) -> Result<()> {
+    let arg = |k: &str| args.iter().position(|a| a == k).and_then(|i| args.get(i + 1)).cloned();
+    let v3g = load(&arg("--v3-elf").context("--v3-elf")?)?;
+    let seq_log = std::fs::read_to_string(arg("--seq-log").context("--seq-log")?)?;
+    let files: Vec<&String> = args
+        .iter()
+        .enumerate()
+        .filter(|(i, a)| !a.starts_with("--") && (*i == 0 || !args[i - 1].starts_with("--")))
+        .map(|(_, a)| a)
+        .collect();
+    let w = attest_host::open_wallet()?;
+    let ids = DeployedIds::from_env()?;
+    // Every block once.
+    let mut last = 0u64;
+    for f in &files {
+        let doc: Value = serde_json::from_slice(&std::fs::read(f)?)?;
+        let blocks: Vec<u64> = doc["updates"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .flat_map(|u| u["steps"].as_array().cloned().unwrap_or_default())
+            .chain(doc["rows"].as_array().cloned().unwrap_or_default())
+            .filter_map(|s| s["block"].as_u64())
+            .collect();
+        last = last.max(blocks.into_iter().max().unwrap_or(0));
+    }
+    let mut chain = Vec::new();
+    for b in 1..=last {
+        if let Ok(v) = block_view(&w, b).await {
+            chain.push((b, v));
+        }
+    }
+    let view = |b: u64| chain.iter().find(|(x, _)| *x == b).map(|(_, v)| v);
+    for f in files {
+        let mut doc: Value = serde_json::from_slice(&std::fs::read(f)?)?;
+        let v3 = AccountId::from_str(doc["programs"]["lc_verify_v3"].as_str().unwrap_or_default())
+            .map_err(|e| anyhow!("{f}: {e:?}"))?;
+        if doc.get("updates").is_some() {
+            // run.json
+            let network = doc["network"].as_str().unwrap_or_default().to_string();
+            let (config, bootstrap, ups) = net_updates(&network, v3)?;
+            let mut witness = lc::init_store(&config, &bootstrap).map_err(|e| anyhow!("{e}"))?.0;
+            let mut all_equal = true;
+            for u in doc["updates"].as_array_mut().into_iter().flatten() {
+                let label = u["update"].as_str().unwrap_or_default().to_string();
+                let bytes = &ups
+                    .iter()
+                    .find(|(l, _)| *l == label)
+                    .ok_or_else(|| anyhow!("{f}: no input {label}"))?
+                    .1;
+                let n = lc::verify_and_apply(&config, &witness, bytes).map_err(|e| anyhow!("{label}: {e}"))?;
+                let h = &u["head_after"];
+                let same_commitment = h["store_commitment"].as_str() == Some(hex::encode(n.post_store).as_str())
+                    && h["slot"].as_u64() == Some(n.head.slot);
+                let equal = if n.new_slot {
+                    same_commitment && h["beacon_root"].as_str() == Some(hex::encode(n.head.beacon_root).as_str())
+                } else {
+                    same_commitment
+                };
+                all_equal &= equal;
+                u["head_equals_v1"] = json!(equal);
+                u["head_equals_v1_compared"] = json!(if n.new_slot {
+                    "slot, beacon_root and store_commitment of the on-chain head after the update, against V1 (Helios 0.12.0, native) on the same input"
+                } else {
+                    "slot and store_commitment (the update only teaches the next committee: attest keeps the head and sets the new commitment), against V1 native"
+                });
+                u["finalized_slot_moved"] = json!(n.new_slot);
+                witness = n.new_witness();
+                for s in u["steps"].as_array_mut().into_iter().flatten() {
+                    let b = s["block"].as_u64().unwrap_or(0);
+                    let hash = s["tx"].as_str().unwrap_or_default().to_string();
+                    let v = view(b).ok_or_else(|| anyhow!("block {b}"))?;
+                    let t = v
+                        .txs
+                        .iter()
+                        .find(|t| t.hash == hash)
+                        .ok_or_else(|| anyhow!("{hash} not in block {b}"))?;
+                    let (payer, declared) = t.fee.ok_or_else(|| anyhow!("{hash}: no fee declaration"))?;
+                    s["payer"] = json!(payer.to_string());
+                    s["declared_gas"] = json!(declared);
+                    let charged: Vec<&BlockTx> = v.txs.iter().filter(|t| t.fee.is_some()).collect();
+                    if charged.len() == 1 {
+                        s["fee_paid"] = json!(v.revenue.map(|r| r.to_string()));
+                        s["fee_note"] = json!(
+                            "base + tip revenue of the block's fee summary; the step is the block's only charged transaction"
+                        );
+                    } else {
+                        // Charge the other transactions by re-executing them on their job state.
+                        let mut others = 0u64;
+                        let mut notes = Vec::new();
+                        for o in charged.iter().filter(|o| o.hash != hash) {
+                            let to = o.to.ok_or_else(|| anyhow!("{}: not public", o.hash))?;
+                            ensure!(
+                                to.program_account_id == v3,
+                                "{}: other transaction is not lc_verify_v3",
+                                o.hash
+                            );
+                            let pre = job_state_before(&chain, to, b);
+                            let (cycles, exit) = exec_any(
+                                &v3g,
+                                &ReceiveInput {
+                                    receiver: to,
+                                    from: None,
+                                    is_authorized: false,
+                                    pre_state: ActorState::from(pre),
+                                    message: o.message.clone(),
+                                },
+                            )?;
+                            ensure!(
+                                !exit.contains("Halted(0)"),
+                                "{}: other step succeeded; its chained calls are not metered here",
+                                o.hash
+                            );
+                            others += cycles;
+                            notes.push(json!({"tx": o.hash, "step": step_name(&o.message), "payer": o.fee.map(|f| f.0.to_string()), "metered_cycles": cycles, "exit": exit}));
+                        }
+                        let derived = v.gas_exec.map(|g| g - others);
+                        s["charged_gas"] = json!(derived);
+                        s["charged_gas_method"] = json!(
+                            "block charged execution gas minus the other charged transactions of the block, each re-executed with the deployed lc_verify_v3 on its job state (a refusal by exit code is charged its cycles)"
+                        );
+                        s["other_charged_txs"] = json!(notes);
+                        s["fee_paid"] = Value::Null;
+                        s["fee_note"] = json!(
+                            "the block holds more than one charged transaction; the block's fee revenue is not split"
+                        );
+                        s["within_step_limit"] = json!(derived.is_some_and(|d| d <= STEP_LIMIT));
+                    }
+                }
+            }
+            doc["head_equals_v1_every_update"] = json!(all_equal);
+            doc["anyone_can_submit"] = json!(
+                "each step is a public transaction any funded account can send (the job account is a PDA of lc_verify_v3; the program does not check the sender). Shown by evidence/g4-public/dry-run-20261120/: two followers with their own payers on one instance shared each update's job"
+            );
+            println!("{f}: head_equals_v1 {all_equal}");
+        } else {
+            // refusals.json
+            let instance =
+                AccountId::from_str(doc["instance"].as_str().unwrap_or_default()).map_err(|e| anyhow!("{e:?}"))?;
+            let inst_state = attest_host::read_instance(&ids, &instance)
+                .await?
+                .ok_or_else(|| anyhow!("instance"))?;
+            for r in doc["rows"].as_array_mut().into_iter().flatten() {
+                let hash = r["tx"].as_str().unwrap_or_default().to_string();
+                let b = r["block"].as_u64().unwrap_or(0);
+                let v = view(b).ok_or_else(|| anyhow!("block {b}"))?;
+                let t = v
+                    .txs
+                    .iter()
+                    .find(|t| t.hash == hash)
+                    .ok_or_else(|| anyhow!("{hash} not in block {b}"))?;
+                let to = t.to.ok_or_else(|| anyhow!("not public"))?;
+                let (payer, declared) = t.fee.ok_or_else(|| anyhow!("no fee"))?;
+                if let Some(e) = r.get("expected").cloned() {
+                    r["expected_code"] = e;
+                    r.as_object_mut().map(|o| o.remove("expected"));
+                }
+                if let Some(e) = r.get("refusal_text").cloned() {
+                    r["wallet_message"] = e;
+                    r.as_object_mut().map(|o| o.remove("refusal_text"));
+                }
+                r["payer"] = json!(payer.to_string());
+                r["declared_gas"] = json!(declared);
+                let pre = job_state_before(&chain, to, b);
+                let msg: LcVerifyV3Message = borsh::from_slice(&t.message)?;
+                let native = attest_core::lc_v3::handle(&to.program_account_id, &to.account_id, &pre, msg);
+                let (cycles, exit) = exec_any(
+                    &v3g,
+                    &ReceiveInput {
+                        receiver: to,
+                        from: None,
+                        is_authorized: false,
+                        pre_state: ActorState::from(pre.clone()),
+                        message: t.message.clone(),
+                    },
+                )?;
+                r["executor_lc_verify_v3"] = json!({"metered_cycles": cycles, "exit": exit});
+                let panics = panics_in_block(&seq_log, b);
+                let (code, observed) = match native {
+                    Err(e) => (
+                        e.code().to_string(),
+                        format!(
+                            "reverted; lc_verify_v3 ends with exit code {} (the sequencer does not log exit codes; the deployed ELF re-executed on the same input gives {exit} after {cycles} cycles, and the block charged {})",
+                            e as u8,
+                            v.gas_exec.map_or("an unknown amount".to_string(), |g| g.to_string())
+                        ),
+                    ),
+                    Ok(eff) => match eff.apply {
+                        Some((_, _, o)) => {
+                            let st = borsh::to_vec(&inst_state)?;
+                            let c =
+                                attest_core::rules::apply(&st, Some(v3), o.pre_store, o.post_store, o.head, o.record)
+                                    .err()
+                                    .map_or("accepted".to_string(), |e| e.code().to_string());
+                            (
+                                c,
+                                format!(
+                                    "reverted; lc_verify_v3 accepts the step, the chained attest.Apply panics; sequencer log for block {b}: {panics:?}"
+                                ),
+                            )
+                        }
+                        None => {
+                            let (from, to_ms) = eff.window_ms.unwrap_or((0, 0));
+                            let outside = v.timestamp < from || v.timestamp >= to_ms;
+                            (
+                                "none (accepted by the program)".to_string(),
+                                format!(
+                                    "reverted; the program accepts the step natively and exits 0 ({exit}); its timestamp window is [{from}, {to_ms}) ms and the block time is {} ms ({}); no panic in the sequencer log for block {b}; LEZ checks the window at settlement and charges a miss the whole declared gas",
+                                    v.timestamp,
+                                    if outside {
+                                        "outside the window"
+                                    } else {
+                                        "inside the window"
+                                    }
+                                ),
+                            )
+                        }
+                    },
+                };
+                r["native_code"] = json!(code);
+                r["observed"] = json!(observed);
+            }
+            doc["note"] = json!(
+                "Codes: expected_code is what the case was built to show; native_code is lc_verify_v3's program logic (lc_v3::handle) on the same message and job state, then attest's rules for a chained Apply. lc_verify_v3 refuses by exit code (charged the cycles used); attest.Apply refuses by panic, and a timestamp-window miss is charged the whole declared gas. declared_gas is 10,000,000 here (the refusal tool); attest_host::submit_update_staged declares 9,000,000 per step."
+            );
+            println!("{f}: annotated");
+        }
+        std::fs::write(f, serde_json::to_string_pretty(&doc)? + "\n")?;
+    }
+    Ok(())
+}
+
 /// Each deployed program header (ids file `[programs]`) holds the image id of the release set.
 async fn check_images(image_ids_file: &str) -> Result<()> {
     let text = std::fs::read_to_string(image_ids_file)?;
@@ -1015,6 +1361,7 @@ async fn main() -> Result<()> {
         Some("run") => run(&args[2..]).await,
         Some("check") => check(&args[2..]).await,
         Some("refusals") => refusals(&args[2..]).await,
+        Some("annotate") => annotate(&args[2..]).await,
         Some("check-images") => check_images(args.get(2).map_or("", String::as_str)).await,
         _ => Err(anyhow!(
             "usage: v3_onchain run --network N --v3-elf P --attest-elf P --out F | v3_onchain check F..."

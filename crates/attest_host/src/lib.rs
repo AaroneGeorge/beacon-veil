@@ -783,9 +783,52 @@ pub fn dry_run_attest(
 // V3: the staged public path (`lc_verify_v3`)
 // ------------------------------------------------------------------------------------------------------------------
 
-/// Gas limit declared for each V3 step: 90% of the cap. A `Begin` that does not fit is retried as `BeginPrepare` +
-/// `BeginKeys` (four steps in all).
+/// Gas limit declared for `Begin` (and for `BeginPrepare` and `BeginKeys`): 90% of the cap; its cost depends on the
+/// number of absent signers (worst measured 6.33M at exactly 342 signers). A `Begin` that does not fit is retried as
+/// `BeginPrepare` + `BeginKeys` (four steps in all).
 pub const V3_STEP_GAS: u64 = 9_000_000;
+/// Gas limit declared for `Miller`: its cost does not depend on the update (measured 5.77M).
+pub const V3_MILLER_GAS: u64 = 7_000_000;
+/// Gas limit declared for `Finish` with its chained `attest.Apply` and record write (measured 4.38M).
+pub const V3_FINISH_GAS: u64 = 5_500_000;
+
+/// The gas limit a V3 step declares. A failed step is charged its declared gas, so the limits sit near the measured
+/// cost (about +25% for the constant steps), which also leaves block space beside a step.
+#[must_use]
+pub fn v3_step_gas(step: &str) -> u64 {
+    match step {
+        "Miller" => V3_MILLER_GAS,
+        "Finish" => V3_FINISH_GAS,
+        _ => V3_STEP_GAS,
+    }
+}
+
+/// Margin before the end of a job's timestamp window (the 14-day bound) within which no step is sent: a step is
+/// included some blocks after it is sent, and one included after the window is charged its whole declared gas.
+pub const V3_WINDOW_MARGIN_MS: u64 = 10 * 60 * 1000;
+
+/// Whether a step may still be sent at `now_ms` for a job whose window ends at `not_after_ms`.
+#[must_use]
+pub fn v3_window_open(not_after_ms: u64, now_ms: u64) -> bool {
+    now_ms.saturating_add(V3_WINDOW_MARGIN_MS) < not_after_ms
+}
+
+fn now_ms() -> u64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map_or(0, |d| u64::try_from(d.as_millis()).unwrap_or(u64::MAX))
+}
+
+fn window_refusal() -> anyhow::Error {
+    refuse(
+        EsaError::E06StaleCheckpoint,
+        format!(
+            "the store's finalized header is within {} s of the {} s bound",
+            V3_WINDOW_MARGIN_MS / 1000,
+            attest_core::lc_v3::WS_PERIOD_SECS
+        ),
+    )
+}
 
 /// [`esa_code`], plus the exit-code refusals of `lc_verify_v3` ("Program exited with non-zero code N ...", N = the
 /// `EsaError` number).
@@ -810,15 +853,20 @@ fn chain_err_v3(what: &str, text: String) -> anyhow::Error {
     }
 }
 
-/// Sends a public transaction paid by [`payer`] with a declared gas limit of `gas_limit`, and waits for it.
-async fn send_public_limited(
+/// Sends a public transaction paid by [`payer`] with a declared gas limit of `gas_limit`, and waits for it. Also
+/// returns the transaction hash (and declared gas) when the transaction reached the sequencer, so a caller can
+/// account for a transaction that was sent and then not included, or included and reverted.
+async fn send_public_limited_sent(
     w: &mut Wallet,
     accounts: Vec<AccountMention>,
     message: Vec<u8>,
     gas_limit: u64,
     what: &str,
-) -> anyhow::Result<TxOutcome> {
-    let payer = account_from_env_or_label(w, "BV_PAYER", "bv-payer")?;
+) -> (Option<(String, Option<u64>)>, anyhow::Result<TxOutcome>) {
+    let payer = match account_from_env_or_label(w, "BV_PAYER", "bv-payer") {
+        Ok(p) => p,
+        Err(e) => return (None, Err(e)),
+    };
     if std::env::var("BV_ALLOW_REVERT").is_ok_and(|v| v == "1") {
         w.set_allow_revert(true);
     }
@@ -826,17 +874,36 @@ async fn send_public_limited(
         gas_limit: Some(gas_limit),
         ..wallet::FeeParams::default()
     });
-    let tx = w
-        .send_pub_tx_paid_by(accounts, 0, message, Some(payer))
-        .await
-        .map_err(|e| chain_err_v3(what, format!("{e:#}")))?;
+    let tx = match w.send_pub_tx_paid_by(accounts, 0, message, Some(payer)).await {
+        Ok(tx) => tx,
+        Err(e) => return (None, Err(chain_err_v3(what, format!("{e:#}")))),
+    };
     let gas = gas_of(w);
-    confirm(w, tx, what).await?;
-    Ok(TxOutcome {
-        tx: tx.to_string(),
-        cycles: None,
-        gas,
-    })
+    let sent = Some((tx.to_string(), gas));
+    if let Err(e) = confirm(w, tx, what).await {
+        return (sent, Err(e));
+    }
+    (
+        sent,
+        Ok(TxOutcome {
+            tx: tx.to_string(),
+            cycles: None,
+            gas,
+        }),
+    )
+}
+
+/// One transaction a staged submission sent to the sequencer (it has a hash): included and not reverted
+/// (`error` is `None`), or not included / reverted (`error` says which). Steps refused before sending (a simulated
+/// refusal) have no hash and are not listed.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct StagedSent {
+    /// `Begin`, `BeginPrepare`, `BeginKeys`, `Miller`, `Finish`.
+    pub name: String,
+    pub tx: String,
+    /// Declared gas limit.
+    pub gas: Option<u64>,
+    pub error: Option<String>,
 }
 
 /// Result of [`submit_update_staged`].
@@ -877,6 +944,7 @@ async fn v3_inputs(
     lc::UpdateOutcome,
     attest_core::lc_v3::StoreWitnessV3,
     Vec<[u8; 96]>,
+    u64,
 )> {
     use attest_core::lc_v3;
     let state = read_instance(ids, instance)
@@ -887,27 +955,18 @@ async fn v3_inputs(
     let w3 = lc_v3::StoreWitnessV3::from_v1(&file.witness, v1.signature_slot);
     let keys = lc_v3::absent_keys(&w3.committee_ssz, update_ssz);
     let out = lc_v3::verify_once(&state.config, &w3, update_ssz, &keys).map_err(|e| refuse(e, "update (v3)"))?;
-    // The steps carry a timestamp window that ends 14 days after the store's finalized header. A step sent after
-    // that is included and charged the whole declared gas, so refuse it here (E06): the instance needs a new
-    // checkpoint.
+    // The steps carry a timestamp window that ends 14 days after the store's finalized header. A step included
+    // after that is reverted and charged its whole declared gas, so refuse here (E06) when the window ends within
+    // the margin; the staged submitter checks again before every step.
     let job =
         lc_v3::prepare(ids.attest, *instance, &state.config, &w3, update_ssz).map_err(|e| refuse(e, "update (v3)"))?;
-    let now_ms = std::time::SystemTime::now()
-        .duration_since(std::time::UNIX_EPOCH)
-        .map_or(0, |d| u64::try_from(d.as_millis()).unwrap_or(u64::MAX));
-    if now_ms >= job.not_after_ms {
-        return Err(refuse(
-            EsaError::E06StaleCheckpoint,
-            format!(
-                "the store's finalized header is older than the {} s bound",
-                lc_v3::WS_PERIOD_SECS
-            ),
-        ));
+    if !v3_window_open(job.not_after_ms, now_ms()) {
+        return Err(window_refusal());
     }
     if (out.pre_store, out.post_store) != (v1.pre_store, v1.post_store) {
         bail!("update: V3 and V1 disagree on the store commitments (local check)");
     }
-    Ok((state.config, v1, w3, keys))
+    Ok((state.config, v1, w3, keys, job.not_after_ms))
 }
 
 /// Attempts per step of [`submit_update_staged`] before it gives up.
@@ -929,8 +988,20 @@ pub async fn submit_update_staged(
     instance: &AccountId,
     update_ssz: &[u8],
 ) -> anyhow::Result<StagedOutcome> {
+    submit_update_staged_traced(ids, v3, instance, update_ssz, &mut Vec::new()).await
+}
+
+/// [`submit_update_staged`], appending every transaction it sends to `sent`, in order, whatever the result: so a
+/// caller can log what a failed or superseded submission paid for.
+pub async fn submit_update_staged_traced(
+    ids: &DeployedIds,
+    v3: AccountId,
+    instance: &AccountId,
+    update_ssz: &[u8],
+    sent: &mut Vec<StagedSent>,
+) -> anyhow::Result<StagedOutcome> {
     use attest_core::{LcVerifyV3Message as M, lc_v3, lc_v3::stage};
-    let (config, v1, w3, absent_keys) = v3_inputs(ids, instance, update_ssz).await?;
+    let (config, v1, w3, absent_keys, not_after_ms) = v3_inputs(ids, instance, update_ssz).await?;
     let seed = lc_v3::job_seed(instance, &v1.pre_store, update_ssz);
     let job = lc_v3::job_id(&v3, &seed);
     let job_mention = || pda(v3, seed).select_program_actor_state(v3);
@@ -988,7 +1059,20 @@ pub async fn submit_update_staged(
             other => bail!("v3 job {job} at unknown stage {other}"),
         };
         let what = format!("v3 {name}");
-        match send_public_limited(&mut w, accounts, borsh::to_vec(&message)?, V3_STEP_GAS, &what).await {
+        if !v3_window_open(not_after_ms, now_ms()) {
+            return Err(window_refusal());
+        }
+        let (hash, result) =
+            send_public_limited_sent(&mut w, accounts, borsh::to_vec(&message)?, v3_step_gas(name), &what).await;
+        if let Some((tx, gas)) = hash {
+            sent.push(StagedSent {
+                name: name.to_owned(),
+                tx,
+                gas,
+                error: result.as_ref().err().map(|e| format!("{e:#}")),
+            });
+        }
+        match result {
             Ok(o) => {
                 steps.push((name.to_owned(), o));
                 failures = 0;
@@ -1003,7 +1087,10 @@ pub async fn submit_update_staged(
                     continue;
                 }
                 failures += 1;
-                if esa_code_v3(&e).is_some() || failures >= V3_STEP_ATTEMPTS {
+                // A step that was included and reverted was charged its whole declared gas: never send it again
+                // (its cause, a stale store or a window miss, does not go away by retrying).
+                let reverted = format!("{e:#}").contains(" reverted in block ");
+                if reverted || esa_code_v3(&e).is_some() || failures >= V3_STEP_ATTEMPTS {
                     return Err(e);
                 }
                 tokio::time::sleep(std::time::Duration::from_secs(15)).await;
@@ -1038,7 +1125,7 @@ pub async fn submit_verify_once_private(
     instance: &AccountId,
     update_ssz: &[u8],
 ) -> anyhow::Result<TxOutcome> {
-    let (config, v1, witness, absent_keys) = v3_inputs(ids, instance, update_ssz).await?;
+    let (config, v1, witness, absent_keys, _) = v3_inputs(ids, instance, update_ssz).await?;
     let mut w = open_wallet()?;
     let submitter = account_from_env_or_label(&w, "BV_SUBMITTER", "bv-submitter")?;
     let name = program_name(&v3).unwrap_or_else(|| "lc_verify_v3".to_owned());
@@ -1070,4 +1157,36 @@ pub async fn submit_verify_once_private(
         },
     )?;
     Ok(out)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn window_margin() {
+        let end = 1_800_000_000_000u64;
+        assert!(v3_window_open(end, end - V3_WINDOW_MARGIN_MS - 1));
+        assert!(!v3_window_open(end, end - V3_WINDOW_MARGIN_MS), "inside the margin");
+        assert!(!v3_window_open(end, end - 1));
+        assert!(!v3_window_open(end, end + 1), "after the bound");
+        assert!(!v3_window_open(0, 0));
+        assert!(!v3_window_open(end, u64::MAX), "no overflow");
+    }
+
+    #[test]
+    fn step_gas() {
+        assert_eq!(v3_step_gas("Begin"), 9_000_000);
+        assert_eq!(v3_step_gas("BeginPrepare"), 9_000_000);
+        assert_eq!(v3_step_gas("BeginKeys"), 9_000_000);
+        assert_eq!(v3_step_gas("Miller"), 7_000_000);
+        assert_eq!(v3_step_gas("Finish"), 5_500_000);
+    }
+
+    #[test]
+    fn reverted_text_matches_confirm() {
+        // `confirm` words a reverted transaction so the staged loop recognises it.
+        let e = anyhow!("v3 Finish: tx abc reverted in block 12 (the panic code is in the sequencer log)");
+        assert!(format!("{e:#}").contains(" reverted in block "));
+    }
 }

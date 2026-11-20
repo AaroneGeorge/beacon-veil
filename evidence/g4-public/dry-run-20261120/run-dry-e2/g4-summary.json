@@ -3,7 +3,8 @@
   "result": "FAIL",
   "log": "evidence/g4-public/dry-run-20261120/run-dry-e2/follower.jsonl",
   "failures": [
-    "no update applied"
+    "no update applied",
+    "2 submissions superseded (another submitter on the instance)"
   ],
   "pids": [
     1617132
@@ -72,5 +73,9 @@
   "max_step_share_of_block": 0.576,
   "max_step_gas_limit_share_of_block": 0.9,
   "deferrals": 0,
-  "resumes": 0
+  "resumes": 0,
+  "failed_steps": 0,
+  "steps_without_cycles": [],
+  "payer_balance_first": null,
+  "payer_balance_last": null
 }

@@ -1,5 +1,12 @@
 # lc_verify_v3 deployment on seq-pub (LEZ v0.4.0-rc3 standalone sequencer, local), written 2026-11-20T01:33:36Z
 
+## earlier state of this chain
+seq-pub was not reset before this deployment. The same chain also holds a first deployment of lc_verify_v3 from release
+set aaf94c6 (image 0a08637c..., before the identity-signature check in Miller; not used by any recorded evidence) and
+one abandoned Sepolia instance (J1NgC8ZS1kJwMCknuLgCHi7gyxDg69jwbi8Equy8986q, Init in block 374; the measuring tool
+stopped after its first update on its own head check, which compared the full head for an update that only teaches
+the next committee). Neither is read by any file in this folder.
+
 ## sequencer
 === 2026-11-19T23:56:11Z start seq-pub RISC0_DEV_MODE=unset
 binary: $B/vendor/lez/target/release/sequencer_service (LEZ tag v0.4.0-rc3, commit bafd07be0701398f9bc435f73ab05e9a7936c301)

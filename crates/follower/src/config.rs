@@ -85,6 +85,10 @@ pub struct ChainCfg {
     /// Name of the sequencer the instance lives on (`seq-pub`), written into the `start` line for the run summary.
     #[serde(default)]
     pub sequencer: Option<String>,
+    /// Payer balance below which nothing is sent (`payer_error`). Default for `public`: the reserve of one update,
+    /// three steps of 9M declared gas at 8 per gas (216,000,000); 0 otherwise.
+    #[serde(default)]
+    pub min_payer_balance: Option<u64>,
     /// Mock state file; default `<state_dir>/mock-chain.json`.
     #[serde(default)]
     pub mock_file: Option<PathBuf>,
@@ -145,6 +149,16 @@ impl Config {
             m => bail!("chain.mode '{m}': expected private, public_probe or public"),
         }
         Ok(())
+    }
+
+    /// See [`ChainCfg::min_payer_balance`].
+    #[must_use]
+    pub fn min_payer_balance(&self) -> u128 {
+        u128::from(
+            self.chain
+                .min_payer_balance
+                .unwrap_or(if self.chain.mode == "public" { 216_000_000 } else { 0 }),
+        )
     }
 
     pub fn log_file(&self) -> PathBuf {

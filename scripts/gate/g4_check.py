@@ -34,6 +34,7 @@ from datetime import datetime
 REQUIRED = ("ts", "pid", "event", "slot", "period", "tx", "beacon_source", "uptime_s")
 SOURCES = ("logos_module", "direct_http")
 BLOCK_CAP = 10_000_000
+STEP_LIMIT = 9_000_000
 
 
 def parse_ts(s):
@@ -175,6 +176,8 @@ def check(lines, min_hours, cadence_override, allow_mock):
     info["sequencer"] = start_extra.get("sequencer")
     if info["mode"] == "public":
         info["verifier"] = start_extra.get("verifier")
+        if info["risc0_dev_mode"] != "unset":
+            fails.append(f"follower ran with RISC0_DEV_MODE={info['risc0_dev_mode']!r} (public mode needs it unset)")
         steps, sent_by_outcome = [], []
         for r in recs:
             if r["event"] in ("applied", "superseded"):
@@ -188,17 +191,27 @@ def check(lines, min_hours, cadence_override, allow_mock):
         for x in steps:
             names[x.get("name")] = names.get(x.get("name"), 0) + 1
         # Metered cycles of a step: the charged execution gas of its block when it was the block's only charged
-        # transaction (follower `charge`), else cycles the submitter reported, if any.
+        # transaction (follower `charge`), else cycles the submitter reported, if any. When the block held other
+        # charged transactions too (runs D and E share seq-pub), the block's total is an upper bound for the step.
         def step_cycles(x):
             c = x.get("charge") or {}
             return c.get("gas_exec") if c.get("gas_exec") is not None else x.get("cycles")
+
+        def step_bound(x):
+            c = x.get("charge") or {}
+            if step_cycles(x) is None and (c.get("block_charged_txs") or 0) > 1:
+                return c.get("block_gas_exec")
+            return None
         cycles = sorted(step_cycles(x) for x in steps if step_cycles(x) is not None)
+        bounds = [step_bound(x) for x in steps if step_bound(x) is not None]
         info["steps_with_cycles"] = len(cycles)
+        info["steps_bounded_by_block"] = len(bounds)
+        info["max_step_block_bound"] = max(bounds) if bounds else None
         info["reverted_steps"] = sum(1 for x in steps if (x.get("charge") or {}).get("reverted"))
         if info["reverted_steps"]:
             fails.append(f"{info['reverted_steps']} steps reverted on chain")
         gas = [x["gas"] for x in steps if x.get("gas") is not None]
-        info["txs"] = len(steps)
+        info["txs"] = sum(1 for x in steps if x.get("tx"))
         info["txs_applied_updates"] = sum(sent_by_outcome)
         info["txs_per_applied"] = sorted(set(sent_by_outcome))
         info["steps_by_name"] = names
@@ -213,6 +226,25 @@ def check(lines, min_hours, cadence_override, allow_mock):
         info["max_step_gas_limit_share_of_block"] = round(max(gas) / BLOCK_CAP, 3) if gas else None
         info["deferrals"] = sum(1 for r in recs if r["event"] == "submit_deferred")
         info["resumes"] = sum(1 for r in recs if r["event"] == "submit_resume")
+        info["failed_steps"] = sum(1 for x in steps if x.get("error"))
+        no_cycles = [{"name": x.get("name"), "tx": x.get("tx")} for x in steps
+                     if step_cycles(x) is None and step_bound(x) is None]
+        info["steps_without_cycles"] = no_cycles
+        balances = [int(b) for r in recs for b in [((r.get("extra") or {}).get("payer_balance"))] if b is not None]
+        info["payer_balance_first"] = balances[0] if balances else None
+        info["payer_balance_last"] = balances[-1] if balances else None
+        # Public-run rules: one follower, three steps per update, each step measured and under 90% of the cap, on
+        # the sequencer with dev mode unset.
+        if applied and info["txs_per_applied"] != [3]:
+            fails.append(f"transactions per applied update {info['txs_per_applied']}, want [3]")
+        if info["superseded"]:
+            fails.append(f"{info['superseded']} submissions superseded (another submitter on the instance)")
+        if info["txs"] and no_cycles:
+            fails.append(f"{len(no_cycles)} of {info['txs']} steps have no cycle figure (exact or bounded by block)")
+        if info["max_step_cycles"] is not None and info["max_step_cycles"] > STEP_LIMIT:
+            fails.append(f"a step used {info['max_step_cycles']} cycles > {STEP_LIMIT}")
+        if info["sequencer"] != "seq-pub":
+            fails.append(f"sequencer {info['sequencer']!r}, want 'seq-pub'")
     return not fails, fails, info
 
 

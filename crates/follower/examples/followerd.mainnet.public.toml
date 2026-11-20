@@ -1,6 +1,6 @@
 # attest-followerd config: run D, Ethereum MAINNET (chain_id 1) beacon chain into an instance on seq-pub through
 # the public path: each update is three public transactions to lc_verify_v3 (Begin, Miller, Finish), executed by the
-# sequencer (RISC0_DEV_MODE unset; public transactions carry no proof). The instance's verifiers include lc_verify_v3.
+# sequencer (RISC0_DEV_MODE unset; public transactions carry no proof). The instance's only verifier is lc_verify_v3.
 # crates/follower/scripts/run_public.sh mainnet start writes the real config into the state dir.
 
 [follower]

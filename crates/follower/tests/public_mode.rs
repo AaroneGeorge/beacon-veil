@@ -68,6 +68,7 @@ impl Run {
             poll: Duration::from_secs(1),
             jitter_max: Duration::ZERO,
             min_participation: 342,
+            min_payer_balance: 1_000,
             state_dir: self.dir.clone(),
         };
         let log = Logger::open(&self.dir.join("follower.jsonl"), BeaconSourceKind::DirectHttp, false).unwrap();
@@ -230,4 +231,26 @@ async fn store_moves_while_deferred() {
     assert_eq!(r.events(), ["submit", "submit_deferred", "superseded"]);
     assert_eq!(r.last("superseded")["n"], 1);
     assert!(Cache::load(&r.dir).unwrap().unwrap().pending.is_none());
+}
+
+#[tokio::test]
+async fn low_payer_balance_sends_nothing() {
+    let r = Run::new(
+        "payer",
+        MockState {
+            payer_balance: Some(10),
+            ..head_1908()
+        },
+    );
+    let mut f = r.follower();
+    step(&mut f).await;
+    assert_eq!(r.events(), ["payer_error"]);
+    assert_eq!(r.state().head_slot, head_1908().head_slot);
+    // Funded: the update goes through.
+    let mut s = r.state();
+    s.payer_balance = Some(1_000_000);
+    r.chain.save(&s).unwrap();
+    step(&mut f).await;
+    assert_eq!(r.events(), ["payer_error", "submit", "applied"]);
+    assert_eq!(r.last("applied")["extra"]["payer_balance"], "1000000");
 }

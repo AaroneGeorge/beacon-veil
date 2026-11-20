@@ -413,10 +413,16 @@ fn markdown(j: &Value, columns: &[&str]) -> String {
             "mismatches",
             "missing",
             "max_cycles_accepted",
+            "image_id_matches_expected",
         ] {
             let _ = writeln!(m, "| {k} | {} |", e[k]);
         }
         list(&mut m, "Executor results different from V1", &e["mismatch_cases"]);
+        list(
+            &mut m,
+            "Executor results different from the native V3 column",
+            &e["native_v3_mismatches"],
+        );
         list(&mut m, "Executor designed differences", &e["designed_differences"]);
     }
     m
@@ -462,6 +468,10 @@ pub fn add_executor(s: &mut Summary, cases: &[Case], outcomes: &[Outcome], colum
         (0u64, 0u64, 0u64, 0u64, 0u64, 0u64);
     let mut mismatches = Vec::new();
     let mut designed = Vec::new();
+    // The guest runs the code of the native V3 column: on every case their verdicts must be equal, designed
+    // differences from V1 included (a guest that accepted a designed-difference case would differ here).
+    let v3_col = columns.iter().position(|c| *c == "v3");
+    let mut native_mismatches = Vec::new();
     for (c, o) in cases.iter().zip(outcomes) {
         let Some(e) = by_id
             .get(c.id.as_str())
@@ -479,6 +489,18 @@ pub fn add_executor(s: &mut Summary, cases: &[Case], outcomes: &[Outcome], colum
             max_cycles = max_cycles.max(cycles);
         } else {
             refused += 1;
+        }
+        if let Some(i) = v3_col {
+            let native = o.verdicts[i].digest();
+            if got != native {
+                s.failures.push(format!(
+                    "{}: executor {} but native v3 {}",
+                    c.id,
+                    e["verdict"],
+                    o.verdicts[i].short()
+                ));
+                native_mismatches.push(json!({"id": c.id, "v3": o.verdicts[i].short(), "executor": e["verdict"]}));
+            }
         }
         let want = o.verdicts[0].digest();
         if got != want {
@@ -501,6 +523,16 @@ pub fn add_executor(s: &mut Summary, cases: &[Case], outcomes: &[Outcome], colum
             }
         }
     }
+    // The executor ran the released guest: its image id is the one guests/IMAGE_IDS.expected pins.
+    let expected_image = expected_image_id("lc_verify_v3");
+    let image_matches = expected_image.is_some() && exec["image_id"].as_str() == expected_image.as_deref();
+    if !image_matches {
+        s.failures.push(format!(
+            "executor image {} is not the lc_verify_v3 image of guests/IMAGE_IDS.expected ({})",
+            exec["image_id"],
+            expected_image.as_deref().unwrap_or("missing")
+        ));
+    }
     let j = &mut s.json;
     j["executor_cases"] = json!(n);
     j["executor_mismatches"] = json!(mismatches.len());
@@ -519,7 +551,23 @@ pub fn add_executor(s: &mut Summary, cases: &[Case], outcomes: &[Outcome], colum
         "mismatches": mismatches.len(),
         "mismatch_cases": mismatches,
         "designed_differences": designed,
+        "native_v3_compared": v3_col.is_some(),
+        "native_v3_mismatches": native_mismatches,
+        "expected_image_id": expected_image,
+        "image_id_matches_expected": image_matches,
     });
     j["pass"] = json!(s.failures.is_empty());
     s.markdown = markdown(&s.json, columns);
+}
+
+/// The image id pinned for `program` in `guests/IMAGE_IDS.expected` (`<program> <hex>` lines).
+#[must_use]
+pub fn expected_image_id(program: &str) -> Option<String> {
+    let text = std::fs::read_to_string(fixtures::fixtures_dir().join("../guests/IMAGE_IDS.expected")).ok()?;
+    text.lines().filter(|l| !l.starts_with('#')).find_map(|l| {
+        let mut it = l.split_whitespace();
+        (it.next() == Some(program))
+            .then(|| it.next().map(str::to_string))
+            .flatten()
+    })
 }

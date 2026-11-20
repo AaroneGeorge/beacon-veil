@@ -27,6 +27,19 @@ fn helios_v1_v2_differential() {
     );
     assert!(j["executor_cases"].as_u64().unwrap() >= j["valid"].as_u64().unwrap() + 100);
     assert_eq!(j["executor_mismatches"], 0);
+    assert_eq!(
+        e["native_v3_compared"], true,
+        "the v3 column must run beside the executor pass"
+    );
+    assert_eq!(
+        e["native_v3_mismatches"].as_array().map(Vec::len),
+        Some(0),
+        "guest and native V3 differ"
+    );
+    assert_eq!(
+        e["image_id_matches_expected"], true,
+        "executor image is not the pinned lc_verify_v3 image"
+    );
     // The executor's designed differences are exactly the native V3 column's.
     let ids = |v: &serde_json::Value, column: Option<&str>| -> Vec<String> {
         v.as_array()

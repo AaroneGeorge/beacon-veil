@@ -34,7 +34,7 @@ guests: ## Build every guest with the local rzup toolchain; copy .bin files to $
 	$(ENV) $(NICE) cargo build -p guest_methods && scripts/collect_guests.sh $(GUESTS)
 	$(ENV) GUEST_CARGO_CONFIG="$$BV_V3_CARGO_CONFIG" $(NICE) scripts/build_guest.sh programs/lc_verify_v3/Cargo.toml lc_verify_v3 "$$CARGO_TARGET_DIR/guests"
 
-guests-docker: ## Build every guest in the pinned image r0.1.91.1 (reproducible image ids)
+guests-docker: ## Build the guests of crates/guest_methods in the pinned image r0.1.91.1 (lc_verify_v3 and the release set: scripts/guests_release.sh)
 	$(ENV) BV_GUEST_DOCKER=1 $(NICE) cargo build -p guest_methods && scripts/collect_guests.sh $(GUESTS)
 
 forge-test: ## Foundry tests

@@ -1,7 +1,7 @@
 {
   "data": "fixtures/pub/mainnet bootstrap_15679488 (period 1914), fixtures/diff/mainnet updates 1914 and 1915 and finality updates, fixtures/diff/sepolia update 1416; fabricated chain (checkpoint period 1900) for the old store",
   "instance": "77ooFhT6YCa55NDvna1o41mZYk2nb9DdPGn3JY6Wy6Ub",
-  "note": "lc_verify_v3 refuses by exit code (charged the cycles used); attest.Apply refuses by panic (charged the declared gas). charged_gas is the block's charged execution gas when the block holds one charged transaction.",
+  "note": "Codes: expected_code is what the case was built to show; native_code is lc_verify_v3's program logic (lc_v3::handle) on the same message and job state, then attest's rules for a chained Apply. lc_verify_v3 refuses by exit code (charged the cycles used); attest.Apply refuses by panic, and a timestamp-window miss is charged the whole declared gas. declared_gas is 10,000,000 here (the refusal tool); attest_host::submit_update_staged declares 9,000,000 per step.",
   "programs": {
     "attest": "735RSWK5eYrZDnpJVvpVwrkDa93AXQNS7avFjAUeWEH8",
     "lc_verify_v3": "8niQPec4Ng9yrm17Aj3VFbtebrXPxd6JVhhdZsAXQ1Tq"
@@ -13,12 +13,20 @@
       "case": "Begin again on a done job",
       "charged_gas": 163275,
       "charged_txs_in_block": 1,
-      "expected": "E14 (exit code 14)",
+      "declared_gas": 10000000,
+      "executor_lc_verify_v3": {
+        "exit": "Halted(14)",
+        "metered_cycles": 163275
+      },
+      "expected_code": "E14 (exit code 14)",
       "head_unchanged": true,
       "included": true,
-      "refusal_text": "duplicate begin: tx 907d4e59e25abef21125c1cba34caf610ddff5adf462469c735fa22f001ee5f9 reverted in block 486 (the panic code is in the sequencer log)",
+      "native_code": "E14",
+      "observed": "reverted; lc_verify_v3 ends with exit code 14 (the sequencer does not log exit codes; the deployed ELF re-executed on the same input gives Halted(14) after 163275 cycles, and the block charged 163275)",
+      "payer": "CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r",
       "reverted": true,
-      "tx": "907d4e59e25abef21125c1cba34caf610ddff5adf462469c735fa22f001ee5f9"
+      "tx": "907d4e59e25abef21125c1cba34caf610ddff5adf462469c735fa22f001ee5f9",
+      "wallet_message": "duplicate begin: tx 907d4e59e25abef21125c1cba34caf610ddff5adf462469c735fa22f001ee5f9 reverted in block 486 (the panic code is in the sequencer log)"
     },
     {
       "block": 488,
@@ -26,12 +34,20 @@
       "case": "Miller on a done job",
       "charged_gas": 37003,
       "charged_txs_in_block": 1,
-      "expected": "E14 (exit code 14)",
+      "declared_gas": 10000000,
+      "executor_lc_verify_v3": {
+        "exit": "Halted(14)",
+        "metered_cycles": 37003
+      },
+      "expected_code": "E14 (exit code 14)",
       "head_unchanged": true,
       "included": true,
-      "refusal_text": "miller on a done job: tx 496d6bb860dd7736cfe3744b2e75e03c6734aae93df21e739b8db9469d204159 reverted in block 488 (the panic code is in the sequencer log)",
+      "native_code": "E14",
+      "observed": "reverted; lc_verify_v3 ends with exit code 14 (the sequencer does not log exit codes; the deployed ELF re-executed on the same input gives Halted(14) after 37003 cycles, and the block charged 37003)",
+      "payer": "CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r",
       "reverted": true,
-      "tx": "496d6bb860dd7736cfe3744b2e75e03c6734aae93df21e739b8db9469d204159"
+      "tx": "496d6bb860dd7736cfe3744b2e75e03c6734aae93df21e739b8db9469d204159",
+      "wallet_message": "miller on a done job: tx 496d6bb860dd7736cfe3744b2e75e03c6734aae93df21e739b8db9469d204159 reverted in block 488 (the panic code is in the sequencer log)"
     },
     {
       "block": 493,
@@ -39,12 +55,20 @@
       "case": "Finish before Miller",
       "charged_gas": 37064,
       "charged_txs_in_block": 1,
-      "expected": "E01 (exit code 1)",
+      "declared_gas": 10000000,
+      "executor_lc_verify_v3": {
+        "exit": "Halted(1)",
+        "metered_cycles": 37064
+      },
+      "expected_code": "E01 (exit code 1)",
       "head_unchanged": true,
       "included": true,
-      "refusal_text": "finish before miller: tx 2409daad1555359e998d2cc2844e38bf8510935d77d319c8d16f9ada624a49ae reverted in block 493 (the panic code is in the sequencer log)",
+      "native_code": "E01",
+      "observed": "reverted; lc_verify_v3 ends with exit code 1 (the sequencer does not log exit codes; the deployed ELF re-executed on the same input gives Halted(1) after 37064 cycles, and the block charged 37064)",
+      "payer": "CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r",
       "reverted": true,
-      "tx": "2409daad1555359e998d2cc2844e38bf8510935d77d319c8d16f9ada624a49ae"
+      "tx": "2409daad1555359e998d2cc2844e38bf8510935d77d319c8d16f9ada624a49ae",
+      "wallet_message": "finish before miller: tx 2409daad1555359e998d2cc2844e38bf8510935d77d319c8d16f9ada624a49ae reverted in block 493 (the panic code is in the sequencer log)"
     },
     {
       "block": 503,
@@ -52,12 +76,20 @@
       "case": "forged signature, refused at Finish",
       "charged_gas": 4273741,
       "charged_txs_in_block": 1,
-      "expected": "E03 (exit code 3)",
+      "declared_gas": 10000000,
+      "executor_lc_verify_v3": {
+        "exit": "Halted(3)",
+        "metered_cycles": 4273741
+      },
+      "expected_code": "E03 (exit code 3)",
       "head_unchanged": true,
       "included": true,
-      "refusal_text": "forged finish: tx 84a62698ce309d1e4a71a7de5ce222c654c70e0a16cda393dcc7eae8187b1767 reverted in block 503 (the panic code is in the sequencer log)",
+      "native_code": "E03",
+      "observed": "reverted; lc_verify_v3 ends with exit code 3 (the sequencer does not log exit codes; the deployed ELF re-executed on the same input gives Halted(3) after 4273741 cycles, and the block charged 4273741)",
+      "payer": "CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r",
       "reverted": true,
-      "tx": "84a62698ce309d1e4a71a7de5ce222c654c70e0a16cda393dcc7eae8187b1767"
+      "tx": "84a62698ce309d1e4a71a7de5ce222c654c70e0a16cda393dcc7eae8187b1767",
+      "wallet_message": "forged finish: tx 84a62698ce309d1e4a71a7de5ce222c654c70e0a16cda393dcc7eae8187b1767 reverted in block 503 (the panic code is in the sequencer log)"
     },
     {
       "block": 515,
@@ -65,12 +97,20 @@
       "case": "a job whose store has moved (stale): attest.Apply refuses",
       "charged_gas": 10000000,
       "charged_txs_in_block": 1,
-      "expected": "E13 (attest panic ESA:E13)",
+      "declared_gas": 10000000,
+      "executor_lc_verify_v3": {
+        "exit": "Halted(0)",
+        "metered_cycles": 4299917
+      },
+      "expected_code": "E13 (attest panic ESA:E13)",
       "head_unchanged": true,
       "included": true,
-      "refusal_text": "stale finish: tx 74aa841eeeb196f7263447a0ae9f1a9a12dad420d5188bb99f37c91ab63bbfd6 reverted in block 515 (the panic code is in the sequencer log)",
+      "native_code": "E13",
+      "observed": "reverted; lc_verify_v3 accepts the step, the chained attest.Apply panics; sequencer log for block 515: [\"ESA:E13\"]",
+      "payer": "CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r",
       "reverted": true,
-      "tx": "74aa841eeeb196f7263447a0ae9f1a9a12dad420d5188bb99f37c91ab63bbfd6"
+      "tx": "74aa841eeeb196f7263447a0ae9f1a9a12dad420d5188bb99f37c91ab63bbfd6",
+      "wallet_message": "stale finish: tx 74aa841eeeb196f7263447a0ae9f1a9a12dad420d5188bb99f37c91ab63bbfd6 reverted in block 515 (the panic code is in the sequencer log)"
     },
     {
       "block": 517,
@@ -78,12 +118,20 @@
       "case": "a Sepolia update sent to a mainnet instance",
       "charged_gas": 3413535,
       "charged_txs_in_block": 1,
-      "expected": "refused at Begin (V1 natively: Some(E01Malformed))",
+      "declared_gas": 10000000,
+      "executor_lc_verify_v3": {
+        "exit": "Halted(1)",
+        "metered_cycles": 3413535
+      },
+      "expected_code": "E01 (exit code 1; V1 natively: E01)",
       "head_unchanged": true,
       "included": true,
-      "refusal_text": "other network: tx 3fdda983dc7eebc2672f620a3b1f925994ecb279eede3858f40283f1b512895d reverted in block 517 (the panic code is in the sequencer log)",
+      "native_code": "E01",
+      "observed": "reverted; lc_verify_v3 ends with exit code 1 (the sequencer does not log exit codes; the deployed ELF re-executed on the same input gives Halted(1) after 3413535 cycles, and the block charged 3413535)",
+      "payer": "CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r",
       "reverted": true,
-      "tx": "3fdda983dc7eebc2672f620a3b1f925994ecb279eede3858f40283f1b512895d"
+      "tx": "3fdda983dc7eebc2672f620a3b1f925994ecb279eede3858f40283f1b512895d",
+      "wallet_message": "other network: tx 3fdda983dc7eebc2672f620a3b1f925994ecb279eede3858f40283f1b512895d reverted in block 517 (the panic code is in the sequencer log)"
     },
     {
       "block": 521,
@@ -91,12 +139,20 @@
       "case": "Begin on an instance whose store is older than 14 days",
       "charged_gas": 10000000,
       "charged_txs_in_block": 1,
-      "expected": "outside the timestamp window",
+      "declared_gas": 10000000,
+      "executor_lc_verify_v3": {
+        "exit": "Halted(0)",
+        "metered_cycles": 4282302
+      },
+      "expected_code": "outside the timestamp window",
       "head_unchanged": true,
       "included": true,
-      "refusal_text": "old store begin: tx 482980cd5b8fd1ad273a5cfffee9bc399ef1d08d50a3b1fca975c8a2c985a08c reverted in block 521 (the panic code is in the sequencer log)",
+      "native_code": "none (accepted by the program)",
+      "observed": "reverted; the program accepts the step natively and exits 0 (Halted(0)); its timestamp window is [1793603555000, 1794811991000) ms and the block time is 1795140373854 ms (outside the window); no panic in the sequencer log for block 521; LEZ checks the window at settlement and charges a miss the whole declared gas",
+      "payer": "CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r",
       "reverted": true,
-      "tx": "482980cd5b8fd1ad273a5cfffee9bc399ef1d08d50a3b1fca975c8a2c985a08c"
+      "tx": "482980cd5b8fd1ad273a5cfffee9bc399ef1d08d50a3b1fca975c8a2c985a08c",
+      "wallet_message": "old store begin: tx 482980cd5b8fd1ad273a5cfffee9bc399ef1d08d50a3b1fca975c8a2c985a08c reverted in block 521 (the panic code is in the sequencer log)"
     }
   ],
   "sequencer": "seq-pub",

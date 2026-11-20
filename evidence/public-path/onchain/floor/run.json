@@ -1,4 +1,5 @@
 {
+  "anyone_can_submit": "each step is a public transaction any funded account can send (the job account is a PDA of lc_verify_v3; the program does not check the sender). Shown by evidence/g4-public/dry-run-20261120/: two followers with their own payers on one instance shared each update's job",
   "checkpoint_slot": 15679552,
   "config_chain_id": 1,
   "every_step_within_step_limit": true,
@@ -11,6 +12,7 @@
     "slot": 15679616,
     "store_commitment": "58a5c0a0236582d297f757dc86278277ad1f139403c4718b0e96c7ddbc1999d7"
   },
+  "head_equals_v1_every_update": true,
   "init": {
     "block": 382,
     "tx": "926af6088447ca7bbcffc8fd9e9f45f2f0f7822f8d5cf73aa94510be59da9476"
@@ -28,6 +30,7 @@
   "txs": 3,
   "updates": [
     {
+      "finalized_slot_moved": true,
       "four_steps": false,
       "head_after": {
         "beacon_root": "3bc345c202e2ce0dbda0c8035dfc8a7db0c505789dd5d61f289017c1f4f7862a",
@@ -36,6 +39,7 @@
         "store_commitment": "58a5c0a0236582d297f757dc86278277ad1f139403c4718b0e96c7ddbc1999d7"
       },
       "head_equals_v1": true,
+      "head_equals_v1_compared": "slot, beacon_root and store_commitment of the on-chain head after the update, against V1 (Helios 0.12.0, native) on the same input",
       "job": "9yL6UDbEu4R4i8vdMzthTmYnytRYAkCspRsSY8HtoTw",
       "kind": "period",
       "participation": 342,
@@ -49,10 +53,13 @@
           "charged_gas": 6327247,
           "charged_txs_in_block": 1,
           "declared_gas": 9000000,
+          "fee_note": "base + tip revenue of the block's fee summary; the step is the block's only charged transaction",
+          "fee_paid": "51167920",
           "message_bytes": 68280,
           "metered_cycles_chained_attest": 0,
           "metered_cycles_total": 6327247,
           "metered_cycles_v3": 6327247,
+          "payer": "CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r",
           "position": 0,
           "reverted": false,
           "share_of_cap": "63.3%",
@@ -68,10 +75,13 @@
           "charged_gas": 5765037,
           "charged_txs_in_block": 1,
           "declared_gas": 9000000,
+          "fee_note": "base + tip revenue of the block's fee summary; the step is the block's only charged transaction",
+          "fee_paid": "46123488",
           "message_bytes": 1,
           "metered_cycles_chained_attest": 0,
           "metered_cycles_total": 5765037,
           "metered_cycles_v3": 5765037,
+          "payer": "CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r",
           "position": 0,
           "reverted": false,
           "share_of_cap": "57.7%",
@@ -87,10 +97,13 @@
           "charged_gas": 4378929,
           "charged_txs_in_block": 1,
           "declared_gas": 9000000,
+          "fee_note": "base + tip revenue of the block's fee summary; the step is the block's only charged transaction",
+          "fee_paid": "35036168",
           "message_bytes": 1,
           "metered_cycles_chained_attest": 79012,
           "metered_cycles_total": 4378929,
           "metered_cycles_v3": 4299917,
+          "payer": "CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r",
           "position": 0,
           "reverted": false,
           "share_of_cap": "43.8%",

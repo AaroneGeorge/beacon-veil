@@ -147,6 +147,7 @@ async fn run<C: Chain + Sync>(
         poll: Duration::from_secs(cfg.follower.poll_s),
         jitter_max: Duration::from_secs(cfg.follower.jitter_max_s),
         min_participation: cfg.follower.min_participation,
+        min_payer_balance: cfg.min_payer_balance(),
         state_dir: cfg.follower.state_dir.clone(),
     };
     let detail = serde_json::json!({

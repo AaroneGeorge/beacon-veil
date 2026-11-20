@@ -26,6 +26,9 @@ pub struct Params {
     pub poll: Duration,
     pub jitter_max: Duration,
     pub min_participation: u32,
+    /// Public path: below this payer balance the follower logs `payer_error` and sends nothing (the sequencer drops
+    /// a transaction whose reserve the payer cannot cover, without an error the follower could see).
+    pub min_payer_balance: u128,
     pub state_dir: PathBuf,
 }
 
@@ -124,6 +127,9 @@ pub struct StepRec {
     /// transaction).
     #[serde(default)]
     pub charge: Option<crate::charge::Charge>,
+    /// Sent but not included, or included and reverted (paid either way).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub error: Option<String>,
 }
 
 impl From<&Step> for StepRec {
@@ -134,6 +140,7 @@ impl From<&Step> for StepRec {
             gas: s.tx.as_ref().and_then(|t| t.gas),
             cycles: s.tx.as_ref().and_then(|t| t.cycles),
             charge: s.charge.clone(),
+            error: s.error.clone(),
         }
     }
 }
@@ -148,6 +155,7 @@ impl StepRec {
                 gas: self.gas,
             }),
             charge: self.charge.clone(),
+            error: self.error.clone(),
         }
     }
 }
@@ -316,6 +324,10 @@ impl<S: BeaconSource + Sync, C: Chain + Sync> Follower<S, C> {
         self.cache.save(&self.params.state_dir)?;
 
         let mut l = self.log.line("start");
+        let mut start_detail = start_detail;
+        if let Some(b) = self.chain.payer_balance().await {
+            start_detail["payer_balance"] = b.to_string().into();
+        }
         l.extra = Some(start_detail);
         self.log.write(l);
 
@@ -539,6 +551,20 @@ impl<S: BeaconSource + Sync, C: Chain + Sync> Follower<S, C> {
             return Ok(());
         }
 
+        if let Some(b) = self.chain.payer_balance().await
+            && b < self.params.min_payer_balance
+        {
+            self.err_line(
+                "payer_error",
+                None,
+                &format!(
+                    "payer balance {b} is below {}: the sequencer would drop the transactions; fund the payer",
+                    self.params.min_payer_balance
+                ),
+            );
+            return Ok(());
+        }
+
         self.n += 1;
         let n = self.n;
         let mut l = self.log.line("submit");
@@ -634,6 +660,9 @@ impl<S: BeaconSource + Sync, C: Chain + Sync> Follower<S, C> {
                     extra["four_steps"] = four_steps.into();
                     extra["attempts"] = attempts.into();
                 }
+                if let Some(b) = self.chain.payer_balance().await {
+                    extra["payer_balance"] = b.to_string().into();
+                }
                 l.extra = Some(extra);
                 self.log.write(l);
                 self.cache.last_applied_unix = Some(now_unix());
@@ -682,6 +711,19 @@ impl<S: BeaconSource + Sync, C: Chain + Sync> Follower<S, C> {
                 p.landed = landed.iter().map(StepRec::from).collect();
                 p.attempts = attempts;
                 self.cache.pending = Some(p);
+                self.cache.save(&self.params.state_dir)?;
+            }
+            Ok(Submitted::Failed { code, detail, steps }) => {
+                let mut l = self.log.line("submit_failed");
+                l.slot = Some(cand.finalized_slot);
+                l.kind = Some(cand.kind.label().into());
+                l.n = Some(n);
+                l.code = code;
+                l.detail = Some(detail.chars().take(2000).collect());
+                l.extra =
+                    Some(serde_json::json!({ "txs": steps.len(), "steps": steps_json(&steps), "attempts": attempts }));
+                self.log.write(l);
+                self.cache.pending = None;
                 self.cache.save(&self.params.state_dir)?;
             }
             Err(e) => {

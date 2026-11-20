@@ -28,6 +28,9 @@ if [ -f "$RUN_DIR/wallet.env" ]; then
   # shellcheck source=/dev/null
   source <(grep '^export ' "$RUN_DIR/wallet.env")
 fi
+# env.sh exports RISC0_DEV_MODE=1 for builds and dev chains. A follower of a sequencer with dev mode unset (pub, real)
+# must not carry it: its start line records the variable, and the run summary reports it.
+case "${SEQ:-dev}" in real|pub) unset RISC0_DEV_MODE ;; esac
 
 pid_alive() { [ -f "$RUN_DIR/followerd.pid" ] && kill -0 "$(cat "$RUN_DIR/followerd.pid")" 2>/dev/null; }
 
@@ -42,6 +45,9 @@ start)
   [ -n "$INSTANCE" ] || { echo "no INSTANCE and no $RUN_DIR/instance.json (attest init --out)" >&2; exit 1; }
   case "$LEE_WALLET_HOME_DIR" in */wallet-dev) echo "run A needs its own wallet home: wallet_home.sh w4-runA > $RUN_DIR/wallet.env" >&2; exit 1 ;; esac
   [ -n "${BV_PAYER:-}" ] || { echo "BV_PAYER not set ($RUN_DIR/wallet.env)" >&2; exit 1; }
+  case "${SEQ:-dev}" in
+    real|pub) [ -z "${RISC0_DEV_MODE+x}" ] || { echo "RISC0_DEV_MODE is set; refusing to start a follower of seq-${SEQ}" >&2; exit 1; } ;;
+  esac
   "$R/scripts/seq.sh" "${SEQ:-dev}" status >/dev/null || { echo "seq-${SEQ:-dev} is not running" >&2; exit 1; }
   ATTEST="$B/target/host/attest"; FD="$B/target/host/attest-followerd"
   [ -x "$ATTEST" ] && [ -x "$FD" ] || { echo "build first: nice -n 15 cargo build --profile host -p follower -p attest_cli" >&2; exit 1; }
@@ -64,6 +70,18 @@ start)
   pid=$!
   sleep 5
   kill -0 "$pid" 2>/dev/null || { echo "follower died at start:"; tail -20 "$RUN_DIR/followerd.stdout"; exit 1; }
+  case "${SEQ:-dev}" in
+    real|pub)
+      # The start line must say the follower runs without RISC0_DEV_MODE; stop at once otherwise (no hours lost yet).
+      dm="$(python3 -I -c 'import json,sys
+for l in open(sys.argv[1]):
+    r = json.loads(l)
+    if r.get("event") == "start":
+        print(json.dumps((r.get("extra") or {}).get("risc0_dev_mode", "missing")))' "$LOG" | tail -1)"
+      if [ "$dm" != "null" ]; then
+        kill -TERM "$pid"; echo "start line has risc0_dev_mode=$dm (want null): follower stopped" >&2; exit 1
+      fi ;;
+  esac
   python3 -I - "$RUN_DIR/run.json" "$pid" "$BIN" "$sha" "$CFG" "$INSTANCE" "$SOURCE_KIND" "$R" <<'PY'
 import json, subprocess, sys, datetime, hashlib, platform, os
 out, pid, binp, sha, cfg, inst, src, repo = sys.argv[1:9]

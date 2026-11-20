@@ -70,8 +70,11 @@ enum Cmd {
         #[arg(long, default_value_t = 342)]
         min_participants: u16,
         /// Extra verifier program id (base58) besides ids.lc_verify (at most one: config allows 1..=2).
-        #[arg(long)]
+        #[arg(long, conflicts_with = "only_verifier")]
         extra_verifier: Option<String>,
+        /// The instance's only verifier (base58 program id, for example lc_verify_v3), instead of ids.lc_verify.
+        #[arg(long)]
+        only_verifier: Option<String>,
         /// Write the instance id and its config here (JSON), for the follower config and `checkpoint verify`.
         #[arg(long)]
         out: Option<PathBuf>,
@@ -235,6 +238,15 @@ impl Global {
     }
 }
 
+/// The instance's verifiers: `only` alone when given; otherwise the deployment's `lc_verify` (when known) and the
+/// optional extra one.
+fn verifier_list(default: Option<AccountId>, extra: Option<AccountId>, only: Option<AccountId>) -> Vec<AccountId> {
+    match only {
+        Some(v) => vec![v],
+        None => default.into_iter().chain(extra).collect(),
+    }
+}
+
 fn parse_id(s: &str) -> Result<AccountId> {
     s.trim().parse().map_err(|e| anyhow!("bad account id '{s}': {e:?}"))
 }
@@ -320,6 +332,7 @@ async fn main() -> Result<()> {
             checkpoint,
             min_participants,
             extra_verifier,
+            only_verifier,
             out,
             print_only,
         } => {
@@ -368,15 +381,20 @@ async fn main() -> Result<()> {
                 bail!("bootstrap header slot {bslot} != checkpoint slot {slot}");
             }
             let boot_ssz = boot.to_ssz()?;
-            let mut verifiers = Vec::new();
-            match &ids {
-                Ok(i) => verifiers.push(i.lc_verify),
-                Err(e) if print_only => eprintln!("note: no deploy ids ({e:#}); verifiers left empty"),
+            let default = match &ids {
+                Ok(i) => Some(i.lc_verify),
+                Err(_) if only_verifier.is_some() => None,
+                Err(e) if print_only => {
+                    eprintln!("note: no deploy ids ({e:#}); verifiers left empty");
+                    None
+                }
                 Err(e) => bail!("deploy ids: {e:#}"),
-            }
-            if let Some(x) = extra_verifier {
-                verifiers.push(parse_id(&x)?);
-            }
+            };
+            let verifiers = verifier_list(
+                default,
+                extra_verifier.as_deref().map(parse_id).transpose()?,
+                only_verifier.as_deref().map(parse_id).transpose()?,
+            );
             let config = InstanceConfig {
                 chain_id: g.chain_id,
                 genesis_validators_root: gvr,
@@ -601,4 +619,28 @@ async fn checkpoint_verify(root: &[u8; 32], slot: u64, sources: &[String], timeo
         });
     }
     out
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn verifier_lists() {
+        let (v1, v3) = (AccountId::new([1; 32]), AccountId::new([3; 32]));
+        assert_eq!(verifier_list(Some(v1), None, None), [v1]);
+        assert_eq!(verifier_list(Some(v1), Some(v3), None), [v1, v3]);
+        assert_eq!(verifier_list(Some(v1), None, Some(v3)), [v3], "only the given verifier");
+        assert_eq!(verifier_list(None, None, Some(v3)), [v3]);
+        assert!(verifier_list(None, None, None).is_empty());
+    }
+
+    #[test]
+    fn only_and_extra_conflict() {
+        use clap::Parser;
+        let ok = Cli::try_parse_from(["attest", "init", "--only-verifier", "x"]);
+        assert!(ok.is_ok());
+        let both = Cli::try_parse_from(["attest", "init", "--only-verifier", "x", "--extra-verifier", "y"]);
+        assert!(both.is_err());
+    }
 }
