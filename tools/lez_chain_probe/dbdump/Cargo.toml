@@ -1,0 +1,14 @@
+# Reads the blocks of a stopped LEZ sequencer from a copy of its RocksDB store. Own workspace: not part of the root
+# workspace, no LEZ dependency.
+[workspace]
+
+[package]
+name = "lez_dbdump"
+version = "0.1.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+publish = false
+
+[dependencies]
+# Same version and features as LEZ v0.4.0-rc3 (Cargo.toml:247).
+rocksdb = { version = "=0.24.0", default-features = false, features = ["snappy", "bindgen-runtime"] }
