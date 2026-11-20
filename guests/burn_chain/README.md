@@ -20,13 +20,14 @@ What a proof of it shows and what it does not:
   exists on any chain we run.
 
 Layout as `guests/burn_proof/r31`: `methods/guest` (the guest), `methods` (risc0-build 3.0.7, embeds the ELF and image
-id), `host` (`burn_chain_host image-id | execute ...`, executor only).
+id), `host` (`burn_chain_host image-id | prove --mode execute|groth16 ...`; `bridge_cli chain-witness` writes its
+input from a live sequencer; groth16 only in a proving window).
 
 ```
 export RISC0_HOME=$B/run/w5/risc0-31 CARGO_TARGET_DIR=<own target dir>
 export RISC0_SERVER_PATH=$RISC0_HOME/extensions/v3.1.0-cargo-risczero-x86_64-unknown-linux-gnu/r0vm
 cargo build --release --manifest-path guests/burn_chain/Cargo.toml -p burn_chain_host
-burn_chain_host execute --witness-json W --dir fixtures/lez-chain/synthetic --pinned-dir fixtures/lez-chain/seq-dev \
+burn_chain_host prove --mode execute --witness-json W --dir fixtures/lez-chain/synthetic --pinned-dir fixtures/lez-chain/seq-dev \
   --pinned 2585 --tip 2591 --burn-block 2586 --tx 0 --out OUT
 ```
 The image id here comes from the local rzup toolchain; a reproducible (docker) build and its id come with the proof.
