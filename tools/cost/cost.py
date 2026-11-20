@@ -170,9 +170,10 @@ def derive_path_b(rows, runs):
             r = worst[k]
             ex_rows.append({"step": k, "worst_update": f"{r['extra']['network']} {r['step']}",
                             "signers": r["extra"]["participation"], "gas_exec": r["gas_exec"],
-                            "declared_gas": V3_DECLARED[k], "pct_of_cap": round(100 * r["gas_exec"] / LEZ["MAX_GAS_EXEC"], 1),
-                            "pct_of_declared": round(100 * r["gas_exec"] / V3_DECLARED[k], 1),
-                            "label": "measured (executor)"})
+                            "declared_gas": V3_DECLARED[k],
+                            "pct_of_cap": f"{100 * r['gas_exec'] / LEZ['MAX_GAS_EXEC']:.1f}",
+                            "pct_of_declared": f"{100 * r['gas_exec'] / V3_DECLARED[k]:.1f}",
+                            "label": "measured (executor); percentages derived"})
     oc_rows = []
     max_diff = 0
     for path, doc in runs:
@@ -181,19 +182,28 @@ def derive_path_b(rows, runs):
             row = {"network": doc.get("network"), "update": u["update"], "kind": u["kind"],
                    "signers": u["participation"], "txs": len(u["steps"]), "source": path}
             total = 0
+            derived_steps = []
             for k in ("Begin", "Miller", "Finish"):
                 s = steps.get(k)
                 if not s:
                     continue
                 charged = s.get("charged_gas")
                 metered = s.get("metered_cycles_total")
+                shared = (s.get("charged_txs_in_block") or 1) > 1
                 row[f"{k.lower()}_charged"] = charged
                 row[f"{k.lower()}_metered"] = metered
+                row[f"{k.lower()}_label"] = "derived" if shared else "measured (public execution)"
+                row[f"{k.lower()}_cell"] = f"{charged:,}" + (" (derived)" if shared else "") if charged is not None else "n/a"
+                if shared:
+                    derived_steps.append(k)
                 if charged is not None and metered is not None:
                     max_diff = max(max_diff, abs(charged - metered))
                 total += charged if charged is not None else 0
             row["update_charged"] = total
-            row["max_step_pct_of_cap"] = round(100 * max((row.get(f"{k}_charged") or 0) for k in ("begin", "miller", "finish")) / LEZ["MAX_GAS_EXEC"], 1)
+            row["max_step_pct_of_cap"] = f"{100 * max((row.get(f'{k}_charged') or 0) for k in ('begin', 'miller', 'finish')) / LEZ['MAX_GAS_EXEC']:.1f}"
+            row["label"] = ("measured (public execution); " + ", ".join(derived_steps) + " derived (block total minus the "
+                            "other charged transaction, re-executed); total and percentage derived") if derived_steps else \
+                "measured (public execution); total and percentage derived"
             oc_rows.append(row)
     return {
         "executor_worst_case": ex_rows,
@@ -206,8 +216,14 @@ def derive_path_b(rows, runs):
                 "(fixtures/mainnet, fixtures/sepolia, fabricated 342-signer updates), not the same updates as on chain, "
                 "so their cycles differ by the input (committee root, signers, period or finality update), not by an "
                 "overhead: per transaction, charged equals metered to the cycle. The recorded on-chain transactions "
-                "declared 9,000,000 gas for every step (they predate the per-step values).",
-        "label": "measured",
+                "declared 9,000,000 gas for every step (they predate the per-step values). Labels: a step's charge is "
+                "measured (public execution) when it is the only charged transaction of its block, and derived when "
+                "the block holds another one (block total minus that transaction, re-executed); update totals and "
+                "percentages are derived. Finish is 4,378,927 to 4,378,929 everywhere except Sepolia update_1416 "
+                "(4,345,704): that update only teaches the next committee, the finalized slot does not move, so "
+                "attest.Apply keeps the head and writes no record; its chained part is Apply alone, 45,785 cycles, where "
+                "the others take 79,012 (Apply 54,965 and WriteRecord 24,047).",
+        "label": "measured (public execution and executor); the charge of a step that shared its block, update totals and percentages derived",
     }
 
 
@@ -545,10 +561,11 @@ def render_md(doc):
         out.append("\nOn chain, every recorded update (charged gas per step; the executor re-run of each same transaction "
                    f"differs from the charge by at most {fmt(pb['onchain_charged_minus_metered_max'])} gas):\n")
         out.append(md_table(pb["onchain"], [("network", "network"), ("update", "update"), ("kind", "kind"),
-                                            ("signers", "signers"), ("txs", "txs"), ("Begin", "begin_charged"),
-                                            ("Miller", "miller_charged"), ("Finish", "finish_charged"),
-                                            ("update total", "update_charged"),
-                                            ("largest step % of cap", "max_step_pct_of_cap"), ("source", "source")]))
+                                            ("signers", "signers"), ("txs", "txs"), ("Begin", "begin_cell"),
+                                            ("Miller", "miller_cell"), ("Finish", "finish_cell"),
+                                            ("update total (derived)", "update_charged"),
+                                            ("largest step % of cap (derived)", "max_step_pct_of_cap"),
+                                            ("label", "label"), ("source", "source")]))
         out.append(f"\n{pb['note']}\n")
         v3 = [r for r in doc["rows"] if r["program"] == "lc_verify_v3"]
         out.append("\nExecutor rows of `lc_verify_v3` (user cycles = the program; gas (tx) = the transaction, Finish with "

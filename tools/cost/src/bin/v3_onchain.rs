@@ -1315,7 +1315,7 @@ async fn annotate(args: &[String]) -> Result<()> {
                 r["observed"] = json!(observed);
             }
             doc["note"] = json!(
-                "Codes: expected_code is what the case was built to show; native_code is lc_verify_v3's program logic (lc_v3::handle) on the same message and job state, then attest's rules for a chained Apply. lc_verify_v3 refuses by exit code (charged the cycles used); attest.Apply refuses by panic, and a timestamp-window miss is charged the whole declared gas. declared_gas is 10,000,000 here (the refusal tool); attest_host::submit_update_staged declares 9,000,000 per step."
+                "Codes: expected_code is what the case was built to show; native_code is lc_verify_v3's program logic (lc_v3::handle) on the same message and job state, then attest's rules for a chained Apply. lc_verify_v3 refuses by exit code (charged the cycles used); attest.Apply refuses by panic, and a timestamp-window miss is charged the whole declared gas. declared_gas is 10,000,000 here (the refusal tool); attest_host::submit_update_staged declares 9,000,000 for Begin, 7,000,000 for Miller and 5,500,000 for Finish."
             );
             println!("{f}: annotated");
         }

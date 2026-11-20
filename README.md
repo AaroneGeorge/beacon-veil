@@ -39,8 +39,10 @@ cargo test -p e2e_chain --test e2e_chain -- --ignored --nocapture --test-threads
 cargo test -p e2e_consumer -- --ignored --nocapture --test-threads 1                     # attestation consumed once, replay refused
 cargo test -p adversarial                                                                 # fabricated chain and six negative cases
 
-# 7. Reproduce the cost table: cycles and gas from the executor, real mainnet fixtures, no proof.
-make cost-exec     # writes evidence/cost/cost.json and cost.md
+# 7. Reproduce the cost table: cycles and gas from the executor, real fixtures, no proof. The guests come from the
+#    release set named in guests/IMAGE_IDS.expected (built in the pinned image; the script checks the image ids).
+scripts/guests_release.sh d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e    # about 20 min; output in ../guests-release/<commit>
+make cost-exec     # finds that set by its commit, writes evidence/cost/cost.json and cost.md (71 rows)
 
 # 8. The gate checks G1 to G5 (G1 and G5 need a running sequencer and a committed tree; see scripts/gate/).
 make gate          # writes evidence/gate/summary.json; GATE_ARGS=--quick re-checks the committed evidence instead of re-running
@@ -64,7 +66,7 @@ Gate status on 2026-11-17 for G1 to G5 (all pass), with the public-path and diff
 | Public path (`lc_verify_v3`), on a standalone sequencer with dev mode unset | PASS: 30 transactions, 9 each on mainnet, Sepolia (Gloas) and Hoodi data and 3 on a fabricated update signed by exactly 342 of 512 members. Every update is 3 public transactions and the head equals V1's after each. Largest step 6,327,247 gas, 63.3 percent of the 10M cap; largest on real data 5,765,037, 57.7 percent. Whole update 12,602,313 to 16,471,213 gas. No proof is made. 7 refusals as real transactions, head unchanged after each. Measured public execution, not a public testnet | `evidence/public-path/onchain/{mainnet,sepolia,hoodi,floor}/run.json`, `evidence/public-path/onchain/refusals.json`, `evidence/public-path/onchain/deployment.txt`, `docs/PUBLIC-PATH.md`; re-read with `scripts/gate/gp_onchain.sh` |
 | Differential test, Helios 0.12.0 against V1, V2, V3 | PASS: 881 cases (90 valid): 862 from mainnet, Sepolia and Hoodi, and 19 on a fabricated chain, 0 disagreements between V1 and V3; the deployed V3 guest ran all 881 in the executor with 0 mismatches; 44 designed differences, all refusals by V3 | `evidence/diff/report.json`, `evidence/diff/report.md`, `evidence/diff/executor.json` |
 | Public path, executor cost per step | `Begin` at most 6,327,326 cycles, `Miller` at most 5,765,197, `Finish` at most 4,378,929 (executor, no proof) | `evidence/public-path/exec-steps.json` (`make exec-v3`) |
-| G5 clean-clone cost reproduction | PASS: the cost table was regenerated from a clean clone (the commit is recorded in `evidence/g5/repro.json`) and equals the committed one, 31 rows. The three guest image ids match. The run used the prebuilt release guest set and did not rebuild the guests in Docker | `evidence/g5/repro.json`, `evidence/g5/repro.log`, `scripts/gate/g5_repro.sh` |
+| G5 clean-clone cost reproduction | PASS: the cost table was regenerated from a clean clone with a cold build (the commit is recorded in `evidence/g5/repro.json`) and equals the committed one, 71 rows (40 of them `lc_verify_v3`), compared with the table committed at that commit; a self-test with one changed cycle count fails as it should. The run used the prebuilt release guest set and did not rebuild the guests in Docker | `evidence/g5/repro.json`, `evidence/g5/repro.log`, `scripts/gate/g5_repro.sh` |
 
 | Piece | What it is | Evidence | State |
 |---|---|---|---|
@@ -80,13 +82,13 @@ Gate status on 2026-11-17 for G1 to G5 (all pass), with the public-path and diff
 | Bridge inbound | `programs/bridge` `Claim`, `tools/bridge_cli` | `evidence/bridge/k9-part2-runA-v2/`, `evidence/bridge/k9-part2-runB-v3/` | Shown in dev mode against both follower runs: real attestation of the vault root, private claim, repeat refused with E11. Not done yet: a real proof of a private claim, and a claim to a public destination |
 | Bridge outbound | `guests/burn_proof` (RISC Zero 3.1.0), `Vault.release`, `releaseOpen` | `evidence/bridge/groth16-release-v3/` | Real Groth16 proof (471.3 s) verified on Sepolia through the emergency stop: release 527,859 gas, open release 325,769 gas. The anchor is the owner-posted stub and the burns ran in dev mode |
 | Reproducible guests | Release set `bf95e359` built in `risczero/risc0-guest-builder:r0.1.91.1@sha256:fafb377a...`; CI checks `guests/IMAGE_IDS.expected` | `evidence/g1/deployment.txt`, `evidence/g2/ci-run.txt` | The on-chain image ids match (`evidence/g1/seq-real-image-check.log`) |
-| Cost table | Cycles, gas, state growth, real proof times | `evidence/cost/cost.md` (31 rows), `evidence/cost/prove.md`, `evidence/cost/k4-projection.json` | Measured or derived. Includes the V2 real proof |
+| Cost table | Cycles, gas, state growth, real proof times; section 8: the public path per step, executor and on chain side by side | `evidence/cost/cost.md` (71 rows: 31 for V1, V2 and the consumer, 40 for `lc_verify_v3`), `evidence/cost/prove.md`, `evidence/cost/k4-projection.json` | Measured or derived. Includes the V2 real proof |
 
 Deprecated testnet artefacts. Sepolia vaults v1 and v2 used the RISC Zero Groth16 verifier 3.0.0, which advisory GHSA-g6qg-9j8p-7j87 shows to be broken. Both were frozen on 2026-11-12 and are evidence of the deposit path only (`evidence/bridge/README.md`).
 
 ## 3. Measured so far
 
-Machine: Intel i5-10300H (4 cores, 8 threads), 15 GiB RAM, 11 GiB swap, Linux 7.0.0-43, `r0vm` 3.0.5. The cycle table is executor-only, generated by `make cost-exec` on 2026-11-12 20:20 UTC from the reproducible guest set. Raw files: `evidence/cost/raw/exec-lc.json` and `exec-lc.log`; table: `evidence/cost/cost.md`.
+Machine: Intel i5-10300H (4 cores, 8 threads), 15 GiB RAM, 11 GiB swap, Linux 7.0.0-43, `r0vm` 3.0.5. The cycle table is executor-only, generated by `make cost-exec` on 2026-11-20 from the release guest set d1a6a4b (the rows below did not change from the 12 Nov table). Raw files: `evidence/cost/raw/exec-lc.json` and `exec-lc.log`; table: `evidence/cost/cost.md`.
 
 | Step | Update bytes | Signers (of 512) | Result | User cycles |
 |---|---|---|---|---|

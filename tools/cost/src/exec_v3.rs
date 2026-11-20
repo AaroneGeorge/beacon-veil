@@ -31,6 +31,14 @@ use crate::{Guest, load, state_of, write_record};
 const CAP: u64 = 10_000_000;
 /// Gas limit the staged submitter declares per step (`attest_host::V3_STEP_GAS`).
 const DECLARED: u64 = 9_000_000;
+/// Gas declared per step (`attest_host::V3_STEP_GAS`, `V3_MILLER_GAS`, `V3_FINISH_GAS`).
+fn declared(step: &str) -> u64 {
+    match step {
+        "Miller" => 7_000_000,
+        "Finish" => 5_500_000,
+        _ => DECLARED,
+    }
+}
 /// The plan's ceiling per step: 90% of the cap.
 const STEP_LIMIT: u64 = 9_000_000;
 /// `user ELF` size limit for deployment (20 segments of 96 KiB).
@@ -244,7 +252,7 @@ fn update_rows(
             "total_cycles_padded": e.padded, "segments": e.segments,
             "phases": Value::Object(phases), "marked_cycles": sum, "unmarked_cycles": e.cycles.saturating_sub(sum),
             "chained": chained_rows, "tx_total_cycles": total,
-            "declared_gas": DECLARED, "expected_charged_gas": total,
+            "declared_gas": declared(name), "expected_charged_gas": total,
             "share_of_cap": format!("{:.1}%", total as f64 * 100.0 / CAP as f64),
             "within_step_limit": total <= STEP_LIMIT,
             "job_state_bytes": e.post_state.len(),
@@ -377,7 +385,7 @@ pub fn exec_v3(args: &[String]) -> Result<()> {
     let doc = json!({
         "tool": "tools/cost exec-v3", "measured": true,
         "executor": "RISC Zero 3.0.5 executor, no proof, no sequencer. metered_cycles = user cycles of the deployed build of lc_verify_v3 for one step (LEZ meters execution gas as user cycles); tx_total_cycles adds the chained attest.Apply and WriteRecord of Finish. Phases come from a measurement build of the same program with cycle marks (--features cycle-trace); unmarked_cycles = metered_cycles minus their sum (program entry, message and job-state decode and encode, journal).",
-        "declared_gas_note": "declared_gas is what attest_host::submit_update_staged declares per step (9,000,000); a step is charged the cycles it used; on-chain figures are recorded separately",
+        "declared_gas_note": "declared_gas is what attest_host::submit_update_staged declares per step (Begin, BeginPrepare and BeginKeys 9,000,000; Miller 7,000,000; Finish 5,500,000); a step is charged the cycles it used; on-chain figures are recorded separately",
         "fixtures": "fixtures/mainnet (bootstrap_15605760, updates_1905_4, finality_update_15637644); fixtures/sepolia (bootstrap_11534336, updates_1408_4, finality_update_11561824); fabricated chain (tools/fixtures FabChain, seed beacon-veil/v3/floor) with participation bits set to the first 342 and re-signed",
         "guests": {
             "lc_verify_v3": {"path_kind": if v3.elf_bytes.is_some() { "user ELF" } else { ".bin" }, "image_id": v3.image_id, "user_elf_bytes": v3.elf_bytes, "user_elf_cap": ELF_CAP},

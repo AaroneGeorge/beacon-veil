@@ -1,7 +1,7 @@
 {
   "data": "fixtures/pub/mainnet bootstrap_15679488 (period 1914), fixtures/diff/mainnet updates 1914 and 1915 and finality updates, fixtures/diff/sepolia update 1416; fabricated chain (checkpoint period 1900) for the old store",
   "instance": "77ooFhT6YCa55NDvna1o41mZYk2nb9DdPGn3JY6Wy6Ub",
-  "note": "Codes: expected_code is what the case was built to show; native_code is lc_verify_v3's program logic (lc_v3::handle) on the same message and job state, then attest's rules for a chained Apply. lc_verify_v3 refuses by exit code (charged the cycles used); attest.Apply refuses by panic, and a timestamp-window miss is charged the whole declared gas. declared_gas is 10,000,000 here (the refusal tool); attest_host::submit_update_staged declares 9,000,000 per step.",
+  "note": "Codes: expected_code is what the case was built to show; native_code is lc_verify_v3's program logic (lc_v3::handle) on the same message and job state, then attest's rules for a chained Apply. lc_verify_v3 refuses by exit code (charged the cycles used); attest.Apply refuses by panic, and a timestamp-window miss is charged the whole declared gas. declared_gas is 10,000,000 here (the refusal tool); attest_host::submit_update_staged declares 9,000,000 for Begin, 7,000,000 for Miller and 5,500,000 for Finish.",
   "programs": {
     "attest": "735RSWK5eYrZDnpJVvpVwrkDa93AXQNS7avFjAUeWEH8",
     "lc_verify_v3": "8niQPec4Ng9yrm17Aj3VFbtebrXPxd6JVhhdZsAXQ1Tq"

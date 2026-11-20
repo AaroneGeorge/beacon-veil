@@ -24,11 +24,13 @@ fmt-check: ## Check formatting (CI)
 clippy: ## Clippy on every member, warnings are errors (guest build skipped)
 	$(ENV) RISC0_SKIP_BUILD=1 $(NICE) cargo clippy --workspace --all-targets -- -D warnings
 
-test: ## Unit and integration tests in dev mode (builds guests with the local rzup toolchain)
+test: ## Unit and integration tests in dev mode (builds guests with the local rzup toolchain), and the V3 tests CI runs
 	$(ENV) $(NICE) cargo nextest run --workspace --no-fail-fast
+	$(ENV) RISC0_SKIP_BUILD=1 $(NICE) cargo nextest run -p e2e_chain --features v3 --no-fail-fast
 
-test-host: ## Tests without building guests
+test-host: ## Tests without building guests, and the V3 tests CI runs
 	$(ENV) RISC0_SKIP_BUILD=1 $(NICE) cargo nextest run --workspace --no-fail-fast
+	$(ENV) RISC0_SKIP_BUILD=1 $(NICE) cargo nextest run -p e2e_chain --features v3 --no-fail-fast
 
 guests: ## Build every guest with the local rzup toolchain; copy .bin files to $$B/target/guests (lc_verify_v3: scripts/build_guest.sh with $$BV_V3_CARGO_CONFIG)
 	$(ENV) $(NICE) cargo build -p guest_methods && scripts/collect_guests.sh $(GUESTS)

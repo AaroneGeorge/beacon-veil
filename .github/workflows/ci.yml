@@ -83,7 +83,7 @@ jobs:
         # guests_release.sh builds lc_verify_v3 with BV_V3_CARGO_CONFIG and fails if the setting matched no package.
         run: |
           grep -q '^lc_verify_v3 ' guests/IMAGE_IDS.expected
-          scripts/check_image_ids.sh "${{ runner.temp }}/guests" | grep '^OK       lc_verify_v3 ' 
+          scripts/check_image_ids.sh "${{ runner.temp }}/guests" | grep '^OK       lc_verify_v3 '
       - name: ELF sizes (deployed-ELF cap 1,966,080 bytes)
         run: |
           ls -l "${{ runner.temp }}/guests/elf" | tee guest-sizes.txt

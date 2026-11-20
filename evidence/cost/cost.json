@@ -1,17 +1,18 @@
 {
   "what": "beacon-veil cost table (make cost-exec). Cycles are deterministic for the recorded guest image ids.",
-  "generated_utc": "2026-11-20T03:05:19Z",
+  "generated_utc": "2026-11-20T04:01:39Z",
   "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
   "run": {
     "command": "make cost-exec (tools/cost/cost_exec.sh)",
-    "started_utc": "2026-11-20T03:01:42Z",
-    "guest_build": "release bins /home/lechuuu/hackathons/logos-rfp/build/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e",
+    "started_utc": "2026-11-20T04:00:38Z",
+    "guest_build": "release set d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e (scripts/guests_release.sh d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e, ${BUILD}/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e)",
+    "release_commit": "d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e",
     "guests": {
-      "lc_verify": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/lc_verify",
-      "attest": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/attest",
-      "consumer_erc20": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/consumer_erc20"
+      "lc_verify": "${BUILD}/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/lc_verify",
+      "attest": "${BUILD}/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/attest",
+      "consumer_erc20": "${BUILD}/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/consumer_erc20"
     },
-    "repo_commit": "0b940b6 (dirty)",
+    "repo_commit": "a3ffd69",
     "risc0_dev_mode": "1",
     "r0vm": "risc0-r0vm 3.0.5"
   },
@@ -19,24 +20,24 @@
     "attest": {
       "elf_bytes": 406700,
       "image_id": "9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d",
-      "path": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/attest",
+      "path": "${BUILD}/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/attest",
       "program_binary_bytes": 439124
     },
     "lc_verify": {
       "elf_bytes": 754956,
       "image_id": "c7b5f2191f133026017c09072e883217dfe3785450d40d081718b0fd204878ba",
-      "path": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/lc_verify",
+      "path": "${BUILD}/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/lc_verify",
       "program_binary_bytes": 787380
     },
     "lc_verify_v2": {
       "elf_bytes": 716792,
       "image_id": "18684beee3e973a2f1391c9bdb9108743c71e6f216bb5fba88bc0443403e8230",
-      "path": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/lc_verify_v2",
+      "path": "${BUILD}/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/lc_verify_v2",
       "program_binary_bytes": 749216
     },
     "lc_verify_v3": {
-      "image_id": "cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510",
-      "elf_bytes": 498916
+      "image_id": "a3713dc27af7c983f8c5a22fa190dec640e2572b9cd182d3aa1beaf819c8222b",
+      "elf_bytes": 499156
     }
   },
   "raw_files": [
@@ -2300,9 +2301,9 @@
           "signers": 342,
           "gas_exec": 6327326,
           "declared_gas": 9000000,
-          "pct_of_cap": 63.3,
-          "pct_of_declared": 70.3,
-          "label": "measured (executor)"
+          "pct_of_cap": "63.3",
+          "pct_of_declared": "70.3",
+          "label": "measured (executor); percentages derived"
         },
         {
           "step": "Miller",
@@ -2310,9 +2311,9 @@
           "signers": 509,
           "gas_exec": 5765197,
           "declared_gas": 7000000,
-          "pct_of_cap": 57.7,
-          "pct_of_declared": 82.4,
-          "label": "measured (executor)"
+          "pct_of_cap": "57.7",
+          "pct_of_declared": "82.4",
+          "label": "measured (executor); percentages derived"
         },
         {
           "step": "Finish",
@@ -2320,9 +2321,9 @@
           "signers": 342,
           "gas_exec": 4378929,
           "declared_gas": 5500000,
-          "pct_of_cap": 43.8,
-          "pct_of_declared": 79.6,
-          "label": "measured (executor)"
+          "pct_of_cap": "43.8",
+          "pct_of_declared": "79.6",
+          "label": "measured (executor); percentages derived"
         }
       ],
       "onchain": [
@@ -2335,12 +2336,19 @@
           "source": "evidence/public-path/onchain/floor/run.json",
           "begin_charged": 6327247,
           "begin_metered": 6327247,
+          "begin_label": "measured (public execution)",
+          "begin_cell": "6,327,247",
           "miller_charged": 5765037,
           "miller_metered": 5765037,
+          "miller_label": "measured (public execution)",
+          "miller_cell": "5,765,037",
           "finish_charged": 4378929,
           "finish_metered": 4378929,
+          "finish_label": "measured (public execution)",
+          "finish_cell": "4,378,929",
           "update_charged": 16471213,
-          "max_step_pct_of_cap": 63.3
+          "max_step_pct_of_cap": "63.3",
+          "label": "measured (public execution); total and percentage derived"
         },
         {
           "network": "hoodi",
@@ -2351,12 +2359,19 @@
           "source": "evidence/public-path/onchain/hoodi/run.json",
           "begin_charged": 4679020,
           "begin_metered": 4679020,
+          "begin_label": "derived",
+          "begin_cell": "4,679,020 (derived)",
           "miller_charged": 5765037,
           "miller_metered": 5765037,
+          "miller_label": "measured (public execution)",
+          "miller_cell": "5,765,037",
           "finish_charged": 4378929,
           "finish_metered": 4378929,
+          "finish_label": "measured (public execution)",
+          "finish_cell": "4,378,929",
           "update_charged": 14822986,
-          "max_step_pct_of_cap": 57.7
+          "max_step_pct_of_cap": "57.7",
+          "label": "measured (public execution); Begin derived (block total minus the other charged transaction, re-executed); total and percentage derived"
         },
         {
           "network": "hoodi",
@@ -2367,12 +2382,19 @@
           "source": "evidence/public-path/onchain/hoodi/run.json",
           "begin_charged": 4700889,
           "begin_metered": 4700889,
+          "begin_label": "measured (public execution)",
+          "begin_cell": "4,700,889",
           "miller_charged": 5764985,
           "miller_metered": 5764985,
+          "miller_label": "measured (public execution)",
+          "miller_cell": "5,764,985",
           "finish_charged": 4378927,
           "finish_metered": 4378927,
+          "finish_label": "measured (public execution)",
+          "finish_cell": "4,378,927",
           "update_charged": 14844801,
-          "max_step_pct_of_cap": 57.6
+          "max_step_pct_of_cap": "57.6",
+          "label": "measured (public execution); total and percentage derived"
         },
         {
           "network": "hoodi",
@@ -2383,12 +2405,19 @@
           "source": "evidence/public-path/onchain/hoodi/run.json",
           "begin_charged": 3121826,
           "begin_metered": 3121826,
+          "begin_label": "measured (public execution)",
+          "begin_cell": "3,121,826",
           "miller_charged": 5765037,
           "miller_metered": 5765037,
+          "miller_label": "measured (public execution)",
+          "miller_cell": "5,765,037",
           "finish_charged": 4378929,
           "finish_metered": 4378929,
+          "finish_label": "measured (public execution)",
+          "finish_cell": "4,378,929",
           "update_charged": 13265792,
-          "max_step_pct_of_cap": 57.7
+          "max_step_pct_of_cap": "57.7",
+          "label": "measured (public execution); total and percentage derived"
         },
         {
           "network": "mainnet",
@@ -2399,12 +2428,19 @@
           "source": "evidence/public-path/onchain/mainnet/run.json",
           "begin_charged": 4309071,
           "begin_metered": 4309071,
+          "begin_label": "measured (public execution)",
+          "begin_cell": "4,309,071",
           "miller_charged": 5764775,
           "miller_metered": 5764775,
+          "miller_label": "measured (public execution)",
+          "miller_cell": "5,764,775",
           "finish_charged": 4378929,
           "finish_metered": 4378929,
+          "finish_label": "measured (public execution)",
+          "finish_cell": "4,378,929",
           "update_charged": 14452775,
-          "max_step_pct_of_cap": 57.6
+          "max_step_pct_of_cap": "57.6",
+          "label": "measured (public execution); total and percentage derived"
         },
         {
           "network": "mainnet",
@@ -2415,12 +2451,19 @@
           "source": "evidence/public-path/onchain/mainnet/run.json",
           "begin_charged": 4295619,
           "begin_metered": 4295619,
+          "begin_label": "measured (public execution)",
+          "begin_cell": "4,295,619",
           "miller_charged": 5764985,
           "miller_metered": 5764985,
+          "miller_label": "measured (public execution)",
+          "miller_cell": "5,764,985",
           "finish_charged": 4378927,
           "finish_metered": 4378927,
+          "finish_label": "measured (public execution)",
+          "finish_cell": "4,378,927",
           "update_charged": 14439531,
-          "max_step_pct_of_cap": 57.6
+          "max_step_pct_of_cap": "57.6",
+          "label": "measured (public execution); total and percentage derived"
         },
         {
           "network": "mainnet",
@@ -2431,12 +2474,19 @@
           "source": "evidence/public-path/onchain/mainnet/run.json",
           "begin_charged": 2560204,
           "begin_metered": 2560204,
+          "begin_label": "measured (public execution)",
+          "begin_cell": "2,560,204",
           "miller_charged": 5764825,
           "miller_metered": 5764825,
+          "miller_label": "measured (public execution)",
+          "miller_cell": "5,764,825",
           "finish_charged": 4378929,
           "finish_metered": 4378929,
+          "finish_label": "measured (public execution)",
+          "finish_cell": "4,378,929",
           "update_charged": 12703958,
-          "max_step_pct_of_cap": 57.6
+          "max_step_pct_of_cap": "57.6",
+          "label": "measured (public execution); total and percentage derived"
         },
         {
           "network": "sepolia",
@@ -2447,12 +2497,19 @@
           "source": "evidence/public-path/onchain/sepolia/run.json",
           "begin_charged": 4031288,
           "begin_metered": 4031288,
+          "begin_label": "measured (public execution)",
+          "begin_cell": "4,031,288",
           "miller_charged": 5764827,
           "miller_metered": 5764827,
+          "miller_label": "measured (public execution)",
+          "miller_cell": "5,764,827",
           "finish_charged": 4345704,
           "finish_metered": 4345704,
+          "finish_label": "measured (public execution)",
+          "finish_cell": "4,345,704",
           "update_charged": 14141819,
-          "max_step_pct_of_cap": 57.6
+          "max_step_pct_of_cap": "57.6",
+          "label": "measured (public execution); total and percentage derived"
         },
         {
           "network": "sepolia",
@@ -2463,12 +2520,19 @@
           "source": "evidence/public-path/onchain/sepolia/run.json",
           "begin_charged": 4139283,
           "begin_metered": 4139283,
+          "begin_label": "measured (public execution)",
+          "begin_cell": "4,139,283",
           "miller_charged": 5764823,
           "miller_metered": 5764823,
+          "miller_label": "measured (public execution)",
+          "miller_cell": "5,764,823",
           "finish_charged": 4378927,
           "finish_metered": 4378927,
+          "finish_label": "measured (public execution)",
+          "finish_cell": "4,378,927",
           "update_charged": 14283033,
-          "max_step_pct_of_cap": 57.6
+          "max_step_pct_of_cap": "57.6",
+          "label": "measured (public execution); total and percentage derived"
         },
         {
           "network": "sepolia",
@@ -2479,12 +2543,19 @@
           "source": "evidence/public-path/onchain/sepolia/run.json",
           "begin_charged": 2458609,
           "begin_metered": 2458609,
+          "begin_label": "measured (public execution)",
+          "begin_cell": "2,458,609",
           "miller_charged": 5764775,
           "miller_metered": 5764775,
+          "miller_label": "measured (public execution)",
+          "miller_cell": "5,764,775",
           "finish_charged": 4378929,
           "finish_metered": 4378929,
+          "finish_label": "measured (public execution)",
+          "finish_cell": "4,378,929",
           "update_charged": 12602313,
-          "max_step_pct_of_cap": 57.6
+          "max_step_pct_of_cap": "57.6",
+          "label": "measured (public execution); total and percentage derived"
         }
       ],
       "onchain_charged_minus_metered_max": 0,
@@ -2495,8 +2566,8 @@
         "Miller": 7000000,
         "Finish": 5500000
       },
-      "note": "On chain: charged = the block's charged execution gas (fee summary; one charged transaction per block, or the block total minus the other transactions re-executed); metered = the same transaction re-executed in the RISC Zero executor with the deployed ELFs. Executor rows: the fixture updates of section 1 (fixtures/mainnet, fixtures/sepolia, fabricated 342-signer updates), not the same updates as on chain, so their cycles differ by the input (committee root, signers, period or finality update), not by an overhead: per transaction, charged equals metered to the cycle. The recorded on-chain transactions declared 9,000,000 gas for every step (they predate the per-step values).",
-      "label": "measured"
+      "note": "On chain: charged = the block's charged execution gas (fee summary; one charged transaction per block, or the block total minus the other transactions re-executed); metered = the same transaction re-executed in the RISC Zero executor with the deployed ELFs. Executor rows: the fixture updates of section 1 (fixtures/mainnet, fixtures/sepolia, fabricated 342-signer updates), not the same updates as on chain, so their cycles differ by the input (committee root, signers, period or finality update), not by an overhead: per transaction, charged equals metered to the cycle. The recorded on-chain transactions declared 9,000,000 gas for every step (they predate the per-step values). Labels: a step's charge is measured (public execution) when it is the only charged transaction of its block, and derived when the block holds another one (block total minus that transaction, re-executed); update totals and percentages are derived. Finish is 4,378,927 to 4,378,929 everywhere except Sepolia update_1416 (4,345,704): that update only teaches the next committee, the finalized slot does not move, so attest.Apply keeps the head and writes no record; its chained part is Apply alone, 45,785 cycles, where the others take 79,012 (Apply 54,965 and WriteRecord 24,047).",
+      "label": "measured (public execution and executor); the charge of a step that shared its block, update totals and percentages derived"
     }
   }
 }

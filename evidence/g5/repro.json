@@ -1,12 +1,16 @@
 {
   "gate": "G5",
-  "commit": "bf47a07f47a0a9b51a268f44daf543360e6ebd85",
-  "started_utc": "2026-11-20T03:08:00Z",
+  "commit": "f852ee36462a089347280fd143184d9539279878",
+  "started_utc": "2026-11-20T03:15:56Z",
   "reference": "/home/lechuuu/hackathons/logos-rfp/build/.tmp/clean/evidence/cost/cost.json",
   "regenerated": "/home/lechuuu/hackathons/logos-rfp/build/.tmp/clean/evidence/cost/cost.json",
   "cost_exec_exit": 0,
   "guest_build_docker": false,
   "release_bins": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e",
+  "cold_build": true,
+  "build_seconds": 1258,
+  "cargo_build_jobs": "2",
+  "build_note": "cold: the clone's target dir was empty (scripts/gate/g5_repro.sh deletes it first); the guests of the release set are prebuilt pinned-image ELFs (their reproducibility is CI's image-id check); the lc_verify_v3 measurement build is compiled in the clone",
   "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, Linux 7.0.0-43-generic, risc0-r0vm 3.0.5",
   "rows_compared": 71,
   "rows_by_program": {
