@@ -131,6 +131,14 @@ else:
         return out
 
     fails += compare(ref, new)
+    # The regenerated table must come from the same guest images, and must be a different file from the reference.
+    for k in sorted(set(ref.get("guests") or {}) | set(new.get("guests") or {})):
+        a = ((ref.get("guests") or {}).get(k) or {}).get("image_id")
+        b = ((new.get("guests") or {}).get(k) or {}).get("image_id")
+        if a != b:
+            fails.append(f"image id of {k}: reference {a} != regenerated {b}")
+    if os.path.realpath(ref_p) == os.path.realpath(new_p):
+        fails.append("the reference and the regenerated table are the same file")
     # Self-test: the comparison must see a single changed cycle count.
     probe = copy.deepcopy(ref)
     target = probe["rows"][-1]

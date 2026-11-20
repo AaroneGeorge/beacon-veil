@@ -6,8 +6,9 @@
 
 Reads only files the stages wrote into the flow directory (flow.env, broadcast copies, attest-root.json, claim1.json,
 claim1-tx.json, claim2.txt, burn-tx.json, the proving jobs' record.json, the Groth16 meta.json). Every field the
-record needs is listed in `missing` when absent, and `complete` is true only when none is missing, no proof ran in
-dev mode and the target is Sepolia. Exit 0 when complete, 1 otherwise (the file is written either way).
+record needs is listed in `missing` when absent, and `complete` is true only when none is missing and the target is
+Sepolia. A complete record is written to --out; an incomplete one to <out>.incomplete (exit 1). A proof made in dev
+mode is refused outright (exit 2, written to <out>.incomplete).
 """
 
 import argparse
@@ -72,12 +73,24 @@ def finish(doc, need, target, jobs, out, must_be_true=()):
     doc["target"] = target
     doc["missing"] = missing
     doc["complete"] = not missing and target == "sepolia"
-    os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
-    with open(out, "w") as f:
+    dst = out if doc["complete"] else out + ".incomplete"
+    os.makedirs(os.path.dirname(os.path.abspath(dst)), exist_ok=True)
+    with open(dst, "w") as f:
         json.dump(doc, f, indent=2)
         f.write("\n")
-    print(json.dumps({"complete": doc["complete"], "missing": missing, "out": out}))
+    print(json.dumps({"complete": doc["complete"], "missing": missing, "out": dst}))
+    if dev:
+        print("REFUSED: a proof of this record ran with RISC0_DEV_MODE set", file=sys.stderr)
+        return 2
     return 0 if doc["complete"] else 1
+
+
+def balance(flow, name):
+    b = load(flow, name)
+    try:
+        return int(b["balance"]) if b else None
+    except (KeyError, ValueError, TypeError):
+        return None
 
 
 def claim(flow, target, out):
@@ -109,13 +122,21 @@ def claim(flow, target, out):
         "denomination_wei": c1.get("denom"),
         "e11_refused": "E11_ALREADY_CONSUMED" in c2 or ("ESA:E11" in c2 and "panicked" in c2),
         "e11_excerpt": [l for l in c2.splitlines() if "E11" in l][:3],
-        "wrapped_balance_before": text(flow, "recover-before.txt").strip().splitlines()[-1:] or None,
-        "wrapped_balance_after": text(flow, "recover-after.txt").strip().splitlines()[-1:] or None,
+        "e11_repeat_seconds": float(t11) if (t11 := text(flow, "claim2-seconds.txt").strip()) else None,
+        "e11_note": "the repeat is refused while the wallet runs the program, before any proof: its seconds are those "
+                    "of an execution, not of a proof",
+        "wrapped_balance_before": balance(flow, "balance-before-claim.json"),
+        "wrapped_balance_after": balance(flow, "balance-after-claim.json"),
         "prove_job": j,
     }
+    b0, b1, d = doc["wrapped_balance_before"], doc["wrapped_balance_after"], doc["denomination_wei"]
+    doc["wrapped_balance_moved_by_denomination"] = (
+        None if None in (b0, b1, d) else b1 - b0 == int(d))
     need = ["vault", "deposit_tx", "deposit_block", "record_slot", "claim_tx", "claim_block", "wall_seconds",
             "peak_rss_gib", "proof_bytes"]
-    return finish(doc, need, target, [j], out, must_be_true=("e11_refused", "claim_readable_from_rpc"))
+    need += ["e11_repeat_seconds"]
+    return finish(doc, need, target, [j], out,
+                  must_be_true=("e11_refused", "claim_readable_from_rpc", "wrapped_balance_moved_by_denomination"))
 
 
 def burn(flow, target, out):
@@ -140,13 +161,22 @@ def burn(flow, target, out):
         "groth16_risc0_zkvm": meta.get("risc0_zkvm"),
         "release_tx": rel["tx"], "release_block": rel["block"], "release_gas": rel["gas"],
         "release_status": rel["status"],
+        "groth16_note": "the Groth16 step runs the prover in a docker container (risczero/risc0-groth16-prover): its "
+                        "time and peak memory cover the local process, not the container",
+        "wrapped_balance_after_claim": balance(flow, "balance-after-claim.json"),
+        "wrapped_balance_after_burn": balance(flow, "balance-after-burn.json"),
         "burn_job": jb, "groth16_job": jg,
     }
+    a, z = doc["wrapped_balance_after_claim"], doc["wrapped_balance_after_burn"]
+    doc["burn_moved_wrapped_balance_by_denomination"] = None if None in (a, z) else a - z == 1000000000000000
+    doc["release_succeeded"] = doc["release_status"] in ("0x1", 1)
+    doc["burn_not_reverted"] = doc["burn_reverted"] is False
     need = ["burn_tx", "burn_block", "burn_proof_wall_seconds", "burn_proof_peak_rss_gib", "groth16_wall_seconds",
             "groth16_peak_rss_gib", "release_tx", "release_gas"]
     if doc["groth16_image_id"] not in (None, "0xf929f9f441d9aa652b9914b4ce6c6a7b445aa90d189c075af1e1e9fe3b1497cf"):
         need.append("groth16_image_id (not the vault's burn image id)")
-    return finish(doc, need, target, [jb, jg], out)
+    return finish(doc, need, target, [jb, jg], out,
+                  must_be_true=("release_succeeded", "burn_not_reverted", "burn_moved_wrapped_balance_by_denomination"))
 
 
 def self_test():
@@ -165,12 +195,21 @@ def self_test():
         json.dump({"block_id": 77, "reverted": False, "witness_set_bytes": 223551, "tx_wire_bytes": 300000},
                   open(os.path.join(d, "claim1-tx.json"), "w"))
         open(os.path.join(d, "claim2.txt"), "w").write("panicked at ...\nESA:E11\nE11_ALREADY_CONSUMED\n")
+        open(os.path.join(d, "claim2-seconds.txt"), "w").write("3.4\n")
+        json.dump({"balance": "0"}, open(os.path.join(d, "balance-before-claim.json"), "w"))
+        json.dump({"balance": "1000000000000000"}, open(os.path.join(d, "balance-after-claim.json"), "w"))
+        json.dump({"balance": "0"}, open(os.path.join(d, "balance-after-burn.json"), "w"))
         out = os.path.join(d, "claim.json")
         assert claim(d, "sepolia", out) == 0, json.load(open(out))["missing"]
+        assert json.load(open(out))["e11_repeat_seconds"] == 3.4
         assert claim(d, "anvil-fork", out) == 1, "a fork is never complete"
         os.remove(os.path.join(d, "claim1-tx.json"))
         assert claim(d, "sepolia", out) == 1
-        assert {"claim_block", "proof_bytes", "claim_readable_from_rpc"} <= set(json.load(open(out))["missing"])
+        assert {"claim_block", "proof_bytes", "claim_readable_from_rpc"} <= set(json.load(open(out + ".incomplete"))["missing"])
+        json.dump({"balance": "5"}, open(os.path.join(d, "balance-after-claim.json"), "w"))
+        assert claim(d, "sepolia", out) == 1
+        assert "wrapped_balance_moved_by_denomination" in json.load(open(out + ".incomplete"))["missing"]
+        json.dump({"balance": "1000000000000000"}, open(os.path.join(d, "balance-after-claim.json"), "w"))
         # burn
         json.dump({"tx": "b1", "block_id": 80, "reverted": False}, open(os.path.join(d, "burn-tx.json"), "w"))
         os.makedirs(os.path.join(d, "burn-0-groth16"))
@@ -184,7 +223,7 @@ def self_test():
         r = json.load(open(out))
         assert r["anchor"] == "stub (owner-posted root)" and r["release_gas"] == 0x80EC3
         json.dump({"wall_s": 1, "peak_rss_gib": 1, "dev_mode": True}, open(os.path.join(jobd, "record.json"), "w"))
-        assert burn(d, "sepolia", out) == 1 and json.load(open(out))["risc0_dev_mode"] == "SET"
+        assert burn(d, "sepolia", out) == 2 and json.load(open(out + ".incomplete"))["risc0_dev_mode"] == "SET"
     print("record_v4 self-test OK")
     return 0
 

@@ -169,6 +169,14 @@ enum Cmd {
     DevAttestRoot,
     /// Read only: the attest instance's head and the Ethereum block its record proves.
     InstanceHead,
+    /// Read only: the wrapped balance an account holds in the configured bridge instance (decimal base units).
+    Balance {
+        #[arg(long)]
+        account: AccountId,
+        /// `eth` or a token address.
+        #[arg(long, default_value = "eth")]
+        token: String,
+    },
     /// Prints the image id of guest burn_proof (`$BV_GUESTS/burn_proof.bin`).
     ImageId,
     /// Cross-language test vectors for contracts/test/BridgeVectors.t.sol.
@@ -405,6 +413,10 @@ async fn main() -> Result<()> {
         Cmd::DevAttestRoot => {
             let cf = ConfigFile::load(cli.config.as_ref())?;
             lezops::dev_attest_root(&cf, &Rpc::new(&cli.rpc)).await?;
+        }
+        Cmd::Balance { account, token } => {
+            let cf = ConfigFile::load(cli.config.as_ref())?;
+            lezops::balance(&cf, account, token_arg(&token)?).await?;
         }
         Cmd::InstanceHead => {
             let cf = ConfigFile::load(cli.config.as_ref())?;

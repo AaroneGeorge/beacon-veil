@@ -10,7 +10,10 @@
 #   e2e_v4.sh post-root    burn root to the STUB   e2e_v4.sh burn        private burn (real proof)
 #   e2e_v4.sh release      Vault.release (Groth16) e2e_v4.sh prove       burn_proof Groth16 (RISC Zero 3.1.0)
 #   e2e_v4.sh wait-anchor  until the STUB delay passed
+#   e2e_v4.sh wait-record  until run E's instance holds a record past the deposit block (bridge_cli instance-head)
 #   e2e_v4.sh record-claim | record-burn          evidence/bridge/real-claim-v4/record.json, real-burn-v4/record.json
+#                                                 (an incomplete record goes to <record>.incomplete, exit non-zero)
+# vault and deposit never repeat for a flow (BV_FORCE_NEW_VAULT=1 / BV_FORCE_NEW_DEPOSIT=1 to do it on purpose).
 #
 # Targets (BV_V4_TARGET):
 #   anvil-fork (default)  an anvil fork of Sepolia on 127.0.0.1:8548 (the 3.1.0 emergency-stop wrapper exists there),
@@ -96,7 +99,8 @@ lez_only_on_sepolia() {
 proof_job() { # name note -- command...: a real proof under the proving lock; prints the job dir
   local name="$1" note="$2"; shift 3
   local job; job="$S/prove-$name-$(date -u +%Y%m%dT%H%M%SZ)"
-  BV_REAL_PROOF=1 "$PROVE_JOB" --wait --foreground --name "$name" --out "$job" --note "$note" -- "$@" >&2 || return 1
+  BV_REAL_PROOF=1 "$PROVE_JOB" --wait --foreground --name "$name" --out "$job" --note "$note" -- \
+    "$R/scripts/proof/no_dev_mode.sh" "$@" >&2 || return 1
   echo "$job"
 }
 
@@ -122,6 +126,8 @@ check)
   echo "bridge $BRIDGE, attest $ATTEST_PROG, lez_program $( [ -n "$BRIDGE" ] && b58hex "$BRIDGE")"
   exit "$fail" ;;
 vault)
+  # Never a second vault (and anchor and token) for the same flow; BV_FORCE_NEW_VAULT=1 to start over on purpose.
+  [ -z "${VAULT:-}" ] || [ "${BV_FORCE_NEW_VAULT:-0}" = 1 ] || { echo "vault exists ($VAULT): not deploying another" >&2; exit 0; }
   ensure_anvil
   IMAGE=$(env "${R31_ENV[@]}" "$R31_BIN" image-id)
   export VERIFIER=$VERIFIER_31_ESTOP BURN_IMAGE_ID=$IMAGE LEZ_PROGRAM=$(b58hex "$BRIDGE") ANCHOR_DELAY=600
@@ -140,10 +146,16 @@ config)
   save INSTANCE_HEX "$(jq -r .instance_hex "$S/config.json")"
   ensure_anvil
   export VAULT LEZ_INSTANCE=$(jq -r .instance_hex "$S/config.json")
-  forge_s BindInstance
+  bound=$(cast call "$VAULT" 'lezInstance()(bytes32)' --rpc-url "$RPC")
+  if [ "$bound" = "$LEZ_INSTANCE" ]; then echo "vault already bound to $LEZ_INSTANCE"
+  elif [ "$bound" != 0x0000000000000000000000000000000000000000000000000000000000000000 ]; then
+    echo "vault bound to another instance ($bound)" >&2; exit 1
+  else forge_s BindInstance; fi
   [ "$(cast call "$VAULT" 'lezInstance()(bytes32)' --rpc-url "$RPC")" = "$(jq -r .instance_hex "$S/config.json")" ] \
     && echo "vault bound to bridge instance $(jq -r .instance_hex "$S/config.json")" ;;
 deposit)
+  # One deposit per flow: a second one would send another 0.001 ETH. BV_FORCE_NEW_DEPOSIT=1 to send one on purpose.
+  [ -z "${DEPOSIT_TX:-}" ] || [ "${BV_FORCE_NEW_DEPOSIT:-0}" = 1 ] || { echo "deposit exists ($DEPOSIT_TX): not sending another" >&2; exit 0; }
   ensure_anvil
   export BV_BRIDGE_CONFIG="$S/config.json"
   CLAIMER="${BV_CLAIMER:-$(label_id w6-claimer)}"
@@ -164,6 +176,21 @@ wallet)
   label_id w6-claimer >/dev/null || true
   [ -n "$(label_id w6-claimer)" ] || wallet account new private --label w6-claimer
   cat "$S/wallet.env" ;;
+wait-record)
+  # Until the attest instance holds a record whose execution block is at or after the deposit block. A Gloas head
+  # carries no block number, so the block is resolved from the record's execution hash (bridge_cli instance-head).
+  lez_only_on_sepolia wait-record
+  # shellcheck source=/dev/null
+  source <(grep '^export ' "$S/wallet.env")
+  export BV_BRIDGE_CONFIG="$S/config.json"
+  : "${DEPOSIT_BLOCK:?deposit first}"
+  for i in $(seq 1 "${BV_WAIT_RECORD_TRIES:-120}"); do
+    h=$("$CLI" instance-head 2>/dev/null || true)
+    blk=$(printf '%s' "$h" | jq -r '.eth_block // 0' 2>/dev/null); blk=${blk:-0}
+    if [ "$blk" -ge "$DEPOSIT_BLOCK" ]; then echo "record at slot $(jq -r .slot <<<"$h") proves block $blk >= $DEPOSIT_BLOCK"; exit 0; fi
+    echo "$(date -u +%T) head proves block $blk, waiting for >= $DEPOSIT_BLOCK ($i)"; sleep 60
+  done
+  echo "no record past the deposit block after ${BV_WAIT_RECORD_TRIES:-120} min" >&2; exit 1 ;;
 fund)
   lez_only_on_sepolia fund
   # shellcheck source=/dev/null
@@ -181,7 +208,7 @@ claim)
   echo "claim stage start UTC $(date -u +%FT%TZ)"
   A=$("$CLI" attest-root --min-eth-block "$DEPOSIT_BLOCK" | tee "$S/attest-root.json")
   ROOT=$(jq -r .root <<<"$A"); save ROOT "$ROOT"
-  before=$("$CLI" recover --dest "$CLAIMER" --lez 2>/dev/null | tee "$S/recover-before.txt" | tail -1 || true)
+  "$CLI" balance --account "$CLAIMER" > "$S/balance-before-claim.json"
   job=$(proof_job bridge-claim-v4 "private claim of deposit $DEPOSIT_INDEX on seq-pub" -- \
     "$CLI" claim --index "$DEPOSIT_INDEX" --dest "$CLAIMER" --root "$ROOT")
   save CLAIM_JOB "$job"
@@ -191,10 +218,12 @@ for m in re.finditer(r"^\{", t, re.M):
     try: o,_=d.raw_decode(t[m.start():]); print(json.dumps(o)); break
     except ValueError: pass' "$job/output.log" > "$S/claim1.json"
   "$ATTEST" tx --tx "$(jq -r .tx "$S/claim1.json")" > "$S/claim1-tx.json"
-  "$CLI" recover --dest "$CLAIMER" --lez > "$S/recover-after.txt" 2>&1 || true
-  # The repeat is refused while the program runs, before any proof is made (E11).
+  "$CLI" balance --account "$CLAIMER" > "$S/balance-after-claim.json"
+  # The repeat is refused while the program runs, before any proof is made (E11); its seconds show that.
+  t0=$(date +%s.%N)
   if "$CLI" claim --index "$DEPOSIT_INDEX" --dest "$CLAIMER" --root "$ROOT" --force > "$S/claim2.txt" 2>&1; then
     echo "FAIL: second claim accepted"; exit 1; fi
+  python3 -I -c 'import sys; print(round(float(sys.argv[2]) - float(sys.argv[1]), 2))' "$t0" "$(date +%s.%N)" > "$S/claim2-seconds.txt"
   grep -q 'E11' "$S/claim2.txt" && echo "second claim refused with E11"
   echo "claim stage end UTC $(date -u +%FT%TZ)" ;;
 burn)
@@ -209,7 +238,8 @@ burn)
     --fee 10000000000000)
   save BURN_JOB "$job"; save BURN_INDEX "$J"
   grep -o 'burn tx [0-9a-f]*' "$job/output.log" | awk '{print $3}' | head -1 > "$S/burn-tx.txt"
-  "$ATTEST" tx --tx "$(cat "$S/burn-tx.txt")" > "$S/burn-tx.json" ;;
+  "$ATTEST" tx --tx "$(cat "$S/burn-tx.txt")" > "$S/burn-tx.json"
+  "$CLI" balance --account "$CLAIMER" > "$S/balance-after-burn.json" ;;
 post-root)
   ensure_anvil
   export BV_BRIDGE_CONFIG="$S/config.json"

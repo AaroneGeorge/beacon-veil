@@ -440,3 +440,23 @@ pub async fn burn_witness(cf: &ConfigFile, key: &B32, index: u64) -> Result<Burn
         lez_instance: *cf.instance.value(),
     })
 }
+
+/// Read only: the wrapped balance of `token` that `account` holds in the configured bridge instance. A private account
+/// of this wallet is read from the wallet's own state after a sync to the latest block; any other account from the
+/// sequencer's public view.
+pub async fn balance(cf: &ConfigFile, account: AccountId, token: Addr) -> Result<()> {
+    let mut w = attest_host::open_wallet()?;
+    w.sync_to_latest_block().await?;
+    let bridge = cf.bridge_program;
+    let (kind, state) = match w.get_account_private(account) {
+        Some(acc) => ("private", acc.data.actor_state(bridge).to_vec()),
+        None => ("public", state_of(&w, account, bridge).await?),
+    };
+    let holding = bridge_program::lez::Holding::decode(&state).context("holding state does not decode")?;
+    println!(
+        "{}",
+        json!({"account": account.to_string(), "kind": kind, "instance": cf.instance.to_string(),
+               "token": hex0x(&token), "balance": holding.balance(&cf.instance, &token).to_string()})
+    );
+    Ok(())
+}

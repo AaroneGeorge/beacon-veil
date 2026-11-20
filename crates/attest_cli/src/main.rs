@@ -594,8 +594,12 @@ async fn main() -> Result<()> {
                 print(&json!({"instance": instance, "exists": false}));
                 std::process::exit(3);
             };
+            // The config as stored on chain (its verifier list included).
+            let config = attest_host::read_instance(&ids, &inst)
+                .await?
+                .map(|s| config_json(&s.config));
             print(&json!({
-                "instance": instance, "exists": true,
+                "instance": instance, "exists": true, "config": config,
                 "head": {
                     "slot": h.slot, "period": h.period, "beacon_root": hex::encode(h.beacon_root),
                     "exec_number": h.exec_number, "exec_hash": hex::encode(h.exec_hash),

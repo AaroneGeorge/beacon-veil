@@ -15,36 +15,36 @@
 # are skipped and stage 3 runs alone.
 #
 # Refuses to start when: memory is short (MemAvailable < 10.5 GiB or swap use >= 2 GiB: a proof peaks at about
-# 9.3 GiB, and a shortage would let the kernel kill a follower), the build lock or the proving lock is held, a run
-# that must stay up is not running (run C and seq-main, runs D and E, seq-pub, the two Logos sessions), or seq-pub
-# runs with RISC0_DEV_MODE. The window marks itself as the first process the kernel kills under memory pressure
-# (oom_score_adj 1000), so a shortage ends the proof, not a follower.
+# 9.3 GiB), the build lock or the proving lock is held, a run that must stay up is not running (run C and seq-main,
+# runs D and E, seq-pub, the two Logos sessions), seq-pub runs with RISC0_DEV_MODE, or the window shares a cgroup
+# with seq-pub or a follower. seq-pub, runs D and E and the public Logos session live in the cgroup of
+# lechu-tmux.service (OOMPolicy=stop, KillMode=control-group): an out-of-memory kill of a proof started from a tmux
+# pane would make systemd stop that whole unit. So the window runs in its own scope; it also marks itself as the first
+# process the kernel kills (oom_score_adj 1000), so a shortage ends the proof, and only the proof.
+#
+# Launch (detached, own scope, pid file $B/run/proof-window.pid, log under $B/run/proof-window/):
+#   cd $B/repo && XDG_RUNTIME_DIR=/run/user/$(id -u) DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus \
+#     setsid nohup systemd-run --user --scope --collect --unit=bv-proof-window -- \
+#     env BV_PROOF_WINDOW_OK=1 [BV_OWNER_D3=yes BV_RELEASE_RECIPIENT=0x...] scripts/proof_window.sh \
+#     > $B/run/proof-window.out 2>&1 < /dev/null &
 set -uo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=scripts/env.sh
 source "$here/env.sh"
 unset RISC0_DEV_MODE
 DRY=0 FROM=""
-wait_record() { # until run E applied a record whose execution block is at or after the deposit block
-  local blk; blk=$(sed -n 's/^DEPOSIT_BLOCK=//p' "$B/run/w6/v4-sepolia/flow.env")
-  [ -n "$blk" ] || { echo "no DEPOSIT_BLOCK in $B/run/w6/v4-sepolia/flow.env" >&2; return 1; }
-  for _ in $(seq 1 120); do
-    ( source <(grep '^export ' "$B/run/w4/run-e/wallet.env")
-      "$B/target/host/attest" --chain-id 11155111 status --instance 5ydZVRKHVECxKtXBwHnW9N6bndDADwZoGSx5tDsp4UXN ) 2>/dev/null \
-      | python3 -I -c 'import json,sys; d=json.load(sys.stdin); sys.exit(0 if (d.get("head") or {}).get("exec_number",0) >= int(sys.argv[1]) else 1)' "$blk" \
-      && { echo "run E's head proves block >= $blk"; return 0; }
-    sleep 60
-  done
-  return 1
-}
+STAGES="claim-prep claim-wait claim-fund claim burn release v3-fund v3-init v3-prove"
 while [ $# -gt 0 ]; do
   case "$1" in
-    --wait-record) wait_record; exit $? ;;
     --dry-run) DRY=1; shift ;;
     --from) FROM="$2"; shift 2 ;;
-    *) sed -n '2,24p' "$0"; exit 2 ;;
+    *) sed -n '2,32p' "$0"; exit 2 ;;
   esac
 done
+if [ -n "$FROM" ] && ! grep -qw -- "$FROM" <<<"$STAGES"; then
+  echo "unknown stage '$FROM' (stages: $STAGES)" >&2; exit 2
+fi
+FLOW_ENV="$B/run/w6/v4-sepolia/flow.env"
 E2E="$BV_REPO/tools/bridge_cli/e2e_v4.sh"
 RP="$BV_REPO/scripts/proof/real_proof_v3.sh"
 LOGDIR="$B/run/proof-window/$(date -u +%Y%m%dT%H%M%SZ)"
@@ -70,6 +70,19 @@ seq_pub_real() {
   alive "$p" && ! tr '\0' '\n' < "/proc/$p/environ" | grep -q '^RISC0_DEV_MODE='
 }
 logos_pub_alive() { pgrep -f "logosctl.*--config-dir $B/run/w4/logos-session-pub" >/dev/null; }
+own_cgroup_ok() { # not lechu-tmux.service, and not the cgroup of seq-pub or a follower
+  local mine p; mine=$(cat /proc/self/cgroup)
+  case "$mine" in *lechu-tmux.service*) return 1 ;; esac
+  for p in "$(cat "$B/run/seq-pub.pid" 2>/dev/null)" "$(cat "$B/run/w4/run-d/followerd.pid" 2>/dev/null)" \
+           "$(cat "$B/run/w4/run-e/followerd.pid" 2>/dev/null)" 1308007 1292913; do
+    [ -n "$p" ] && [ -r "/proc/$p/cgroup" ] && [ "$(cat "/proc/$p/cgroup")" = "$mine" ] && return 1
+  done
+  return 0
+}
+recipient_ok() { [[ "${BV_RELEASE_RECIPIENT:-}" =~ ^0x[0-9a-fA-F]{40}$ ]]; }
+no_sepolia_repeat() { # a fresh start (or --from claim-prep) must not find a vault or a deposit of an earlier window
+  case "$FROM" in ""|claim-prep) ! grep -qE '^(VAULT|DEPOSIT_TX)=' "$FLOW_ENV" 2>/dev/null ;; *) return 0 ;; esac
+}
 
 echo "proof window plan ($(date -u +%FT%TZ)), repo $(git -C "$BV_REPO" rev-parse --short HEAD), dirty $(git -C "$BV_REPO" status --porcelain | wc -l)"
 cat <<EOF
@@ -101,8 +114,15 @@ check "run E follower up ($(cat "$B/run/w4/run-e/followerd.pid" 2>/dev/null))" p
 check "public runs' Logos session up" logos_pub_alive
 check "seq-pub up without RISC0_DEV_MODE (pid $(cat "$B/run/seq-pub.pid" 2>/dev/null))" seq_pub_real
 check "RISC0_DEV_MODE unset in this shell" test -z "${RISC0_DEV_MODE+x}"
+check "own cgroup ($(cut -d: -f3 /proc/self/cgroup)) is not lechu-tmux.service nor that of seq-pub or a follower (launch with systemd-run --user --scope)" own_cgroup_ok
+check "stage names valid${FROM:+ (--from $FROM)}" true
+if [ "${BV_OWNER_D3:-}" = yes ]; then
+  check "BV_RELEASE_RECIPIENT is an Ethereum address (${BV_RELEASE_RECIPIENT:-unset})" recipient_ok
+  check "no vault or deposit of an earlier window in $FLOW_ENV (else resume with --from claim-wait or later)" no_sepolia_repeat
+fi
 echo "stage scripts:"
-"$E2E" check 2>&1 | sed 's/^/  e2e_v4: /' | grep -v '^  e2e_v4: $' ; [ "${PIPESTATUS[0]}" = 0 ] || fails+=("e2e_v4.sh check")
+if [ "${BV_OWNER_D3:-}" = yes ]; then e2e_target=sepolia; else e2e_target=anvil-fork; fi
+BV_V4_TARGET=$e2e_target "$E2E" check 2>&1 | sed 's/^/  e2e_v4: /' | grep -v '^  e2e_v4: $' ; [ "${PIPESTATUS[0]}" = 0 ] || fails+=("e2e_v4.sh check")
 "$RP" --check 2>&1 | sed 's/^/  real_proof_v3: /'; [ "${PIPESTATUS[0]}" = 0 ] || fails+=("real_proof_v3.sh --check")
 
 if [ "$DRY" = 1 ]; then
@@ -112,6 +132,8 @@ fi
 [ "${#fails[@]}" = 0 ] || { echo "refusing to start: ${fails[*]}" >&2; exit 1; }
 
 mkdir -p "$LOGDIR"
+echo $$ > "$B/run/proof-window.pid"
+trap 'rm -f "$B/run/proof-window.pid"' EXIT
 echo 1000 > /proc/self/oom_score_adj   # inherited by every stage: under memory pressure the proof goes first
 export BV_V4_TARGET=sepolia BV_PROOF_WINDOW_OK=1
 started=0
@@ -128,7 +150,7 @@ stage() { # name, command...
 }
 if [ "${BV_OWNER_D3:-}" = yes ]; then
   stage claim-prep bash -c "'$E2E' vault && '$E2E' config && '$E2E' wallet && '$E2E' deposit"
-  stage claim-wait "$0" --wait-record
+  stage claim-wait "$E2E" wait-record
   stage claim-fund "$E2E" fund
   stage claim bash -c "'$E2E' claim && '$E2E' record-claim"
   stage burn "$E2E" burn

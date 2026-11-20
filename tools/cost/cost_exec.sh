@@ -2,16 +2,20 @@
 # `make cost-exec`: deterministic cycles and gas, from the RISC Zero 3.0.5 executor on real fixtures, into
 # evidence/cost/{cost.json,cost.md} with every raw output in evidence/cost/raw/. No sequencer, no proof, no network.
 #
-#   tools/cost/cost_exec.sh                 # build the guests (crates/guest_methods), then measure
-#   COST_NO_GUEST_BUILD=1 tools/cost/cost_exec.sh   # measure the guest ELFs already in the per-guest target dirs
-#   BV_GUEST_DOCKER=1 tools/cost/cost_exec.sh       # guests from the pinned image r0.1.91.1 (reproducible image ids)
+#   tools/cost/cost_exec.sh                         # guests of the release set named in guests/IMAGE_IDS.expected
+#   COST_RELEASE=<commit> | COST_BINS=DIR ...       # another release set
+#   COST_LOCAL_GUESTS=1 tools/cost/cost_exec.sh     # old route: build the guests (crates/guest_methods); no V3 rows
+#   COST_LOCAL_GUESTS=1 COST_NO_GUEST_BUILD=1 ...   # measure guest ELFs already in the per-guest target dirs
+#   COST_LOCAL_GUESTS=1 BV_GUEST_DOCKER=1 ...       # guests from the pinned image r0.1.91.1
+#
+# With a release set, every image id the harnesses measure must equal guests/IMAGE_IDS.expected, else the run fails.
 #
 # Harnesses (each writes raw JSON + a log):
 #   cost exec-lc     (tools/cost)         lc_verify Verify V1 per mainnet step; attest Init, Apply, WriteRecord, CheckHeader
 #   cost sizes       (tools/cost)         borsh sizes of stored states and inputs
 #   attest_exec      (tests/e2e_consumer)      attest Attest (log, storage, account), consumer_erc20 Statement, MarkConsumed
-#   cost exec-v3     (tools/cost/exec_v3.sh)   lc_verify_v3 per step (Begin, Miller, Finish; with COST_BINS only: the
-#                                              release set's lc_verify_v3 and attest, plus a local measurement build)
+#   cost exec-v3     (tools/cost/exec_v3.sh)   lc_verify_v3 per step (Begin, Miller, Finish): the release set's
+#                                              lc_verify_v3 and attest, plus a local measurement build for the phases
 # Optional raw files dropped into evidence/cost/raw/ by hand are kept and merged (b0-phases.json, ...).
 # Cycles depend only on the guest image and the input; the image ids are recorded in cost.json.
 set -euo pipefail
@@ -33,6 +37,7 @@ if [ -z "${COST_BINS:-}" ] && [ "${COST_LOCAL_GUESTS:-0}" != 1 ]; then
   release="${COST_RELEASE:-$(sed -n 's/^# lc_verify_v3 .*release set of commit \([0-9a-f]\{40\}\).*/\1/p' guests/IMAGE_IDS.expected | head -1)}"
   [ -n "$release" ] || { echo "cost-exec: no release commit in guests/IMAGE_IDS.expected (set COST_RELEASE)" >&2; exit 1; }
   COST_BINS="${COST_RELEASE_DIR:-$B/guests-release}/$release"
+  export COST_BINS
   [ -f "$COST_BINS/SHA256SUMS" ] || { echo "cost-exec: release set $release not built: scripts/guests_release.sh $release (or COST_BINS=DIR, or COST_LOCAL_GUESTS=1)" >&2; exit 1; }
 fi
 if [ -n "${COST_BINS:-}" ]; then
@@ -117,3 +122,31 @@ if [ -f "$raw/w1-v1-trace.log" ]; then
   python3 -I "$here/cost.py" import-trace --log "$raw/w1-v1-trace.log" --out "$raw/b0-phases.json"
 fi
 python3 -I "$here/cost.py" build --raw "$raw" --out "$BV_REPO/evidence/cost"
+
+# With a release set: every measured image id must be the expected one (the table names the release set).
+if [ -n "${COST_BINS:-}" ]; then
+  python3 -I - "$raw" "$BV_REPO/guests/IMAGE_IDS.expected" <<'PY'
+import json, os, sys
+raw, exp_p = sys.argv[1:3]
+expected = {}
+for line in open(exp_p):
+    p = line.split()
+    if len(p) == 2 and not line.startswith("#"):
+        expected[p[0]] = p[1]
+seen = []
+for f, keys in (("exec-lc.json", ("lc_verify", "lc_verify_v2", "attest")), ("exec-v3.json", ("lc_verify_v3", "attest"))):
+    path = os.path.join(raw, f)
+    if not os.path.exists(path):
+        continue
+    guests = json.load(open(path)).get("guests") or {}
+    for k in keys:
+        if guests.get(k):
+            seen.append((f, k, guests[k].get("image_id")))
+bad = [(f, k, i) for f, k, i in seen if expected.get(k) != i]
+for f, k, i in seen:
+    print(f"cost-exec: image {k} in {f}: {i} {'OK' if expected.get(k) == i else 'expected ' + str(expected.get(k))}")
+if "lc_verify_v3" not in [k for _, k, _ in seen] or "attest" not in [k for f, k, _ in seen if f == "exec-v3.json"]:
+    bad.append(("exec-v3.json", "lc_verify_v3/attest", "missing"))
+sys.exit(1 if bad else 0)
+PY
+fi

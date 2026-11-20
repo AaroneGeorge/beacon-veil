@@ -49,12 +49,31 @@ check() {
   return "$fail"
 }
 
+submitter_balance() {
+  wallet account get --account-id bv-submitter 2>/dev/null | sed -n 's/.*Balance \([0-9]*\).*/\1/p' | head -1 | grep . || echo 0
+}
+finalized_slot() { # newest finalized slot a mainnet finality update names
+  local u
+  for u in https://lodestar-mainnet.chainsafe.io http://unstable.mainnet.beacon-api.nimbus.team; do
+    curl -fsS -m 30 -A beacon-veil "$u/eth/v1/beacon/light_client/finality_update" 2>/dev/null \
+      | jq -r '.data.finalized_header.beacon.slot' 2>/dev/null | grep -E '^[0-9]+$' && return 0
+  done
+  echo 0
+}
+seq_pub_dev_mode() {
+  local p; p=$(cat "$B/run/seq-pub.pid" 2>/dev/null) || { echo unknown; return; }
+  tr '\0' '\n' < "/proc/$p/environ" 2>/dev/null | sed -n 's/^RISC0_DEV_MODE=//p' | grep . || echo unset
+}
+
 record() { # jobdir
-  local job="$1" ex=""
+  local job="$1" ex="" st=""
   [ -d "$job/inputs" ] && [ -x "$EXEC_ONCE" ] && ex="$("$EXEC_ONCE" --inputs "$job/inputs" --elf "$V3_ELF" 2>/dev/null || true)"
-  python3 -I - "$job" "$OUT" "$BV_REPO" "$ex" <<'PY'
+  [ -f "$D/instance.json" ] && st="$( ( source <(grep '^export ' "$D/wallet.env" 2>/dev/null)
+    "$ATTEST" --chain-id 1 status --instance "$(instance)" ) 2>/dev/null || true)"
+  local expected; expected=$(awk '$1=="lc_verify_v3"{print $2}' "$BV_REPO/guests/IMAGE_IDS.expected" 2>/dev/null)
+  python3 -I - "$job" "$OUT" "$BV_REPO" "$ex" "$st" "$expected" "$(seq_pub_dev_mode)" <<'PY'
 import json, os, re, sys
-job, dst, repo, ex = sys.argv[1:5]
+job, dst, repo, ex, st, expected_image, seq_dev = sys.argv[1:8]
 rec = json.load(open(f"{job}/record.json"))
 log = open(f"{job}/output.log", errors="replace").read()
 res = {}
@@ -67,17 +86,25 @@ for m in re.finditer(r"^\{", log, re.M):
     if isinstance(d, dict) and d.get("mode") == "v3-private":
         res = d
 exr = json.loads(ex) if ex.strip().startswith("{") else {}
+chain = json.loads(st) if st.strip().startswith("{") else {}
+verifiers = (chain.get("config") or {}).get("verifiers")
 rel = os.path.relpath(job, repo)
 doc = {
     "what": "One update through lc_verify_v3 VerifyOnce in a private actor, proven for real (RISC0_DEV_MODE unset), "
-            "on seq-pub; the sequencer verifies the proof and applies attest.Apply. Instance verifiers: lc_verify_v3 only.",
+            "on seq-pub; the sequencer verifies the proof and applies attest.Apply.",
+    "instance_verifiers_on_chain": verifiers,
     "label": "measured, real proof",
     "instance": res.get("instance"), "verifier": res.get("verifier"),
     "update": {k: res.get(k) for k in ("kind", "finalized_slot", "attested_slot", "signature_slot", "participation",
                                        "update_ssz_bytes")},
     "user_cycles": exr.get("user_cycles"), "segments": exr.get("segments"),
-    "cycles_source": "the same VerifyOnce message re-run in the RISC Zero executor with the deployed ELF",
+    "cycles_source": "the same VerifyOnce message re-run in the RISC Zero executor with the deployed ELF of "
+                     "lc_verify_v3 alone (placeholder program, instance and receiver ids). The transaction's proof also "
+                     "covers attest.Apply and the privacy circuit, so the proven total is larger.",
     "elf_sha256": exr.get("elf_sha256"), "image_id": exr.get("image_id"), "executor_verdict": exr.get("verdict"),
+    "expected_image_id": expected_image or None,
+    "image_id_matches_expected": bool(expected_image) and exr.get("image_id") == expected_image,
+    "seq_pub_risc0_dev_mode": seq_dev,
     "wall_seconds": rec.get("wall_s"), "prove_and_submit_s": res.get("prove_and_submit_s"),
     "peak_rss_gib": rec.get("peak_rss_gib"),
     "tx": res.get("tx"), "block_id": res.get("block_id"),
@@ -90,12 +117,24 @@ doc = {
 }
 need = ["instance", "user_cycles", "segments", "wall_seconds", "peak_rss_gib", "tx", "block_id"]
 missing = [k for k in need if doc.get(k) in (None, "")] + ([] if doc["update"].get("finalized_slot") else ["update"])
-doc["complete"] = not missing and doc["risc0_dev_mode"] == "unset" and doc["head_equals_native"] is True
+for k, ok in (("head_equals_native", doc["head_equals_native"] is True),
+              ("executor_verdict accept", str(doc["executor_verdict"]).startswith("accept")),
+              ("image_id_matches_expected", doc["image_id_matches_expected"]),
+              ("instance_verifiers_on_chain == [verifier]", verifiers == [doc["verifier"]] and bool(verifiers)),
+              ("seq_pub_risc0_dev_mode unset", seq_dev == "unset"),
+              ("risc0_dev_mode unset", doc["risc0_dev_mode"] == "unset")):
+    if not ok:
+        missing.append(k)
+doc["complete"] = not missing
 doc["missing"] = missing
-os.makedirs(os.path.dirname(dst), exist_ok=True)
-json.dump(doc, open(dst, "w"), indent=2)
-print(json.dumps({k: doc[k] for k in ("complete", "missing", "tx", "block_id", "wall_seconds", "peak_rss_gib",
-                                      "user_cycles", "segments", "head_equals_native")}))
+out = dst if doc["complete"] else dst + ".incomplete"
+os.makedirs(os.path.dirname(out), exist_ok=True)
+json.dump(doc, open(out, "w"), indent=2)
+print(json.dumps({**{k: doc[k] for k in ("complete", "missing", "tx", "block_id", "wall_seconds", "peak_rss_gib",
+                                        "user_cycles", "segments", "head_equals_native")}, "out": out}))
+if doc["risc0_dev_mode"] != "unset" or seq_dev != "unset":
+    print("REFUSED: dev mode was set for this proof", file=sys.stderr)
+    sys.exit(2)
 sys.exit(0 if doc["complete"] else 1)
 PY
 }
@@ -105,20 +144,33 @@ case "${1:-}" in
   --wallet)
     [ "${BV_PROOF_WINDOW_OK:-0}" = 1 ] || { echo "the private submitter's funding is a real proof: window only (BV_PROOF_WINDOW_OK=1)" >&2; exit 3; }
     pgrep -x v3_onchain >/dev/null && { echo "a v3_onchain process sends from bv-payer; try later" >&2; exit 1; }
-    # Public payer from bv-payer (under the deployment lock), then the private submitter: a real proof, so the whole
-    # call runs as a proving job (time -v, RSS samples, the proving lock).
-    WALLET_CONFIG_FROM="$B/run/wallet-pub" BV_REAL_PROOF=1 "$BV_REPO/tools/cost/prove_job.sh" --wait --foreground \
-      --name real-proof-v3-fund --note "fund the private submitter on seq-pub" -- \
-      flock -w 600 "$BV_REPO/deploy/ids-pub.toml.lock" "$BV_REPO/crates/follower/scripts/wallet_home.sh" \
-      "$(basename "$LEE_WALLET_HOME_DIR" | sed 's/^wallet-//')" 10000000000 1000000000
-    job="$(ls -d "$BV_REPO"/evidence/prove/real-proof-v3-fund/*/ | tail -1)"
-    grep '^export ' "$job/output.log" > "$D/wallet.env.tmp"
-    grep '^export ' "$D/wallet.env.tmp" > "$D/wallet.env"; rm -f "$D/wallet.env.tmp"; cat "$D/wallet.env" ;;
+    name="$(basename "$LEE_WALLET_HOME_DIR" | sed 's/^wallet-//')"
+    # 1. Public payer from bv-payer (a public transfer, under the deployment lock); no private account here.
+    if [ ! -s "$D/wallet.env" ]; then
+      WALLET_CONFIG_FROM="$B/run/wallet-pub" flock -w 600 "$BV_REPO/deploy/ids-pub.toml.lock" \
+        "$BV_REPO/crates/follower/scripts/wallet_home.sh" "$name" 10000000000 0 | grep '^export ' > "$D/wallet.env"
+    fi
+    # shellcheck source=/dev/null
+    source <(grep '^export ' "$D/wallet.env")
+    unset RISC0_DEV_MODE
+    # 2. The private submitter, funded by a private transfer: a real proof, made right here under the proving job
+    #    runner with RISC0_DEV_MODE unset (checked again by no_dev_mode.sh where the wallet proves).
+    [ -n "$(wallet account list 2>/dev/null | grep '\[bv-submitter\]')" ] || wallet account new private --label bv-submitter
+    if [ "$(submitter_balance)" -lt 1000000000 ]; then
+      BV_REAL_PROOF=1 "$BV_REPO/tools/cost/prove_job.sh" --wait --foreground --name real-proof-v3-fund \
+        --note "fund the private submitter on seq-pub" -- \
+        "$here/no_dev_mode.sh" wallet auth-transfer send --from "$name-payer" --to bv-submitter --amount 1000000000
+    fi
+    sub="$(wallet account list 2>/dev/null | grep '\[bv-submitter\]' | grep -o 'Private/[A-Za-z0-9]*' | cut -d/ -f2)"
+    grep -q '^export BV_SUBMITTER=' "$D/wallet.env" || echo "export BV_SUBMITTER=$sub" >> "$D/wallet.env"
+    echo "submitter $sub balance $(submitter_balance)"; cat "$D/wallet.env"
+    [ "$(submitter_balance)" -ge 1000000000 ] ;;
   --init)
     [ -f "$D/instance.json" ] && { echo "$D/instance.json exists: $(instance)"; exit 0; }
     [ -s "$D/wallet.env" ] || { echo "no wallet: --wallet first" >&2; exit 1; }
     # shellcheck source=/dev/null
     source <(grep '^export ' "$D/wallet.env")
+    [ "$(submitter_balance)" -ge 1000000000 ] || { echo "the private submitter is not funded: --wallet first" >&2; exit 1; }
     "$ATTEST" --chain-id 1 init --only-verifier "$V3" --out "$D/instance.json"
     echo "instance $(instance): no follower may use it" ;;
   --prove)
@@ -126,15 +178,27 @@ case "${1:-}" in
     [ -f "$D/instance.json" ] || { echo "no instance: --init first" >&2; exit 1; }
     # shellcheck source=/dev/null
     source <(grep '^export ' "$D/wallet.env")
+    # A fresh instance sits on the newest finalized header: until mainnet finalizes again the finality update names
+    # the same header, which moves nothing (E14). Wait for a newer one.
+    head=$("$ATTEST" --chain-id 1 status --instance "$(instance)" | jq -r .head.slot)
+    for i in $(seq 1 "${BV_RP_WAIT_TRIES:-20}"); do
+      fin=$(finalized_slot)
+      [ "${fin:-0}" -gt "$head" ] && break
+      echo "$(date -u +%T) finality update finalizes slot ${fin:-?}, instance head $head: waiting ($i)"
+      sleep 60
+    done
+    [ "${fin:-0}" -gt "$head" ] || { echo "no finality update newer than the instance head ($head) after ${BV_RP_WAIT_TRIES:-20} min" >&2; exit 1; }
     job="$BV_REPO/evidence/prove/real-proof-v3/$(date -u +%Y%m%dT%H%M%SZ)"
     set +e
     BV_REAL_PROOF=1 BV_FOREGROUND=1 "$BV_REPO/tools/cost/prove_job.sh" --wait --foreground --name real-proof-v3 \
       --out "$job" --note "lc_verify_v3 VerifyOnce, private actor, mainnet finality update, seq-pub" -- \
-      "$ATTEST" --chain-id 1 update --instance "$(instance)" --mode v3-private --v3 "$V3" --save-inputs "$job/inputs"
+      "$here/no_dev_mode.sh" "$ATTEST" --chain-id 1 update --instance "$(instance)" --mode v3-private --v3 "$V3" \
+      --save-inputs "$job/inputs"
     rc=$?
+    record "$job"; rrc=$?
     set -e
-    record "$job" || true
-    exit "$rc" ;;
+    [ "$rc" = 0 ] || exit "$rc"
+    exit "$rrc" ;;
   --record) record "${2:?--record JOBDIR}" ;;
   *) sed -n '2,20p' "$0"; exit 2 ;;
 esac
