@@ -488,3 +488,51 @@ fn v3_witness_round_trips_and_binds() {
         }
     }
 }
+
+#[test]
+fn v3_infinity_signature_refused_at_miller() {
+    let chain = e2e_chain::mainnet_chain(vec![V3]).expect("fixtures");
+    let config = &chain.config;
+    let (w, _) = lc::init_store(config, &chain.bootstrap).expect("init");
+    let mut inf = [0u8; 96];
+    inf[0] = 0xc0;
+    let forged = with_signature(config, &chain.updates[0].1, &inf);
+    assert_eq!(v1(config, &w, &forged).err(), Some(EsaError::E03BadSignature));
+    let job = job_account(config, &w, &forged);
+    let s1 = lc_v3::handle(&V3, &job, &[], begin_msg(config, &w, &forged))
+        .expect("Begin accepts: it does not decode the signature")
+        .state
+        .expect("state");
+    assert_eq!(
+        lc_v3::handle(&V3, &job, &s1, LcVerifyV3Message::Miller).err(),
+        Some(EsaError::E03BadSignature),
+        "the identity signature is refused at Miller, before the Miller loop"
+    );
+    assert_eq!(once(config, &w, &forged).err(), Some(EsaError::E03BadSignature));
+}
+
+/// A replayed update whose signature is also wrong: both refuse. V1 reports the signature (E03: Helios decodes the
+/// signature as part of the update); V3 reports the replay (E14: it checks replay before it decodes the signature, in
+/// Miller). A designed difference, listed as such by the differential test.
+#[test]
+fn v3_replay_with_bad_signature() {
+    for (net, chain) in chains() {
+        let (mut w, _) = lc::init_store(&chain.config, &chain.bootstrap).expect("init");
+        for (label, u) in &chain.updates {
+            let next = lc::verify_and_apply(&chain.config, &w, u).expect("v1").new_witness();
+            let mut t = u.clone();
+            let own = signature_of(&chain.config, u);
+            let at = t.windows(96).position(|x| x == own.as_slice()).expect("sig");
+            t[at + 95] ^= 1;
+            let a = v1(&chain.config, &next, &t).err();
+            let b = once(&chain.config, &next, &t).err();
+            println!("{net} {label}: replay with a changed signature byte: V1 {a:?}, V3 {b:?}");
+            assert_eq!(
+                (a, b),
+                (Some(EsaError::E03BadSignature), Some(EsaError::E14AlreadyApplied)),
+                "{net} {label}"
+            );
+            w = next;
+        }
+    }
+}

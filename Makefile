@@ -5,7 +5,7 @@ SHELL := /usr/bin/env bash
 .SHELLFLAGS := -eu -o pipefail -c
 ENV := source scripts/env.sh &&
 NICE := nice -n 15
-GUESTS := attest lc_verify consumer_erc20 bridge bridge_dev_source burn_proof lc_verify_v3
+GUESTS := attest lc_verify consumer_erc20 bridge bridge_dev_source burn_proof
 
 .PHONY: help fmt fmt-check clippy test test-host guests guests-docker forge-test ci seq-dev-start seq-dev-stop \
         deploy-local cost-exec cost-prove bench-bls exec-v3 gate clean-guests
@@ -30,8 +30,9 @@ test: ## Unit and integration tests in dev mode (builds guests with the local rz
 test-host: ## Tests without building guests
 	$(ENV) RISC0_SKIP_BUILD=1 $(NICE) cargo nextest run --workspace --no-fail-fast
 
-guests: ## Build every guest with the local rzup toolchain; copy .bin files to $$B/target/guests
+guests: ## Build every guest with the local rzup toolchain; copy .bin files to $$B/target/guests (lc_verify_v3: scripts/build_guest.sh with $$BV_V3_CARGO_CONFIG)
 	$(ENV) $(NICE) cargo build -p guest_methods && scripts/collect_guests.sh $(GUESTS)
+	$(ENV) GUEST_CARGO_CONFIG="$$BV_V3_CARGO_CONFIG" $(NICE) scripts/build_guest.sh programs/lc_verify_v3/Cargo.toml lc_verify_v3 "$$CARGO_TARGET_DIR/guests"
 
 guests-docker: ## Build every guest in the pinned image r0.1.91.1 (reproducible image ids)
 	$(ENV) BV_GUEST_DOCKER=1 $(NICE) cargo build -p guest_methods && scripts/collect_guests.sh $(GUESTS)

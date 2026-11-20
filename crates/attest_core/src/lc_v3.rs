@@ -18,9 +18,10 @@
 //!    computed with the SHA-256 compression function directly ([`committee_root_fast`]).
 //! 3. **Apply on roots**: Helios `apply_generic_update` (finality path) reproduced on committee roots and counters.
 //!
-//! On every input the result (accept with pre-store, post-store, head and record, or the refusal code) must equal
-//! V1's; `tests/diff_helios` and `tests/e2e_chain` check it. One designed difference: an identity key among the
-//! participants is refused here (V1 accepts it, as Helios does).
+//! The result (accept with pre-store, post-store, head and record, or the refusal code) must equal V1's on every
+//! input except the designed differences, which `tests/diff_helios` lists and `tests/e2e_chain` tests: an identity
+//! key among the participants is refused here (V1 accepts it, as Helios does); a replayed update whose signature is
+//! also wrong is refused here as a replay (E14) where V1 reports the signature (E03).
 //!
 //! Steps. [`begin`] = [`prepare`] + [`keys`] (checks, `Apply` fields, aggregate key; the job keeps the signing root
 //! and the compressed signature), [`miller`] (signature decode with its subgroup check, hash to G2, one Miller loop
@@ -762,6 +763,11 @@ pub fn miller(job: &mut JobV3) -> Result<(), EsaError> {
     }
     let pk = bls_blst::G1::from_uncompressed_stored(&job.aggregate_key).ok_or(EsaError::E01Malformed)?;
     let sig = bls_blst::G2::signature_from_compressed(&job.signature).ok_or(EsaError::E03BadSignature)?;
+    // The identity signature never verifies against a non-identity key; the two-pair Miller loop has no special
+    // case for it, so it is refused here, before the loop.
+    if sig.is_identity() {
+        return Err(EsaError::E03BadSignature);
+    }
     mark("sig_decode");
     let hm = bls_blst::G2::hash_to_curve(&job.signing_root);
     mark("hash_to_g2");

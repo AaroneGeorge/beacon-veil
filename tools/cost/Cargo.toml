@@ -21,6 +21,8 @@ risc0-zkvm = { workspace = true, features = ["client"] }
 risc0-binfmt = "=3.0.4"
 risc0-zkos-v1compat = "=2.2.2"
 serde_json.workspace = true
+hex.workspace = true
+ethereum_ssz = "0.9"
 # bench-bls only (guests/bls_bench types and witness builders, fixtures loader).
 bls_bench_guest = { path = "../../guests/bls_bench" }
 fixtures = { path = "../fixtures" }

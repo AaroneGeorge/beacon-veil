@@ -99,6 +99,7 @@ pub const TAMPER_CLASSES: [(&str, EsaError); 19] = [
     ("finalized_header_zeroed", EsaError::E02NotFinalised),
     ("other_network_genesis_root", EsaError::E03BadSignature),
     ("replay_after_apply", EsaError::E14AlreadyApplied),
+    ("replay_bad_signature", EsaError::E03BadSignature),
     ("truncated_ssz", EsaError::E01Malformed),
     ("extra_data_shortened", EsaError::E15HeaderMismatch),
     ("two_periods_ahead", EsaError::E05HandoffNotVerified),
@@ -281,6 +282,30 @@ impl Ctx<'_> {
             u.to_vec(),
             Expect::Refuse(expected("replay_after_apply")),
         );
+        // The same replay with a signature byte changed: V1 (Helios decodes the signature when it decodes the update)
+        // refuses E03; V3 decides the replay first (E14) and decodes the signature only in Miller.
+        if let Some(l) = Layout::of(u) {
+            let mut b = u.to_vec();
+            b[l.signature.start + 40] ^= 1;
+            self.push(
+                format!("{base_id}/replay_bad_signature"),
+                Kind::Tampered,
+                "replay_bad_signature",
+                crossing,
+                src,
+                cfg.clone(),
+                applied.new_witness(),
+                b,
+                Expect::Refuse(expected("replay_bad_signature")),
+            );
+            if let Some(c) = self.out.last_mut() {
+                c.divergence = Some(
+                    "a replayed update whose signature is also wrong: both refuse; V1 reports the signature (E03), \
+                     the staged verifier reports the replay (E14) because it checks replay before it decodes the \
+                     signature",
+                );
+            }
+        }
         if let Some(o) = older {
             self.push(
                 format!("{base_id}/two_periods_ahead"),

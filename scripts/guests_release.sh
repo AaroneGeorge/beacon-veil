@@ -52,7 +52,9 @@ RUN mkdir -p /out && R=target/$T/release && \\
     CARGO_MANIFEST_PATH=guests/burn_proof/Cargo.toml $build --manifest-path guests/burn_proof/Cargo.toml && cp \$R/burn_proof /out/ && \\
     CARGO_MANIFEST_PATH=programs/lc_verify/Cargo.toml $build --manifest-path programs/lc_verify/Cargo.toml && cp \$R/lc_verify /out/ && \\
     CARGO_MANIFEST_PATH=programs/lc_verify/Cargo.toml $build --manifest-path programs/lc_verify/Cargo.toml --features v2 && cp \$R/lc_verify /out/lc_verify_v2 && \\
-    CARGO_MANIFEST_PATH=programs/lc_verify_v3/Cargo.toml $build --manifest-path programs/lc_verify_v3/Cargo.toml --config '$BV_V3_CARGO_CONFIG' && cp \$R/lc_verify_v3 /out/
+    { CARGO_MANIFEST_PATH=programs/lc_verify_v3/Cargo.toml $build --manifest-path programs/lc_verify_v3/Cargo.toml --config '$BV_V3_CARGO_CONFIG' > /tmp/v3.log 2>&1 || { cat /tmp/v3.log; exit 1; }; } && \\
+    cat /tmp/v3.log && if grep -q 'did not match any packages' /tmp/v3.log; then echo 'BV_V3_CARGO_CONFIG matched no package'; exit 1; fi && \\
+    cp \$R/lc_verify_v3 /out/
 
 FROM scratch as export
 COPY --from=build /out /
@@ -60,10 +62,12 @@ DOCKER
 printf '**/Dockerfile\n**/.git\n**/node_modules\n**/target\n**/tmp\n' > "$work/Dockerfile.dockerignore"
 
 echo "building guests of $commit in $tag (log: $work/docker.log)"
-docker build --output="$out/elf" -f "$work/Dockerfile" "$src" > "$work/docker.log" 2>&1 || { tail -30 "$work/docker.log" >&2; exit 1; }
+# BV_DOCKER_NO_CACHE=1: rebuild every layer (a second build to check that the image ids repeat).
+docker build ${BV_DOCKER_NO_CACHE:+--no-cache} --output="$out/elf" -f "$work/Dockerfile" "$src" > "$work/docker.log" 2>&1 || { tail -30 "$work/docker.log" >&2; exit 1; }
 
 # Wrap with the v1compat kernel (risc0-build's ProgramBinary) and record image ids.
-(cd "$BV_REPO" && RISC0_SKIP_BUILD=1 nice -n 15 cargo build -q --locked -p guest_ids)
+# guest_ids from the release worktree (the committed tree), so local changes cannot break or change this step.
+(cd "$src" && RISC0_SKIP_BUILD=1 nice -n 15 cargo build -q --locked -p guest_ids)
 : > "$out/IMAGE_IDS"
 for g in attest lc_verify lc_verify_v2 consumer_erc20 bridge bridge_dev_source burn_proof lc_verify_v3; do
   "$CARGO_TARGET_DIR/debug/guest-ids" "$out/elf/$g" "$out/$g.bin" | sed "s#^$out/##" >> "$out/IMAGE_IDS"

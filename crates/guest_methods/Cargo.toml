@@ -20,5 +20,4 @@ methods = [
   "../../programs/consumer_erc20",
   "../../programs/bridge",
   "../../guests/burn_proof",
-  "../../programs/lc_verify_v3",
 ]

@@ -158,6 +158,12 @@ impl G2 {
         Signature::from(self.0).compress()
     }
 
+    /// The point at infinity (blst represents it as the all-zero affine point).
+    #[must_use]
+    pub fn is_identity(&self) -> bool {
+        self.0 == blst_p2_affine::default()
+    }
+
     /// 192-byte uncompressed encoding.
     #[must_use]
     pub fn uncompressed(&self) -> [u8; 192] {
@@ -344,6 +350,16 @@ mod tests {
             }
         }
         assert!(found, "no on-curve neighbour found");
+    }
+
+    #[test]
+    fn infinity_signature_decodes_as_identity() {
+        let mut b = [0u8; 96];
+        b[0] = 0xc0;
+        let s = G2::signature_from_compressed(&b).expect("the identity decodes");
+        assert!(s.is_identity());
+        let good = G2::signature_from_compressed(&sk(8).sign(b"m", DST, &[]).compress()).expect("sig");
+        assert!(!good.is_identity());
     }
 
     #[test]
