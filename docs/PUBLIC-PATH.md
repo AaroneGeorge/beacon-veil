@@ -78,3 +78,13 @@ Run `source scripts/env.sh` first.
 - Differential test: `cargo nextest run -p diff_helios`.
 - BLS bench: `make bench-bls` writes `evidence/public-path/bench/`.
 - Run a follower on the public path: `docs/OPERATOR.md` section 10.
+
+## Re-reading the evidence
+
+The sequencer that holds every transaction cited on this page (`seq-pub`, LEZ v0.4.0-rc3, dev mode unset) can be read at `https://beacon-veil-seq.tailcdec7a.ts.net` with JSON-RPC over HTTPS. It is a standalone sequencer that we run, not a Logos network. The endpoint is read-only: it forwards 12 read methods (`getTransaction`, `getBlock`, `getBlockRange` up to 16 blocks, `getLastBlockId`, `getAccount`, `getAccountView`, `getAccountBalance`, `getAccountsNonces`, `getProgramIds`, `getFeeState`, `getChannelId`, `checkHealth`) and refuses everything else, including `sendTransaction`. Limits: 5 requests a second per visitor (a client slightly over is slowed by up to 1 s, more gets HTTP 429), 2 KiB per request, no batches. The allow-list is `tools/seq_read/policy.py`. Example:
+
+```
+curl -s -H 'content-type: application/json' -d '{"jsonrpc":"2.0","id":1,"method":"getTransaction","params":["a018aa6bccba64e417eb0e3dc5045f66f96ee6a2a9bf3e4a66a9de7df017ddc2"]}' https://beacon-veil-seq.tailcdec7a.ts.net
+```
+
+This is the first step of `evidence/public-path/onchain/mainnet/run.json`. The answer is the transaction (base64 of its borsh bytes) and its block id. `v3_onchain check` re-reads the 27 mainnet, Sepolia and Hoodi transactions through this address: `evidence/public-path/endpoint/check-through-endpoint.txt`. The endpoint may be away between 19:00 and 03:00 UTC on nights when proofs run on the same machine.
