@@ -189,7 +189,7 @@ pub fn find_burn(
         .transactions
         .get(index)
         .ok_or(ChainError::NoSuchTransaction)?;
-    if block.body.reverted.iter().any(|&r| r == index as u64) {
+    if block.body.reverted.contains(&(index as u64)) {
         return Err(ChainError::Reverted);
     }
     match tx {

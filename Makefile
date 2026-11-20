@@ -70,3 +70,9 @@ cost-prove: ## proof-window job, JOB=calib-seg20|calib-ppe|g1-real (needs BV_PRO
 
 gate: ## gate checks G1 to G5 -> evidence/gate/summary.json (GATE_ARGS=--quick re-checks evidence only)
 	scripts/gate/gate.sh $(GATE_ARGS)
+
+.PHONY: test-lez-chain
+test-lez-chain: ## crates/lez_chain (own workspace): fmt, clippy, tests on fixtures/lez-chain (as CI runs them)
+	$(ENV) cargo fmt --manifest-path crates/lez_chain/Cargo.toml -- --check
+	$(ENV) $(NICE) cargo clippy --manifest-path crates/lez_chain/Cargo.toml --all-targets --locked -- -D warnings
+	$(ENV) $(NICE) cargo test --manifest-path crates/lez_chain/Cargo.toml --locked

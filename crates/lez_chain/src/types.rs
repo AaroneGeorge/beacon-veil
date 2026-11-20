@@ -190,6 +190,10 @@ pub struct PrivacyPreservingTransaction {
 
 /// `common::transaction::LeeTransaction`.
 #[derive(Debug, Clone, PartialEq, Eq, BorshSerialize, BorshDeserialize)]
+#[allow(
+    clippy::large_enum_variant,
+    reason = "mirrors LEZ, which keeps both variants unboxed"
+)]
 pub enum LeeTransaction {
     Public(PublicTransaction),
     PrivacyPreserving(PrivacyPreservingTransaction),

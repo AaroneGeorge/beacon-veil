@@ -58,6 +58,12 @@ jobs:
         env:
           RISC0_SKIP_BUILD: "1"
         run: cargo nextest run -p e2e_chain --features v3 --locked --no-fail-fast
+      - name: lez_chain (own workspace) fmt, clippy, tests on fixtures/lez-chain
+        if: success() || failure()
+        run: |
+          cargo fmt --manifest-path crates/lez_chain/Cargo.toml -- --check
+          cargo clippy --manifest-path crates/lez_chain/Cargo.toml --all-targets --locked -- -D warnings
+          cargo test --manifest-path crates/lez_chain/Cargo.toml --locked
 
   guests:
     name: guest build (docker r0.1.91.1) + image-id check
