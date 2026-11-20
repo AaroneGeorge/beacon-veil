@@ -19,6 +19,11 @@ What a proof of it shows and what it does not:
 - The public-burn route is tested only on a synthetic block (`fixtures/lez-chain/synthetic/2590`): no public burn
   exists on any chain we run.
 
+The vault side is `contracts/src/VaultChain.sol`: `Vault` plus `releaseChain`. Its chain route keeps its own release
+window against the token's cap, so a vault that also released through `release` or `releaseOpen` could pay up to twice
+the cap in one window. On Sepolia this vault releases through the chain route only (no root is posted to its root
+anchor, so neither `release` nor `releaseOpen` can pass), so the doubled-cap case cannot arise there.
+
 Layout as `guests/burn_proof/r31`: `methods/guest` (the guest), `methods` (risc0-build 3.0.7, embeds the ELF and image
 id), `host` (`burn_chain_host image-id | prove --mode execute|groth16 ...`; `bridge_cli chain-witness` writes its
 input from a live sequencer; groth16 only in a proving window).
@@ -30,4 +35,7 @@ cargo build --release --manifest-path guests/burn_chain/Cargo.toml -p burn_chain
 burn_chain_host prove --mode execute --witness-json W --dir fixtures/lez-chain/synthetic --pinned-dir fixtures/lez-chain/seq-dev \
   --pinned 2585 --tip 2591 --burn-block 2586 --tx 0 --out OUT
 ```
-The image id here comes from the local rzup toolchain; a reproducible (docker) build and its id come with the proof.
+Image id (reproducible docker build, `BV_GUEST_DOCKER=1`, risczero/risc0-guest-builder:r0.1.97.0; two builds gave the
+same ELF, `evidence/bridge/chain-anchor/guest.json`): `0x88c00a4e43fc6b8b7b776e7a540422d1c684251751940901ce3256eecbd26dd3`.
+Without `BV_GUEST_DOCKER=1` the local rzup toolchain builds another ELF (id `0xaa506042...d4db46`); vaults use the
+docker one.

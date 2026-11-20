@@ -1,0 +1,28 @@
+{
+ "label": "guest burn_chain on RISC Zero 3.1.0, reproducible docker build",
+ "date_utc": "2026-11-20",
+ "image_id": "0x88c00a4e43fc6b8b7b776e7a540422d1c684251751940901ce3256eecbd26dd3",
+ "elf": "burn_chain.bin (risc0 ProgramBinary)",
+ "elf_sha256": "a06ea83c91a0772af3950cad1aa117ec3090479a26d638f640aecc5c3b052d16",
+ "elf_bytes": 302560,
+ "reproducibility": "two docker builds in two separate target directories, the second after removing its guest output and build-script output and with a changed docker context (so no cached build layer), gave the same ELF sha256 and image id",
+ "docker_image": "risczero/risc0-guest-builder:r0.1.97.0",
+ "docker_image_digest": "sha256:7ae0a27fa72b10fb5c1066005bd949ae43dc4ead8a284f2d6572b99c82ab4468",
+ "docker_tag_source": "risc0-build 3.0.7 src/lib.rs DEFAULT_DOCKER_TAG = r0.1.97.0 (risc0 v3.1.0 ships risc0-build 3.0.7)",
+ "docker_context": "repository root (the guest uses crates/lez_chain, which includes programs/bridge/src/hash.rs by path)",
+ "versions": {
+  "guest risc0-zkvm": "3.1.0",
+  "host risc0-zkvm": "3.1.0",
+  "risc0-build": "3.0.7",
+  "risc0-circuit-recursion": "4.1.0",
+  "risc0-groth16": "3.0.6",
+  "rzup r0vm": "3.1.0"
+ },
+ "command": "cd $R && unset RISC0_DOCKER_CONTAINER_TAG && RISC0_HOME=$B/run/w5/risc0-31 CARGO_TARGET_DIR=<own dir> BV_GUEST_DOCKER=1 cargo build --release -j 2 --manifest-path guests/burn_chain/Cargo.toml -p burn_chain_host",
+ "build_seconds": {
+  "first (cold target: host dependencies and guest)": 405.2,
+  "second (guest only, fresh context)": 72.3
+ },
+ "superseded_local_build_image_id": "0xaa506042cd777a9a957aba3232125155da63d11be269bab8cc6c2f4cb8d4db46 (rzup rust 1.91.1; used by the first executor runs and the first anvil-fork run only)",
+ "cross_check": "executor journals with this ELF are byte-identical to the native statement and to the journals of the local build (journal-synthetic-{private,public}.hex)"
+}

@@ -2,13 +2,13 @@
   "what": "VaultChain.releaseChain on an anvil fork of Sepolia (chain id 31337); nothing sent to Sepolia",
   "label": "anvil fork; guest burn_chain in the executor (no proof); mock seal for RiscZeroMockVerifier; synthetic burn",
   "fork_of": "Sepolia",
-  "fork_block": 12175773,
+  "fork_block": 12175824,
   "deploy": {
     "admin": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
     "anchor_stub": "0xa84557B3A875DeA05c124255d4F232291Ca87797",
-    "block": 12175773,
+    "block": 12175824,
     "chain_id": 31337,
-    "chain_image_id": "0xaa506042cd777a9a957aba3232125155da63d11be269bab8cc6c2f4cb8d4db46",
+    "chain_image_id": "0x88c00a4e43fc6b8b7b776e7a540422d1c684251751940901ce3256eecbd26dd3",
     "pinned_hash": "0x3c5b777451146a86ee71dc0783169b18ea64243c40de1ca98a005332e8cf7e5a",
     "pinned_id": 2585,
     "tip_anchor_stub": "0x042720b5a07Ee848564d895db56a1C8EF95d8F66",
@@ -16,21 +16,21 @@
     "verifier": "0x0DeC25A7a2883fBDA83197C0e2792A5e681F5DF1"
   },
   "guest": {
-    "image_id": "0xaa506042cd777a9a957aba3232125155da63d11be269bab8cc6c2f4cb8d4db46",
-    "cycles_user": 422831,
+    "image_id": "0x88c00a4e43fc6b8b7b776e7a540422d1c684251751940901ce3256eecbd26dd3",
+    "cycles_user": 444061,
     "segments": 1
   },
   "deposit": {
-    "tx": "0x9f0677d76fcb59f5c9ca30d21bbd35e5378f0d43f392b8e98bee10a95f9e96d4",
+    "tx": "0x728211288bc89552968fc423b3a96090735477429710f5a7f382f8e079dfc5cd",
     "gas": 520929
   },
   "attest_tip": {
-    "tx": "0xfea8899018133026f7bed8ad5eb844dccf710465c54536a2957e32e3fdf29a0b",
+    "tx": "0x859c95f5a3efae3e38fa52d71367a9f01a09e570478d6219863ff1f2397a4b9b",
     "gas": 130674
   },
   "release_before_delay": "Error: execution reverted: TipNotFinal",
   "release_chain": {
-    "tx": "0xf4c4864014a0f08f77425c8f4aff89458f4dd61041b3f2d0e0841f87f85d7273",
+    "tx": "0xc4b0d481198b48bf4b4b8969e5bc4e167a96c8807de321d11a467435ab85ca1d",
     "gas": 625419,
     "status": "0x1",
     "gas_note": "mock verifier; the real 3.1.0 Groth16 verify through the emergency stop adds about 260,000 (estimate, evidence/bridge/groth16-release-v3)"
@@ -39,7 +39,7 @@
   "recipient_gain_wei": "990000000000000",
   "relayer": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
   "relayer_balance_before": "10000000000000000000000",
-  "relayer_balance_after": "9999999984208157116201",
+  "relayer_balance_after": "9999999999999972481564",
   "nullifier_spent": "true",
   "second_release": "Error: execution reverted: AlreadyReleased",
   "estop_vault": "0x43367631698Cd268Cc72b3B259C2Ba1AC6F3Addc",

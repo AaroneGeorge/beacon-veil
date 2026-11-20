@@ -30,6 +30,8 @@ import {Vault} from "./Vault.sol";
 /// `Vault` is unchanged, and its token state is private, so this route reads the token config through
 /// `tokenConfig` and keeps its own per-token release window against the same `releaseCap`: in a vault that also
 /// releases through the other routes, up to twice the cap can leave in one window. Caps are a stub (F11).
+/// On Sepolia this vault releases through the chain route only (no root is posted to its root anchor, so neither
+/// `release` nor `releaseOpen` can pass), so the doubled-cap case cannot arise there.
 contract VaultChain is Vault {
     using SafeERC20 for IERC20;
 
