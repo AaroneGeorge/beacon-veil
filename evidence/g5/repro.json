@@ -1,24 +1,33 @@
 {
   "gate": "G5",
-  "commit": "f1982433cf0d8e5e9c17595624bcdadd0f86e5f4",
-  "started_utc": "2026-11-13T06:37:26Z",
+  "commit": "bf47a07f47a0a9b51a268f44daf543360e6ebd85",
+  "started_utc": "2026-11-20T03:08:00Z",
   "reference": "/home/lechuuu/hackathons/logos-rfp/build/.tmp/clean/evidence/cost/cost.json",
   "regenerated": "/home/lechuuu/hackathons/logos-rfp/build/.tmp/clean/evidence/cost/cost.json",
   "cost_exec_exit": 0,
   "guest_build_docker": false,
-  "release_bins": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2",
+  "release_bins": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e",
   "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, Linux 7.0.0-43-generic, risc0-r0vm 3.0.5",
-  "rows_compared": 31,
+  "rows_compared": 71,
+  "rows_by_program": {
+    "attest": 19,
+    "consumer_erc20": 2,
+    "lc_verify": 5,
+    "lc_verify_v2": 5,
+    "lc_verify_v3": 40
+  },
   "image_ids": {
     "reference": {
       "attest": "9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d",
       "lc_verify": "c7b5f2191f133026017c09072e883217dfe3785450d40d081718b0fd204878ba",
-      "lc_verify_v2": "18684beee3e973a2f1391c9bdb9108743c71e6f216bb5fba88bc0443403e8230"
+      "lc_verify_v2": "18684beee3e973a2f1391c9bdb9108743c71e6f216bb5fba88bc0443403e8230",
+      "lc_verify_v3": "cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510"
     },
     "regenerated": {
       "attest": "9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d",
       "lc_verify": "c7b5f2191f133026017c09072e883217dfe3785450d40d081718b0fd204878ba",
-      "lc_verify_v2": "18684beee3e973a2f1391c9bdb9108743c71e6f216bb5fba88bc0443403e8230"
+      "lc_verify_v2": "18684beee3e973a2f1391c9bdb9108743c71e6f216bb5fba88bc0443403e8230",
+      "lc_verify_v3": "cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510"
     }
   },
   "pass": true,

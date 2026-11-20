@@ -40,6 +40,8 @@ pub struct ExecV3 {
 pub struct ExecResult {
     pub verdict: Verdict,
     pub cycles: u64,
+    /// Segments of the execution (the executor's default segment size, 2^20 cycles, as LEZ proves).
+    pub segments: usize,
 }
 
 impl ExecV3 {
@@ -67,6 +69,7 @@ impl ExecV3 {
             Err(e) => ExecResult {
                 verdict: Verdict::Panic(format!("{e:#}")),
                 cycles: 0,
+                segments: 0,
             },
         }
     }
@@ -96,6 +99,7 @@ impl ExecV3 {
             default_executor().execute(env, &self.program)?
         };
         let cycles = info.cycles();
+        let segments = info.segments.len();
         let verdict = match info.exit_code {
             ExitCode::Halted(0) => {
                 let journal = lee_core::from_frame(&info.journal.bytes).ok_or_else(|| anyhow!("journal frame"))?;
@@ -130,7 +134,11 @@ impl ExecV3 {
                 String::from_utf8_lossy(&stderr).lines().last().unwrap_or_default()
             )),
         };
-        Ok(ExecResult { verdict, cycles })
+        Ok(ExecResult {
+            verdict,
+            cycles,
+            segments,
+        })
     }
 }
 

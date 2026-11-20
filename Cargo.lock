@@ -1277,6 +1277,7 @@ dependencies = [
  "attest_host",
  "borsh",
  "clap",
+ "common",
  "follower",
  "hex",
  "serde_json",

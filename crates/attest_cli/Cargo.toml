@@ -17,6 +17,7 @@ path = "src/main.rs"
 anyhow.workspace = true
 attest_core.workspace = true
 attest_host.workspace = true
+common.workspace = true
 borsh.workspace = true
 clap.workspace = true
 follower.workspace = true

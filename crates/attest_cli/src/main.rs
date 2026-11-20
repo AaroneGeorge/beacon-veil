@@ -91,6 +91,19 @@ enum Cmd {
         period: Option<u64>,
         #[arg(long, value_enum, default_value_t = Mode::Private)]
         mode: Mode,
+        /// v3-private: the lc_verify_v3 program id (default: [programs] lc_verify_v3 of the ids file).
+        #[arg(long)]
+        v3: Option<String>,
+        /// v3-private: write the inputs (borsh config + store witness, update SSZ) here, for an executor run of the
+        /// same message.
+        #[arg(long)]
+        save_inputs: Option<PathBuf>,
+    },
+    /// Where a LEZ transaction landed: block, position, reverted, wire bytes, and for a private transaction the
+    /// bytes of its witness set (the proof).
+    Tx {
+        #[arg(long)]
+        tx: String,
     },
     /// Show an instance's head and verified store status.
     Status {
@@ -129,6 +142,9 @@ enum Cmd {
 enum Mode {
     Private,
     PublicProbe,
+    /// `lc_verify_v3` `VerifyOnce` in a private actor of the submitter: one transaction whose proof covers the whole
+    /// update (a real proof when RISC0_DEV_MODE is unset).
+    V3Private,
 }
 
 #[derive(Subcommand)]
@@ -245,6 +261,102 @@ fn verifier_list(default: Option<AccountId>, extra: Option<AccountId>, only: Opt
         Some(v) => vec![v],
         None => default.into_iter().chain(extra).collect(),
     }
+}
+
+/// `[programs] <name>` of the ids file in use (`--ids`, else `$BV_IDS`, else `$BV_REPO/deploy/ids.toml`).
+fn program_in(g: &Global, name: &str) -> Result<AccountId> {
+    let path = g.ids.clone().unwrap_or_else(attest_host::ids_path);
+    let text = std::fs::read_to_string(&path).with_context(|| path.display().to_string())?;
+    let line = text
+        .lines()
+        .skip_while(|l| l.trim() != "[programs]")
+        .skip(1)
+        .take_while(|l| !l.trim_start().starts_with('['))
+        .find(|l| l.split('=').next().is_some_and(|k| k.trim() == name))
+        .ok_or_else(|| anyhow!("{}: [programs] {name} missing", path.display()))?;
+    parse_id(line.split('"').nth(1).unwrap_or_default())
+}
+
+/// One update through `lc_verify_v3` `VerifyOnce` in a private actor (`attest_host::submit_verify_once_private`),
+/// with what a real-proof record needs: the expected outcome computed natively first (V1 on the verified local
+/// store), the head before and after, the block that holds the transaction and the wall time.
+async fn update_v3_private(
+    ids: &DeployedIds,
+    v3: AccountId,
+    inst: &AccountId,
+    cand: &Candidate,
+    save_inputs: Option<&Path>,
+) -> Result<Value> {
+    use attest_core::lc;
+    let state = attest_host::read_instance(ids, inst)
+        .await?
+        .ok_or_else(|| anyhow!("instance {inst} does not exist"))?;
+    if !state.config.verifiers.contains(&v3) {
+        bail!("lc_verify_v3 {v3} is not a verifier of instance {inst}");
+    }
+    let file = attest_host::load_verified_store(inst, &state.head)?;
+    let expected = lc::verify_and_apply(&state.config, &file.witness, &cand.ssz)
+        .map_err(|e| anyhow!("the update does not apply natively: {e}"))?;
+    if let Some(dir) = save_inputs {
+        std::fs::create_dir_all(dir)?;
+        std::fs::write(
+            dir.join("config_witness.borsh"),
+            borsh::to_vec(&(&state.config, &file.witness))?,
+        )?;
+        std::fs::write(dir.join("update.ssz"), &cand.ssz)?;
+    }
+    let t = std::time::Instant::now();
+    let o = attest_host::submit_verify_once_private(ids, v3, inst, &cand.ssz).await?;
+    let wall = t.elapsed().as_secs_f64();
+    let after = attest_host::read_head(ids, inst).await?;
+    let info = tx_info(&o.tx).await.ok();
+    let block = info.as_ref().and_then(|i| i["block_id"].as_u64());
+    let head_json = |h: &attest_core::Head| {
+        json!({"slot": h.slot, "beacon_root": hex::encode(h.beacon_root), "exec_number": h.exec_number,
+               "period": h.period, "store_commitment": hex::encode(h.store_commitment)})
+    };
+    Ok(json!({
+        "mode": "v3-private", "verifier": v3.to_string(), "instance": inst.to_string(),
+        "kind": cand.kind.label(), "finalized_slot": cand.finalized_slot, "attested_slot": cand.attested_slot,
+        "signature_slot": cand.signature_slot, "participation": cand.participation, "update_ssz_bytes": cand.ssz.len(),
+        "tx": o.tx, "block_id": block, "prove_and_submit_s": (wall * 10.0).round() / 10.0,
+        "tx_wire_bytes": info.as_ref().map(|i| i["tx_wire_bytes"].clone()),
+        "witness_set_bytes": info.as_ref().map(|i| i["witness_set_bytes"].clone()),
+        "risc0_dev_mode": std::env::var("RISC0_DEV_MODE").ok(),
+        "head_before": head_json(&state.head),
+        "expected_head": head_json(&expected.head),
+        "head_after": after.as_ref().map(head_json),
+        "head_equals_native": after.as_ref() == Some(&expected.head),
+    }))
+}
+
+/// Where transaction `tx` (hex hash) landed, read from the sequencer the wallet points at.
+async fn tx_info(tx: &str) -> Result<Value> {
+    let w = attest_host::open_wallet()?;
+    let h = <common::HashType as std::str::FromStr>::from_str(tx).map_err(|e| anyhow!("tx hash {tx}: {e:?}"))?;
+    let (_, block_id) = w.poll_transaction(h).await.map_err(|e| anyhow!("tx {tx}: {e:#}"))?;
+    let block = w
+        .get_block(block_id)
+        .await?
+        .ok_or_else(|| anyhow!("block {block_id} not found"))?;
+    let position = block
+        .body
+        .transactions
+        .iter()
+        .position(|t| t.hash() == h)
+        .ok_or_else(|| anyhow!("tx {tx} not in block {block_id}"))?;
+    let t = &block.body.transactions[position];
+    let (kind, witness) = match t {
+        common::transaction::LeeTransaction::PrivacyPreserving(p) => {
+            ("private", Some(borsh::to_vec(&p.witness_set)?.len()))
+        }
+        common::transaction::LeeTransaction::Public(_) => ("public", None),
+    };
+    Ok(json!({
+        "tx": tx, "block_id": block_id, "position": position, "reverted": block.body.is_reverted(position),
+        "block_timestamp": block.header.timestamp, "kind": kind, "tx_wire_bytes": borsh::to_vec(t)?.len(),
+        "witness_set_bytes": witness,
+    }))
 }
 
 fn parse_id(s: &str) -> Result<AccountId> {
@@ -426,7 +538,13 @@ async fn main() -> Result<()> {
             }
             print(&outv);
         }
-        Cmd::Update { instance, period, mode } => {
+        Cmd::Update {
+            instance,
+            period,
+            mode,
+            v3,
+            save_inputs,
+        } => {
             let ids = g.ids()?;
             let inst = parse_id(&instance)?;
             let src = g.source()?;
@@ -448,6 +566,14 @@ async fn main() -> Result<()> {
             let mode = match mode {
                 Mode::Private => SubmitMode::Private,
                 Mode::PublicProbe => SubmitMode::PublicProbe,
+                Mode::V3Private => {
+                    let v3 = match v3 {
+                        Some(x) => parse_id(&x)?,
+                        None => program_in(&g, "lc_verify_v3")?,
+                    };
+                    print(&update_v3_private(&ids, v3, &inst, &cand, save_inputs.as_deref()).await?);
+                    return Ok(());
+                }
             };
             let o = attest_host::submit_update(&ids, &inst, &cand.ssz, mode).await?;
             let st = attest_host::read_store_status(&ids, &inst).await.ok().flatten();
@@ -458,6 +584,7 @@ async fn main() -> Result<()> {
                 "next_committee_known": st.map(|s| s.next_committee_known),
             }));
         }
+        Cmd::Tx { tx } => print(&tx_info(&tx).await?),
         Cmd::Status { instance } => {
             let ids = g.ids()?;
             let inst = parse_id(&instance)?;
@@ -633,6 +760,24 @@ mod tests {
         assert_eq!(verifier_list(Some(v1), None, Some(v3)), [v3], "only the given verifier");
         assert_eq!(verifier_list(None, None, Some(v3)), [v3]);
         assert!(verifier_list(None, None, None).is_empty());
+    }
+
+    #[test]
+    fn v3_private_update_parses() {
+        use clap::Parser;
+        let c = Cli::try_parse_from([
+            "attest",
+            "--chain-id",
+            "1",
+            "update",
+            "--instance",
+            "x",
+            "--mode",
+            "v3-private",
+            "--save-inputs",
+            "/tmp/i",
+        ]);
+        assert!(c.is_ok());
     }
 
     #[test]

@@ -19,6 +19,13 @@ name = "diff_exec"
 path = "src/bin/diff_exec.rs"
 required-features = ["executor"]
 
+# One VerifyOnce message in the executor from saved inputs (`attest update --mode v3-private --save-inputs DIR`):
+# user cycles and segments of a real-proof run's message.
+[[bin]]
+name = "exec_once"
+path = "src/bin/exec_once.rs"
+required-features = ["executor"]
+
 [dependencies]
 anyhow.workspace = true
 attest_core = { workspace = true, features = ["lc", "v2"] }
