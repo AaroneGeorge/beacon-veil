@@ -1,0 +1,15 @@
+[package]
+name = "burn_chain_bench_host"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+anyhow = "1.0.98"
+borsh = { version = "1.5.7", features = ["derive"] }
+burn_chain_bench_methods = { path = "../methods" }
+hex = "0.4.3"
+lez_chain = { path = "../../../crates/lez_chain" }
+risc0-zkvm = { version = "=3.1.0", default-features = false, features = ["client", "std"] }
+serde_json = "1.0.81"

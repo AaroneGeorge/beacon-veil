@@ -1,0 +1,15 @@
+# Measurement guest (not deployed): cycles of checking a LEZ block hash chain and finding a burn in block bytes with
+# crates/lez_chain. Own workspace on RISC Zero 3.1.0, set up like guests/burn_proof/r31.
+[workspace]
+resolver = "3"
+members = ["host", "methods"]
+exclude = ["methods/guest"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+publish = false
+
+[profile.release]
+opt-level = 3
