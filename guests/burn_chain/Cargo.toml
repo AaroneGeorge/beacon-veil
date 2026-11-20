@@ -1,0 +1,15 @@
+# Guest burn_chain: a LEZ burn in a block on a hash chain from a pinned block (crates/lez_chain statement). Own
+# workspace on RISC Zero 3.1.0, set up like guests/burn_proof/r31; not a member of the root workspace (pinned 3.0.5).
+[workspace]
+resolver = "3"
+members = ["host", "methods"]
+exclude = ["methods/guest"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+publish = false
+
+[profile.release]
+opt-level = 3

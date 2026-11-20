@@ -9,6 +9,10 @@
 #![no_std]
 extern crate alloc;
 
+/// The bridge's hashes (note, nullifier, memo), the same source file as program `bridge` and guest `burn_proof`.
+#[path = "../../../programs/bridge/src/hash.rs"]
+pub mod bridge_hash;
+pub mod statement;
 pub mod types;
 
 use alloc::vec::Vec;
@@ -16,6 +20,8 @@ use alloc::vec::Vec;
 use borsh::BorshDeserialize;
 use sha2::{Digest, Sha256};
 pub use types::*;
+
+pub type B32 = [u8; 32];
 
 pub const BLOCK_HASH_PREFIX: &[u8; 32] = b"/LEE/v0.3/Message/Block/\x00\x00\x00\x00\x00\x00\x00\x00";
 pub const PDA_PREFIX: &[u8; 32] = b"/LEE/v0.2/AccountId/PDA/\x00\x00\x00\x00\x00\x00\x00\x00";

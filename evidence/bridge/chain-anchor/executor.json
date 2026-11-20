@@ -1,0 +1,118 @@
+{
+ "what": "guest burn_chain run in the RISC Zero 3.1.0 executor (r0vm), no proof",
+ "label": "measured, executor only (no proof); synthetic burns on the committed fixture chain",
+ "guest": "burn_chain",
+ "image_id": "0xaa506042cd777a9a957aba3232125155da63d11be269bab8cc6c2f4cb8d4db46",
+ "image_id_note": "built with risc0-build 3.0.7 and the local rzup 3.1.0 toolchain; a reproducible docker build and its id come with the proof",
+ "fixture": "fixtures/lez-chain/synthetic 2586..2591, pinned at real seq-dev block 2585 (fixtures/lez-chain/README.md)",
+ "witnesses": "fixtures/lez-chain/witness-synthetic-{private,public}.json (test secrets)",
+ "runs": {
+  "private": {
+   "block_bytes": [
+    32634,
+    711,
+    32569,
+    711,
+    1487,
+    711
+   ],
+   "blocks": 6,
+   "burn_block": 2586,
+   "cycles_user": 422831,
+   "guest": "burn_chain",
+   "image_id": "0xaa506042cd777a9a957aba3232125155da63d11be269bab8cc6c2f4cb8d4db46",
+   "input_bytes": 69099,
+   "journal_bytes": 480,
+   "journal_equals_native": true,
+   "nullifier": "755cabb2f99be571f515e6ff42cb4270a2bd834a2c7aefbd0a8dac242208fa29",
+   "pinned": 2585,
+   "risc0": "3.1.0 (r0vm executor; no proof)",
+   "segments": 1,
+   "tip": 2591,
+   "tip_hash": "80424c6e52d67274bcd42df99ef506ed09ce2503fef9ef16c8fc3de1065a321f",
+   "tx": 0
+  },
+  "public": {
+   "block_bytes": [
+    32634,
+    711,
+    32569,
+    711,
+    1487,
+    711
+   ],
+   "blocks": 6,
+   "burn_block": 2590,
+   "cycles_user": 362954,
+   "guest": "burn_chain",
+   "image_id": "0xaa506042cd777a9a957aba3232125155da63d11be269bab8cc6c2f4cb8d4db46",
+   "input_bytes": 69099,
+   "journal_bytes": 480,
+   "journal_equals_native": true,
+   "nullifier": "f2f67785eb9b6763128c0c6dceb029ee94ee69a51198a72a07f51d8fda745eeb",
+   "pinned": 2585,
+   "risc0": "3.1.0 (r0vm executor; no proof)",
+   "segments": 1,
+   "tip": 2591,
+   "tip_hash": "80424c6e52d67274bcd42df99ef506ed09ce2503fef9ef16c8fc3de1065a321f",
+   "tx": 2
+  }
+ },
+ "bench_guest": {
+  "what": "measurement guest guests/burn_chain_bench (chain check, parse, finder; no note recomputation), executor only; blocks read from copies of the stopped seq-dev and seq-real stores",
+  "image_id": "0x51bd5c3e6464fc087c29cb678e42e2574026cba6e5594eddbe1a55b98c275147",
+  "runs": {
+   "real dev burn 0 (seq-dev 2586), P = K-5, T = K+5": {
+    "blocks_hashed": 10,
+    "input_bytes": 103393,
+    "cycles_user_total": 544090,
+    "segments": 1,
+    "cycles_chain_check": 140497,
+    "cycles_parse_burn_block": 82838,
+    "cycles_find_burn": 5295
+   },
+   "real dev burn 0, P = K-50, T = K+50": {
+    "blocks_hashed": 100,
+    "input_bytes": 167743,
+    "cycles_user_total": 1108087,
+    "segments": 2,
+    "cycles_chain_check": 456217,
+    "cycles_parse_burn_block": 82838,
+    "cycles_find_burn": 5295
+   },
+   "real dev burn 0, P = K-200, T = K+200": {
+    "blocks_hashed": 400,
+    "input_bytes": 446919,
+    "cycles_user_total": 2917760,
+    "segments": 5,
+    "cycles_chain_check": 1579021,
+    "cycles_parse_burn_block": 82838,
+    "cycles_find_burn": 5295
+   },
+   "real dev burn 0, P = K-1000, T = K+1000": {
+    "blocks_hashed": 2000,
+    "input_bytes": 1817285,
+    "cycles_user_total": 12739355,
+    "segments": 19,
+    "cycles_chain_check": 7438235,
+    "cycles_parse_burn_block": 82838,
+    "cycles_find_burn": 5295
+   },
+   "real-proof privacy-preserving block (seq-real 3111, 256,062 bytes), +-5, no burn finder": {
+    "blocks_hashed": 10,
+    "input_bytes": 262649,
+    "cycles_user_total": 1539226,
+    "segments": 3,
+    "cycles_chain_check": 313707,
+    "cycles_parse_burn_block": 416585,
+    "cycles_find_burn": 312
+   }
+  }
+ },
+ "trust": {
+  "proven_by_a_proof_of_it": "the burn transaction for this note is transaction i of the block with hash H_N; the block does not list it as reverted; its bytes show the bridge program delivering Append{instance, token, denom, note} to the instance's accumulator (private burn), or a holder's Burn root call to the bridge with a config whose instance is this one (public burn); and blocks P..N..T are one unbroken hash chain with rising ids from the pinned (P, hash)",
+  "attested": "that the hash of block T is on the real, final LEZ chain (one input; today our key, after a delay)",
+  "not_proven_still_trusted": "that LEZ executed those blocks correctly (rc3 headers carry no state root and public execution is unproven, so 'not reverted' and 'the bridge program sent it' rest on the sequencer having run and verified the transaction), finality, and which chain is the real one (anyone can build a hash chain from the pinned block; the pinned block names the chain, it does not stop a dishonest attester)",
+  "gap": "the public-burn route is tested only on a synthetic block (fixtures/lez-chain/synthetic/2590): no public burn exists on any chain we run"
+ }
+}

@@ -1,0 +1,12 @@
+{
+ "about": "TEST witness of the synthetic public burn (block 2590, tx 2); vault and chain id of the seq-dev config (vault v3, Sepolia).",
+ "burn_secret": "155d7cb72a3fa52c03f7ebd95e6d5b0aaa4d595139e3c114bc66837c724ce0fb",
+ "denom": "100000000",
+ "fee": "0",
+ "recipient": "7777777777777777777777777777777777777777",
+ "token": "001b4d55b24a5ebf4e4e0d9cbf964e6170169e2b",
+ "chain_id": "11155111",
+ "vault": "380be74d9f3dfebaafc5f911cd6a45bfbee3ad27",
+ "lez_program": "61c82e1d2abcd2a735763cfc988164881a5a22ebc0022e6af275ae99347be64e",
+ "lez_instance": "9b7354d99185285a50471440e4f21809ffe9fa18bbc0a605007b7b891b399349"
+}

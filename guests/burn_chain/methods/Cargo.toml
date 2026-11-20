@@ -1,0 +1,13 @@
+[package]
+name = "burn_chain_methods"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[build-dependencies]
+# risc0 v3.1.0 ships risc0-build 3.0.7 (as guests/burn_proof/r31).
+risc0-build = "=3.0.7"
+
+[package.metadata.risc0]
+methods = ["guest"]
