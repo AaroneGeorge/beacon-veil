@@ -1,0 +1,176 @@
+{
+  "about": "LEZ v0.4.0-rc3 block fixtures for crates/lez_chain. Written by tools/lez_chain_probe/src/bin/synth.rs.",
+  "bridge_program": "7ahb3h5n3MTeq2JtYhLbQL75gRpL7xNAmV54SZjvJQ6y",
+  "bridge_program_hex": "61c82e1d2abcd2a735763cfc988164881a5a22ebc0022e6af275ae99347be64e",
+  "config_borsh": "a736aa0000000000380be74d9f3dfebaafc5f911cd6a45bfbee3ad27b32000ac5378e05f6892e516143997d5280f4c89481af2d4b587e95757e8201e25daad8ccf02189ff9e6509bcf2efe50c57a97dc0400c9f395fe0e15b2b33296020000000000000000000000000000000000000000000000020000000080c6a47e8d030000000000000000000000c16ff286230000000000000000000000000000000000000000000000000000000000000000000000000000000000001b4d55b24a5ebf4e4e0d9cbf964e6170169e2b0200000000e1f50500000000000000000000000000ca9a3b000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "instance": "BTpCBokrFB8mvmPT6QukEXtiYUeWmgupHGpxpftvaXD2",
+  "instance_hex": "9b7354d99185285a50471440e4f21809ffe9fa18bbc0a605007b7b891b399349",
+  "seq_dev": {
+    "about": "REAL blocks of seq-dev (dev mode, RISC0_DEV_MODE set, 2026-11-12), read from a copy of its store. Burn 0 and burn 1 are the burns released on vault v3 (evidence/bridge/groth16-release-v3). Their burn secrets are not here.",
+    "blocks": [
+      {
+        "bytes": 711,
+        "hash": "e1aa65e0d82403316f8efcaf20c4dc499d97215a15fe8b0370d3136f09513b05",
+        "id": 2581,
+        "transactions": 2
+      },
+      {
+        "bytes": 711,
+        "hash": "801378a109f65af5c2e3d2c06de3f1d558032e378b74db422f4d50f13b07e702",
+        "id": 2582,
+        "transactions": 2
+      },
+      {
+        "bytes": 33025,
+        "hash": "0af98e1be5c8f1745fd571da02b23b201d9716f27bb39e3576483e6975edd61c",
+        "id": 2583,
+        "transactions": 3
+      },
+      {
+        "bytes": 711,
+        "hash": "e5aa8ec9e175aed23fd918c67f7edcb66667b66271ce399b7cce198f3f18dc94",
+        "id": 2584,
+        "transactions": 2
+      },
+      {
+        "bytes": 711,
+        "hash": "3c5b777451146a86ee71dc0783169b18ea64243c40de1ca98a005332e8cf7e5a",
+        "id": 2585,
+        "transactions": 2
+      },
+      {
+        "bytes": 32634,
+        "hash": "9b2a3e16410da9bba9d369b36ddfb19c330d5dcbea01e5e48915003ed57ab765",
+        "id": 2586,
+        "transactions": 3
+      },
+      {
+        "bytes": 711,
+        "hash": "bdcb62bac6e01d44da969225ab2430a546aa5c392ad5df2b823054244fc22e05",
+        "id": 2587,
+        "transactions": 2
+      },
+      {
+        "bytes": 32569,
+        "hash": "bc9bee61e363a1ea768cc3d2dfa86ffe0155f6a49f2b641eb178e5a952c89ed7",
+        "id": 2588,
+        "transactions": 3
+      },
+      {
+        "bytes": 711,
+        "hash": "c254950ce010b743c0431dc6f4cb59b5b32343e6b5f8a9b8233f175fafd818d0",
+        "id": 2589,
+        "transactions": 2
+      },
+      {
+        "bytes": 711,
+        "hash": "88d7ed123e57e02c1e1d5debdc903a8b6e250492cb48d5c90507d3835cc1fe6a",
+        "id": 2590,
+        "transactions": 2
+      },
+      {
+        "bytes": 711,
+        "hash": "3a84fe9e7e2417d03e19ecc354edc9391e772f109cc7d6acccaf50a0e72532e4",
+        "id": 2591,
+        "transactions": 2
+      }
+    ],
+    "burns": [
+      {
+        "block": 2586,
+        "denom": "1000000000000000",
+        "name": "burn 0",
+        "note": "a78d5c17f272b7644439d956aed272ab8058acc0c354a7f9cb7c143c6ac78d85",
+        "route": "private",
+        "token": "0000000000000000000000000000000000000000",
+        "tx": 0,
+        "tx_hash": "fa5e518963c6df641f6e42432f41fc0a20fbcea499f2c68c10619836006b3426"
+      },
+      {
+        "block": 2588,
+        "denom": "100000000",
+        "name": "burn 1",
+        "note": "34a49463d904527cf9ddf685ee6e94efa97b8596dbeffef8f83f3b0239aac090",
+        "route": "private",
+        "token": "001b4d55b24a5ebf4e4e0d9cbf964e6170169e2b",
+        "tx": 0,
+        "tx_hash": "d5a06127811fe2f478b1a560c53c7a2d03ecd8948ff08b2e016d3774b71e59c8"
+      }
+    ]
+  },
+  "synthetic": {
+    "about": "SYNTHETIC chain forked after real seq-dev block 2585 (pinned hash = seq-dev block 2585). Block 2586 is real burn 0 with its Append note and memo replaced (its proof no longer matches); block 2590 has one added public Burn transaction signed by a test key. Re-hashed and re-linked with LEZ's own types. Test secrets only; no node would accept these blocks.",
+    "blocks": [
+      {
+        "bytes": 32634,
+        "hash": "d52bf481eb4ccb7b740e6d81e8878e6b0c7603dbdb5056cf5204b7e59928b839",
+        "id": 2586,
+        "transactions": 3
+      },
+      {
+        "bytes": 711,
+        "hash": "9fe3aec1fd7b1105bcb689865f2f84696b159500307c025840bf5503060c5221",
+        "id": 2587,
+        "transactions": 2
+      },
+      {
+        "bytes": 32569,
+        "hash": "f44f13f79b05a6a2aeda9bea7d032e75c30c69fc7db431691e435f16bbca20b2",
+        "id": 2588,
+        "transactions": 3
+      },
+      {
+        "bytes": 711,
+        "hash": "e04d0c3af9a2f53ec57fb3a8f4ba6b44fb4562fcd14ea5f4f4326fbac2e36989",
+        "id": 2589,
+        "transactions": 2
+      },
+      {
+        "bytes": 1487,
+        "hash": "0ebf566e8e58c2226b7334adab6040e474253eba3560d28b1296d8d5831e55d5",
+        "id": 2590,
+        "transactions": 3
+      },
+      {
+        "bytes": 711,
+        "hash": "80424c6e52d67274bcd42df99ef506ed09ce2503fef9ef16c8fc3de1065a321f",
+        "id": 2591,
+        "transactions": 2
+      }
+    ],
+    "burns": [
+      {
+        "block": 2586,
+        "name": "synthetic private burn",
+        "note": "9ab22ea12f3d2568a6156c87bae4700b8af4495a5d1d2aa60cb72b2593df1513",
+        "route": "private",
+        "tx": 0,
+        "witness": {
+          "burn_secret": "5a2d8390e502be513a11d5067879b79508a8876c887aeef9aa0e1c5062a9b1bf",
+          "denom": "1000000000000000",
+          "fee": "10000000000000",
+          "recipient": "5252525252525252525252525252525252525252",
+          "token": "0000000000000000000000000000000000000000"
+        }
+      },
+      {
+        "block": 2590,
+        "name": "synthetic public burn",
+        "note": "08018c2c391124217549c98caab392bd1dd55654a1cb90408caa85cbfdd6e754",
+        "route": "public",
+        "tx": 2,
+        "witness": {
+          "burn_secret": "155d7cb72a3fa52c03f7ebd95e6d5b0aaa4d595139e3c114bc66837c724ce0fb",
+          "denom": "100000000",
+          "fee": "0",
+          "recipient": "7777777777777777777777777777777777777777",
+          "token": "001b4d55b24a5ebf4e4e0d9cbf964e6170169e2b"
+        }
+      }
+    ],
+    "pinned": {
+      "from": "seq-dev",
+      "id": 2585
+    }
+  }
+}

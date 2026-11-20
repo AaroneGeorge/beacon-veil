@@ -5,7 +5,7 @@
 //! mirror `lez_chain` parses it, re-encodes it to the same bytes, hashes it without a parse to the same hash, and cuts
 //! the same transaction spans. The whole range is checked as one hash chain. Every bridge message that shows in block
 //! bytes (public root calls and privacy-preserving boundary steps) is listed with LEZ's own decoding, and every burn
-//! is located again with `lez_chain::find_burn`. Prints one JSON object.
+//! is located again with `lez_chain::find_burn`. Prints one JSON object; exits 1 on any failure.
 
 use std::{collections::BTreeMap, fs, path::Path, str::FromStr as _};
 
@@ -224,4 +224,7 @@ fn main() {
         "bridge_messages": bridge_msgs, "burns": burns,
     });
     println!("{}", serde_json::to_string_pretty(&out).unwrap());
+    if !fail.is_empty() || !chain.starts_with("Ok(") {
+        std::process::exit(1);
+    }
 }
