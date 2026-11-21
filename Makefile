@@ -7,7 +7,7 @@ ENV := source scripts/env.sh &&
 NICE := nice -n 15
 GUESTS := attest lc_verify consumer_erc20 bridge bridge_dev_source burn_proof
 
-.PHONY: help fmt fmt-check clippy test test-host guests guests-docker forge-test ci seq-dev-start seq-dev-stop \
+.PHONY: help fmt fmt-check clippy test test-host guests guests-docker forge-test test-seq-read ci seq-dev-start seq-dev-stop \
         deploy-local cost-exec cost-prove bench-bls exec-v3 gate clean-guests
 
 help: ## List targets
@@ -42,7 +42,10 @@ guests-docker: ## Build the guests of crates/guest_methods in the pinned image r
 forge-test: ## Foundry tests
 	$(ENV) cd contracts && $(NICE) forge test
 
-ci: fmt-check clippy test forge-test ## Everything CI runs (guest docker build is a separate CI job)
+test-seq-read: ## Tests of the read-only endpoint (tools/seq_read: policy, dialer, relay; loopback only)
+	python3 -I tools/seq_read/test_policy.py
+
+ci: fmt-check clippy test forge-test test-seq-read ## Everything CI runs (guest docker build is a separate CI job)
 
 seq-dev-start: ## Start the dev-mode sequencer (RPC 3040)
 	scripts/seq.sh dev start

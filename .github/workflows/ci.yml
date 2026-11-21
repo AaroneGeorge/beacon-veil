@@ -106,3 +106,5 @@ jobs:
       - name: forge test
         working-directory: contracts
         run: forge test -vvv
+      - name: read-only endpoint tests (tools/seq_read, loopback only)
+        run: python3 -I tools/seq_read/test_policy.py
