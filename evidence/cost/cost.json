@@ -1,18 +1,18 @@
 {
   "what": "beacon-veil cost table (make cost-exec). Cycles are deterministic for the recorded guest image ids.",
-  "generated_utc": "2026-11-20T04:31:03Z",
+  "generated_utc": "2026-11-21T13:49:42Z",
   "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
   "run": {
     "command": "make cost-exec (tools/cost/cost_exec.sh)",
-    "started_utc": "2026-11-20T04:30:04Z",
-    "guest_build": "release set d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e (scripts/guests_release.sh d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e, ${BUILD}/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e)",
-    "release_commit": "d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e",
+    "started_utc": "2026-11-21T13:48:40Z",
+    "guest_build": "release set d097847b7ee958e51000a1bde7b68f571be750c6 (scripts/guests_release.sh d097847b7ee958e51000a1bde7b68f571be750c6, ${BUILD}/guests-release/d097847b7ee958e51000a1bde7b68f571be750c6)",
+    "release_commit": "d097847b7ee958e51000a1bde7b68f571be750c6",
     "guests": {
-      "lc_verify": "${BUILD}/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/lc_verify",
-      "attest": "${BUILD}/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/attest",
-      "consumer_erc20": "${BUILD}/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/consumer_erc20"
+      "lc_verify": "${BUILD}/guests-release/d097847b7ee958e51000a1bde7b68f571be750c6/elf/lc_verify",
+      "attest": "${BUILD}/guests-release/d097847b7ee958e51000a1bde7b68f571be750c6/elf/attest",
+      "consumer_erc20": "${BUILD}/guests-release/d097847b7ee958e51000a1bde7b68f571be750c6/elf/consumer_erc20"
     },
-    "repo_commit": "0b9e631",
+    "repo_commit": "4559613",
     "risc0_dev_mode": "1",
     "r0vm": "risc0-r0vm 3.0.5"
   },
@@ -20,19 +20,19 @@
     "attest": {
       "elf_bytes": 406700,
       "image_id": "9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d",
-      "path": "${BUILD}/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/attest",
+      "path": "${BUILD}/guests-release/d097847b7ee958e51000a1bde7b68f571be750c6/elf/attest",
       "program_binary_bytes": 439124
     },
     "lc_verify": {
       "elf_bytes": 754956,
       "image_id": "c7b5f2191f133026017c09072e883217dfe3785450d40d081718b0fd204878ba",
-      "path": "${BUILD}/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/lc_verify",
+      "path": "${BUILD}/guests-release/d097847b7ee958e51000a1bde7b68f571be750c6/elf/lc_verify",
       "program_binary_bytes": 787380
     },
     "lc_verify_v2": {
       "elf_bytes": 716792,
       "image_id": "18684beee3e973a2f1391c9bdb9108743c71e6f216bb5fba88bc0443403e8230",
-      "path": "${BUILD}/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/lc_verify_v2",
+      "path": "${BUILD}/guests-release/d097847b7ee958e51000a1bde7b68f571be750c6/elf/lc_verify_v2",
       "program_binary_bytes": 749216
     },
     "lc_verify_v3": {

@@ -1,6 +1,6 @@
-    Finished `release` profile [optimized] target(s) in 0.65s
+    Finished `release` profile [optimized] target(s) in 0.73s
 ${BUILD}/target/v3-guests/trace/lc_verify_v3.bin: user ELF 502356 bytes, bin 534780 bytes, image id 7f74ef7a0f909ebae5b7ce35c67475f0c8413ee16f5680fdabcebbfae46037ff
-lc_verify_v3 ${BUILD}/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/lc_verify_v3 image cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510 (Some(498916) user ELF bytes)
+lc_verify_v3 ${BUILD}/guests-release/d097847b7ee958e51000a1bde7b68f571be750c6/elf/lc_verify_v3 image cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510 (Some(498916) user ELF bytes)
 mainnet update[0] (period) Begin: 4306871 cycles (tx total 4306871)
 mainnet update[0] (period) Miller: 5764775 cycles (tx total 5764775)
 mainnet update[0] (period) Finish: 4299917 cycles (tx total 4378929)

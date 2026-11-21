@@ -5,19 +5,19 @@
     "attest": {
       "elf_bytes": 406700,
       "image_id": "9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d",
-      "path": "${BUILD}/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/attest",
+      "path": "${BUILD}/guests-release/d097847b7ee958e51000a1bde7b68f571be750c6/elf/attest",
       "program_binary_bytes": 439124
     },
     "lc_verify": {
       "elf_bytes": 754956,
       "image_id": "c7b5f2191f133026017c09072e883217dfe3785450d40d081718b0fd204878ba",
-      "path": "${BUILD}/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/lc_verify",
+      "path": "${BUILD}/guests-release/d097847b7ee958e51000a1bde7b68f571be750c6/elf/lc_verify",
       "program_binary_bytes": 787380
     },
     "lc_verify_v2": {
       "elf_bytes": 716792,
       "image_id": "18684beee3e973a2f1391c9bdb9108743c71e6f216bb5fba88bc0443403e8230",
-      "path": "${BUILD}/guests-release/d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e/elf/lc_verify_v2",
+      "path": "${BUILD}/guests-release/d097847b7ee958e51000a1bde7b68f571be750c6/elf/lc_verify_v2",
       "program_binary_bytes": 749216
     }
   },
@@ -25,7 +25,7 @@
   "rows": [
     {
       "bootstrap_bytes": 25675,
-      "executor_ms": 277,
+      "executor_ms": 289,
       "id": "attest.init",
       "instance_state_bytes": 410,
       "message": "Init",
@@ -40,7 +40,7 @@
       "user_cycles": 4926875
     },
     {
-      "executor_ms": 61,
+      "executor_ms": 62,
       "id": "attest.write_record.checkpoint",
       "message": "WriteRecord",
       "message_bytes": 153,
@@ -55,7 +55,7 @@
       "user_cycles": 24047
     },
     {
-      "executor_ms": 2546,
+      "executor_ms": 2513,
       "handoff": false,
       "head_slot": 15605824,
       "id": "lc_verify.v1.verify.update[0]",
@@ -76,7 +76,7 @@
       "variant": "V1"
     },
     {
-      "executor_ms": 1866,
+      "executor_ms": 1953,
       "handoff": false,
       "id": "lc_verify.v2.verify.update[0]",
       "message": "Verify (V2)",
@@ -94,7 +94,7 @@
       "variant": "V2"
     },
     {
-      "executor_ms": 64,
+      "executor_ms": 66,
       "id": "attest.apply.update[0]",
       "message": "Apply",
       "message_bytes": 401,
@@ -109,7 +109,7 @@
       "writes_record": true
     },
     {
-      "executor_ms": 63,
+      "executor_ms": 65,
       "id": "attest.write_record.update[0]",
       "message": "WriteRecord",
       "message_bytes": 153,
@@ -124,7 +124,7 @@
       "user_cycles": 24047
     },
     {
-      "executor_ms": 2574,
+      "executor_ms": 2673,
       "handoff": true,
       "head_slot": 15613952,
       "id": "lc_verify.v1.verify.update[1]",
@@ -145,7 +145,7 @@
       "variant": "V1"
     },
     {
-      "executor_ms": 1973,
+      "executor_ms": 2027,
       "handoff": true,
       "id": "lc_verify.v2.verify.update[1]",
       "message": "Verify (V2)",
@@ -163,7 +163,7 @@
       "variant": "V2"
     },
     {
-      "executor_ms": 64,
+      "executor_ms": 65,
       "id": "attest.apply.update[1]",
       "message": "Apply",
       "message_bytes": 401,
@@ -178,7 +178,7 @@
       "writes_record": true
     },
     {
-      "executor_ms": 65,
+      "executor_ms": 62,
       "id": "attest.write_record.update[1]",
       "message": "WriteRecord",
       "message_bytes": 153,
@@ -193,7 +193,7 @@
       "user_cycles": 24047
     },
     {
-      "executor_ms": 2706,
+      "executor_ms": 2672,
       "handoff": true,
       "head_slot": 15622144,
       "id": "lc_verify.v1.verify.update[2]",
@@ -214,7 +214,7 @@
       "variant": "V1"
     },
     {
-      "executor_ms": 2074,
+      "executor_ms": 2077,
       "handoff": true,
       "id": "lc_verify.v2.verify.update[2]",
       "message": "Verify (V2)",
@@ -232,7 +232,7 @@
       "variant": "V2"
     },
     {
-      "executor_ms": 63,
+      "executor_ms": 65,
       "id": "attest.apply.update[2]",
       "message": "Apply",
       "message_bytes": 401,
@@ -247,7 +247,7 @@
       "writes_record": true
     },
     {
-      "executor_ms": 62,
+      "executor_ms": 63,
       "id": "attest.write_record.update[2]",
       "message": "WriteRecord",
       "message_bytes": 153,
@@ -262,7 +262,7 @@
       "user_cycles": 24047
     },
     {
-      "executor_ms": 2582,
+      "executor_ms": 2715,
       "handoff": true,
       "head_slot": 15631808,
       "id": "lc_verify.v1.verify.update[3]",
@@ -283,7 +283,7 @@
       "variant": "V1"
     },
     {
-      "executor_ms": 1987,
+      "executor_ms": 2114,
       "handoff": true,
       "id": "lc_verify.v2.verify.update[3]",
       "message": "Verify (V2)",
@@ -301,7 +301,7 @@
       "variant": "V2"
     },
     {
-      "executor_ms": 65,
+      "executor_ms": 66,
       "id": "attest.apply.update[3]",
       "message": "Apply",
       "message_bytes": 401,
@@ -316,7 +316,7 @@
       "writes_record": true
     },
     {
-      "executor_ms": 62,
+      "executor_ms": 65,
       "id": "attest.write_record.update[3]",
       "message": "WriteRecord",
       "message_bytes": 153,
@@ -331,7 +331,7 @@
       "user_cycles": 24047
     },
     {
-      "executor_ms": 1917,
+      "executor_ms": 2005,
       "handoff": false,
       "head_slot": 15637568,
       "id": "lc_verify.v1.verify.finality_update_15637644",
@@ -352,7 +352,7 @@
       "variant": "V1"
     },
     {
-      "executor_ms": 1575,
+      "executor_ms": 1678,
       "handoff": false,
       "id": "lc_verify.v2.verify.finality_update_15637644",
       "message": "Verify (V2)",
@@ -385,7 +385,7 @@
       "writes_record": true
     },
     {
-      "executor_ms": 62,
+      "executor_ms": 64,
       "id": "attest.write_record.finality_update_15637644",
       "message": "WriteRecord",
       "message_bytes": 153,
