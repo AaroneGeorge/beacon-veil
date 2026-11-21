@@ -12,7 +12,7 @@ keep going. The files in this folder are snapshots: the live log is
   `fulu`). The instance was initialised from a real mainnet bootstrap at a finalized checkpoint taken at start time.
 - **Fully checked guests.** Each update runs through the `lc_verify` and `attest` guests in the RISC Zero executor.
   That includes the sync-committee BLS signature check and the 2/3 quorum pre-check (`min_participants` 342 of 512).
-  These are the release guests, set `bf95e359…`; their image ids match `guests/IMAGE_IDS.expected`.
+  These are the release guests, set `b3a954c`; their image ids match `guests/IMAGE_IDS.expected`.
 - **Dev-mode receipts, not real proofs.** The sequencer runs with `RISC0_DEV_MODE=1`, so receipts are dev-mode
   receipts. Real proving of the same guests is evidenced separately (G1 real proof, `evidence/g1/`).
 - **A local standalone sequencer, not a public network.** The sequencer is LEZ v0.4.0-rc3 `sequencer_service`, built

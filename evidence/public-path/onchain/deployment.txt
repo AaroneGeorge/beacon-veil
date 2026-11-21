@@ -2,7 +2,7 @@
 
 ## earlier state of this chain
 seq-pub was not reset before this deployment. The same chain also holds a first deployment of lc_verify_v3 from release
-set aaf94c6 (image 0a08637c..., before the identity-signature check in Miller; not used by any recorded evidence) and
+set cf4f1e8 (image 0a08637c..., before the identity-signature check in Miller; not used by any recorded evidence) and
 one abandoned Sepolia instance (J1NgC8ZS1kJwMCknuLgCHi7gyxDg69jwbi8Equy8986q, Init in block 374; the measuring tool
 stopped after its first update on its own head check, which compared the full head for an update that only teaches
 the next committee). Neither is read by any file in this folder.
@@ -13,7 +13,7 @@ binary: $B/vendor/lez/target/release/sequencer_service (LEZ tag v0.4.0-rc3, comm
 rpc: 127.0.0.1:3043; process environment RISC0_DEV_MODE: 0 occurrences
 
 ## release set (scripts/guests_release.sh, docker risczero/risc0-guest-builder:r0.1.91.1)
-commit=d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e
+commit=d097847b7ee958e51000a1bde7b68f571be750c6
 image=docker.io/risczero/risc0-guest-builder:r0.1.91.1@sha256:fafb377a44e1cfca415577c48d2f7012bda99ed36f2fae27f9a663b9fe6048f0
 note_burn_proof=burn_proof.bin is built with risc0-zkvm 3.0.5 like the rest; the deployed burn_proof is built with risc0 3.1.0 (advisory GHSA-g6qg-9j8p-7j87), so this one is NOT the vault's
 attest.bin: user ELF 406700 bytes, bin 439124 bytes, image id 9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d

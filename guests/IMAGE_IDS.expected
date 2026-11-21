@@ -1,5 +1,5 @@
 # Expected RISC Zero image ids of the guests built by scripts/guests_release.sh (docker risczero/risc0-guest-builder:r0.1.91.1).
-# Source: release set of commit bf95e359a4a6dd85836be6e33609be778fa17bc2 ($B/guests-release/bf95e359.../IMAGE_IDS), built 2026-11-12.
+# Source: release set of commit b3a954c5531aee0401dc0ff5f1a4a820f0c0e97d ($B/guests-release/<commit>/IMAGE_IDS), built 2026-11-12.
 # burn_proof is excluded on purpose: the vault uses W5's risc0 3.1.0 build (GHSA-g6qg-9j8p-7j87), not this workspace's 3.0.5 one.
 # Any change to guest code or to the guest dependency graph changes these: rebuild with scripts/guests_release.sh and update this file in the same commit.
 attest 9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d
@@ -8,5 +8,5 @@ lc_verify_v2 18684beee3e973a2f1391c9bdb9108743c71e6f216bb5fba88bc0443403e8230
 consumer_erc20 3f86d4c96631191e94edb5377fa559c0b24fd2409815c5f97ca752eaa7df0794
 bridge fa3bd9c34fe6c82498396d99f9499688ec57e84463be2fc3abbe0bc944466fc5
 bridge_dev_source 9866d2346df2a2b3cd2214b07777182f5d1e75cac355d88ba45961543ecc3ca5
-# lc_verify_v3 (staged public verifier): release set of commit d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e, built 2026-11-20 with $BV_V3_CARGO_CONFIG (docs/DECISIONS.md D-56).
+# lc_verify_v3 (staged public verifier): release set of commit d097847b7ee958e51000a1bde7b68f571be750c6, built 2026-11-20 with $BV_V3_CARGO_CONFIG (docs/DECISIONS.md D-56).
 lc_verify_v3 cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510

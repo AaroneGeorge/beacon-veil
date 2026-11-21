@@ -2,7 +2,7 @@
 
 beacon-veil is a working prototype for Logos RFP-021 (Trustless Ethereum State Attestation for LEZ) and RFP-022 (Privacy-Preserving Wrapped ERC-20 and Ether Bridge for LEZ). It runs the Ethereum light client from `a16z/helios` 0.12.0, unmodified, inside a RISC Zero 3.0.5 guest on LEZ v0.4.0-rc3 (variant V1, privately proven), and a staged verifier, `lc_verify_v3`, that runs the same rules as three public transactions with no proof (`docs/PUBLIC-PATH.md`). It builds a consumer, a follower daemon and a bridge spike on top of them. Both RFPs are bid together. The project name is beacon-veil.
 
-Status: prototype, 2026-11-17, with the public path added on 2026-11-20. Each result in this file points to a raw file under `evidence/`. Machine paths in those files are written `${BUILD}` (the build folder) and `~` (the home folder); a sha256 recorded for a configuration file is of the file as it ran, before that substitution. Section 6 lists what is not done.
+Status: prototype, 2026-11-17, with the public path added on 2026-11-20. Each result in this file points to a raw file under `evidence/`. Machine paths in those files are written `${BUILD}` (the build folder) and `~` (the home folder); a sha256 recorded for a configuration file is of the file as it ran, before that substitution. Commit ids in tool-written records made before 2026-11-21 name commits of the pre-publication history; ids in text and commands name commits of this repository. Section 6 lists what is not done.
 
 ## 1. Clean-clone commands
 
@@ -41,7 +41,7 @@ cargo test -p adversarial                                                       
 
 # 7. Reproduce the cost table: cycles and gas from the executor, real fixtures, no proof. The guests come from the
 #    release set named in guests/IMAGE_IDS.expected (built in the pinned image; the script checks the image ids).
-scripts/guests_release.sh d1a6a4b7cd17376d6b50f33ad7aa0b34cd0e9a7e    # about 20 min; output in ../guests-release/<commit>
+scripts/guests_release.sh d097847b7ee958e51000a1bde7b68f571be750c6    # about 20 min; output in ../guests-release/<commit>
 make cost-exec     # finds that set by its commit, writes evidence/cost/cost.json and cost.md (71 rows)
 
 # 8. The gate checks G1 to G5 (G1 and G5 need a running sequencer and a committed tree; see scripts/gate/).
@@ -59,7 +59,7 @@ Gate status on 2026-11-17 for G1 to G5 (all pass), with the public-path and diff
 | G1 chain (dev-mode half) | PASS: `Init`, three updates with committee handoffs, replay E14, wrong verifier E12, fresh-account submit | `evidence/g1/chain.json` |
 | G1 real proof (V1) | PASS: finality update 15637644, unmodified Helios (V1), proven for real on a dev-mode-off sequencer, block 1784. 20,060 s (5.57 h) on an i5-10300H, 9.259 GiB peak | `evidence/g1/real-proof.json` |
 | G1 real proof (V2) | PASS: the same finality update with the V2 verifier (`lc_verify_v2`), proven for real, block 3111. 16,064 s (4.46 h), 9.24 GiB peak | `evidence/g1/real-proof-v2.json` |
-| G2 adversarial suite | PASS: 7 of 7 tests on the sequencer, each asserting an exact error code, and green CI on the staging repository (commit 764acf9, a private repository). The workflow has not yet been run on the public repository | `evidence/g2/onchain-20261112T115413Z.log`, `evidence/g2/ci-run.txt` |
+| G2 adversarial suite | PASS: 7 of 7 tests on the sequencer, each asserting an exact error code, and green CI on the staging repository (a private repository; the run built the tree of commit 7452b3f of this repository). The workflow has not yet been run on the public repository | `evidence/g2/onchain-20261112T115413Z.log`, `evidence/g2/ci-run.txt` |
 | G3 consumer | PASS: one transfer consumed, identical replay refused with E11 | `evidence/g3/run.json` |
 | G3 real proof | PASS: a private `Attest` of a mainnet USDT transfer proven for real, 2,120.6 s (35.3 min), 9.207 GiB, block 1949, replay refused with E11. The sequencer excerpt in the JSON was filled by hand from the raw log, see the note | `evidence/g3/real-proof.json`, `evidence/g3/NOTE-real-proof.txt` |
 | G4 follower, 24 h | PASS on two runs, both following the Sepolia beacon chain (chain_id 11155111) through the Logos `logos_module` beacon source, with proofs in RISC Zero dev mode. Run B (primary): 34.49 h, 22 of 22 submitted updates applied, one live sync-committee handoff (period 1411 to 1412), longest gap between log lines 354 s, no error lines. Run A (backup): 35.8 h, 23 of 23 applied, one handoff, one transient `source_error` (a 20 s timeout of the module call). Each run had one process id, no restart and no manual help. Both stopped with a clean shutdown at 2026-11-13 23:00 UTC for a host reboot | `evidence/g4/run-b/g4-summary.json` (primary), `evidence/g4/run-a/g4-summary.json` |
@@ -82,14 +82,14 @@ Gate status on 2026-11-17 for G1 to G5 (all pass), with the public-path and diff
 | Vault v3 | `contracts/src/Vault.sol`: fixed denominations, ETH and ERC-20, caps, freeze, verifier 3.1.0 behind its emergency stop (L1), open release route (L2) | `evidence/bridge/sepolia-v3.json` | Deployed on Sepolia at `0x380be74d9F3dFeBAaFC5F911CD6A45bFbeE3aD27` with an ETH and a USDT-style deposit |
 | Bridge inbound | `programs/bridge` `Claim`, `tools/bridge_cli` | `evidence/bridge/k9-part2-runA-v2/`, `evidence/bridge/k9-part2-runB-v3/` | Shown in dev mode against both follower runs: real attestation of the vault root, private claim, repeat refused with E11. Not done yet: a real proof of a private claim, and a claim to a public destination |
 | Bridge outbound | `guests/burn_proof` (RISC Zero 3.1.0), `Vault.release`, `releaseOpen` | `evidence/bridge/groth16-release-v3/` | Real Groth16 proof (471.3 s) verified on Sepolia through the emergency stop: release 527,859 gas, open release 325,769 gas. The anchor is the owner-posted stub and the burns ran in dev mode |
-| Reproducible guests | Release set `bf95e359` built in `risczero/risc0-guest-builder:r0.1.91.1@sha256:fafb377a...`; CI checks `guests/IMAGE_IDS.expected` | `evidence/g1/deployment.txt`, `evidence/g2/ci-run.txt` | The on-chain image ids match (`evidence/g1/seq-real-image-check.log`) |
+| Reproducible guests | Release set `b3a954c` built in `risczero/risc0-guest-builder:r0.1.91.1@sha256:fafb377a...`; CI checks `guests/IMAGE_IDS.expected` | `evidence/g1/deployment.txt`, `evidence/g2/ci-run.txt` | The on-chain image ids match (`evidence/g1/seq-real-image-check.log`) |
 | Cost table | Cycles, gas, state growth, real proof times; section 8: the public path per step, executor and on chain side by side | `evidence/cost/cost.md` (71 rows: 31 for V1, V2 and the consumer, 40 for `lc_verify_v3`), `evidence/cost/prove.md`, `evidence/cost/k4-projection.json` | Measured or derived. Includes the V2 real proof |
 
 Deprecated testnet artefacts. Sepolia vaults v1 and v2 used the RISC Zero Groth16 verifier 3.0.0, which advisory GHSA-g6qg-9j8p-7j87 shows to be broken. Both were frozen on 2026-11-12 and are evidence of the deposit path only (`evidence/bridge/README.md`).
 
 ## 3. Measured so far
 
-Machine: Intel i5-10300H (4 cores, 8 threads), 15 GiB RAM, 11 GiB swap, Linux 7.0.0-43, `r0vm` 3.0.5. The cycle table is executor-only, generated by `make cost-exec` on 2026-11-20 from the release guest set d1a6a4b (the rows below did not change from the 12 Nov table). Raw files: `evidence/cost/raw/exec-lc.json` and `exec-lc.log`; table: `evidence/cost/cost.md`.
+Machine: Intel i5-10300H (4 cores, 8 threads), 15 GiB RAM, 11 GiB swap, Linux 7.0.0-43, `r0vm` 3.0.5. The cycle table is executor-only, generated by `make cost-exec` on 2026-11-20 from the release guest set d097847 (the rows below did not change from the 12 Nov table). Raw files: `evidence/cost/raw/exec-lc.json` and `exec-lc.log`; table: `evidence/cost/cost.md`.
 
 | Step | Update bytes | Signers (of 512) | Result | User cycles |
 |---|---|---|---|---|

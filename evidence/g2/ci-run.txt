@@ -3,7 +3,7 @@ repository: private staging repository (GitHub Actions, GitHub-hosted runners)
 workflow: ci (.github/workflows/ci.yml)
 run id: 44722834233
 event: push
-head commit: 4360c086986e98269bebede2b14d42e3fdfebc5c
+head commit: the staging commit with the tree of commit 7452b3f493492b49bc75386035cfec7f189116a6 of this repository
 date: 2026-11-20, started 10:52:11Z, completed 11:32:08Z
 conclusion: success
 runner image: ubuntu-24.04, image version 20261111.370.1 (forge test job: 20261116.376.1)

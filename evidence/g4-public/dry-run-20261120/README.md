@@ -5,7 +5,7 @@ unset: public transactions are executed by the sequencer, no proof is involved).
 
 - Instance `7bYsJLGb32uVQeehJNKRAETssUJQ6xpABB8yWB93VoYQ` (Sepolia, checkpoint slot 11,617,056, period 1418;
   verifiers `lc_verify` and `lc_verify_v3`; `instance.json`), created with `attest init --extra-verifier`.
-- Program ids: `deploy/ids-pub.toml` of the deployment of release set d1a6a4b (`lc_verify_v3`
+- Program ids: `deploy/ids-pub.toml` of the deployment of release set d097847 (`lc_verify_v3`
   `8niQPec4Ng9yrm17Aj3VFbtebrXPxd6JVhhdZsAXQ1Tq`).
 - Beacon data: `direct_http` (lodestar Sepolia), cadence shortened to 600 s and 120 s for the dry run.
 

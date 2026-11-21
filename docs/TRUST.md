@@ -142,7 +142,7 @@ Status, re-checked 2026-11-20. Verified:
 
 Not verified, and what that means:
 
-- The adversarial tests were not run again on 2026-11-20. Their evidence is the log of 2026-11-12, and `lc.rs` and `programs/lc_verify` have not changed, and `tests/adversarial` changed only in comments (`e712890`), since the commit that added those legs. The differential report of 2026-11-20 re-checks the same rules natively and in the executor.
+- The adversarial tests were not run again on 2026-11-20. Their evidence is the log of 2026-11-12, and `lc.rs` and `programs/lc_verify` have not changed, and `tests/adversarial` changed only in comments (`5978fce`), since the commit that added those legs. The differential report of 2026-11-20 re-checks the same rules natively and in the executor.
 - The on-chain legs of the adversarial tests ran on the `seq-dev` sequencer, which runs with `RISC0_DEV_MODE=1` (`scripts/seq.sh:6`). They show the guest's rejection codes, not a real proof of a rejection. A rejection aborts before any proof is made. The public-path transactions of `evidence/public-path/onchain/` ran on `seq-pub` with dev mode unset, but they carry no E02 or E04 case: those refusals for V3 were run natively and in the executor.
 - The Helios source was read from the pinned local copy of tag 0.12.0, not fetched again from upstream. Helios is not audited, and the pre-checks are ours; both sit in the audit surface.
 
