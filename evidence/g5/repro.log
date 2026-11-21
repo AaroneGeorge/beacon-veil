@@ -1,4 +1,4 @@
-g5: clone of 193a692dd1b0b4ba2664251181b4092d79089ee0 in ${BUILD}/.tmp/clean
+g5: clone of e5b931ba7a3a16fd0beb328b449c36a986f0d992 in ${BUILD}/.tmp/clean
 tools/cost/cost_exec.sh
 cost-exec: building harnesses
 cost-exec: exec-lc
@@ -11,4 +11,4 @@ cost-exec: image lc_verify_v2 in exec-lc.json: 18684beee3e973a2f1391c9bdb9108743
 cost-exec: image attest in exec-lc.json: 9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d OK
 cost-exec: image lc_verify_v3 in exec-v3.json: cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510 OK
 cost-exec: image attest in exec-v3.json: 9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d OK
-g5: cost-exec in the clone exited 0 after 1265 s (cold build: 1)
+g5: cost-exec in the clone exited 0 after 826 s (cold build: 1)
