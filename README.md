@@ -137,7 +137,6 @@ The K4 projection for the V1 finality update was 6.08 to 7.01 hours, an estimate
 | `idl/` | SPEL-shaped IDLs, checked against the message enums by a test |
 | `evidence/` | Raw outputs behind every figure |
 | `docs/` | Documents below |
-| `proposal/` | Pointer to the filed combined grant proposal |
 
 ## 5. Documents
 
@@ -152,7 +151,6 @@ The K4 projection for the V1 finality update was 6.08 to 7.01 hours, an estimate
 | `docs/COVERAGE-021.md` | 59 requirements, milestone, evidence | 021 |
 | `docs/COVERAGE-022.md` | 68 requirements, milestone, evidence | 022 |
 | `docs/bridge/INBOUND.md`, `OUTBOUND.md`, `TRUST.md` | Bridge design, staged outbound leg, privacy analysis | 022 |
-| `docs/FILM.md` | Script and shot list for the walkthrough film | |
 
 ## 6. Gaps and stated bypasses
 
@@ -177,4 +175,4 @@ These are listed here so that no reader has to find them.
 
 Dual licensed under MIT or Apache-2.0 (`LICENSE-MIT`, `LICENSE-APACHE`). Reused components and their licences: `docs/REUSE.md`.
 
-Team: the members are listed in the filed grant proposal (see `proposal/README.md` for its link). There is no `TEAM.md` in this repository. Contact: open an issue at https://github.com/AaroneGeorge/beacon-veil. A Discord handle and an email address are not listed here.
+Team: the members are listed in the grant proposal filed at github.com/logos-co/rfp. There is no `TEAM.md` in this repository. Contact: open an issue at https://github.com/AaroneGeorge/beacon-veil. A Discord handle and an email address are not listed here.
