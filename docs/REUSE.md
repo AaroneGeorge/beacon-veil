@@ -60,6 +60,8 @@ Our own code is MIT OR Apache-2.0 (`LICENSE-MIT`, `LICENSE-APACHE`), as both RFP
 | `risc0-bigint2` | 1.4.14 (`Cargo.lock`), pulled in by the `blst` fork on the zkVM target | Apache-2.0 | `license` in the crate manifest, read in the cargo registry copy on 2026-11-20 | The bigint accelerator the `blst` fork calls. Audit status: unknown (the crate's files carry no audit statement) |
 | `risc0-zkvm`, `risc0-build` | 3.0.5 | Apache-2.0 | crate manifests | Cargo dependencies. Advisory GHSA-g6qg-9j8p-7j87 (critical, 2026-11-11) affects versions below 3.1.0. LEZ rc3 pins 3.0.5, so our LEZ-side guests stay on 3.0.5 until LEZ moves. `burn_proof` and vault v3 use 3.1.0 |
 | LEZ v0.4.0-rc3 crates (`lee_core`, `lee`, `wallet`, `common`, `sequencer_service_rpc`, `program_loader_core`) | tag `v0.4.0-rc3`, commit `bafd07be` | MIT (file); the workspace manifest says "MIT or Apache-2.0" | `LICENSE` (copyright 2025 Vac); only an MIT file is in the tree | Cargo git dependencies |
+| LEZ v0.3.2 crates (`lee_core`, `lee`, `program_loader_core`) | tag `v0.3.2`, commit `ee6ed447` | MIT (file); the workspace manifest says "MIT or Apache-2.0" | `LICENSE` (copyright 2025 Vac), read in the tagged checkout on 2026-11-21 | Cargo git dependencies of `lez-v03/` only (the port to the public testnet 0.3, section 7) |
+| LEZ example runners (`examples/program_deployment/src/lib.rs`: `deploy_program`, `public_tx_paid_by`) | branch `fix/program-deployment-runners-declare-fees-v0.3.2`, commit `dd955e28` | MIT (repository `LICENSE`) | as above | Model for `lez-v03/client` (deploy through the program loader; a fee paid by a payer that co-signs without joining the inputs). Rewritten, not copied: the client signs and sends with `lee` directly |
 | `alloy-trie` | 0.9.9 | MIT OR Apache-2.0 | crate manifest | Dependency of `attest_inclusion` |
 | `alloy-rlp` | 0.3.17 | MIT OR Apache-2.0 | crate manifest | Dependency of `attest_inclusion` |
 | `alloy-primitives` | 1.7.3 | MIT OR Apache-2.0 | crate manifest | Dependency |
@@ -108,3 +110,20 @@ Earlier applicants' repositories for RFP-021 and RFP-022 were not opened, copied
 | Instance program `attest` | unchanged | unchanged |
 
 Files that are new for the public path, whole files, comments and blank lines included, at commit `6e70da8`: `crates/attest_core/src/lc_v3.rs` 1,023 lines, `crates/bls_blst/src/lib.rs` 395 lines, `programs/lc_verify_v3/src/bin/lc_verify_v3.rs` 64 lines. The audit covers them and the `blst` fork's changes (audit status of the fork: unknown, section 1). V1 stays in the tree as the unmodified-Helios reference, and `tests/diff_helios` compares V1 and V3 on every case (881 cases, 0 disagreements: `evidence/diff/report.json`).
+
+## 7. The port to the public testnet 0.3 (`lez-v03/`)
+
+The public LEZ testnet runs LEZ 0.3 (v0.3.2), whose programs are a `plan` and an `apply`; the delivered programs
+target LEZ v0.4.0-rc3 (actors). `lez-v03/` holds two wrappers for 0.3, in a separate workspace:
+
+| Part | Source | Note |
+|---|---|---|
+| Verifier and instance rules | `crates/attest_core` (`lc_v3::handle`, `rules::init`, `rules::apply`, `rules::write_record`) and `crates/bls_blst`, by path, compiled unchanged | the same audit surface as sections 1 and 6 |
+| Program entry, effects, the claim checks | `lez-v03/programs/*/src/lib.rs` and `src/bin/*.rs`, ours | new audit surface: about 450 lines; the claim check is what makes a 0.3 `Finish` carry what the verifier computed (`lez-v03/README.md`) |
+| Execution and fees in tests and before every send | LEZ v0.3.2 `lee` (`V03State`, `ValidatedStateDiff`), unmodified | the sequencer's own action phase, in process |
+| Client `bv-v03` | ours, modelled on the LEZ example runners (section 3) | wire types of LEZ v0.3.2 `common` mirrored field for field (`lez-v03/client/src/chain.rs`) so the client does not build the Logos Blockchain node crates |
+| Fixture readers in `lez-v03/harness/src/fixtures.rs` | copied from our own `tests/e2e_chain` and `tools/cost` | so this workspace does not build the root workspace's test crates |
+
+Other applicants' public repositories that deployed on testnet 0.3 were read for how the public testnet behaves (fees,
+receipts, explorer); no code was copied from them and none was run.
+
