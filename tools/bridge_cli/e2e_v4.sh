@@ -19,7 +19,7 @@
 #   anvil-fork (default)  an anvil fork of Sepolia on 127.0.0.1:8548 (the 3.1.0 emergency-stop wrapper exists there),
 #                         anvil dev key 0 (a public test key). LEZ stages are refused: a fork's deposits cannot be
 #                         attested by a light client of the real chain.
-#   sepolia               Sepolia itself. Needs BV_OWNER_D3=yes (the owner's yes) and the key in lechu-secret
+#   sepolia               Sepolia itself. Needs BV_SEPOLIA_OK=yes and the key in lechu-secret
 #                         (logos LOGOS_SEPOLIA_KEY), read for the forge calls only, never printed or written.
 # Real-proof stages run through tools/cost/prove_job.sh (BV_PROOF_WINDOW_OK=1, proving lock, time -v, RSS samples).
 set -euo pipefail
@@ -37,7 +37,7 @@ case "$TARGET" in
 esac
 case "$TARGET:${1:-}" in
   sepolia:check | sepolia:record-claim | sepolia:record-burn | sepolia:) ;;
-  sepolia:*) [ "${BV_OWNER_D3:-}" = yes ] || { echo "Sepolia stage '$1' needs the owner's yes (BV_OWNER_D3=yes)" >&2; exit 3; } ;;
+  sepolia:*) [ "${BV_SEPOLIA_OK:-}" = yes ] || { echo "Sepolia stage '$1' needs explicit approval (BV_SEPOLIA_OK=yes)" >&2; exit 3; } ;;
 esac
 mkdir -p "$S"; F="$S/flow.env"; touch "$F"
 # shellcheck source=/dev/null
@@ -71,7 +71,7 @@ key() {
   case "$TARGET" in
     anvil-fork) echo "$ANVIL_KEY" ;;
     sepolia)
-      [ "${BV_OWNER_D3:-}" = yes ] || { echo "Sepolia needs the owner's yes (BV_OWNER_D3=yes)" >&2; exit 3; }
+      [ "${BV_SEPOLIA_OK:-}" = yes ] || { echo "Sepolia needs explicit approval (BV_SEPOLIA_OK=yes)" >&2; exit 3; }
       sudo -n lechu-secret show logos LOGOS_SEPOLIA_KEY ;;
   esac
 }

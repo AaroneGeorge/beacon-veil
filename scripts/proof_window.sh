@@ -7,11 +7,11 @@
 #   scripts/proof_window.sh --from STAGE resume at a stage (names as printed by --dry-run)
 #
 # Order and gates:
-#   1. private claim     (needs BV_OWNER_D3=yes: Sepolia vault v4 and a deposit)   tools/bridge_cli/e2e_v4.sh
-#   2. burn and release  (needs BV_OWNER_D3=yes)                                    tools/bridge_cli/e2e_v4.sh
+#   1. private claim     (needs BV_SEPOLIA_OK=yes: Sepolia vault v4 and a deposit) tools/bridge_cli/e2e_v4.sh
+#   2. burn and release  (needs BV_SEPOLIA_OK=yes)                                  tools/bridge_cli/e2e_v4.sh
 #   3. staged verifier, one VerifyOnce proven for real on a dedicated V3-only mainnet instance
 #                                                                                   scripts/proof/real_proof_v3.sh
-# Every run needs BV_PROOF_WINDOW_OK=1 (the owner's yes on freeing memory). Without BV_OWNER_D3=yes stages 1 and 2
+# Every run needs BV_PROOF_WINDOW_OK=1 (approval to free memory for the proofs). Without BV_SEPOLIA_OK=yes stages 1 and 2
 # are skipped and stage 3 runs alone.
 #
 # Refuses to start when: memory is short (MemAvailable < 10.5 GiB or swap use >= 2 GiB: a proof peaks at about
@@ -25,7 +25,7 @@
 # Launch (detached, own scope, pid file $B/run/proof-window.pid, log under $B/run/proof-window/):
 #   cd $B/repo && XDG_RUNTIME_DIR=/run/user/$(id -u) DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus \
 #     setsid nohup systemd-run --user --scope --collect --unit=bv-proof-window -- \
-#     env BV_PROOF_WINDOW_OK=1 [BV_OWNER_D3=yes BV_RELEASE_RECIPIENT=0x...] scripts/proof_window.sh \
+#     env BV_PROOF_WINDOW_OK=1 [BV_SEPOLIA_OK=yes BV_RELEASE_RECIPIENT=0x...] scripts/proof_window.sh \
 #     > $B/run/proof-window.out 2>&1 < /dev/null &
 set -uo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -70,11 +70,13 @@ seq_pub_real() {
   alive "$p" && ! tr '\0' '\n' < "/proc/$p/environ" | grep -q '^RISC0_DEV_MODE='
 }
 logos_pub_alive() { pgrep -f "logosctl.*--config-dir $B/run/w4/logos-session-pub" >/dev/null; }
+logos_c_alive() { pgrep -f "logosctl --config-dir $B/run/w4/logos-session daemon" >/dev/null; }
 own_cgroup_ok() { # not lechu-tmux.service, and not the cgroup of seq-pub or a follower
   local mine p; mine=$(cat /proc/self/cgroup)
   case "$mine" in *lechu-tmux.service*) return 1 ;; esac
   for p in "$(cat "$B/run/seq-pub.pid" 2>/dev/null)" "$(cat "$B/run/w4/run-d/followerd.pid" 2>/dev/null)" \
-           "$(cat "$B/run/w4/run-e/followerd.pid" 2>/dev/null)" 1308007 1292913; do
+           "$(cat "$B/run/w4/run-e/followerd.pid" 2>/dev/null)" "$(cat "$B/run/w4/run-c/followerd.pid" 2>/dev/null)" \
+           "$(cat "$B/run/seq-main.pid" 2>/dev/null)"; do
     [ -n "$p" ] && [ -r "/proc/$p/cgroup" ] && [ "$(cat "/proc/$p/cgroup")" = "$mine" ] && return 1
   done
   return 0
@@ -105,15 +107,15 @@ cat <<EOF
   total: proving about 4.0-5.0 h, with waits about 5-6 h; peak RSS about 9.3 GiB (a single proof at a time)
 EOF
 echo "preconditions:"
-check "BV_PROOF_WINDOW_OK=1 (owner's yes on freeing memory, D2)" test "${BV_PROOF_WINDOW_OK:-0}" = 1
-if [ "${BV_OWNER_D3:-}" = yes ]; then echo "  ok    BV_OWNER_D3=yes: Sepolia stages enabled"
-else echo "  skip  BV_OWNER_D3 not yes: the claim and burn stages are skipped (Sepolia needs the owner's yes, D3)"; fi
+check "BV_PROOF_WINDOW_OK=1 (approval to free memory for the proofs)" test "${BV_PROOF_WINDOW_OK:-0}" = 1
+if [ "${BV_SEPOLIA_OK:-}" = yes ]; then echo "  ok    BV_SEPOLIA_OK=yes: Sepolia stages enabled"
+else echo "  skip  BV_SEPOLIA_OK not yes: the claim and burn stages are skipped (Sepolia actions need explicit approval)"; fi
 check "memory: MemAvailable >= 10.5 GiB and swap use < 2 GiB (now $(free -g | awk '/Mem:/{print $7}') GiB available, $(free -m | awk '/Swap:/{print $3}') MiB swap)" mem_ok
 check "build lock free ($B/run/build.lock)" lock_free "$B/run/build.lock"
 check "proving lock free ($B/run/prove.lock)" lock_free "$B/run/prove.lock"
-check "seq-main up (pid 1292913)" alive 1292913
-check "run C follower up (pid 1308007)" alive 1308007
-check "run C Logos session up (pid 1256262)" alive 1256262
+check "seq-main up (pid $(cat "$B/run/seq-main.pid" 2>/dev/null))" pidfile_alive "$B/run/seq-main.pid"
+check "run C follower up (pid $(cat "$B/run/w4/run-c/followerd.pid" 2>/dev/null))" pidfile_alive "$B/run/w4/run-c/followerd.pid"
+check "run C Logos session up" logos_c_alive
 check "run D follower up ($(cat "$B/run/w4/run-d/followerd.pid" 2>/dev/null))" pidfile_alive "$B/run/w4/run-d/followerd.pid"
 check "run E follower up ($(cat "$B/run/w4/run-e/followerd.pid" 2>/dev/null))" pidfile_alive "$B/run/w4/run-e/followerd.pid"
 check "public runs' Logos session up" logos_pub_alive
@@ -121,12 +123,12 @@ check "seq-pub up without RISC0_DEV_MODE (pid $(cat "$B/run/seq-pub.pid" 2>/dev/
 check "RISC0_DEV_MODE unset in this shell" test -z "${RISC0_DEV_MODE+x}"
 check "own cgroup ($(cut -d: -f3 /proc/self/cgroup)) is not lechu-tmux.service nor that of seq-pub or a follower (launch with systemd-run --user --scope)" own_cgroup_ok
 check "stage names valid${FROM:+ (--from $FROM)}" true
-if [ "${BV_OWNER_D3:-}" = yes ]; then
+if [ "${BV_SEPOLIA_OK:-}" = yes ]; then
   check "BV_RELEASE_RECIPIENT is an Ethereum address (${BV_RELEASE_RECIPIENT:-unset})" recipient_ok
   check "no vault, deposit or forge attempt of an earlier window in $(dirname "$FLOW_ENV") (else resume with --from claim-wait or later)" no_sepolia_repeat
 fi
 echo "stage scripts:"
-if [ "${BV_OWNER_D3:-}" = yes ]; then e2e_target=sepolia; else e2e_target=anvil-fork; fi
+if [ "${BV_SEPOLIA_OK:-}" = yes ]; then e2e_target=sepolia; else e2e_target=anvil-fork; fi
 BV_V4_TARGET=$e2e_target "$E2E" check 2>&1 | sed 's/^/  e2e_v4: /' | grep -v '^  e2e_v4: $' ; [ "${PIPESTATUS[0]}" = 0 ] || fails+=("e2e_v4.sh check")
 "$RP" --check 2>&1 | sed 's/^/  real_proof_v3: /'; [ "${PIPESTATUS[0]}" = 0 ] || fails+=("real_proof_v3.sh --check")
 
@@ -153,7 +155,7 @@ stage() { # name, command...
   echo "== $(date -u +%FT%TZ) stage $name exit $rc ($(grep -E 'Elapsed|Maximum resident' "$LOGDIR/$name.time.txt" | tr -s ' ' | paste -sd ';'))"
   [ "$rc" = 0 ] || { echo "stage $name failed: $LOGDIR/$name.log (resume with --from $name)" >&2; exit "$rc"; }
 }
-if [ "${BV_OWNER_D3:-}" = yes ]; then
+if [ "${BV_SEPOLIA_OK:-}" = yes ]; then
   stage claim-prep bash -c "'$E2E' vault && '$E2E' config && '$E2E' wallet && '$E2E' deposit"
   stage claim-wait "$E2E" wait-record
   stage claim-fund "$E2E" fund

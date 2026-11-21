@@ -1,6 +1,5 @@
 # CI for beacon-veil. Actions are pinned by commit SHA (tag in the comment). Reused: Swatinem/rust-cache,
-# foundry-rs/foundry-toolchain, taiki-e/install-action (Code Garage: engineering.ci.caching-and-speed, web3.evm.foundry,
-# security.supplychain.github-actions-hardening).
+# foundry-rs/foundry-toolchain, taiki-e/install-action.
 name: ci
 
 on:
