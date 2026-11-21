@@ -1,0 +1,27 @@
+[package]
+name = "v03_harness"
+description = "Tests of the LEZ v0.3 programs through LEZ v0.3.2's own state machine (lee::V03State), on the committed fixtures"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+anyhow.workspace = true
+attest_core = { workspace = true, features = ["lc", "v3"] }
+attest_v03.workspace = true
+borsh.workspace = true
+hex.workspace = true
+lc_verify_v3_v03.workspace = true
+lee.workspace = true
+lee_core.workspace = true
+serde_json.workspace = true
+risc0-binfmt.workspace = true
+risc0-zkos-v1compat.workspace = true
+
+[dev-dependencies]
+# The fabricated chain at the 342-signer floor (root workspace tool; Helios types, no LEZ dependency).
+fixtures = { path = "../../tools/fixtures" }

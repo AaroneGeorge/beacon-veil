@@ -1,0 +1,110 @@
+# The two beacon-veil programs as LEZ v0.3 programs (plan + apply), for the public LEZ testnet 0.3
+# (https://testnet.lez.logos.co, LEZ v0.3.2). Thin wrappers around the unchanged verifier core
+# (`crates/attest_core`: `lc_v3::handle`, `rules::init`, `rules::apply`), which keeps its own LEZ v0.4.0-rc3
+# `lee_core` (resolved through the root workspace); the wrappers use v0.3.2's. The two meet as 32-byte ids.
+# Separate workspace (own Cargo.lock and target dir); not a member of the root workspace. See README.md.
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/AaroneGeorge/beacon-veil"
+publish = false
+
+[workspace]
+resolver = "3"
+members = [
+  "programs/lc_verify_v3_v03",
+  "programs/attest_v03",
+  "harness",
+  "client",
+]
+
+[workspace.dependencies]
+attest_core = { path = "../crates/attest_core" }
+attest_v03 = { path = "programs/attest_v03" }
+lc_verify_v3_v03 = { path = "programs/lc_verify_v3_v03" }
+
+# ---- LEZ v0.3.2 (commit ee6ed4470059d0ac113e2e358dbe25aad3e8b0a9), the version the public testnet runs ----
+lee_core = { git = "https://github.com/logos-blockchain/logos-execution-zone", tag = "v0.3.2" }
+lee = { git = "https://github.com/logos-blockchain/logos-execution-zone", tag = "v0.3.2" }
+program_loader_core = { git = "https://github.com/logos-blockchain/logos-execution-zone", tag = "v0.3.2" }
+wallet = { git = "https://github.com/logos-blockchain/logos-execution-zone", tag = "v0.3.2" }
+common = { git = "https://github.com/logos-blockchain/logos-execution-zone", tag = "v0.3.2" }
+sequencer_service_rpc = { git = "https://github.com/logos-blockchain/logos-execution-zone", tag = "v0.3.2", features = ["client"] }
+
+# ---- RISC Zero 3.0.5, as the root workspace and LEZ v0.3.2 ----
+risc0-zkvm = { version = "=3.0.5", default-features = false, features = ["std"] }
+risc0-binfmt = "=3.0.4"
+risc0-zkos-v1compat = "=2.2.2"
+
+anyhow = "1.0.98"
+borsh = { version = "1.5.7", features = ["derive"] }
+clap = { version = "4.5.42", features = ["derive", "env"] }
+hex = "0.4.3"
+serde = { version = "1.0.60", default-features = false, features = ["derive"] }
+serde_json = "1.0.81"
+sha2 = { version = "0.10.8", default-features = false }
+tokio = { version = "1.50", features = ["macros", "rt-multi-thread", "time"] }
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+
+# ---- Same patches as the root workspace (they are not inherited across workspaces) ----
+[patch.crates-io]
+keccak = { git = "https://github.com/logos-blockchain/sponges", rev = "3a56e99771beedf04946eab21a4a62adc2951377" }
+bls12_381 = { git = "https://github.com/risc0/zkcrypto-bls12_381", tag = "bls12_381/v0.8.0-risczero.1" }
+sha2 = { git = "https://github.com/risc0/RustCrypto-hashes", tag = "sha2-v0.10.8-risczero.0" }
+sha2-v0-9 = { package = "sha2", git = "https://github.com/risc0/RustCrypto-hashes", tag = "sha2-v0.9.9-risczero.0" }
+ethereum_hashing = { git = "https://github.com/ncitron/ethereum_hashing", rev = "7ee70944ed4fabe301551da8c447e4f4ae5e6c35" }
+blst = { git = "https://github.com/risc0/blst", tag = "v0.3.16-risczero.0" }
+
+# ---- Profiles: the guest profile of the root workspace, plus the bigint shim at opt-level 3 (root D-56, which the
+# root passes on the command line for lc_verify_v3 only; here both guests are new, so it is in the manifest) ----
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+
+[profile.release.package.bls12_381]
+opt-level = 3
+
+[profile.release.package.sha2]
+opt-level = 3
+
+[profile.release.package.blst]
+opt-level = 3
+
+[profile.release.package.risc0-bigint2]
+opt-level = 3
+
+# Host binaries (client, harness): `--profile host`.
+[profile.host]
+inherits = "release"
+opt-level = 3
+lto = false
+codegen-units = 16
+
+[profile.dev]
+debug = "line-tables-only"
+
+[profile.test]
+debug = "line-tables-only"
+
+[profile.dev.package.risc0-zkvm]
+opt-level = 3
+[profile.dev.package.risc0-circuit-rv32im]
+opt-level = 3
+[profile.dev.package.risc0-zkp]
+opt-level = 3
+[profile.dev.package.risc0-binfmt]
+opt-level = 3
+[profile.dev.package.risc0-core]
+opt-level = 3
+[profile.dev.package.bls12_381]
+opt-level = 3
+[profile.dev.package.sha2]
+opt-level = 3

@@ -1,0 +1,34 @@
+[package]
+name = "bv_v03_client"
+description = "Client of the LEZ v0.3 port on the public LEZ testnet 0.3: payer key, plan (simulated, sends nothing), deploy, init, update, refuse-demo, record"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[[bin]]
+name = "bv-v03"
+path = "src/main.rs"
+
+[dependencies]
+anyhow.workspace = true
+attest_core = { workspace = true, features = ["lc", "v3"] }
+attest_v03.workspace = true
+base64 = "0.22.1"
+borsh.workspace = true
+clap.workspace = true
+hex.workspace = true
+lc_verify_v3_v03.workspace = true
+lee.workspace = true
+lee_core.workspace = true
+program_loader_core.workspace = true
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "json", "rustls-tls"] }
+risc0-binfmt.workspace = true
+risc0-zkos-v1compat.workspace = true
+serde = { workspace = true, features = ["std"] }
+serde_json.workspace = true
+sha2 = { workspace = true, features = ["std"] }
+v03_harness = { path = "../harness" }

@@ -1,0 +1,27 @@
+[package]
+name = "lc_verify_v3_v03"
+description = "LEZ v0.3 program lc_verify_v3_v03: one light-client update as three public transactions (Begin, Miller, Finish) on a job account, a plan + apply wrapper around attest_core::lc_v3::handle; Finish calls attest_v03 Apply"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "lc_verify_v3_v03"
+path = "src/bin/lc_verify_v3_v03.rs"
+
+[dependencies]
+attest_core = { workspace = true, features = ["v3"] }
+attest_v03.workspace = true
+borsh.workspace = true
+lee_core.workspace = true
+risc0-zkvm.workspace = true
+
+[package.metadata.cargo-machete]
+ignored = ["risc0-zkvm"]
