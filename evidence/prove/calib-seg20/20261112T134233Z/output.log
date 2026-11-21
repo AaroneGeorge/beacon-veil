@@ -31,4 +31,4 @@ public-execution ms calibration (pinned hardware):
   calib_ms = user_cycles / throughput  (compute only, overhead excluded)
   net_ms   = best exec_ms - fixed overhead  (measured compute, overhead stripped)
 
-JSON written to /home/lechuuu/hackathons/logos-rfp/build/vendor/lez/target/cycle_bench.json
+JSON written to ${BUILD}/vendor/lez/target/cycle_bench.json

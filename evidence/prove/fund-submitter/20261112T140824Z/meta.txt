@@ -6,7 +6,7 @@ mem_start=total 15823 MiB, available 12971 MiB; swap used 765 MiB of 12147
 risc0_dev_mode=unset risc0_prover=default
 repo_commit=f77a1d0 dirty=6
 cmd=nice -n 19 ionice -c3 wallet auth-transfer send --from Public/CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r --to Private/7qtSZh5UFitYJ3kVz7by2kH9FXtsJirpSik9mRBCFnzj --amount 1000000000
-cwd=/home/lechuuu/hackathons/logos-rfp/build/repo
+cwd=${BUILD}/repo
 note=fund private submitter 7qtSZh5U... on seq-real from bv-payer (privacy-preserving tx, real proof), wallet-w6-real
 end_utc=2026-11-12T14:27:55Z
 loadavg_end=4.87 7.20 6.70 1/719 1216212

@@ -4,7 +4,7 @@ Run C is one `attest-followerd` process that follows the **live Ethereum mainnet
 reads light-client updates through the Logos `beacon_api_module` and keeps a beacon-veil instance current. Runs A and
 B (`evidence/g4/`) did the same against Sepolia. Run C was started on 2026-11-17 to run unattended and is meant to
 keep going. The files in this folder are snapshots: the live log is
-`$B/run/w4/run-c/follower.jsonl` (`$B` = `~/hackathons/logos-rfp/build`).
+`$B/run/w4/run-c/follower.jsonl` (`$B` = the build folder).
 
 ## What it is, and what it is not
 
@@ -55,7 +55,7 @@ keep going. The files in this folder are snapshots: the live log is
 ## How to check
 
 ```bash
-B=~/hackathons/logos-rfp/build; R=$B/repo; cd $R
+B=<the build folder>; R=$B/repo; cd $R
 # Summary of the live run (hours, submits, applied, handoffs, max gap, error lines, head first/last, pid alive):
 scripts/gate/g4_status.sh $B/run/w4/run-c/follower.jsonl
 # The same through the run launcher (pid, last line, G4 check so far):

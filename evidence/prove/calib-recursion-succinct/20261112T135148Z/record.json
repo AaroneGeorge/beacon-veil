@@ -6,7 +6,7 @@
   "start_utc": "2026-11-12T13:51:48Z",
   "end_utc": "2026-11-12T13:52:57Z",
   "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
-  "command": "nice -n 19 ionice -c3 r0vm --elf /home/lechuuu/hackathons/logos-rfp/build/.tmp/w6/rec/attest.bin --initial-input /home/lechuuu/hackathons/logos-rfp/build/.tmp/w6/rec/apply.input --receipt /home/lechuuu/hackathons/logos-rfp/build/.tmp/w6/rec/succinct.receipt --receipt-kind succinct --po2 15 -v",
+  "command": "nice -n 19 ionice -c3 r0vm --elf ${BUILD}/.tmp/w6/rec/attest.bin --initial-input ${BUILD}/.tmp/w6/rec/apply.input --receipt ${BUILD}/.tmp/w6/rec/succinct.receipt --receipt-kind succinct --po2 15 -v",
   "loadavg_start": "8.29 8.38 9.11 1/718 1178217",
   "loadavg_end": "8.41 8.40 9.06 1/714 1178809",
   "mem_start": "total 15823 MiB, available 13161 MiB; swap used 766 MiB of 12147",
@@ -41,5 +41,5 @@
   },
   "peak_rss_gib": 1.395,
   "receipt_bytes": 226508,
-  "receipt_file": "/home/lechuuu/hackathons/logos-rfp/build/.tmp/w6/rec/succinct.receipt"
+  "receipt_file": "${BUILD}/.tmp/w6/rec/succinct.receipt"
 }

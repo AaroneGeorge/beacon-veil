@@ -14,7 +14,7 @@
     "attest": {
       "id": "D4EHJuxjYVFfTN47A6GbWxgPdYweb9QkC5DmzxbJboDF",
       "bin_sha256": "4f59c574791bc06fb7b6b3b284726b04cc6276bfe486eb44c9af864bf0176849",
-      "bins_dir": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2",
+      "bins_dir": "${BUILD}/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2",
       "image_id": "9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d",
       "release_commit": "bf95e359a4a6dd85836be6e33609be778fa17bc2",
       "release_image": "docker.io/risczero/risc0-guest-builder:r0.1.91.1@sha256:fafb377a44e1cfca415577c48d2f7012bda99ed36f2fae27f9a663b9fe6048f0"
@@ -22,7 +22,7 @@
     "lc_verify": {
       "id": "EiUE92eqy1LsmWrf68rNA5RbX3FWC9KzG2FakMVe5oWv",
       "bin_sha256": "31a3ff1d3eaa291566dd988d6c120a5d1eba1d99f37f6ab8d1e95e3ebb6b01e9",
-      "bins_dir": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2",
+      "bins_dir": "${BUILD}/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2",
       "image_id": "c7b5f2191f133026017c09072e883217dfe3785450d40d081718b0fd204878ba",
       "release_commit": "bf95e359a4a6dd85836be6e33609be778fa17bc2",
       "release_image": "docker.io/risczero/risc0-guest-builder:r0.1.91.1@sha256:fafb377a44e1cfca415577c48d2f7012bda99ed36f2fae27f9a663b9fe6048f0"
@@ -30,7 +30,7 @@
     "consumer_erc20": {
       "id": "DKUgoD1vsVFxNUoAdshh23ndWpgZoWCK4X9Q4qHqw7YP",
       "bin_sha256": "a86e69e70745bb7aab3b4f8d094d9a1ddecd764a6dd7d326e152900de77181fc",
-      "bins_dir": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2",
+      "bins_dir": "${BUILD}/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2",
       "image_id": "3f86d4c96631191e94edb5377fa559c0b24fd2409815c5f97ca752eaa7df0794",
       "release_commit": "bf95e359a4a6dd85836be6e33609be778fa17bc2",
       "release_image": "docker.io/risczero/risc0-guest-builder:r0.1.91.1@sha256:fafb377a44e1cfca415577c48d2f7012bda99ed36f2fae27f9a663b9fe6048f0"

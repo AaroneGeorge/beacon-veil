@@ -11,7 +11,7 @@
     "cadence_s": 6144,
     "chain": "host",
     "chain_id": 1,
-    "config": "/home/lechuuu/hackathons/logos-rfp/build/run/w4/run-c/followerd.toml",
+    "config": "${BUILD}/run/w4/run-c/followerd.toml",
     "endpoints": [
       "https://lodestar-mainnet.chainsafe.io",
       "http://unstable.mainnet.beacon-api.nimbus.team"

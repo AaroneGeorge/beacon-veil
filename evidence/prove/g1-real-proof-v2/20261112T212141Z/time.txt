@@ -1,4 +1,4 @@
-	Command being timed: "nice -n 19 ionice -c3 /home/lechuuu/hackathons/logos-rfp/build/target/debug/g1_real_proof --step finality_update_15637644 --verifier lc_verify_v2 --instance 67bw5WxQGYcaSbJwVjkbkwMMHkQ5GGMAPAjYX1YDjoXa"
+	Command being timed: "nice -n 19 ionice -c3 ${BUILD}/target/debug/g1_real_proof --step finality_update_15637644 --verifier lc_verify_v2 --instance 67bw5WxQGYcaSbJwVjkbkwMMHkQ5GGMAPAjYX1YDjoXa"
 	User time (seconds): 121170.23
 	System time (seconds): 211.50
 	Percent of CPU this job got: 755%

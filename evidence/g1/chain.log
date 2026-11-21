@@ -1,9 +1,9 @@
-   Compiling attest_host v0.1.0 (/home/lechuuu/hackathons/logos-rfp/build/repo/crates/attest_host)
-   Compiling e2e_chain v0.1.0 (/home/lechuuu/hackathons/logos-rfp/build/repo/tests/e2e_chain)
+   Compiling attest_host v0.1.0 (${BUILD}/repo/crates/attest_host)
+   Compiling e2e_chain v0.1.0 (${BUILD}/repo/tests/e2e_chain)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 4.42s
 warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
 note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
-     Running tests/e2e_chain.rs (/home/lechuuu/hackathons/logos-rfp/build/target/debug/deps/e2e_chain-3a6392075419a862)
+     Running tests/e2e_chain.rs (${BUILD}/target/debug/deps/e2e_chain-3a6392075419a862)
 
 running 1 test
 test mainnet_chain_init_three_updates_handoff_and_rejections ... 

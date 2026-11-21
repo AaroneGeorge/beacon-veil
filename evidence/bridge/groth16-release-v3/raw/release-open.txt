@@ -24,7 +24,7 @@ Estimated amount required: 0.000000000016675295 ETH
 
 ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.
 
-Transactions saved to: /home/lechuuu/hackathons/logos-rfp/build/repo/contracts/broadcast/Deploy.s.sol/11155111/run-latest.json
+Transactions saved to: ${BUILD}/repo/contracts/broadcast/Deploy.s.sol/11155111/run-latest.json
 
-Sensitive values saved to: /home/lechuuu/hackathons/logos-rfp/build/repo/contracts/cache/Deploy.s.sol/11155111/run-latest.json
+Sensitive values saved to: ${BUILD}/repo/contracts/cache/Deploy.s.sol/11155111/run-latest.json
 

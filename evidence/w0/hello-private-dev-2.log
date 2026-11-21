@@ -8,7 +8,7 @@ $ wallet account sync-private
 Synced to block 173 in 151.424257ms
 Label: hello-priv-1794478268
 Balance 994929384, nonce 336503708998154622259129490647213880119
-$ RISC0_INFO=1 run_hello_world_private /home/lechuuu/hackathons/logos-rfp/build/run/hello-target/riscv32im-risc0-zkvm-elf/docker/hello_world.bin Fj3A1pnm3ENQyjZxqJLs75c7vDT2EXZ8DpeSTA28VScF CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r
+$ RISC0_INFO=1 run_hello_world_private ${BUILD}/run/hello-target/riscv32im-risc0-zkvm-elf/docker/hello_world.bin Fj3A1pnm3ENQyjZxqJLs75c7vDT2EXZ8DpeSTA28VScF CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r
 Transaction hash is 189dd940528ff1cc7cbd7025eaeeef63d22bfb333004d086369f1cbc67bb3ac1
 Transaction is included in block 174
 Transaction hash is 246407b595ee6693ff37addcb5cbecb35171aa83aecbb89dfa20f1f9707485ad

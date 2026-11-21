@@ -1,4 +1,4 @@
-	Command being timed: "nice -n 19 ionice -c3 env RISC0_INFO=1 RUST_LOG=info /home/lechuuu/hackathons/logos-rfp/build/vendor/lez/target/release/run_hello_world_private /home/lechuuu/hackathons/logos-rfp/build/run/hello-target/riscv32im-risc0-zkvm-elf/docker/hello_world.bin 8pgZh3hotW9ctFErXBeD7BwZVWQjA7swvosnn5vVSoz7 CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r"
+	Command being timed: "nice -n 19 ionice -c3 env RISC0_INFO=1 RUST_LOG=info ${BUILD}/vendor/lez/target/release/run_hello_world_private ${BUILD}/run/hello-target/riscv32im-risc0-zkvm-elf/docker/hello_world.bin 8pgZh3hotW9ctFErXBeD7BwZVWQjA7swvosnn5vVSoz7 CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r"
 	User time (seconds): 12054.20
 	System time (seconds): 32.27
 	Percent of CPU this job got: 571%

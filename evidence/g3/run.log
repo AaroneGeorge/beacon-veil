@@ -1,7 +1,7 @@
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.76s
 warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
 note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
-     Running tests/e2e_consumer.rs (/home/lechuuu/hackathons/logos-rfp/build/target/debug/deps/e2e_consumer-f97fea2d04a6b9e8)
+     Running tests/e2e_consumer.rs (${BUILD}/target/debug/deps/e2e_consumer-f97fea2d04a6b9e8)
 
 running 1 test
 test g3_consumer_accepts_once_and_refuses_replay ... init instance BYRbutiqUKPiUw4atjNSprJnyvo1UENiXuPJmcMfAEs7: tx 9befe2e34a5c205d243c31beb167f1e92b25682da3950c088f155d5b291e7897

@@ -1,6 +1,6 @@
-# 2026-11-12T10:11:08Z seq-dev RISC0_DEV_MODE=1; bin /home/lechuuu/hackathons/logos-rfp/build/run/hello-target/riscv32im-risc0-zkvm-elf/docker/hello_world.bin sha256 b82a6e87826f75921513b3b247b71098d14b5ec76ac6990836992a9830772e4b
+# 2026-11-12T10:11:08Z seq-dev RISC0_DEV_MODE=1; bin ${BUILD}/run/hello-target/riscv32im-risc0-zkvm-elf/docker/hello_world.bin sha256 b82a6e87826f75921513b3b247b71098d14b5ec76ac6990836992a9830772e4b
 private account Fj3A1pnm3ENQyjZxqJLs75c7vDT2EXZ8DpeSTA28VScF
-$ RISC0_INFO=1 run_hello_world_private /home/lechuuu/hackathons/logos-rfp/build/run/hello-target/riscv32im-risc0-zkvm-elf/docker/hello_world.bin Fj3A1pnm3ENQyjZxqJLs75c7vDT2EXZ8DpeSTA28VScF CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r
+$ RISC0_INFO=1 run_hello_world_private ${BUILD}/run/hello-target/riscv32im-risc0-zkvm-elf/docker/hello_world.bin Fj3A1pnm3ENQyjZxqJLs75c7vDT2EXZ8DpeSTA28VScF CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r
 [2m2026-11-12T10:13:38.769396Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 65536 total cycles
 [2m2026-11-12T10:13:38.769399Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 7651 user cycles (11.67%)
 [2m2026-11-12T10:13:38.769403Z[0m [32m INFO[0m [2mrisc0_zkvm::host::server::session[0m[2m:[0m 25774 paging cycles (39.33%)

@@ -2,7 +2,7 @@
 [follower]
 id = "mock"
 chain_id = 11155111
-state_dir = "/home/lechuuu/hackathons/logos-rfp/build/run/w4/mock"
+state_dir = "${BUILD}/run/w4/mock"
 cadence_s = 120
 poll_s = 20
 jitter_max_s = 5

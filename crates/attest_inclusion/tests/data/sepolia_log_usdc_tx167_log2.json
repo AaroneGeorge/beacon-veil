@@ -21,7 +21,7 @@
   "receipts_in_block": 183,
   "receipts_root": "0xd7085da3be395c9386e1d131481735688a1174f4efe717c5dd99b28f5bdbecea",
   "rpc": [
-    "replay:/home/lechuuu/hackathons/logos-rfp/build/run/w3-raw"
+    "replay:${BUILD}/run/w3-raw"
   ],
   "state_root": "0x7fea305b86d768bf4abcc4fa8ee02cdeb9e863f93fb14ce47ff5e0d710fdd7b4",
   "statement_id": "0x0919510a370757db9ec24e5f7d392c2287aef2fbab48e1dbd4a452d9407968cc",

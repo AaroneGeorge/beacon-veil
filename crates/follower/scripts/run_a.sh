@@ -61,7 +61,8 @@ start)
   # Stable copy of the binary: later rebuilds in the shared target dir do not touch the running file.
   sha=$(sha256sum "$FD" | cut -c1-64); BIN="$B/run/w4/bin/attest-followerd-${sha:0:12}"
   mkdir -p "$B/run/w4/bin"; cp -f "$FD" "$BIN"
-  sed -e "s|^state_dir = .*|state_dir = \"$RUN_DIR\"|" -e "s|^instance = .*|instance = \"$INSTANCE\"|" \
+  # The templates name the build folder ${BUILD}; it is filled in here.
+  sed -e "s|\${BUILD}|$B|g" -e "s|^state_dir = .*|state_dir = \"$RUN_DIR\"|" -e "s|^instance = .*|instance = \"$INSTANCE\"|" \
       -e "s|^kind = \"logos_module\".*|kind = \"$SOURCE_KIND\"|" -e "s|^echo = .*||" \
       "${CFG_TEMPLATE:-$R/crates/follower/examples/followerd.sepolia.toml}" > "$CFG"
   grep -q "^echo" "$CFG" || sed -i 's|^\[follower\]|[follower]\necho = false|' "$CFG"
@@ -113,6 +114,10 @@ collect)
   cp -f "$LOG" "$E/follower.jsonl"; cp -f "$RUN_DIR/run.json" "$E/run.json"; cp -f "$CFG" "$E/followerd.toml"
   cp -f "$RUN_DIR/instance.json" "$E/instance.json" 2>/dev/null || true
   rc=0; python3 -I "$R/scripts/gate/g4_check.py" "$E/follower.jsonl" --summary-out "$E/g4-summary.json" >/dev/null || rc=$?
+  # Paths in the copies: ${BUILD} for the build folder, ~ for the home directory (no machine path in the evidence).
+  for f in follower.jsonl run.json followerd.toml instance.json g4-summary.json; do
+    if [ -f "$E/$f" ]; then sed -i -e "s#$B/#\${BUILD}/#g" -e "s#$HOME#~#g" "$E/$f"; fi
+  done
   if [ "${PRIMARY:-0}" = 1 ]; then
     cp -f "$E/follower.jsonl" "$R/evidence/g4/follower.jsonl"; cp -f "$E/g4-summary.json" "$R/evidence/g4/g4-summary.json"
   fi

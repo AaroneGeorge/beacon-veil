@@ -1,7 +1,7 @@
 {
   "gate": "G4",
   "result": "PASS",
-  "log": "/home/lechuuu/hackathons/logos-rfp/build/repo/evidence/g4/run-b/follower.jsonl",
+  "log": "${BUILD}/repo/evidence/g4/run-b/follower.jsonl",
   "failures": [],
   "pids": [
     987614
@@ -11,7 +11,7 @@
     "cadence_s": 6144,
     "chain": "host",
     "chain_id": 11155111,
-    "config": "/home/lechuuu/hackathons/logos-rfp/build/run/w4/run-b/followerd.toml",
+    "config": "${BUILD}/run/w4/run-b/followerd.toml",
     "endpoints": [
       "https://lodestar-sepolia.chainsafe.io",
       "http://unstable.sepolia.beacon-api.nimbus.team"

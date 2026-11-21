@@ -1,4 +1,4 @@
-	Command being timed: "nice -n 19 ionice -c3 r0vm --elf /home/lechuuu/hackathons/logos-rfp/build/.tmp/w6/rec/attest.bin --initial-input /home/lechuuu/hackathons/logos-rfp/build/.tmp/w6/rec/apply.input --receipt /home/lechuuu/hackathons/logos-rfp/build/.tmp/w6/rec/succinct.receipt --receipt-kind succinct --po2 15 -v"
+	Command being timed: "nice -n 19 ionice -c3 r0vm --elf ${BUILD}/.tmp/w6/rec/attest.bin --initial-input ${BUILD}/.tmp/w6/rec/apply.input --receipt ${BUILD}/.tmp/w6/rec/succinct.receipt --receipt-kind succinct --po2 15 -v"
 	User time (seconds): 524.35
 	System time (seconds): 1.24
 	Percent of CPU this job got: 755%

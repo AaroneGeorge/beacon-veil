@@ -1,15 +1,15 @@
 # 2026-11-12T11:54:13Z HEAD c5cd076 + W2 working tree; Linux 7.0.0-43-generic x86_64; 8 threads
-# cmd: BV_G2_ONCHAIN=1 cargo test -p adversarial -- --test-threads=1 --nocapture (wallet-w2, BV_GUESTS=/home/lechuuu/hackathons/logos-rfp/build/run/w4/guests)
+# cmd: BV_G2_ONCHAIN=1 cargo test -p adversarial -- --test-threads=1 --nocapture (wallet-w2, BV_GUESTS=${BUILD}/run/w4/guests)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 1.27s
 warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
 note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
-     Running unittests src/lib.rs (/home/lechuuu/hackathons/logos-rfp/build/target/debug/deps/adversarial-32a896361c59885c)
+     Running unittests src/lib.rs (${BUILD}/target/debug/deps/adversarial-32a896361c59885c)
 
 running 0 tests
 
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
-     Running tests/adversarial.rs (/home/lechuuu/hackathons/logos-rfp/build/target/debug/deps/adversarial-0fc40d8651b0dbc3)
+     Running tests/adversarial.rs (${BUILD}/target/debug/deps/adversarial-0fc40d8651b0dbc3)
 
 running 7 tests
 test vs1_fabricated_chain ... Latest block is 560

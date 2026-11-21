@@ -1,11 +1,11 @@
-   Compiling attest_inclusion v0.1.0 (/home/lechuuu/hackathons/logos-rfp/build/repo/crates/attest_inclusion)
-   Compiling consumer_erc20_program v0.1.0 (/home/lechuuu/hackathons/logos-rfp/build/repo/programs/consumer_erc20)
-   Compiling attest_host v0.1.0 (/home/lechuuu/hackathons/logos-rfp/build/repo/crates/attest_host)
-   Compiling e2e_consumer v0.1.0 (/home/lechuuu/hackathons/logos-rfp/build/repo/tests/e2e_consumer)
+   Compiling attest_inclusion v0.1.0 (${BUILD}/repo/crates/attest_inclusion)
+   Compiling consumer_erc20_program v0.1.0 (${BUILD}/repo/programs/consumer_erc20)
+   Compiling attest_host v0.1.0 (${BUILD}/repo/crates/attest_host)
+   Compiling e2e_consumer v0.1.0 (${BUILD}/repo/tests/e2e_consumer)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 9.31s
 warning: the following packages contain code that will be rejected by a future version of Rust: proc-macro-error2 v2.0.1
 note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
-     Running tests/e2e_consumer.rs (/home/lechuuu/hackathons/logos-rfp/build/target/debug/deps/e2e_consumer-dba6724d80d38a25)
+     Running tests/e2e_consumer.rs (${BUILD}/target/debug/deps/e2e_consumer-dba6724d80d38a25)
 
 running 1 test
 test g3_consumer_accepts_once_and_refuses_replay ... reusing instance 3uFZPqUY74dtbfWYWeY2Jawjmos7zPCbWf4Vgvu8XQvt

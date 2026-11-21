@@ -27,7 +27,7 @@
     "slot": 15637568
   },
   "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
-  "command": "nice -n 19 ionice -c3 /home/lechuuu/hackathons/logos-rfp/build/target/debug/g1_real_proof --step finality_update_15637644 --verifier lc_verify_v2 --instance 67bw5WxQGYcaSbJwVjkbkwMMHkQ5GGMAPAjYX1YDjoXa",
+  "command": "nice -n 19 ionice -c3 ${BUILD}/target/debug/g1_real_proof --step finality_update_15637644 --verifier lc_verify_v2 --instance 67bw5WxQGYcaSbJwVjkbkwMMHkQ5GGMAPAjYX1YDjoXa",
   "start_utc": "2026-11-12T21:21:41Z",
   "end_utc": "2026-11-13T01:49:26Z",
   "repo_commit": "9c83cda dirty=3",

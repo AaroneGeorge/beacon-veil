@@ -2,6 +2,6 @@ date_utc=2026-11-12T11:25:29Z
 machine=Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, kernel 7.0.0-43-generic
 uptime= 16:55:29 up 12:25,  1 user,  load average: 6.36, 10.49, 10.34
 r0vm=risc0-r0vm 3.0.5
-bin=/home/lechuuu/hackathons/logos-rfp/build/run/hello-target/riscv32im-risc0-zkvm-elf/docker/hello_world.bin sha256=b82a6e87826f75921513b3b247b71098d14b5ec76ac6990836992a9830772e4b
-cmd=/usr/bin/time -v nice -n 19 ionice -c3 env RISC0_INFO=1 RUST_LOG=info /home/lechuuu/hackathons/logos-rfp/build/vendor/lez/target/release/run_hello_world_private /home/lechuuu/hackathons/logos-rfp/build/run/hello-target/riscv32im-risc0-zkvm-elf/docker/hello_world.bin 8pgZh3hotW9ctFErXBeD7BwZVWQjA7swvosnn5vVSoz7 CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r
+bin=${BUILD}/run/hello-target/riscv32im-risc0-zkvm-elf/docker/hello_world.bin sha256=b82a6e87826f75921513b3b247b71098d14b5ec76ac6990836992a9830772e4b
+cmd=/usr/bin/time -v nice -n 19 ionice -c3 env RISC0_INFO=1 RUST_LOG=info ${BUILD}/vendor/lez/target/release/run_hello_world_private ${BUILD}/run/hello-target/riscv32im-risc0-zkvm-elf/docker/hello_world.bin 8pgZh3hotW9ctFErXBeD7BwZVWQjA7swvosnn5vVSoz7 CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r
 exit=0

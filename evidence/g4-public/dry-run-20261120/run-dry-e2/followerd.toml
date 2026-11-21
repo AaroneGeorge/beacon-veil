@@ -7,7 +7,7 @@
 echo = false
 id = "run-dry-e2"
 chain_id = 11155111
-state_dir = "~/hackathons/logos-rfp/build/run/w4/run-dry-e2"
+state_dir = "${BUILD}/run/w4/run-dry-e2"
 # log_file defaults to <state_dir>/follower.jsonl
 cadence_s = 120
 poll_s = 60
@@ -16,9 +16,9 @@ min_participation = 342 # 2/3 of 512 (Helios applies only with a supermajority)
 
 [source]
 kind = "direct_http"
-logosctl = "~/hackathons/logos-rfp/build/run/w4/logosctl/squashfs-root/AppRun"  # logosctl 0.3.2
-logosctl_config_dir = "~/hackathons/logos-rfp/build/run/w4/logos-session-pub"
-logosctl_tmpdir = "~/hackathons/logos-rfp/build/.tmp-pub"   # TMPDIR the public-runs session daemon was started with
+logosctl = "${BUILD}/run/w4/logosctl/squashfs-root/AppRun"  # logosctl 0.3.2
+logosctl_config_dir = "${BUILD}/run/w4/logos-session-pub"
+logosctl_tmpdir = "${BUILD}/.tmp-pub"   # TMPDIR the public-runs session daemon was started with
 provider = ""           # module's order: lodestar (https) first
 timeout_s = 60
 # Used only when kind = "direct_http".
@@ -27,7 +27,7 @@ endpoints = ["https://lodestar-sepolia.chainsafe.io", "http://unstable.sepolia.b
 [chain]
 kind = "host"
 instance = "7bYsJLGb32uVQeehJNKRAETssUJQ6xpABB8yWB93VoYQ"
-ids_file = "~/hackathons/logos-rfp/build/repo/deploy/ids-pub.toml"
+ids_file = "${BUILD}/repo/deploy/ids-pub.toml"
 mode = "public"         # staged public path (lc_verify_v3, attest_host::submit_update_staged)
 verifier = "lc_verify_v3"
 sequencer = "seq-pub"

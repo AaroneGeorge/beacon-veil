@@ -8,5 +8,5 @@
   "nullifier": "0xaf50e2ac017a36b467fe49ec4922a43391cc0d258ef23b055531d0690ec751e0",
   "recipient": "0x523072a2ac5e5a3e51c107bc17995a3fa03dbd78",
   "token": "0x0000000000000000000000000000000000000000",
-  "witness_file": "/home/lechuuu/hackathons/logos-rfp/build/run/w5/sepolia-v3/burn-0-w/witness.borsh"
+  "witness_file": "${BUILD}/run/w5/sepolia-v3/burn-0-w/witness.borsh"
 }

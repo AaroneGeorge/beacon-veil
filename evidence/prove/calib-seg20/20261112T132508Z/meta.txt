@@ -5,8 +5,8 @@ loadavg_start=14.91 26.98 13.33 4/772 1146765
 mem_start=total 15823 MiB, available 13093 MiB; swap used 812 MiB of 12147
 risc0_dev_mode=unset risc0_prover=ipc
 repo_commit=764acf9 dirty=2
-cmd=nice -n 19 ionice -c3 /home/lechuuu/hackathons/logos-rfp/build/.tmp/w6/lez-target/release/cycle_bench --prove --exec-iters 1
-cwd=/home/lechuuu/hackathons/logos-rfp/build/repo
+cmd=nice -n 19 ionice -c3 ${BUILD}/.tmp/w6/lez-target/release/cycle_bench --prove --exec-iters 1
+cwd=${BUILD}/repo
 note=LEZ v0.4.0-rc3 tools/cycle_bench (pinned, unmodified), RISC0_PROVER=ipc (r0vm 3.0.5)
 end_utc=2026-11-12T13:33:50Z
 loadavg_end=7.77 11.33 11.05 2/718 1162810

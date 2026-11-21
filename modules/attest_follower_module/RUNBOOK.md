@@ -21,7 +21,7 @@ plugin. The daemon must also survive `kill -9` and restart on its own (021 R4).
 | `handoff_applied` (`handoffApplied`) | `applied` with `extra.handoff = true` |
 | `follower_error` (`followerError`) | `submit_failed`, `*_error`, `no_instance` |
 
-Paths below: `B=~/hackathons/logos-rfp/build`, `R=$B/repo`. Always `source $R/scripts/env.sh` first.
+Paths below: `B=<the build folder>`, `R=$B/repo`. Always `source $R/scripts/env.sh` first.
 
 Two traps, both found on 2026-11-12:
 - The logosctl daemon's local endpoint lives under the daemon's `TMPDIR`. env.sh sets `TMPDIR=$B/.tmp`, so every

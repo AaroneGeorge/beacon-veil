@@ -1,4 +1,4 @@
-	Command being timed: "nice -n 19 ionice -c3 /home/lechuuu/hackathons/logos-rfp/build/run/w5/groth16-burn0.sh"
+	Command being timed: "nice -n 19 ionice -c3 ${BUILD}/run/w5/groth16-burn0.sh"
 	User time (seconds): 2017.59
 	System time (seconds): 2.95
 	Percent of CPU this job got: 428%

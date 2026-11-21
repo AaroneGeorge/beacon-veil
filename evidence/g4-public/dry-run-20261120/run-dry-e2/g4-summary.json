@@ -14,7 +14,7 @@
     "cadence_s": 120,
     "chain": "host",
     "chain_id": 11155111,
-    "config": "/home/lechuuu/hackathons/logos-rfp/build/run/w4/run-dry-e2/followerd.toml",
+    "config": "${BUILD}/run/w4/run-dry-e2/followerd.toml",
     "endpoints": [
       "https://lodestar-sepolia.chainsafe.io",
       "http://unstable.sepolia.beacon-api.nimbus.team"

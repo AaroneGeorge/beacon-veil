@@ -120,4 +120,4 @@ recipient balance: 9900000000000000 -> 19800000000000000 (expect +99000000000000
   ]
 }
 
-E2E LOCAL OK: /home/lechuuu/hackathons/logos-rfp/build/run/w5/e2e-20261112T121631Z
+E2E LOCAL OK: ${BUILD}/run/w5/e2e-20261112T121631Z

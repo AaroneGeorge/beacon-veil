@@ -4,7 +4,7 @@ sequencer = "seq-real"
 rpc = "http://127.0.0.1:3041"
 lez = "v0.4.0-rc3"
 # Fallback only; per-program dirs are in [bins].
-bins = "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2"
+bins = "${BUILD}/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2"
 
 [programs]
 attest = "2TXRshgszyS8soS6jTm3j5FcEJZTe2TUT8rpaxbDx3cB"   # sha256 4f59c574791bc06fb7b6b3b284726b04cc6276bfe486eb44c9af864bf0176849, 439124 bytes, 20261112T135525Z
@@ -12,6 +12,6 @@ lc_verify = "D4ieSbPKLW26qLnCWizkjUir7uosKf9m4AGNxUEG5U3d"   # sha256 31a3ff1d3e
 lc_verify_v2 = "Gu5isNCuiaeFXBDbUnuFAKgEfrxyQAHH6rbVwRrFdiMg"   # sha256 0af0f788081748d51db358a45dfc12709f5138cd9dc79a04bc757377d2bf24f5, 749216 bytes, 20261112T135525Z
 
 [bins]
-attest = "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2"
-lc_verify = "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2"
-lc_verify_v2 = "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2"
+attest = "${BUILD}/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2"
+lc_verify = "${BUILD}/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2"
+lc_verify_v2 = "${BUILD}/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2"

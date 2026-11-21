@@ -5,8 +5,8 @@ loadavg_start=0.37 2.99 5.66 1/736 1590029
 mem_start=total 15823 MiB, available 12896 MiB; swap used 813 MiB of 12147
 risc0_dev_mode=unset risc0_prover=default
 repo_commit=d379b17 dirty=11
-cmd=nice -n 19 ionice -c3 /home/lechuuu/hackathons/logos-rfp/build/target/debug/g3_real --instance 5kWLCgG7nT8tMdT47nnbQGH2czDuada2CrnSesjG1GGw
-cwd=/home/lechuuu/hackathons/logos-rfp/build/repo
+cmd=nice -n 19 ionice -c3 ${BUILD}/target/debug/g3_real --instance 5kWLCgG7nT8tMdT47nnbQGH2czDuada2CrnSesjG1GGw
+cwd=${BUILD}/repo
 note=G3 real: private Attest (USDT Transfer log, block 26397891) -> consumer_erc20 on seq-real, then replay (E11)
 end_utc=2026-11-12T20:58:51Z
 loadavg_end=4.51 7.02 7.40 2/752 1624368

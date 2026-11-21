@@ -44,7 +44,7 @@
     }
   },
   "release": {
-    "dir": "/home/lechuuu/hackathons/logos-rfp/build/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2",
+    "dir": "${BUILD}/guests-release/bf95e359a4a6dd85836be6e33609be778fa17bc2",
     "commit": "bf95e359a4a6dd85836be6e33609be778fa17bc2",
     "image": "docker.io/risczero/risc0-guest-builder:r0.1.91.1@sha256:fafb377a44e1cfca415577c48d2f7012bda99ed36f2fae27f9a663b9fe6048f0"
   },
@@ -52,7 +52,7 @@
     "consumer_erc20: header 95W1TbwkzjVp1ciszPnMiQ7cM9he6xNgQ4TYwftcPDpb state 66 bytes, image id 3f86d4c96631191e94edb5377fa559c0b24fd2409815c5f97ca752eaa7df0794: MATCH"
   ],
   "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
-  "command": "nice -n 19 ionice -c3 /home/lechuuu/hackathons/logos-rfp/build/target/debug/g3_real --instance 5kWLCgG7nT8tMdT47nnbQGH2czDuada2CrnSesjG1GGw",
+  "command": "nice -n 19 ionice -c3 ${BUILD}/target/debug/g3_real --instance 5kWLCgG7nT8tMdT47nnbQGH2czDuada2CrnSesjG1GGw",
   "start_utc": "2026-11-12T20:22:59Z",
   "end_utc": "2026-11-12T20:58:51Z",
   "repo_commit": "d379b17 dirty=11",

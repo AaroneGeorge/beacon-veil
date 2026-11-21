@@ -2,7 +2,7 @@
 
 beacon-veil is a working prototype for Logos RFP-021 (Trustless Ethereum State Attestation for LEZ) and RFP-022 (Privacy-Preserving Wrapped ERC-20 and Ether Bridge for LEZ). It runs the Ethereum light client from `a16z/helios` 0.12.0, unmodified, inside a RISC Zero 3.0.5 guest on LEZ v0.4.0-rc3 (variant V1, privately proven), and a staged verifier, `lc_verify_v3`, that runs the same rules as three public transactions with no proof (`docs/PUBLIC-PATH.md`). It builds a consumer, a follower daemon and a bridge spike on top of them. Both RFPs are bid together. The project name is beacon-veil.
 
-Status: prototype, 2026-11-17, with the public path added on 2026-11-20. Each result in this file points to a raw file under `evidence/`. Section 6 lists what is not done.
+Status: prototype, 2026-11-17, with the public path added on 2026-11-20. Each result in this file points to a raw file under `evidence/`. Machine paths in those files are written `${BUILD}` (the build folder) and `~` (the home folder); a sha256 recorded for a configuration file is of the file as it ran, before that substitution. Section 6 lists what is not done.
 
 ## 1. Clean-clone commands
 

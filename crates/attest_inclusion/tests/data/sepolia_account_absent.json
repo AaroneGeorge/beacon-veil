@@ -16,7 +16,7 @@
   "kind": "Account",
   "receipts_root": "0xd7085da3be395c9386e1d131481735688a1174f4efe717c5dd99b28f5bdbecea",
   "rpc": [
-    "replay:/home/lechuuu/hackathons/logos-rfp/build/run/w3-raw"
+    "replay:${BUILD}/run/w3-raw"
   ],
   "state_root": "0x7fea305b86d768bf4abcc4fa8ee02cdeb9e863f93fb14ce47ff5e0d710fdd7b4",
   "statement_id": "0x28e456cc5e19da2011488d5cc9c0abe734de1f0a4fa15c7017b18b4975c86b0f",

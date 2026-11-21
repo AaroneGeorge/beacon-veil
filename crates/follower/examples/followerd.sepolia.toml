@@ -4,7 +4,7 @@
 [follower]
 id = "run-a"
 chain_id = 11155111
-state_dir = "/home/lechuuu/hackathons/logos-rfp/build/run/w4/run-a"
+state_dir = "${BUILD}/run/w4/run-a"
 # log_file defaults to <state_dir>/follower.jsonl
 cadence_s = 6144        # 16 epochs: one finality update per ~1.7 h; handoffs go at once
 poll_s = 300            # one tick line every 5 min: the G4 gap limit is 2 x cadence
@@ -13,9 +13,9 @@ min_participation = 342 # 2/3 of 512 (Helios applies only with a supermajority)
 
 [source]
 kind = "logos_module"   # or "direct_http" (stated fallback, K8)
-logosctl = "/home/lechuuu/hackathons/logos-rfp/build/run/w4/logosctl/squashfs-root/AppRun"  # logosctl 0.3.2, extracted once
-logosctl_config_dir = "/home/lechuuu/hackathons/logos-rfp/build/run/w4/logos-session"
-logosctl_tmpdir = "/home/lechuuu/hackathons/logos-rfp/build/.tmp"   # TMPDIR the session daemon was started with (scripts/env.sh)
+logosctl = "${BUILD}/run/w4/logosctl/squashfs-root/AppRun"  # logosctl 0.3.2, extracted once
+logosctl_config_dir = "${BUILD}/run/w4/logos-session"
+logosctl_tmpdir = "${BUILD}/.tmp"   # TMPDIR the session daemon was started with (scripts/env.sh)
 provider = ""           # module's order: lodestar (https) first
 timeout_s = 60
 # Used when kind = "direct_http": the same public providers beacon_api_module seeds for Sepolia.

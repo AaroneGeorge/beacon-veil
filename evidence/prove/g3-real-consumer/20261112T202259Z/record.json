@@ -6,7 +6,7 @@
   "start_utc": "2026-11-12T20:22:59Z",
   "end_utc": "2026-11-12T20:58:51Z",
   "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
-  "command": "nice -n 19 ionice -c3 /home/lechuuu/hackathons/logos-rfp/build/target/debug/g3_real --instance 5kWLCgG7nT8tMdT47nnbQGH2czDuada2CrnSesjG1GGw",
+  "command": "nice -n 19 ionice -c3 ${BUILD}/target/debug/g3_real --instance 5kWLCgG7nT8tMdT47nnbQGH2czDuada2CrnSesjG1GGw",
   "loadavg_start": "0.37 2.99 5.66 1/736 1590029",
   "loadavg_end": "4.51 7.02 7.40 2/752 1624368",
   "mem_start": "total 15823 MiB, available 12896 MiB; swap used 813 MiB of 12147",

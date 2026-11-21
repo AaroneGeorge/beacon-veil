@@ -9,7 +9,7 @@
       "start_utc": "2026-11-12T13:25:08Z",
       "end_utc": "2026-11-12T13:33:50Z",
       "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
-      "command": "nice -n 19 ionice -c3 /home/lechuuu/hackathons/logos-rfp/build/.tmp/w6/lez-target/release/cycle_bench --prove --exec-iters 1",
+      "command": "nice -n 19 ionice -c3 ${BUILD}/.tmp/w6/lez-target/release/cycle_bench --prove --exec-iters 1",
       "loadavg_start": "14.91 26.98 13.33 4/772 1146765",
       "loadavg_end": "7.77 11.33 11.05 2/718 1162810",
       "mem_start": "total 15823 MiB, available 13093 MiB; swap used 812 MiB of 12147",
@@ -96,7 +96,7 @@
       "start_utc": "2026-11-12T13:33:51Z",
       "end_utc": "2026-11-12T13:42:33Z",
       "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
-      "command": "nice -n 19 ionice -c3 /home/lechuuu/hackathons/logos-rfp/build/.tmp/w6/lez-target/release/cycle_bench --prove --exec-iters 1",
+      "command": "nice -n 19 ionice -c3 ${BUILD}/.tmp/w6/lez-target/release/cycle_bench --prove --exec-iters 1",
       "loadavg_start": "7.77 11.33 11.05 1/718 1162840",
       "loadavg_end": "8.69 8.85 9.82 2/719 1170295",
       "mem_start": "total 15823 MiB, available 13018 MiB; swap used 772 MiB of 12147",
@@ -183,7 +183,7 @@
       "start_utc": "2026-11-12T13:42:33Z",
       "end_utc": "2026-11-12T13:51:08Z",
       "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
-      "command": "nice -n 19 ionice -c3 /home/lechuuu/hackathons/logos-rfp/build/.tmp/w6/lez-target/release/cycle_bench --prove --exec-iters 1",
+      "command": "nice -n 19 ionice -c3 ${BUILD}/.tmp/w6/lez-target/release/cycle_bench --prove --exec-iters 1",
       "loadavg_start": "8.69 8.85 9.82 1/719 1170325",
       "loadavg_end": "8.52 8.45 9.16 1/723 1177780",
       "mem_start": "total 15823 MiB, available 13165 MiB; swap used 768 MiB of 12147",
@@ -270,7 +270,7 @@
       "start_utc": "2026-11-12T13:51:08Z",
       "end_utc": "2026-11-12T13:51:47Z",
       "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
-      "command": "nice -n 19 ionice -c3 r0vm --elf /home/lechuuu/hackathons/logos-rfp/build/.tmp/w6/rec/attest.bin --initial-input /home/lechuuu/hackathons/logos-rfp/build/.tmp/w6/rec/apply.input --receipt /home/lechuuu/hackathons/logos-rfp/build/.tmp/w6/rec/composite.receipt --receipt-kind composite --po2 15 -v",
+      "command": "nice -n 19 ionice -c3 r0vm --elf ${BUILD}/.tmp/w6/rec/attest.bin --initial-input ${BUILD}/.tmp/w6/rec/apply.input --receipt ${BUILD}/.tmp/w6/rec/composite.receipt --receipt-kind composite --po2 15 -v",
       "loadavg_start": "8.52 8.45 9.16 1/723 1177823",
       "loadavg_end": "8.29 8.38 9.11 1/718 1178185",
       "mem_start": "total 15823 MiB, available 13143 MiB; swap used 766 MiB of 12147",
@@ -305,7 +305,7 @@
       },
       "peak_rss_gib": 1.159,
       "receipt_bytes": 247532,
-      "receipt_file": "/home/lechuuu/hackathons/logos-rfp/build/.tmp/w6/rec/composite.receipt"
+      "receipt_file": "${BUILD}/.tmp/w6/rec/composite.receipt"
     },
     {
       "name": "calib-recursion-succinct",
@@ -315,7 +315,7 @@
       "start_utc": "2026-11-12T13:51:48Z",
       "end_utc": "2026-11-12T13:52:57Z",
       "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
-      "command": "nice -n 19 ionice -c3 r0vm --elf /home/lechuuu/hackathons/logos-rfp/build/.tmp/w6/rec/attest.bin --initial-input /home/lechuuu/hackathons/logos-rfp/build/.tmp/w6/rec/apply.input --receipt /home/lechuuu/hackathons/logos-rfp/build/.tmp/w6/rec/succinct.receipt --receipt-kind succinct --po2 15 -v",
+      "command": "nice -n 19 ionice -c3 r0vm --elf ${BUILD}/.tmp/w6/rec/attest.bin --initial-input ${BUILD}/.tmp/w6/rec/apply.input --receipt ${BUILD}/.tmp/w6/rec/succinct.receipt --receipt-kind succinct --po2 15 -v",
       "loadavg_start": "8.29 8.38 9.11 1/718 1178217",
       "loadavg_end": "8.41 8.40 9.06 1/714 1178809",
       "mem_start": "total 15823 MiB, available 13161 MiB; swap used 766 MiB of 12147",
@@ -350,7 +350,7 @@
       },
       "peak_rss_gib": 1.395,
       "receipt_bytes": 226508,
-      "receipt_file": "/home/lechuuu/hackathons/logos-rfp/build/.tmp/w6/rec/succinct.receipt"
+      "receipt_file": "${BUILD}/.tmp/w6/rec/succinct.receipt"
     },
     {
       "name": "fund-submitter",
@@ -403,7 +403,7 @@
       "start_utc": "2026-11-12T14:43:20Z",
       "end_utc": "2026-11-12T20:17:41Z",
       "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
-      "command": "nice -n 19 ionice -c3 /home/lechuuu/hackathons/logos-rfp/build/target/debug/g1_real_proof --step finality_update_15637644 --verifier lc_verify --instance 5kWLCgG7nT8tMdT47nnbQGH2czDuada2CrnSesjG1GGw",
+      "command": "nice -n 19 ionice -c3 ${BUILD}/target/debug/g1_real_proof --step finality_update_15637644 --verifier lc_verify --instance 5kWLCgG7nT8tMdT47nnbQGH2czDuada2CrnSesjG1GGw",
       "loadavg_start": "4.95 7.54 7.39 1/729 1230516",
       "loadavg_end": "3.90 6.90 7.56 1/754 1583061",
       "mem_start": "total 15823 MiB, available 12932 MiB; swap used 754 MiB of 12147",
