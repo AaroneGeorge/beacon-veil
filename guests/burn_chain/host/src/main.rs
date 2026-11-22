@@ -2,7 +2,7 @@
 //!
 //!   burn_chain_host image-id
 //!   burn_chain_host prove --mode execute|groth16 --witness-json FILE --dir BLOCK_DIR [--pinned-dir DIR] \
-//!       --pinned P --tip T --burn-block K --tx I --out OUT_DIR
+//!       --pinned P --tip T --burn-block K --tx I --out OUT_DIR [--segment-po2 N]
 //!
 //! `--witness-json`: `{burn_secret, recipient, fee, token, denom, chain_id, vault, lez_program, lez_instance}` (hex
 //! strings, decimal strings for fee, denom and chain_id). BLOCK_DIR holds `<id>.borsh` served block bytes for P+1..T;
@@ -10,7 +10,9 @@
 //! natively first; the guest's journal must equal it. `--mode execute` runs the executor only (no proof) and writes a
 //! mock seal for `RiscZeroMockVerifier(0x00000000)` (anvil only); `--mode groth16` proves for real (proving windows
 //! only, `RISC0_DEV_MODE` unset). OUT_DIR gets `journal.hex`, `seal.hex` (verifier selector || seal) and `meta.json`
-//! (image id, cycles, segments, sizes). The witness file holds the burn secret: keep it out of the repository unless
+//! (image id, cycles, segments, sizes). `--segment-po2 N` sets the executor's segment limit (default 20): a smaller
+//! segment lowers the prover's peak memory, adds segments and leaves the image id, journal and seal format unchanged.
+//! The witness file holds the burn secret: keep it out of the repository unless
 //! it is a test secret, and delete it after proving.
 
 use std::path::{Path, PathBuf};
@@ -83,7 +85,13 @@ fn main() -> Result<()> {
             };
             let native = prove_burn_chain(&witness).map_err(|e| anyhow!("native statement refused: {e:?}"))?;
             let input = borsh::to_vec(&witness)?;
-            let env = ExecutorEnv::builder().write_slice(&input).build()?;
+            let po2: Option<u32> = get("--segment-po2").map(|s| s.parse()).transpose()?;
+            let mut builder = ExecutorEnv::builder();
+            builder.write_slice(&input);
+            if let Some(n) = po2 {
+                builder.segment_limit_po2(n);
+            }
+            let env = builder.build()?;
             let start = std::time::Instant::now();
             let image = Digest::from(BURN_CHAIN_ID);
             let (journal, seal, cycles, segments, seal_note) = match mode.as_str() {
@@ -133,7 +141,7 @@ fn main() -> Result<()> {
                 "block_bytes": witness.blocks.iter().map(Vec::len).collect::<Vec<_>>(),
                 "input_bytes": input.len(), "journal_bytes": journal.len(), "journal_equals_native": true,
                 "tip_hash": hex::encode(native.tip_hash), "nullifier": hex::encode(native.nullifier),
-                "cycles_user": cycles, "segments": segments, "seconds": secs,
+                "cycles_user": cycles, "segments": segments, "segment_po2": po2.unwrap_or(20), "seconds": secs,
             });
             let text = serde_json::to_string_pretty(&meta)?;
             std::fs::write(out.join("meta.json"), format!("{text}\n"))?;
@@ -141,7 +149,7 @@ fn main() -> Result<()> {
         }
         _ => bail!(
             "usage: burn_chain_host image-id | prove --mode execute|groth16 --witness-json F --dir D [--pinned-dir D] \
-             --pinned P --tip T --burn-block K --tx I --out O"
+             --pinned P --tip T --burn-block K --tx I --out O [--segment-po2 N]"
         ),
     }
     Ok(())
