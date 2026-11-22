@@ -62,6 +62,10 @@ Seven real transactions on `seq-pub`, each reverted with the head unchanged (`ev
 
 `tests/diff_helios` runs unmodified Helios 0.12.0, V1, V2 and V3 (one execution, and three steps) on 881 cases, 862 from mainnet, Sepolia and Hoodi and 19 on a fabricated chain: 90 valid, 0 disagreements between V1 and V3. The deployed ELF ran all 881 in the executor with 0 mismatches. 44 designed differences are listed, all refusals by V3 (`evidence/diff/report.json`: `total`, `valid`, `v1_v3_disagreements`, `executor_cases`, `executor_mismatches`, `executor.designed_differences`).
 
+## One update proven for real, private mode
+
+The same `lc_verify_v3` also has a one-transaction entry, `VerifyOnce`, for a private actor whose transaction is proven by the submitter. One current mainnet finality update (finalized slot 15,704,320, 510 signers) went through it on a dedicated instance on `seq-pub` whose only verifier is `lc_verify_v3`, proven for real with dev mode unset: 7,413 s (2.06 hours) and peak 9.21 GiB on the build laptop, block 7249, 12,528,311 user cycles in 13 segments (counted by a re-run of the same message in the executor with the deployed ELF, image `cc8acbc5...4510`). The sequencer verified the proof and applied `attest.Apply`; the instance head equals the native result (`evidence/public-path/real-proof.json`; raw job files under `evidence/prove/real-proof-v3/`, funding of the private submitter under `evidence/prove/real-proof-v3-fund/`). This is measured on a standalone sequencer, not a public testnet; the public path above still carries no proof.
+
 ## What this relies on
 
 The trust model is `docs/TRUST.md`. V3 does not subgroup-check committee keys and relies on the beacon chain's key validation (D-54). Its BLS layer is the RISC Zero fork of `blst`, whose changes have no audit statement (`docs/REUSE.md` section 6). A public transaction carries no proof, so the result is the sequencer's execution, as for every public LEZ transaction (`README.md`, section 6).

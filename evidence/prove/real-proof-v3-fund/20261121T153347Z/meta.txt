@@ -1,0 +1,13 @@
+name=real-proof-v3-fund
+start_utc=2026-11-21T15:33:47Z
+machine=Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5
+loadavg_start=2.11 4.13 4.58 1/1028 1297005
+mem_start=total 15823 MiB, available 11529 MiB; swap used 1277 MiB of 12147
+risc0_dev_mode=unset risc0_prover=default
+repo_commit=2eb6423 dirty=9
+cmd=nice -n 19 ionice -c3 scripts/proof/no_dev_mode.sh wallet auth-transfer send --from real-proof-v3-payer --to bv-submitter --amount 1100000000
+cwd=${BUILD}/repo
+note=fund the private submitter on seq-pub
+end_utc=2026-11-21T15:53:35Z
+loadavg_end=4.67 7.29 6.91 1/1000 1321985
+exit=0

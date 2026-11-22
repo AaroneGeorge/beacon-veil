@@ -1,0 +1,43 @@
+{
+  "name": "real-proof-v3",
+  "label": "measured",
+  "dev_mode": false,
+  "exit": 0,
+  "start_utc": "2026-11-21T15:58:12Z",
+  "end_utc": "2026-11-21T18:01:45Z",
+  "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
+  "command": "nice -n 19 ionice -c3 scripts/proof/no_dev_mode.sh ${BUILD}/target/host/attest --chain-id 1 update --instance 5oaPW6JzeCqafDFqLULp2Sob481mG3wrZctSF3aTMK56 --mode v3-private --v3 8niQPec4Ng9yrm17Aj3VFbtebrXPxd6JVhhdZsAXQ1Tq --save-inputs evidence/prove/real-proof-v3/20261121T155812Z/inputs",
+  "loadavg_start": "0.08 2.87 5.11 2/1003 1328133",
+  "loadavg_end": "4.96 7.62 8.18 1/1013 1485551",
+  "mem_start": "total 15823 MiB, available 11604 MiB; swap used 1276 MiB of 12147",
+  "risc0": "unset risc0_prover=default",
+  "repo_commit": "2eb6423 dirty=10",
+  "note": "lc_verify_v3 VerifyOnce, private actor, mainnet finality update, seq-pub",
+  "raw": {
+    "meta.txt": "evidence/prove/real-proof-v3/20261121T155812Z/meta.txt",
+    "time.txt": "evidence/prove/real-proof-v3/20261121T155812Z/time.txt",
+    "output.log": "evidence/prove/real-proof-v3/20261121T155812Z/output.log",
+    "samples.csv": "evidence/prove/real-proof-v3/20261121T155812Z/samples.csv",
+    "sampler.json": "evidence/prove/real-proof-v3/20261121T155812Z/sampler.json"
+  },
+  "wall_s": 7413.0,
+  "max_rss_kib_time_v": 9623980,
+  "user_s": 55474.27,
+  "sys_s": 105.44,
+  "cpu_pct": 749,
+  "major_faults": 19,
+  "exit_status_time_v": 0,
+  "sampler": {
+    "samples": 7315,
+    "interval_s": 1.0,
+    "peak_tree_rss_kib": 9657660,
+    "peak_tree_rss_gib": 9.21,
+    "peak_single_process_rss_kib": 9624672,
+    "peak_single_process": "r0vm",
+    "min_mem_available_kib": 2184080,
+    "swap_used_by_run_kib_max": 0,
+    "load1_mean": 8.25,
+    "load1_max": 10.75
+  },
+  "peak_rss_gib": 9.21
+}

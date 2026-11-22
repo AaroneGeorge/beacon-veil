@@ -1,0 +1,23 @@
+	Command being timed: "nice -n 19 ionice -c3 scripts/proof/no_dev_mode.sh ${BUILD}/target/host/attest --chain-id 1 update --instance 5oaPW6JzeCqafDFqLULp2Sob481mG3wrZctSF3aTMK56 --mode v3-private --v3 8niQPec4Ng9yrm17Aj3VFbtebrXPxd6JVhhdZsAXQ1Tq --save-inputs evidence/prove/real-proof-v3/20261121T155812Z/inputs"
+	User time (seconds): 55474.27
+	System time (seconds): 105.44
+	Percent of CPU this job got: 749%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 2:03:33
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 9623980
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 19
+	Minor (reclaiming a frame) page faults: 54880470
+	Voluntary context switches: 60230
+	Involuntary context switches: 4731523
+	Swaps: 0
+	File system inputs: 6880
+	File system outputs: 79600
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

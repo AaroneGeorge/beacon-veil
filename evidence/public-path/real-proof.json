@@ -1,0 +1,65 @@
+{
+  "what": "One update through lc_verify_v3 VerifyOnce in a private actor, proven for real (RISC0_DEV_MODE unset), on seq-pub; the sequencer verifies the proof and applies attest.Apply.",
+  "instance_verifiers_on_chain": [
+    "8niQPec4Ng9yrm17Aj3VFbtebrXPxd6JVhhdZsAXQ1Tq"
+  ],
+  "label": "measured, real proof",
+  "instance": "5oaPW6JzeCqafDFqLULp2Sob481mG3wrZctSF3aTMK56",
+  "verifier": "8niQPec4Ng9yrm17Aj3VFbtebrXPxd6JVhhdZsAXQ1Tq",
+  "update": {
+    "kind": "finality",
+    "finalized_slot": 15704320,
+    "attested_slot": 15704386,
+    "signature_slot": 15704387,
+    "participation": 510,
+    "update_ssz_bytes": 2104
+  },
+  "user_cycles": 12528311,
+  "segments": 13,
+  "cycles_source": "the same VerifyOnce message re-run in the RISC Zero executor with the deployed ELF of lc_verify_v3 alone (placeholder program, instance and receiver ids). The transaction's proof also covers attest.Apply and the privacy circuit, so the proven total is larger.",
+  "elf_sha256": "b819a01c3de3c36414bd7a7ee7573c47c4986155bef5d649299b0e4af686e17a",
+  "image_id": "cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510",
+  "executor_verdict": "accept:38830dc718aec5cd",
+  "expected_image_id": "cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510",
+  "image_id_matches_expected": true,
+  "seq_pub_risc0_dev_mode": "unset",
+  "wall_seconds": 7413.0,
+  "prove_and_submit_s": 7412.4,
+  "peak_rss_gib": 9.21,
+  "tx": "4b58383ed5a87fb5c61940eb347dc2f0f2cabddecf29ba52c61c285dd871179b",
+  "block_id": 7249,
+  "risc0_dev_mode": "unset",
+  "head_before": {
+    "beacon_root": "3b7e068fe2234ab76999cf37f9192394667512670be2bce09c39b430880608ab",
+    "exec_number": 26464420,
+    "period": 1917,
+    "slot": 15704288,
+    "store_commitment": "8220254612af3e7263f3a20bf0eafdc7b33aaf31c602fb36a989e8c8613c0713"
+  },
+  "head_after": {
+    "beacon_root": "c9e969585bb271102a43dd91d3f043b41c3535fefa89e1b92ac9bc58b6f9a27f",
+    "exec_number": 26464452,
+    "period": 1917,
+    "slot": 15704320,
+    "store_commitment": "38830dc718aec5cd4298bcbb4b8b3e03313639d79fc25f675f4962ab2902d00b"
+  },
+  "expected_head": {
+    "beacon_root": "c9e969585bb271102a43dd91d3f043b41c3535fefa89e1b92ac9bc58b6f9a27f",
+    "exec_number": 26464452,
+    "period": 1917,
+    "slot": 15704320,
+    "store_commitment": "38830dc718aec5cd4298bcbb4b8b3e03313639d79fc25f675f4962ab2902d00b"
+  },
+  "head_equals_native": true,
+  "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
+  "start_utc": "2026-11-21T15:58:12Z",
+  "end_utc": "2026-11-21T18:01:45Z",
+  "repo_commit": "2eb6423 dirty=10",
+  "raw": {
+    "job_record": "evidence/prove/real-proof-v3/20261121T155812Z/record.json",
+    "output": "evidence/prove/real-proof-v3/20261121T155812Z/output.log",
+    "time": "evidence/prove/real-proof-v3/20261121T155812Z/time.txt"
+  },
+  "complete": true,
+  "missing": []
+}

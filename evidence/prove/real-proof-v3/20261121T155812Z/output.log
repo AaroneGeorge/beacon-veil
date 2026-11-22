@@ -1,0 +1,45 @@
+Latest block is 6756
+Syncing to block 6756. Blocks to sync: 19
+Synced to block 6756 in 101.776333ms
+Latest block is 7250
+Syncing to block 7250. Blocks to sync: 494
+Synced to block 7250 in 2.614453593s
+{
+  "attested_slot": 15704386,
+  "block_id": 7249,
+  "expected_head": {
+    "beacon_root": "c9e969585bb271102a43dd91d3f043b41c3535fefa89e1b92ac9bc58b6f9a27f",
+    "exec_number": 26464452,
+    "period": 1917,
+    "slot": 15704320,
+    "store_commitment": "38830dc718aec5cd4298bcbb4b8b3e03313639d79fc25f675f4962ab2902d00b"
+  },
+  "finalized_slot": 15704320,
+  "head_after": {
+    "beacon_root": "c9e969585bb271102a43dd91d3f043b41c3535fefa89e1b92ac9bc58b6f9a27f",
+    "exec_number": 26464452,
+    "period": 1917,
+    "slot": 15704320,
+    "store_commitment": "38830dc718aec5cd4298bcbb4b8b3e03313639d79fc25f675f4962ab2902d00b"
+  },
+  "head_before": {
+    "beacon_root": "3b7e068fe2234ab76999cf37f9192394667512670be2bce09c39b430880608ab",
+    "exec_number": 26464420,
+    "period": 1917,
+    "slot": 15704288,
+    "store_commitment": "8220254612af3e7263f3a20bf0eafdc7b33aaf31c602fb36a989e8c8613c0713"
+  },
+  "head_equals_native": true,
+  "instance": "5oaPW6JzeCqafDFqLULp2Sob481mG3wrZctSF3aTMK56",
+  "kind": "finality",
+  "mode": "v3-private",
+  "participation": 510,
+  "prove_and_submit_s": 7412.4,
+  "risc0_dev_mode": null,
+  "signature_slot": 15704387,
+  "tx": "4b58383ed5a87fb5c61940eb347dc2f0f2cabddecf29ba52c61c285dd871179b",
+  "tx_wire_bytes": 255367,
+  "update_ssz_bytes": 2104,
+  "verifier": "8niQPec4Ng9yrm17Aj3VFbtebrXPxd6JVhhdZsAXQ1Tq",
+  "witness_set_bytes": 239222
+}

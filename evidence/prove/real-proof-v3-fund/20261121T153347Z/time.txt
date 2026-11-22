@@ -1,0 +1,23 @@
+	Command being timed: "nice -n 19 ionice -c3 scripts/proof/no_dev_mode.sh wallet auth-transfer send --from real-proof-v3-payer --to bv-submitter --amount 1100000000"
+	User time (seconds): 8655.31
+	System time (seconds): 17.09
+	Percent of CPU this job got: 730%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 19:47.69
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 9609992
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 40
+	Minor (reclaiming a frame) page faults: 8849178
+	Voluntary context switches: 12114
+	Involuntary context switches: 737556
+	Swaps: 0
+	File system inputs: 7280
+	File system outputs: 1928
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

@@ -1,0 +1,43 @@
+{
+  "name": "real-proof-v3-fund",
+  "label": "measured",
+  "dev_mode": false,
+  "exit": 0,
+  "start_utc": "2026-11-21T15:33:47Z",
+  "end_utc": "2026-11-21T15:53:35Z",
+  "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
+  "command": "nice -n 19 ionice -c3 scripts/proof/no_dev_mode.sh wallet auth-transfer send --from real-proof-v3-payer --to bv-submitter --amount 1100000000",
+  "loadavg_start": "2.11 4.13 4.58 1/1028 1297005",
+  "loadavg_end": "4.67 7.29 6.91 1/1000 1321985",
+  "mem_start": "total 15823 MiB, available 11529 MiB; swap used 1277 MiB of 12147",
+  "risc0": "unset risc0_prover=default",
+  "repo_commit": "2eb6423 dirty=9",
+  "note": "fund the private submitter on seq-pub",
+  "raw": {
+    "meta.txt": "evidence/prove/real-proof-v3-fund/20261121T153347Z/meta.txt",
+    "time.txt": "evidence/prove/real-proof-v3-fund/20261121T153347Z/time.txt",
+    "output.log": "evidence/prove/real-proof-v3-fund/20261121T153347Z/output.log",
+    "samples.csv": "evidence/prove/real-proof-v3-fund/20261121T153347Z/samples.csv",
+    "sampler.json": "evidence/prove/real-proof-v3-fund/20261121T153347Z/sampler.json"
+  },
+  "wall_s": 1187.69,
+  "max_rss_kib_time_v": 9609992,
+  "user_s": 8655.31,
+  "sys_s": 17.09,
+  "cpu_pct": 730,
+  "major_faults": 40,
+  "exit_status_time_v": 0,
+  "sampler": {
+    "samples": 1172,
+    "interval_s": 1.0,
+    "peak_tree_rss_kib": 9627388,
+    "peak_tree_rss_gib": 9.181,
+    "peak_single_process_rss_kib": 9610896,
+    "peak_single_process": "r0vm",
+    "min_mem_available_kib": 2267768,
+    "swap_used_by_run_kib_max": 0,
+    "load1_mean": 7.76,
+    "load1_max": 9.7
+  },
+  "peak_rss_gib": 9.181
+}

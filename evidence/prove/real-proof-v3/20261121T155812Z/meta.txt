@@ -1,0 +1,13 @@
+name=real-proof-v3
+start_utc=2026-11-21T15:58:12Z
+machine=Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5
+loadavg_start=0.08 2.87 5.11 2/1003 1328133
+mem_start=total 15823 MiB, available 11604 MiB; swap used 1276 MiB of 12147
+risc0_dev_mode=unset risc0_prover=default
+repo_commit=2eb6423 dirty=10
+cmd=nice -n 19 ionice -c3 scripts/proof/no_dev_mode.sh ${BUILD}/target/host/attest --chain-id 1 update --instance 5oaPW6JzeCqafDFqLULp2Sob481mG3wrZctSF3aTMK56 --mode v3-private --v3 8niQPec4Ng9yrm17Aj3VFbtebrXPxd6JVhhdZsAXQ1Tq --save-inputs evidence/prove/real-proof-v3/20261121T155812Z/inputs
+cwd=${BUILD}/repo
+note=lc_verify_v3 VerifyOnce, private actor, mainnet finality update, seq-pub
+end_utc=2026-11-21T18:01:45Z
+loadavg_end=4.96 7.62 8.18 1/1013 1485551
+exit=0
