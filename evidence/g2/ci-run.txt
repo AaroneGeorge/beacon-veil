@@ -1,17 +1,18 @@
 G2 CI run: PASS
-repository: private staging repository (GitHub Actions, GitHub-hosted runners)
+repository: github.com/AaroneGeorge/beacon-veil (public; GitHub Actions, GitHub-hosted runners)
+url: https://github.com/AaroneGeorge/beacon-veil/actions/runs/44912393204
 workflow: ci (.github/workflows/ci.yml)
-run id: 44722834233
-event: push
-head commit: the staging commit with the tree of commit 7452b3f493492b49bc75386035cfec7f189116a6 of this repository
-date: 2026-11-20, started 10:52:11Z, completed 11:32:08Z
+run id: 44912393204
+event: push, branch main
+head commit: 2eb64232563bc347f2b6ff8d4fcddae00d936f18
+date: 2026-11-21, started 14:08:40Z, completed 14:26:08Z
 conclusion: success
-runner image: ubuntu-24.04, image version 20261111.370.1 (forge test job: 20261116.376.1)
+runner image: ubuntu-24.04, image version 20261116.133.1 (all three jobs)
 
 jobs:
-  forge test                                        success   14s       (10:52:14Z - 10:52:28Z)
-  guest build (docker r0.1.91.1) + image-id check   success   10m 51s   (10:52:14Z - 11:03:05Z)
-  fmt, clippy, nextest (dev mode)                   success   39m 54s   (10:52:14Z - 11:32:08Z)
+  forge test                                        success   59s       (14:08:43Z - 14:09:42Z)
+  guest build (docker r0.1.91.1) + image-id check   success   5m 23s    (14:08:44Z - 14:14:07Z)
+  fmt, clippy, nextest (dev mode)                   success   17m 24s   (14:08:43Z - 14:26:07Z)
 
 tests:
   forge test: 2 test suites, 44 tests passed, 0 failed
@@ -22,19 +23,20 @@ guest build: every guest built from the committed tree by scripts/guests_release
 risczero/risc0-guest-builder:r0.1.91.1; lc_verify_v3 alone with $BV_V3_CARGO_CONFIG.
 Image ids compared by scripts/check_image_ids.sh against guests/IMAGE_IDS.expected.
 
-log lines, step "Build all guests in the pinned image":
-2026-11-20T11:03:03.6066092Z lc_verify_v3.bin: user ELF 498916 bytes, bin 531340 bytes, image id cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510
+log line, step "Build all guests in the pinned image":
+2026-11-21T14:14:03.7914170Z lc_verify_v3.bin: user ELF 498916 bytes, bin 531340 bytes, image id cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510
 
 log lines, step "Image ids equal guests/IMAGE_IDS.expected":
-2026-11-20T11:03:03.6369386Z OK       attest 9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d
-2026-11-20T11:03:03.6397768Z OK       lc_verify c7b5f2191f133026017c09072e883217dfe3785450d40d081718b0fd204878ba
-2026-11-20T11:03:03.6426940Z OK       lc_verify_v2 18684beee3e973a2f1391c9bdb9108743c71e6f216bb5fba88bc0443403e8230
-2026-11-20T11:03:03.6455264Z OK       consumer_erc20 3f86d4c96631191e94edb5377fa559c0b24fd2409815c5f97ca752eaa7df0794
-2026-11-20T11:03:03.6483623Z OK       bridge fa3bd9c34fe6c82498396d99f9499688ec57e84463be2fc3abbe0bc944466fc5
-2026-11-20T11:03:03.6511191Z OK       bridge_dev_source 9866d2346df2a2b3cd2214b07777182f5d1e75cac355d88ba45961543ecc3ca5
-2026-11-20T11:03:03.6541012Z OK       lc_verify_v3 cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510
+2026-11-21T14:14:03.8073915Z OK       attest 9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d
+2026-11-21T14:14:03.8089937Z OK       lc_verify c7b5f2191f133026017c09072e883217dfe3785450d40d081718b0fd204878ba
+2026-11-21T14:14:03.8105228Z OK       lc_verify_v2 18684beee3e973a2f1391c9bdb9108743c71e6f216bb5fba88bc0443403e8230
+2026-11-21T14:14:03.8119714Z OK       consumer_erc20 3f86d4c96631191e94edb5377fa559c0b24fd2409815c5f97ca752eaa7df0794
+2026-11-21T14:14:03.8134401Z OK       bridge fa3bd9c34fe6c82498396d99f9499688ec57e84463be2fc3abbe0bc944466fc5
+2026-11-21T14:14:03.8148530Z OK       bridge_dev_source 9866d2346df2a2b3cd2214b07777182f5d1e75cac355d88ba45961543ecc3ca5
+2026-11-21T14:14:03.8162904Z OK       lc_verify_v3 cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510
 
 log line, step "lc_verify_v3 built with its shim setting and its image id checked":
-2026-11-20T11:03:03.6935527Z OK       lc_verify_v3 cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510
+2026-11-21T14:14:03.8416149Z OK       lc_verify_v3 cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510
 
-note: the staging repository is private until the public repository is published; the run is repeated there.
+The run is on commit 2eb6423. The commits after it that carry this record change only evidence, broadcast records
+and documentation, no code, test or workflow file.
