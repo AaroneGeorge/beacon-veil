@@ -1,10 +1,8 @@
 {
   "gate": "G4",
-  "result": "FAIL",
+  "result": "PASS",
   "log": "${BUILD}/repo/evidence/g4-public/mainnet/follower.jsonl",
-  "failures": [
-    "duration 15.94 h < 24.0 h"
-  ],
+  "failures": [],
   "pids": [
     999325
   ],
@@ -31,47 +29,47 @@
     "version": "0.1.0"
   },
   "first_ts": "2026-11-21T13:00:27.332Z",
-  "last_ts": "2026-11-22T04:56:45.710Z",
-  "hours": 15.938,
+  "last_ts": "2026-11-22T15:06:16.716Z",
+  "hours": 26.097,
   "cadence_s": 6144,
   "max_gap_s": 301.7,
   "max_gap_before_line": 44,
-  "submits": 11,
-  "applied": 11,
+  "submits": 17,
+  "applied": 17,
   "noops": 0,
   "superseded": 0,
   "handoffs": 1,
   "period_updates": 1,
   "head_first": 15703424,
-  "head_last": 15707872,
+  "head_last": 15711104,
   "max_applied_gap_s": 6464.5,
   "beacon_source": "logos_module",
   "chain": "host",
   "risc0_dev_mode": "unset",
   "error_lines": {},
-  "lines": 222,
+  "lines": 359,
   "mode": "public",
   "sequencer": "seq-pub",
   "verifier": "lc_verify_v3",
-  "steps_with_cycles": 33,
+  "steps_with_cycles": 51,
   "steps_bounded_by_block": 0,
   "max_step_block_bound": null,
   "reverted_steps": 0,
-  "txs": 33,
-  "txs_applied_updates": 33,
+  "txs": 51,
+  "txs_applied_updates": 51,
   "txs_per_applied": [
     3
   ],
   "steps_by_name": {
-    "Begin": 11,
-    "Miller": 11,
-    "Finish": 11
+    "Begin": 17,
+    "Miller": 17,
+    "Finish": 17
   },
   "four_step_updates": 0,
   "max_step_gas_limit": 9000000,
   "step_cycles": {
-    "min": 2560281,
-    "median": 4378929,
+    "min": 2553779,
+    "median": 4378928,
     "max": 5765199
   },
   "max_step_cycles": 5765199,
@@ -83,5 +81,5 @@
   "failed_steps": 0,
   "steps_without_cycles": [],
   "payer_balance_first": 28500616984,
-  "payer_balance_last": 27347654966
+  "payer_balance_last": 26734854326
 }

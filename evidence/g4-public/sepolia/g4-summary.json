@@ -1,10 +1,8 @@
 {
   "gate": "G4",
-  "result": "FAIL",
+  "result": "PASS",
   "log": "${BUILD}/repo/evidence/g4-public/sepolia/follower.jsonl",
-  "failures": [
-    "duration 15.94 h < 24.0 h"
-  ],
+  "failures": [],
   "pids": [
     999589
   ],
@@ -31,50 +29,50 @@
     "version": "0.1.0"
   },
   "first_ts": "2026-11-21T13:00:33.644Z",
-  "last_ts": "2026-11-22T04:57:05.713Z",
-  "hours": 15.942,
+  "last_ts": "2026-11-22T15:05:17.118Z",
+  "hours": 26.079,
   "cadence_s": 1536,
-  "max_gap_s": 301.1,
-  "max_gap_before_line": 78,
-  "submits": 31,
-  "applied": 31,
+  "max_gap_s": 301.2,
+  "max_gap_before_line": 283,
+  "submits": 51,
+  "applied": 51,
   "noops": 0,
   "superseded": 0,
-  "handoffs": 1,
-  "period_updates": 1,
+  "handoffs": 2,
+  "period_updates": 2,
   "head_first": 11627616,
-  "head_last": 11632320,
+  "head_last": 11635392,
   "max_applied_gap_s": 1954.5,
   "beacon_source": "logos_module",
   "chain": "host",
   "risc0_dev_mode": "unset",
   "error_lines": {},
-  "lines": 272,
+  "lines": 442,
   "mode": "public",
   "sequencer": "seq-pub",
   "verifier": "lc_verify_v3",
-  "steps_with_cycles": 92,
+  "steps_with_cycles": 152,
   "steps_bounded_by_block": 1,
   "max_step_block_bound": 6227904,
   "reverted_steps": 0,
-  "txs": 93,
-  "txs_applied_updates": 93,
+  "txs": 153,
+  "txs_applied_updates": 153,
   "txs_per_applied": [
     3
   ],
   "steps_by_name": {
-    "Begin": 31,
-    "Miller": 31,
-    "Finish": 31
+    "Begin": 51,
+    "Miller": 51,
+    "Finish": 51
   },
   "four_step_updates": 0,
   "max_step_gas_limit": 9000000,
   "step_cycles": {
     "min": 2434755,
     "median": 4378928,
-    "max": 5765199
+    "max": 5765201
   },
-  "max_step_cycles": 5765199,
+  "max_step_cycles": 5765201,
   "block_cap_cycles": 10000000,
   "max_step_share_of_block": 0.577,
   "max_step_gas_limit_share_of_block": 0.9,
@@ -83,5 +81,5 @@
   "failed_steps": 0,
   "steps_without_cycles": [],
   "payer_balance_first": 95650846976,
-  "payer_balance_last": 92481093926
+  "payer_balance_last": 90441371422
 }
