@@ -46,7 +46,7 @@ docker)
 FROM risczero/risc0-guest-builder:$tag as build
 WORKDIR /src
 COPY . .
-ENV CARGO_ENCODED_RUSTFLAGS="$(printf %s "$flags")"
+ENV CARGO_ENCODED_RUSTFLAGS="${flags//\"/\\\"}"
 ENV CARGO_TARGET_DIR="target"
 ENV RISC0_FEATURE_bigint2=""
 ENV CC_riscv32im_risc0_zkvm_elf="/root/.risc0/cpp/bin/riscv32-unknown-elf-gcc"
