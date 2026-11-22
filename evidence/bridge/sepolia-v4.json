@@ -1,0 +1,126 @@
+{
+  "label": "Vault v4 on Sepolia: verifier 3.1.0 behind its emergency stop, burn_proof image id unchanged, lezProgram = the bridge program on seq-pub, STUB anchor (owner-posted roots), 600 s anchor delay (measured)",
+  "date_utc": "2026-11-20",
+  "chain_id": 11155111,
+  "deployer": "0x523072A2aC5e5A3E51c107bc17995A3fa03dBD78",
+  "contracts": {
+    "vault_v4": "0x376Ec2256630029A237Ade83FD428520523dEc56",
+    "anchor_STUB_owner_posted": "0x21aaB4813cd4461Ba557A4b3b5DEa821084DEbDE",
+    "test_usdt_no_bool_return": "0x9428B9C74a1A069C09523690Ef3eEb023C8fb068",
+    "verifier_estop_3_1_0": "0xA1DCB16cb765b3CA71605339F0C37Bfe0F60bA29"
+  },
+  "deploy_output": {
+    "admin": "0x523072A2aC5e5A3E51c107bc17995A3fa03dBD78",
+    "anchor_stub": "0x21aaB4813cd4461Ba557A4b3b5DEa821084DEbDE",
+    "block": 12176864,
+    "burn_image_id": "0xf929f9f441d9aa652b9914b4ce6c6a7b445aa90d189c075af1e1e9fe3b1497cf",
+    "chain_id": 11155111,
+    "lez_program": "0x2a4029eb933413538fa666548f8936eeb4b75a70ba0bab2901900c2fdcc428e0",
+    "lez_zone": "0xab048e18d216e0df67177186e6de3ea106b87fcfd0e21f3e52d405c4473e8ef8",
+    "test_usdt": "0x9428B9C74a1A069C09523690Ef3eEb023C8fb068",
+    "vault": "0x376Ec2256630029A237Ade83FD428520523dEc56",
+    "verifier": "0xA1DCB16cb765b3CA71605339F0C37Bfe0F60bA29"
+  },
+  "vault_immutables_checked_on_chain": {
+    "verifier": "0xA1DCB16cb765b3CA71605339F0C37Bfe0F60bA29",
+    "burnImageId": "0xf929f9f441d9aa652b9914b4ce6c6a7b445aa90d189c075af1e1e9fe3b1497cf",
+    "lezProgram": "0x2a4029eb933413538fa666548f8936eeb4b75a70ba0bab2901900c2fdcc428e0",
+    "lezZone": "0xab048e18d216e0df67177186e6de3ea106b87fcfd0e21f3e52d405c4473e8ef8",
+    "lezInstance": "0xb9c51c4bd7493530202e80cdff38dbcb3cee9fb16ee4a694a4e6ff5adbc4a8c8",
+    "anchor": "0x21aaB4813cd4461Ba557A4b3b5DEa821084DEbDE"
+  },
+  "bridge_config": {
+    "attest_program": "735RSWK5eYrZDnpJVvpVwrkDa93AXQNS7avFjAUeWEH8",
+    "attest_instance": "5ydZVRKHVECxKtXBwHnW9N6bndDADwZoGSx5tDsp4UXN",
+    "bridge_program": "3qvsTrgUDBJe5x1JUGiyRWvPv6gx2sR7mauu4ciabeib",
+    "bridge_program_hex": "0x2a4029eb933413538fa666548f8936eeb4b75a70ba0bab2901900c2fdcc428e0",
+    "bridge_instance": "DWAkUniViibV7NR5JmXFaKkEs7QtSL6ifg4NBaciEcU7",
+    "bridge_instance_hex": "0xb9c51c4bd7493530202e80cdff38dbcb3cee9fb16ee4a694a4e6ff5adbc4a8c8",
+    "tokens": [
+      "eth:1000000000000000,10000000000000000",
+      "0x9428B9C74a1A069C09523690Ef3eEb023C8fb068:100000000,1000000000"
+    ],
+    "file": "real-claim-v4/raw/config.json"
+  },
+  "deploy_txs": [
+    {
+      "what": "StubLezAnchor create",
+      "tx": "0x91210b0befc293c7ba14c7e67ca08e0827c2a122247f94c03903e781c264ec11",
+      "block": 12176866,
+      "gas_used": 2054313,
+      "status": "0x1"
+    },
+    {
+      "what": "Vault create",
+      "tx": "0xdacbfe9f23c91fba02d12bcc002e81e125c7daea2270c1237bc6fe932dd316d7",
+      "block": 12176867,
+      "gas_used": 17983916,
+      "status": "0x1"
+    },
+    {
+      "what": "MockUsdt create",
+      "tx": "0x9b9e1f629343fca6f1f0dcba1d4782439ea9dd054071379a4da83f9e0c5853c8",
+      "block": 12176868,
+      "gas_used": 2555327,
+      "status": "0x1"
+    },
+    {
+      "what": "Vault registerToken(address,uint256[],uint256,uint256)",
+      "tx": "0x0cde743e6b6f8f2633d591f0623cd67cb08ab538d4d7bf75f1431396e0cdeb65",
+      "block": 12176869,
+      "gas_used": 683349,
+      "status": "0x1"
+    },
+    {
+      "what": "Vault registerToken(address,uint256[],uint256,uint256)",
+      "tx": "0xfeaf343d5413238743bf668d148acef71fdabe78eb320e0dd37328e0e88d66db",
+      "block": 12176870,
+      "gas_used": 683481,
+      "status": "0x1"
+    },
+    {
+      "what": "MockUsdt mint(address,uint256)",
+      "tx": "0xa85736ef1e32e1ae7f9c09a3e4262b2dabdb5776c6bd7353b24ca646ca5576df",
+      "block": 12176871,
+      "gas_used": 236464,
+      "status": "0x1"
+    }
+  ],
+  "bind_txs": [
+    {
+      "what": "bindLezInstance(bytes32)",
+      "tx": "0x1436a483f427bc7fc945673355294226f176cfe7e3874027494e891e59815518",
+      "block": 12176872,
+      "gas_used": 129511,
+      "status": "0x1"
+    }
+  ],
+  "deposit_eth_txs": [
+    {
+      "what": "deposit(address,uint256,bytes32)",
+      "tx": "0xd7d7e6dc26bc4f669f4623b72e75766da846e69b819d80b61d185a308581062a",
+      "block": 12176877,
+      "gas_used": 520928,
+      "status": "0x1"
+    }
+  ],
+  "stub_anchor_post_txs": [
+    {
+      "what": "post(bytes32,bytes32)",
+      "tx": "0x35e81110ed6880ef1c774117dd0d96816c2dc90b06350764885c84569f5d6bf0",
+      "block": 12182647,
+      "gas_used": 130994,
+      "status": "0x1"
+    }
+  ],
+  "release_txs": [
+    {
+      "what": "release(bytes,bytes)",
+      "tx": "0x85431747f71d38399e41569ad70c88d6822650d079bd106ebf514f42411c7161",
+      "block": 12182725,
+      "gas_used": 527883,
+      "status": "0x1"
+    }
+  ],
+  "source": "generated from the forge broadcast copies in real-claim-v4/raw and real-burn-v4/raw (identical to contracts/broadcast/Deploy.s.sol/11155111/run-*.json) and from eth_call reads of the vault on Sepolia"
+}

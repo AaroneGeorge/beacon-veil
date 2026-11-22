@@ -19,10 +19,14 @@ What they still show (mechanics only, not security): fixed-denomination ETH and 
 
 Verifier 3.1.0 behind its emergency-stop wrapper (failsafe L1), the open release route `releaseOpen` (failsafe L2), and `burn_proof` built on RISC Zero 3.1.0 (`guests/burn_proof/r31`). Vault v3 `0x380be74d9F3dFeBAaFC5F911CD6A45bFbeE3aD27`: `sepolia-v3.json` and `raw-v3/`. Guest build: `burn-proof-r31-guest.json`. K9 part 2 on v3 against run B: `k9-part2-runB-v3/`. Full spike outbound (real Groth16 release through the 3.1.0 estop, 527,859 gas; `releaseOpen`, 325,769 gas): `groth16-release-v3/`.
 
+## Current: vault v4, round trip with real proofs on both sides
+
+Vault v4 `0x376Ec2256630029A237Ade83FD428520523dEc56` (`sepolia-v4.json`): verifier 3.1.0 behind its emergency stop, the same `burn_proof` image id, `lezProgram` = the bridge program on `seq-pub` (dev mode unset), STUB anchor with a 600 s delay. Private claim with a real proof, repeat refused with E11: `real-claim-v4/`. Private burn with a real proof, Groth16 proof and release on Sepolia (527,883 gas): `real-burn-v4/`.
+
 ## What is real and what is dev mode
 
-- Inbound claim: shown in dev mode on Sepolia data (`k9-part2-runA-v2/`, `k9-part2-runB-v3/`): real RFP-021 attestation of the vault root against followed Sepolia instances, private claim on seq-dev with `RISC0_DEV_MODE=1`, repeat refused with E11. No real proof of a private bridge claim was made. The private `Attest` mechanism the claim relies on was shown with a real proof in G3 (`../g3/real-proof.json`, about 35 min, 9.2 GiB).
-- Outbound release: real. Groth16 proof of `burn_proof` on RISC Zero 3.1.0, verified on Sepolia through the 3.1.0 emergency stop (`groth16-release-v3/`). The LEZ burn itself ran on seq-dev in dev mode, and the anchor is the owner-posted stub.
+- Inbound claim: shown in dev mode on Sepolia data (`k9-part2-runA-v2/`, `k9-part2-runB-v3/`): real RFP-021 attestation of the vault root against followed Sepolia instances, private claim on seq-dev with `RISC0_DEV_MODE=1`, repeat refused with E11. With a real proof on vault v4 (`real-claim-v4/`): the private claim on `seq-pub` with `RISC0_DEV_MODE` unset, 1,856.03 s, peak 9.189 GiB, block 6467; the wrapped balance moved by exactly 0.001 ETH; the repeat refused with E11 after 1.87 s, before any proof. The record it checked was written by the Sepolia instance on `seq-pub` through the public path (public transactions, no proof).
+- Outbound release: real. Groth16 proof of `burn_proof` on RISC Zero 3.1.0, verified on Sepolia through the 3.1.0 emergency stop (`groth16-release-v3/`). The LEZ burn itself ran on seq-dev in dev mode, and the anchor is the owner-posted stub. On vault v4 the burn was also proven for real (`real-burn-v4/`: 1,811.57 s, peak 9.187 GiB, block 6588), then Groth16 (301.67 s) and `release` on Sepolia, 527,883 gas. The anchor is still the owner-posted stub: not a trustless release.
 
 ## Local round trip
 

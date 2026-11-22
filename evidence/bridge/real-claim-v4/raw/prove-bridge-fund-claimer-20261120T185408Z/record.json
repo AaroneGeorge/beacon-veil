@@ -1,0 +1,43 @@
+{
+  "name": "bridge-fund-claimer",
+  "label": "measured",
+  "dev_mode": false,
+  "exit": 0,
+  "start_utc": "2026-11-20T18:54:08Z",
+  "end_utc": "2026-11-20T19:13:57Z",
+  "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
+  "command": "nice -n 19 ionice -c3 scripts/proof/no_dev_mode.sh wallet auth-transfer send --from w6-bridge-payer --to w6-claimer --amount 1000000000",
+  "loadavg_start": "0.22 0.31 0.33 1/1046 3612856",
+  "loadavg_end": "4.32 6.97 5.65 1/1025 3640041",
+  "mem_start": "total 15823 MiB, available 11558 MiB; swap used 1856 MiB of 12147",
+  "risc0": "unset risc0_prover=default",
+  "repo_commit": "598c500 dirty=4",
+  "note": "private transfer to the claimer on seq-pub",
+  "raw": {
+    "meta.txt": "${BUILD}/run/w6/v4-sepolia/prove-bridge-fund-claimer-20261120T185408Z/meta.txt",
+    "time.txt": "${BUILD}/run/w6/v4-sepolia/prove-bridge-fund-claimer-20261120T185408Z/time.txt",
+    "output.log": "${BUILD}/run/w6/v4-sepolia/prove-bridge-fund-claimer-20261120T185408Z/output.log",
+    "samples.csv": "${BUILD}/run/w6/v4-sepolia/prove-bridge-fund-claimer-20261120T185408Z/samples.csv",
+    "sampler.json": "${BUILD}/run/w6/v4-sepolia/prove-bridge-fund-claimer-20261120T185408Z/sampler.json"
+  },
+  "wall_s": 1188.61,
+  "max_rss_kib_time_v": 9324156,
+  "user_s": 8653.26,
+  "sys_s": 17.34,
+  "cpu_pct": 729,
+  "major_faults": 19731,
+  "exit_status_time_v": 0,
+  "sampler": {
+    "samples": 1173,
+    "interval_s": 1.0,
+    "peak_tree_rss_kib": 9329072,
+    "peak_tree_rss_gib": 8.897,
+    "peak_single_process_rss_kib": 9324684,
+    "peak_single_process": "r0vm",
+    "min_mem_available_kib": 2656896,
+    "swap_used_by_run_kib_max": 759564,
+    "load1_mean": 7.66,
+    "load1_max": 8.95
+  },
+  "peak_rss_gib": 8.897
+}

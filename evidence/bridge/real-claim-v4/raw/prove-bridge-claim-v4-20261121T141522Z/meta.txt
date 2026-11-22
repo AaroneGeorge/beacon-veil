@@ -1,0 +1,13 @@
+name=bridge-claim-v4
+start_utc=2026-11-21T14:15:22Z
+machine=Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5
+loadavg_start=0.77 1.43 3.35 1/1049 1195189
+mem_start=total 15823 MiB, available 11438 MiB; swap used 1819 MiB of 12147
+risc0_dev_mode=unset risc0_prover=default
+repo_commit=2eb6423 dirty=4
+cmd=nice -n 19 ionice -c3 scripts/proof/no_dev_mode.sh ${BUILD}/target/host/bridge_cli claim --index 0 --dest D1fQrGqKMYhnF8BXBKZU21xz9upzDG1bfNxrUiV1KjTJ --root 0x9e4f3d0360f05b353437bd0688d22e1016cf88133603fd72098bf70d44c0d209
+cwd=${BUILD}/repo
+note=private claim of deposit 0 on seq-pub
+end_utc=2026-11-21T14:46:19Z
+loadavg_end=4.66 6.95 7.06 1/1057 1235970
+exit=0

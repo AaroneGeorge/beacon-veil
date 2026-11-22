@@ -1,0 +1,5 @@
+claim stage start UTC 2026-11-21T14:14:41Z
+prove_job: bridge-claim-v4 -> ${BUILD}/run/w6/v4-sepolia/prove-bridge-claim-v4-20261121T141522Z
+prove_job: exit 0; record ${BUILD}/run/w6/v4-sepolia/prove-bridge-claim-v4-20261121T141522Z/record.json
+second claim refused with E11
+claim stage end UTC 2026-11-21T14:46:21Z

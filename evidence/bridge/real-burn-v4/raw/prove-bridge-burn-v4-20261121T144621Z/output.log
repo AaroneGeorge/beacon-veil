@@ -1,0 +1,12 @@
+Latest block is 6468
+Latest block is 6589
+Syncing to block 6589. Blocks to sync: 121
+Synced to block 6589 in 573.125051ms
+burn tx 9b8e7dba01b2efe2b0e57d3e6779fad53acb38dc65b1cd309e8456730fd015cc (leaf index 0)
+{
+  "burn_index": 0,
+  "hidden": "the Ethereum recipient and the relayer fee",
+  "leaf": "0x03e8dc55a22f8be30b1b1e98df029cccf74f1ab69408a8537a8a19eda29fb76a",
+  "note": "0x80e26a6dfff9ea0d99becb9de8da4c322212051ade6723464a4a9f59f62b3bc1",
+  "public_on_lez": "token, amount, time, note and memo (both random-looking)"
+}

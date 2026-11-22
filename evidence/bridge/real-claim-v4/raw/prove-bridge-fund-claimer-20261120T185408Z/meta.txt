@@ -1,0 +1,13 @@
+name=bridge-fund-claimer
+start_utc=2026-11-20T18:54:08Z
+machine=Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5
+loadavg_start=0.22 0.31 0.33 1/1046 3612856
+mem_start=total 15823 MiB, available 11558 MiB; swap used 1856 MiB of 12147
+risc0_dev_mode=unset risc0_prover=default
+repo_commit=598c500 dirty=4
+cmd=nice -n 19 ionice -c3 scripts/proof/no_dev_mode.sh wallet auth-transfer send --from w6-bridge-payer --to w6-claimer --amount 1000000000
+cwd=${BUILD}/repo
+note=private transfer to the claimer on seq-pub
+end_utc=2026-11-20T19:13:57Z
+loadavg_end=4.32 6.97 5.65 1/1025 3640041
+exit=0

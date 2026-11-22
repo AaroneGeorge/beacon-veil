@@ -1,0 +1,11 @@
+{
+  "cycles_total": 262144,
+  "cycles_user": 211726,
+  "image_id": "0xf929f9f441d9aa652b9914b4ce6c6a7b445aa90d189c075af1e1e9fe3b1497cf",
+  "mode": "groth16",
+  "risc0_zkvm": "3.1.0",
+  "seal_bytes": 260,
+  "seconds": 301.659991862,
+  "segments": 1,
+  "selector": "0xe71e6620"
+}

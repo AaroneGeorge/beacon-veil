@@ -1,0 +1,10 @@
+{
+  "block_id": 6467,
+  "block_timestamp": 1795272355368,
+  "kind": "private",
+  "position": 1,
+  "reverted": false,
+  "tx": "7824f2f12fd5600aae44579a3203f3c608408010d9d77ed1409b8ff06052bec3",
+  "tx_wire_bytes": 255327,
+  "witness_set_bytes": 239202
+}

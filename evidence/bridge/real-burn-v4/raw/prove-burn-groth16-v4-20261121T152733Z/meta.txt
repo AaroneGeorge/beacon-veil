@@ -1,0 +1,13 @@
+name=burn-groth16-v4
+start_utc=2026-11-21T15:27:33Z
+machine=Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5
+loadavg_start=0.00 0.82 3.80 2/1016 1288912
+mem_start=total 15823 MiB, available 11567 MiB; swap used 1277 MiB of 12147
+risc0_dev_mode=unset risc0_prover=default
+repo_commit=2eb6423 dirty=6
+cmd=nice -n 19 ionice -c3 scripts/proof/no_dev_mode.sh env RISC0_HOME=${BUILD}/run/w5/risc0-31 CARGO_TARGET_DIR=${BUILD}/target-w5-r31 RISC0_SERVER_PATH=${BUILD}/run/w5/risc0-31/extensions/v3.1.0-cargo-risczero-x86_64-unknown-linux-gnu/r0vm ${BUILD}/target-w5-r31/release/burn_prover_r31 prove --witness ${BUILD}/run/w6/v4-sepolia/burn-0-witness/witness.borsh --out ${BUILD}/run/w6/v4-sepolia/burn-0-groth16 --mode groth16
+cwd=${BUILD}/repo
+note=burn_proof Groth16, RISC Zero 3.1.0
+end_utc=2026-11-21T15:32:35Z
+loadavg_end=7.11 5.28 4.96 1/1011 1295717
+exit=0

@@ -82,8 +82,13 @@ If a claim ran on a public account, the sequencer would see the secret and the p
 ## What was shown, and how (2026-11-12)
 
 - The claim was shown in dev mode on Sepolia data. Against the follower's Sepolia instances (run A on vault v2, run B on vault v3), `attest-root` proved the vault's root slot through RFP-021. The private `Claim` then landed on seq-dev in dev mode (`RISC0_DEV_MODE=1`, no real proof), and a repeat claim was refused with `ESA:E11_ALREADY_CONSUMED`. Evidence: `evidence/bridge/k9-part2-runA-v2/`, `evidence/bridge/k9-part2-runB-v3/`.
-- No real proof of a private bridge claim was made. It would need a Sepolia light-client instance on the real-proof sequencer (seq-real), with its own update proven for real, which takes hours.
+- On 2026-11-12 no real proof of a private bridge claim was made. It was made on 2026-11-21 (next section).
 - The mechanism the private claim relies on was shown with a real proof by G3: a private `Attest` against a light-client record that was itself proven for real (the G3 consumer, about 35 min and 9.2 GiB peak on this laptop; `evidence/g3/real-proof.json`, raw files under `evidence/prove/g3-real-consumer/`). The bridge claim uses the same placement: a private actor, public PDAs reached by sync messages, and a statement checked against a record.
+
+## The claim with a real proof (2026-11-21)
+
+- Vault v4 on Sepolia (`evidence/bridge/sepolia-v4.json`) names the bridge program on `seq-pub`, a standalone sequencer started with `RISC0_DEV_MODE` unset. A 0.001 ETH deposit (block 12,176,877), then `attest-root` against the Sepolia instance on `seq-pub` (record slot 11,627,968), then the private `Claim`, proven for real: 1,856.03 s, peak 9.189 GiB, block 6467, witness set 239,202 bytes. The claimer's wrapped balance moved by exactly the denomination. The same claim again was refused with `ESA:E11` after 1.87 s, during execution, before any proof. Evidence: `evidence/bridge/real-claim-v4/`.
+- Limits: the record the claim checked was written by that instance through the public path (three public transactions per update, executed by the sequencer, no proof; `docs/PUBLIC-PATH.md`). `seq-pub` is not a public Logos testnet. A claim to a public destination was not run.
 
 ## Recovery (F9, R5)
 

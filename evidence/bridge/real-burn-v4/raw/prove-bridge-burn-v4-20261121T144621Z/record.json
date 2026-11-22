@@ -1,0 +1,43 @@
+{
+  "name": "bridge-burn-v4",
+  "label": "measured",
+  "dev_mode": false,
+  "exit": 0,
+  "start_utc": "2026-11-21T14:46:21Z",
+  "end_utc": "2026-11-21T15:16:34Z",
+  "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
+  "command": "nice -n 19 ionice -c3 scripts/proof/no_dev_mode.sh ${BUILD}/target/host/bridge_cli burn --index 0 --holder D1fQrGqKMYhnF8BXBKZU21xz9upzDG1bfNxrUiV1KjTJ --token eth --denom 1000000000000000 --recipient 0x523072A2aC5e5A3E51c107bc17995A3fa03dBD78 --fee 10000000000000",
+  "loadavg_start": "4.37 6.85 7.03 1/1051 1236119",
+  "loadavg_end": "4.51 7.21 7.71 6/1002 1275361",
+  "mem_start": "total 15823 MiB, available 11348 MiB; swap used 1496 MiB of 12147",
+  "risc0": "unset risc0_prover=default",
+  "repo_commit": "2eb6423 dirty=5",
+  "note": "private burn of 0.001 ETH on seq-pub",
+  "raw": {
+    "meta.txt": "${BUILD}/run/w6/v4-sepolia/prove-bridge-burn-v4-20261121T144621Z/meta.txt",
+    "time.txt": "${BUILD}/run/w6/v4-sepolia/prove-bridge-burn-v4-20261121T144621Z/time.txt",
+    "output.log": "${BUILD}/run/w6/v4-sepolia/prove-bridge-burn-v4-20261121T144621Z/output.log",
+    "samples.csv": "${BUILD}/run/w6/v4-sepolia/prove-bridge-burn-v4-20261121T144621Z/samples.csv",
+    "sampler.json": "${BUILD}/run/w6/v4-sepolia/prove-bridge-burn-v4-20261121T144621Z/sampler.json"
+  },
+  "wall_s": 1811.57,
+  "max_rss_kib_time_v": 9610276,
+  "user_s": 13281.0,
+  "sys_s": 27.0,
+  "cpu_pct": 734,
+  "major_faults": 4,
+  "exit_status_time_v": 0,
+  "sampler": {
+    "samples": 1788,
+    "interval_s": 1.0,
+    "peak_tree_rss_kib": 9632916,
+    "peak_tree_rss_gib": 9.187,
+    "peak_single_process_rss_kib": 9610832,
+    "peak_single_process": "r0vm",
+    "min_mem_available_kib": 2029768,
+    "swap_used_by_run_kib_max": 0,
+    "load1_mean": 8.02,
+    "load1_max": 9.89
+  },
+  "peak_rss_gib": 9.187
+}

@@ -1,0 +1,23 @@
+	Command being timed: "nice -n 19 ionice -c3 scripts/proof/no_dev_mode.sh env RISC0_HOME=${BUILD}/run/w5/risc0-31 CARGO_TARGET_DIR=${BUILD}/target-w5-r31 RISC0_SERVER_PATH=${BUILD}/run/w5/risc0-31/extensions/v3.1.0-cargo-risczero-x86_64-unknown-linux-gnu/r0vm ${BUILD}/target-w5-r31/release/burn_prover_r31 prove --witness ${BUILD}/run/w6/v4-sepolia/burn-0-witness/witness.borsh --out ${BUILD}/run/w6/v4-sepolia/burn-0-groth16 --mode groth16"
+	User time (seconds): 2011.96
+	System time (seconds): 2.99
+	Percent of CPU this job got: 667%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 5:01.67
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 2417708
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 373
+	Minor (reclaiming a frame) page faults: 1308740
+	Voluntary context switches: 5414
+	Involuntary context switches: 179082
+	Swaps: 0
+	File system inputs: 51144
+	File system outputs: 2168
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

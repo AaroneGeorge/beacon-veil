@@ -1,0 +1,13 @@
+name=bridge-burn-v4
+start_utc=2026-11-21T14:46:21Z
+machine=Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5
+loadavg_start=4.37 6.85 7.03 1/1051 1236119
+mem_start=total 15823 MiB, available 11348 MiB; swap used 1496 MiB of 12147
+risc0_dev_mode=unset risc0_prover=default
+repo_commit=2eb6423 dirty=5
+cmd=nice -n 19 ionice -c3 scripts/proof/no_dev_mode.sh ${BUILD}/target/host/bridge_cli burn --index 0 --holder D1fQrGqKMYhnF8BXBKZU21xz9upzDG1bfNxrUiV1KjTJ --token eth --denom 1000000000000000 --recipient 0x523072A2aC5e5A3E51c107bc17995A3fa03dBD78 --fee 10000000000000
+cwd=${BUILD}/repo
+note=private burn of 0.001 ETH on seq-pub
+end_utc=2026-11-21T15:16:34Z
+loadavg_end=4.51 7.21 7.71 6/1002 1275361
+exit=0

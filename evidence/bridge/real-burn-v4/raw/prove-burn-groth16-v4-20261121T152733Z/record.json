@@ -1,0 +1,43 @@
+{
+  "name": "burn-groth16-v4",
+  "label": "measured",
+  "dev_mode": false,
+  "exit": 0,
+  "start_utc": "2026-11-21T15:27:33Z",
+  "end_utc": "2026-11-21T15:32:35Z",
+  "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
+  "command": "nice -n 19 ionice -c3 scripts/proof/no_dev_mode.sh env RISC0_HOME=${BUILD}/run/w5/risc0-31 CARGO_TARGET_DIR=${BUILD}/target-w5-r31 RISC0_SERVER_PATH=${BUILD}/run/w5/risc0-31/extensions/v3.1.0-cargo-risczero-x86_64-unknown-linux-gnu/r0vm ${BUILD}/target-w5-r31/release/burn_prover_r31 prove --witness ${BUILD}/run/w6/v4-sepolia/burn-0-witness/witness.borsh --out ${BUILD}/run/w6/v4-sepolia/burn-0-groth16 --mode groth16",
+  "loadavg_start": "0.00 0.82 3.80 2/1016 1288912",
+  "loadavg_end": "7.11 5.28 4.96 1/1011 1295717",
+  "mem_start": "total 15823 MiB, available 11567 MiB; swap used 1277 MiB of 12147",
+  "risc0": "unset risc0_prover=default",
+  "repo_commit": "2eb6423 dirty=6",
+  "note": "burn_proof Groth16, RISC Zero 3.1.0",
+  "raw": {
+    "meta.txt": "${BUILD}/run/w6/v4-sepolia/prove-burn-groth16-v4-20261121T152733Z/meta.txt",
+    "time.txt": "${BUILD}/run/w6/v4-sepolia/prove-burn-groth16-v4-20261121T152733Z/time.txt",
+    "output.log": "${BUILD}/run/w6/v4-sepolia/prove-burn-groth16-v4-20261121T152733Z/output.log",
+    "samples.csv": "${BUILD}/run/w6/v4-sepolia/prove-burn-groth16-v4-20261121T152733Z/samples.csv",
+    "sampler.json": "${BUILD}/run/w6/v4-sepolia/prove-burn-groth16-v4-20261121T152733Z/sampler.json"
+  },
+  "wall_s": 301.67,
+  "max_rss_kib_time_v": 2417708,
+  "user_s": 2011.96,
+  "sys_s": 2.99,
+  "cpu_pct": 667,
+  "major_faults": 373,
+  "exit_status_time_v": 0,
+  "sampler": {
+    "samples": 298,
+    "interval_s": 1.0,
+    "peak_tree_rss_kib": 2390804,
+    "peak_tree_rss_gib": 2.28,
+    "peak_single_process_rss_kib": 2380704,
+    "peak_single_process": "r0vm",
+    "min_mem_available_kib": 4089636,
+    "swap_used_by_run_kib_max": 0,
+    "load1_mean": 6.55,
+    "load1_max": 8.48
+  },
+  "peak_rss_gib": 2.306
+}

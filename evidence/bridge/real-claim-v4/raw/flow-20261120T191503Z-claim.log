@@ -1,0 +1,6 @@
+claim stage start UTC 2026-11-20T19:15:03Z
+Error: eth_getProof failed on every endpoint:
+  https://ethereum-sepolia-rpc.publicnode.com (try 0): rpc error {"code":-32000,"message":"historical state d8c3f52caa79e67c45899f959d44f54e9a01899e102d6a16e34fd10a8c27bb53 is not available"}
+  https://ethereum-sepolia-rpc.publicnode.com (try 1): rpc error {"code":-32000,"message":"historical state d8c3f52caa79e67c45899f959d44f54e9a01899e102d6a16e34fd10a8c27bb53 is not available"}
+  https://ethereum-sepolia-rpc.publicnode.com (try 2): rpc error {"code":-32000,"message":"historical state d8c3f52caa79e67c45899f959d44f54e9a01899e102d6a16e34fd10a8c27bb53 is not available"}
+Error: proofgen failed (exit status: 1)

@@ -1,0 +1,12 @@
+{
+  "denom": "1000000000000000",
+  "fee": "10000000000000",
+  "journal_sha256": "0x68c2d35d6b2fb2b1f7ef72c46e5bf5916e3cf4859454019d3de9549c906f18d9",
+  "leaf_index": 0,
+  "mode": "witness",
+  "note": "witness.borsh holds the burn secret; delete it after proving",
+  "nullifier": "0x459558bea6bf8c11763d8f6d01edc5c8a99edd6b19a6f31152ca720018e7c711",
+  "recipient": "0x523072a2ac5e5a3e51c107bc17995a3fa03dbd78",
+  "token": "0x0000000000000000000000000000000000000000",
+  "witness_file": "${BUILD}/run/w6/v4-sepolia/burn-0-witness/witness.borsh"
+}

@@ -1,0 +1,2 @@
+prove_job: burn-groth16-v4 -> ${BUILD}/run/w6/v4-sepolia/prove-burn-groth16-v4-20261121T152733Z
+prove_job: exit 0; record ${BUILD}/run/w6/v4-sepolia/prove-burn-groth16-v4-20261121T152733Z/record.json
