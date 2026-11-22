@@ -1,6 +1,6 @@
 {
  "what": "guest burn_chain run in the RISC Zero 3.1.0 executor (r0vm), no proof",
- "label": "measured, executor only (no proof); synthetic burns on the committed fixture chain",
+ "label": "measured, executor only (no proof); synthetic burns on the committed fixture chain, and the real private burn on seq-pub (runs.real_seq_pub)",
  "guest": "burn_chain",
  "image_id": "0x88c00a4e43fc6b8b7b776e7a540422d1c684251751940901ce3256eecbd26dd3",
  "image_id_note": "reproducible docker build (risczero/risc0-guest-builder:r0.1.97.0, risc0-build 3.0.7), evidence/bridge/chain-anchor/guest.json; the earlier local rzup build had 0xaa506042cd777a9a957aba3232125155da63d11be269bab8cc6c2f4cb8d4db46",
@@ -60,6 +60,39 @@
    "tip": 2591,
    "tip_hash": "80424c6e52d67274bcd42df99ef506ed09ce2503fef9ef16c8fc3de1065a321f",
    "tx": 2
+  },
+  "real_seq_pub": {
+   "block_bytes": [
+    711,
+    711,
+    711,
+    711,
+    255647,
+    711,
+    711,
+    711,
+    711,
+    53280
+   ],
+   "blocks": 10,
+   "burn_block": 6588,
+   "cycles_user": 1761615,
+   "guest": "burn_chain",
+   "image_id": "0x88c00a4e43fc6b8b7b776e7a540422d1c684251751940901ce3256eecbd26dd3",
+   "input_bytes": 314907,
+   "journal_bytes": 480,
+   "journal_equals_native": true,
+   "mode": "execute",
+   "nullifier": "459558bea6bf8c11763d8f6d01edc5c8a99edd6b19a6f31152ca720018e7c711",
+   "pinned": 6583,
+   "risc0": "3.1.0",
+   "seconds": 0.492,
+   "segment_po2": 20,
+   "segments": 4,
+   "tip": 6593,
+   "tip_hash": "bf864fcacea33edb5c794bcd98353952cef4ac5696b085fd81b4224ef6cb247c",
+   "tx": 0,
+   "what": "the real private burn on seq-pub (block 6588, dev mode off), P = 6583, T = 6593, witness of vault v4; the journal equals the native statement"
   }
  },
  "bench_guest": {

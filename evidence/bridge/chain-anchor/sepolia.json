@@ -1,0 +1,157 @@
+{
+ "what": "One real burn on seq-pub released on Sepolia through VaultChain.releaseChain: a Groth16 proof of guest burn_chain verified by the RISC Zero 3.1.0 verifier behind its emergency stop, and one tip attested by the STUB tip anchor",
+ "label": "measured; Sepolia (chain id 11155111); real burn on seq-pub (dev mode off); STUB tip anchor (our key)",
+ "proven": "the burn transaction for this note is transaction 0 of LEZ block 6588 (hash 0x1dd1cb16031c1e7d5836420c9fc1f2e49e19efc66134885d4d1b125fc58c787f); the block does not list it as reverted; its bytes show the bridge program delivering Append{instance, token, denom, note} to the instance's accumulator; and blocks 6583..6593 are one unbroken hash chain from the pinned block 6583 (hash 0xd9c5232af729a98d1715a55fb617889b3b83fdbf977784f6b7cf42d628763d33) to the tip 6593 (hash 0xbf864fcacea33edb5c794bcd98353952cef4ac5696b085fd81b4224ef6cb247c)",
+ "attested": "that block 6593 with hash 0xbf864fcacea33edb5c794bcd98353952cef4ac5696b085fd81b4224ef6cb247c is on the real, final LEZ chain: attested by the STUB tip anchor's owner key (ours), accepted after 600 s",
+ "not_proven": "that LEZ executed these blocks correctly (so 'not reverted' and 'sent by the bridge program' rest on the sequencer having run and verified the transaction), finality, and which chain is the real one (anyone can build a hash chain from the pinned block)",
+ "test_arrangement": "two vaults on one LEZ instance: the same burn was released on vault v4 by the root route (evidence/bridge/real-burn-v4/) and here on a test vault by the chain route. The nullifier is the same; each vault keeps its own nullifier map, so the burn pays once per vault. The test vault holds only the 0.001 ETH deposited for this release. A production instance has one vault, which holds that instance's deposits",
+ "lez": {
+  "sequencer": "seq-pub (LEZ v0.4.0-rc3, dev mode off), read only: getBlockRange, getBlock",
+  "burn_tx": "0x9b8e7dba01b2efe2b0e57d3e6779fad53acb38dc65b1cd309e8456730fd015cc",
+  "burn_block": 6588,
+  "burn_block_hash": "0x1dd1cb16031c1e7d5836420c9fc1f2e49e19efc66134885d4d1b125fc58c787f",
+  "tx_index": 0,
+  "pinned": 6583,
+  "pinned_hash": "0xd9c5232af729a98d1715a55fb617889b3b83fdbf977784f6b7cf42d628763d33",
+  "tip": 6593,
+  "tip_hash": "0xbf864fcacea33edb5c794bcd98353952cef4ac5696b085fd81b4224ef6cb247c",
+  "note": "0x80e26a6dfff9ea0d99becb9de8da4c322212051ade6723464a4a9f59f62b3bc1",
+  "block_bytes": [
+   711,
+   711,
+   711,
+   711,
+   255647,
+   711,
+   711,
+   711,
+   711,
+   53280
+  ]
+ },
+ "guest": {
+  "name": "burn_chain",
+  "image_id": "0x88c00a4e43fc6b8b7b776e7a540422d1c684251751940901ce3256eecbd26dd3",
+  "risc0": "3.1.0",
+  "executor": {
+   "cycles_user": 1761615,
+   "segments_po2_20": 4,
+   "input_bytes": 314907,
+   "journal_equals_native": true
+  },
+  "executor_test_vault": {
+   "cycles_user": 1761615,
+   "segments_po2_20": 4
+  }
+ },
+ "proof": {
+  "mode": "groth16",
+  "segment_po2": 18,
+  "segments": 16,
+  "cycles_user": 1761615,
+  "prover_seconds": 3209.5,
+  "wall_s": 3209.47,
+  "max_rss_kib_time_v": 2429596,
+  "peak_tree_rss_kib_sampler": 2441784,
+  "cpu_pct": 552,
+  "load1_mean": 11.17,
+  "start_utc": "2026-11-22T05:04:58Z",
+  "end_utc": "2026-11-22T05:58:28Z",
+  "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
+  "mem_start": "total 15823 MiB, available 5226 MiB; swap used 3913 MiB of 12147",
+  "memory_note": "time -v and the sampler cover r0vm and its children. The final Groth16 compression runs in RISC Zero's prover container (docker, outside that process tree); it was seen at 5,043,400 KiB RSS in one ps sample (a lower bound for its peak, not measured as a peak)",
+  "alone": "the only proof on the machine, in its own scope under the proving lock, started after the build lock was free; other services kept running (the sequencers and a Logos node, load1 mean above), so the wall time is not a quiet-machine figure",
+  "journal_hex": "evidence/bridge/chain-anchor/sepolia-journal.hex",
+  "seal_hex": "evidence/bridge/chain-anchor/sepolia-seal.hex",
+  "foundry": "contracts/test/VaultChainSepolia.t.sol checks this seal and journal with the 3.1.0 verifier's Sepolia runtime bytecode"
+ },
+ "sepolia": {
+  "verifier": "0xA1DCB16cb765b3CA71605339F0C37Bfe0F60bA29",
+  "verifier_note": "RiscZeroVerifierEmergencyStop around RISC Zero Groth16 verifier 3.1.0 (selector 0xe71e6620)",
+  "vault": "0x7AEb1ee888b618466B0313f7F7ea019213a16a57",
+  "tip_anchor_stub": "0xF4D861a03a3836Cc58Ff8A8DF8F5CBcEd57e4fa1",
+  "anchor_stub": "0x0A3Ca8916f52ad3Ff185e527223971dAdE8696FD",
+  "admin": "0x523072A2aC5e5A3E51c107bc17995A3fa03dBD78",
+  "chain_image_id": "0x88c00a4e43fc6b8b7b776e7a540422d1c684251751940901ce3256eecbd26dd3",
+  "pinned_id": 6583,
+  "pinned_hash": "0xd9c5232af729a98d1715a55fb617889b3b83fdbf977784f6b7cf42d628763d33",
+  "lez_instance": "0xb9c51c4bd7493530202e80cdff38dbcb3cee9fb16ee4a694a4e6ff5adbc4a8c8",
+  "deploy": [
+   {
+    "tx": "0x27969c0529f3c05d65bccae67ba9d47fc4e41456f9bf4bc5aa75bea070534723",
+    "block": 12186591,
+    "gas": 2054313,
+    "status": 1,
+    "what": "StubLezAnchor (root route, unused here)",
+    "contract": "0x0a3ca8916f52ad3ff185e527223971dade8696fd"
+   },
+   {
+    "tx": "0x7ec5f205b11f4b5738b3559b2e80c46f6b4bcbd69772f725df22db9ce87e307a",
+    "block": 12186592,
+    "gas": 2100731,
+    "status": 1,
+    "what": "StubLezTipAnchor",
+    "contract": "0xf4d861a03a3836cc58ff8a8df8f5cbced57e4fa1"
+   },
+   {
+    "tx": "0xd8d975d00e57416dedbb3defc2de3b36b0d4f287de192d0167558220ad3aada0",
+    "block": 12186593,
+    "gas": 22652664,
+    "status": 1,
+    "what": "VaultChain",
+    "contract": "0x7aeb1ee888b618466b0313f7f7ea019213a16a57"
+   },
+   {
+    "tx": "0x7b8779469065e87031c9f69a9a7a8189d0db1eb9712751ec4eaa6a73f78f07df",
+    "block": 12186594,
+    "gas": 683373,
+    "status": 1,
+    "what": "registerToken(ETH)"
+   },
+   {
+    "tx": "0xf444c45e704f9eba058d54e06a076926de0080e4a2d9dee13f5e00746865b759",
+    "block": 12186595,
+    "gas": 129523,
+    "status": 1,
+    "what": "bindLezInstance"
+   }
+  ],
+  "deposit": {
+   "tx": "0x53a9edd70bec7ab024330e0dc361d8a63e7a9d0a02e62917ebd786b10878ac6b",
+   "block": 12186596,
+   "gas": 520929,
+   "status": 1
+  },
+  "attest_tip": {
+   "tx": "0xef89f87f6e97d28befd198d39ae655a1dc5290ab4aff19cfc4215cc4b335f497",
+   "block": 12186890,
+   "gas": 130674,
+   "status": 1
+  },
+  "refused_before_delay": {
+   "tx": "0x41d02cb81346d16251cad4b1bef41afcc957358c3bf32b89407be4068dd05eb2",
+   "block": 12186892,
+   "gas": 72600,
+   "status": 0,
+   "expected": "TipNotFinal()"
+  },
+  "release_chain": {
+   "tx": "0x62f1e85cc6c17aad7486095b63486d0f0011dbff6fc893a88d0fe95348379cd6",
+   "block": 12186942,
+   "gas": 651764,
+   "status": 1
+  },
+  "refused_repeat": {
+   "tx": "0xaf8276bfdebe43a779ed8f02d9cec72f86d0a1a64decdb736a33f81abf5bc992",
+   "block": 12186943,
+   "gas": 72600,
+   "status": 0,
+   "expected": "AlreadyReleased()"
+  },
+  "nullifier": "0x459558bea6bf8c11763d8f6d01edc5c8a99edd6b19a6f31152ca720018e7c711",
+  "nullifier_spent": "true",
+  "vault_balance_wei_after": "0",
+  "recipient": "0x523072a2ac5e5a3e51c107bc17995a3fa03dbd78",
+  "fee_to_relayer_wei": 10000000000000
+ }
+}

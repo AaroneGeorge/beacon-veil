@@ -23,6 +23,10 @@ Verifier 3.1.0 behind its emergency-stop wrapper (failsafe L1), the open release
 
 Vault v4 `0x376Ec2256630029A237Ade83FD428520523dEc56` (`sepolia-v4.json`): verifier 3.1.0 behind its emergency stop, the same `burn_proof` image id, `lezProgram` = the bridge program on `seq-pub` (dev mode unset), STUB anchor with a 600 s delay. Private claim with a real proof, repeat refused with E11: `real-claim-v4/`. Private burn with a real proof, Groth16 proof and release on Sepolia (527,883 gas): `real-burn-v4/`.
 
+## Chain route: the burn proven from LEZ block bytes (`chain-anchor/`)
+
+`VaultChain.releaseChain` takes no burn root from the operator (`docs/bridge/OUTBOUND.md`, "Chain route"). The real burn of `real-burn-v4/` (block 6588 of `seq-pub`) proven again by guest `burn_chain`: the burn transaction in block 6588, not listed as reverted, in one hash chain from pinned block 6583 to tip 6593. Groth16 on RISC Zero 3.1.0 and `releaseChain` on Sepolia through the 3.1.0 emergency stop, on a test vault bound to the same LEZ instance: `chain-anchor/sepolia.json`. The tip's hash is attested by the STUB tip anchor (our key, 600 s delay); that LEZ executed the chain correctly is not proven. Parser on the whole `seq-pub` chain: `chain-anchor/whole-chain-seq-pub.json`. Executor runs: `chain-anchor/executor.json`. Guest build: `chain-anchor/guest.json`. Anvil fork of the whole flow with the mock verifier: `chain-anchor/anvil-fork.json`.
+
 ## What is real and what is dev mode
 
 - Inbound claim: shown in dev mode on Sepolia data (`k9-part2-runA-v2/`, `k9-part2-runB-v3/`): real RFP-021 attestation of the vault root against followed Sepolia instances, private claim on seq-dev with `RISC0_DEV_MODE=1`, repeat refused with E11. With a real proof on vault v4 (`real-claim-v4/`): the private claim on `seq-pub` with `RISC0_DEV_MODE` unset, 1,856.03 s, peak 9.189 GiB, block 6467; the wrapped balance moved by exactly 0.001 ETH; the repeat refused with E11 after 1.87 s, before any proof. The record it checked was written by the Sepolia instance on `seq-pub` through the public path (public transactions, no proof).
