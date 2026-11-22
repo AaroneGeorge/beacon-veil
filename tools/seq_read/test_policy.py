@@ -307,6 +307,9 @@ class DialerAgainstForgedRelay(unittest.TestCase):
     def test_dialer_rate_cap(self):
         seq = FakeSequencer()
         a = dialer_mod.Dialer(seq.url, "x", TOKEN, "", dialer_mod.Stats(os.devnull))
+        # Frozen clock at the limiter's start: no refill while the requests run, however slow the machine.
+        start = a.limiter.total.at
+        a.limiter.clock = lambda: start
         try:
             got = [a.handle(req("getLastBlockId"))[0] for _ in range(int(policy.TOTAL_BURST) + 10)]
         finally:
