@@ -124,6 +124,7 @@ target LEZ v0.4.0-rc3 (actors). `lez-v03/` holds two wrappers for 0.3, in a sepa
 | Client `bv-v03` | ours, modelled on the LEZ example runners (section 3) | wire types of LEZ v0.3.2 `common` mirrored field for field (`lez-v03/client/src/chain.rs`) so the client does not build the Logos Blockchain node crates |
 | Fixture readers in `lez-v03/harness/src/fixtures.rs` | copied from our own `tests/e2e_chain` and `tools/cost` | so this workspace does not build the root workspace's test crates |
 
-Other applicants' public repositories that deployed on testnet 0.3 were read for how the public testnet behaves (fees,
-receipts, explorer); no code was copied from them and none was run.
+On 2026-11-21, other applicants' public repositories that deployed on testnet 0.3 were read for the deployment steps
+and how the public testnet behaves (fees, receipts, explorer); no code was copied from them and none was run
+(`docs/DECISIONS.md` D-37).
 

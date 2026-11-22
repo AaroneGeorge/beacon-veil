@@ -67,6 +67,7 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 | D-57 | `blst` for the public path | build 2026-11-20 | decided, measured |
 | D-58 | Declared gas per V3 step: 9.0M, 7.0M, 5.5M | build 2026-11-20 | decided |
 | D-59 | V3-only instances: `attest init --only-verifier` | build 2026-11-20 | decided |
+| D-60 | The public path on LEZ testnet 0.3: thin 0.3 wrappers and claims in the instruction | build 2026-11-21 | decided, measured in simulation, not yet sent |
 
 ## D-01. Runtime target: LEZ v0.4.0-rc3 on a standalone sequencer
 
@@ -292,7 +293,7 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 
 ## D-37. Fresh codebase
 
-- Chosen. No code from earlier applicants' repositories was opened, copied or paraphrased. `sp1-helios` and `r0vm-helios` have no LICENSE file and were read for structure only. A cloned bid is visible as such to reviewers.
+- Chosen. No code from earlier applicants' repositories was copied or paraphrased. On 2026-11-21 the port to the public testnet 0.3 (`lez-v03/`, D-60) read the public repositories of applicants that had deployed on that testnet, for the deployment steps and how the testnet behaves (fees, receipts, explorer); nothing was copied from them and nothing in them was run (`docs/REUSE.md` section 7). `sp1-helios` and `r0vm-helios` have no LICENSE file and were read for structure only. A cloned bid is visible as such to reviewers.
 
 ## D-38. Filing structure: two linked proposals
 
@@ -434,3 +435,11 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 - Chosen. `attest init --only-verifier <lc_verify_v3 program id>` creates an instance whose only verifier is `lc_verify_v3`. It conflicts with `--extra-verifier`. The instances of the recorded public runs list `lc_verify_v3` alone (`v3_onchain run` initialises with `verifiers = [lc_verify_v3]`). The dry-run instance lists both verifiers (`evidence/g4-public/dry-run-20261120/README.md`).
 - Rationale. On a V3-only instance every sentence about the 14-day bound holds for the instance. On an instance that lists both, the bound holds on the public path only.
 - Trade-off. A V3-only instance has no second verifier to fall back on. Migration is a new instance, as for any verifier change (`docs/TRUST.md` section 9).
+
+## D-60. The public path on LEZ testnet 0.3: thin 0.3 wrappers and claims in the instruction
+
+- Date. 2026-11-21. Context. The only public LEZ network with an endpoint is testnet 0.3 (`https://testnet.lez.logos.co`, LEZ `v0.3.2`); testnet 0.4 has none yet. LEZ 0.3 programs are a `plan` (sees the instruction and account handles, no state; declares effects, chained calls and the timestamp window) and an `apply` (sees one shard and its effect; cannot make a chained call). The delivered programs target the rc3 actor model (D-01).
+- Options. (a) Wait for testnet 0.4. (b) Port the delivered programs to 0.3. (c) Thin 0.3 wrappers around the unchanged verifier core.
+- Chosen. (c). `lez-v03/` is a separate workspace with two programs, `lc_verify_v3_v03` (`Begin`, `Miller`, `Finish`) and `attest_v03` (`Init`, `Apply`), around `crates/attest_core` (`lc_v3::handle`, `rules::init`, `rules::apply`) and `crates/bls_blst`, used by path and compiled unchanged. The step that reads the job (`apply`) cannot set the window or call `attest_v03.Apply`, so the instruction carries claims: the window and, for `Finish`, the exact `Apply` fields. `plan` acts on the claims; `apply` runs the core and refuses (E06, E15) unless what it computed equals them. A refusal reverts the whole transaction, the chained call included. `attest_v03` takes the caller from LEZ (`PlanInput.caller_account_id`), so rule E12 is unchanged (`lez-v03/README.md`).
+- Measured. In LEZ v0.3.2's own state machine (`lee::V03State`): the largest step 6,906,533 cycles (`Begin`, 342-signer floor), under the 9,000,000 declared limit and the 10,000,000 block cap; heads equal to the rc3 runs on mainnet, Sepolia and Hoodi (`lez-v03/harness/tests/equal_rc3.rs`); refusals by exit code. Against the live testnet (block 84,717, 2026-11-21) all 23 transactions of the planned run (12 deployment, `Init`, three updates as three steps, one refusal) simulate; they need at least 438,452,336 units. Not yet sent: the payer holds no funds (`docs/PUBLIC-TESTNET.md`).
+- Trade-off. About 450 lines of new wrapper code in the audit surface (`docs/REUSE.md` section 7). The 0.4 programs remain the deliverable; the 0.3 wrappers are for the public network only. Not ported: `Attest`, `CheckHeader`, the private path, the consumer and the bridge.
