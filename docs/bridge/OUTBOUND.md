@@ -1,6 +1,6 @@
 # Outbound: LEZ burn to Ethereum release
 
-Status: spike. Code: `programs/bridge` (Burn, accumulator), `guests/burn_proof`, `contracts/src/Vault.sol` (`release`), `contracts/src/StubLezAnchor.sol`, `tools/bridge_cli`.
+Status: spike. Code: `programs/bridge` (Burn, accumulator), `guests/burn_proof`, `contracts/src/Vault.sol` (`release`), `contracts/src/StubLezAnchor.sol`, `tools/bridge_cli`. Chain route: `crates/lez_chain`, `guests/burn_chain`, `contracts/src/VaultChain.sol` (`releaseChain`), `contracts/src/StubLezTipAnchor.sol`.
 
 ## Summary
 
@@ -52,14 +52,41 @@ Verifier choice (revised 2026-11-12). RISC Zero advisory GHSA-g6qg-9j8p-7j87 (ri
 
 Open route (failsafe L2). `releaseOpen(burnSecret, recipient, fee, token, denom, leafIndex, path)` checks the same statement as `burn_proof` with plain SHA-256 in the vault (`burnStatement`), then runs the same checks and payout as `release`. It shares the nullifier map, so one burn pays once across both routes. The recipient and fee are inside the note, so a caller can only pay the bound recipient. It reveals the burn secret, which links this release to its burn: the client offers it only with explicit confirmation, when the zero-knowledge route is stopped or the user chooses it. The freezer can freeze each route separately (`setRouteFreeze`). Foundry tests: `test_openRoute*`, `test_zkRoutePaysAndThenOpenRouteRefuses`, and the Rust vector `test_openRouteStatementMatchesRust`. Measured locally (forge gas report): at most 183,971 gas.
 
+## Chain route: the burn proven from LEZ block bytes
+
+A release on this route takes no burn root from the operator. `VaultChain.releaseChain(seal, journal)` accepts a burn when (1) a RISC Zero proof of guest `burn_chain` shows that a burn transaction for this note is in LEZ block N, that the block does not list it as reverted, and that the blocks from a pinned block P through N to a tip T are one unbroken hash chain, and (2) an anchor says the hash of block T is final. Statement (2) is the one attested input. Today one key, ours, posts it after a fixed delay (`StubLezTipAnchor`, 600 s). It is a plain fact about LEZ that anyone can check with one RPC call (`getBlock(T)`), and it is the place where a Bedrock finality proof or a bonded checkpoint with a challenge window goes in, without changing the guest or the vault.
+
+What an rc3 block commits to (LEZ v0.4.0-rc3 `lez/common/src/block.rs`): `hash = SHA-256(prefix || borsh(block_id, prev_block_hash, timestamp, transactions, reverted))`. So the hash covers the full bytes of every transaction and the list of charged transactions whose action reverted. It does not cover any state (there is no state root), the result of execution beyond the reverted list, the finality status, or any signature (blocks are unsigned).
+
+Guest `burn_chain` (RISC Zero 3.1.0, `guests/burn_chain`, statement in `crates/lez_chain/src/statement.rs`):
+
+- Private input: the burn secret, recipient, fee, token, denomination, chain id, vault, program and instance (as for `burn_proof`), the pinned block's id and hash, the bytes of blocks P+1..T, and the index of the burn block and of the transaction in it.
+- Checks: each block's hash recomputed from its bytes, each link to the previous hash, ids rising by one from P. In the burn block, a full parse of every transaction (borsh has no length prefix per transaction, so offsets from the host would let a fake burn hide inside another transaction's data). The transaction at the index carries this burn: for a private burn, a `PrivateToPublic` boundary step whose sender program is the bridge, whose receiver is the instance's accumulator `PDA(bridge, sha256("bridge/acc/v1" || instance))`, and whose message is `Append{instance, token, denom, note, memo}`; for a public burn, a root call to the bridge with `Burn{config, ...}` whose config gives this instance. The note is recomputed from the secret, recipient and fee. The transaction's position is not in `reverted`.
+- Journal: version 2, 15 ABI words (480 bytes): the fields of `Vault.BurnJournal` with the accumulator root replaced by `pinnedId, pinnedHash, tipId, tipHash, burnBlockId`.
+
+`VaultChain` is `Vault` plus `releaseChain`, which checks: journal version 2 and length; the pairing (chain id, `vault == this`, program, bound instance); `pinnedId` and `pinnedHash` equal to the vault's immutables; `tipAnchor.isFinalTip(tipId, tipHash)`; the token, denomination and fee; the nullifier unspent in the map shared with `release` and `releaseOpen`; `verifier.verify(seal, chainImageId, sha256(journal))`; then the cap and the same payout. Errors: `WrongPinnedBlock`, `TipNotFinal`, and the existing ones.
+
+**What is proven:** the burn transaction for this note is transaction i of the block with hash H_N; the block does not list it as reverted; its bytes show the bridge program delivering `Append{instance, token, denom, note}` to the instance's accumulator (private burn), or a holder's `Burn` root call to the bridge with a config whose instance is this one (public burn); and blocks P..N..T are one unbroken hash chain with rising ids from the pinned (P, hash).
+**What is attested:** that the hash of block T is on the real, final LEZ chain. One input, today posted by our key, accepted 600 s later.
+**What is not proven, and stays trusted:** that LEZ executed those blocks correctly, that the attested tip is final, and which chain is the real one. LEZ v0.4.0-rc3 blocks are unsigned and their headers carry no state root, so none of these can be proven from block bytes. "Not reverted" and "sent by the bridge program" rest on the sequencer having run and verified the transaction (the bridge program itself refuses an `Append` from any other sender, `programs/bridge/src/program.rs`). Anyone can build a chain of hashes from the pinned block: the pinned block says which chain is meant, it does not stop a dishonest attester.
+**What is no longer trusted:** the operator's own computation of the accumulator root, and any bridge-specific value posted by the operator.
+
+This is one part of stage 2 below (transaction inclusion from block bytes), with the stage 4 stub narrowed from a root to a block hash. It does not rebuild the accumulator root, and it proves neither execution nor finality.
+
+Measured once for real (`evidence/bridge/chain-anchor/sepolia.json`): a private burn on `seq-pub` (dev mode off, block 6588, 255,647 bytes, one privacy-preserving transaction), pinned block 6583, tip 6593, ten blocks hashed. Executor: 1,761,615 user cycles. Groth16 proof on RISC Zero 3.1.0 with segments of 2^18 cycles: 3,209 s (53.5 min) for 16 segments, peak 2.33 GiB in the prover's process tree, on a shared machine (load average 11 on 8 threads); the final Groth16 compression runs in RISC Zero's prover container, outside that tree, and was seen at 4.8 GiB in one sample. On Sepolia through the 3.1.0 emergency stop: `releaseChain` 651,764 gas; a release before the tip's delay refused with `TipNotFinal` and a repeat refused with `AlreadyReleased`, both as mined transactions.
+
+Cost. The proof's cost grows with the distance from the pinned block, because every byte from P+1 to T is read and hashed: about 7 user cycles per input byte (executor, `evidence/bridge/chain-anchor/executor.json`; reading about 3, hashing 1.2 to 4, parsing the burn block 1.6 to 2.5). An idle `seq-pub` block is 711 bytes, about 6,300 cycles; a block with one privacy-preserving transaction is about 256 KB. At one block every 15 s, 30M cycles is reached at about 4,700 idle blocks between P and T (about 19 h). A production anchor therefore moves the start forward: each accepted tip becomes the next pinned block, which is a change to the vault (the pinned block is an immutable in the sprint).
+
+Test arrangement on Sepolia. The burn was already released on vault v4 by the root route (`evidence/bridge/real-burn-v4/`). It is proven again on a test vault bound to the same LEZ instance. The nullifier depends only on the burn secret, but each vault keeps its own nullifier map, so the burn pays once per vault: the test vault holds only the 0.001 ETH deposited to pay this release. A production instance has one vault. Nothing in the guest ties the instance to one vault for a private burn, so a second vault bound to an instance can only pay out of its own deposits.
+
 ## Stages of the anchor
 
 | Stage | What makes `isFinal` true | Sprint | Residual trust |
 |---|---|---|---|
 | 1 | The guest proves membership; the root comes from the anchor | Built: guest, Groth16 path, vault checks | None for the membership statement |
-| 2 | Accumulator root rebuilt from LEZ block bytes (rc3 blocks list reverted transactions, `lez/common/src/block.rs:59-67`), inclusion in a Bedrock block k deep | Design only | None |
+| 2 | Accumulator root rebuilt from LEZ block bytes (rc3 blocks list reverted transactions, `lez/common/src/block.rs:59-67`), inclusion in a Bedrock block k deep | **One part built:** the burn transaction in an unbroken hash chain from a pinned block to a tip, not reverted (guest `burn_chain`, `VaultChain.releaseChain`, one real release on Sepolia). Not built: the accumulator root from block bytes, inclusion in a Bedrock block | That LEZ executed the blocks correctly, and the tip (stage 4) |
 | 3 | q distinct sequencer keys built on that block | Design only | q colluding sequencers |
-| 4 | Optimistic Bedrock checkpoint: bonded poster, challenge window, slashable equivocation; the window is also the release delay; caps bound loss per window | **Stub only:** `StubLezAnchor`, owner-posted, fixed delay | One honest watcher in the window |
+| 4 | Optimistic Bedrock checkpoint: bonded poster, challenge window, slashable equivocation; the window is also the release delay; caps bound loss per window | **Stub only:** `StubLezAnchor`, owner-posted root, fixed delay; on the chain route narrowed to one LEZ block hash (`StubLezTipAnchor`), which anyone can compare with `getBlock` | One honest watcher in the window |
 | 5 | Disputes go to a named arbiter set | Design only | The arbiter set |
 | later | Stage 2: a zkVM dispute proof replaces the arbiter. Stage 3: direct verification once LEZ headers commit to state | Proposal text | |
 

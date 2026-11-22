@@ -18,7 +18,7 @@ It does not prove:
 - That the sync committee was honest. It proves that at least 342 of 512 members signed (section 2).
 - That an action happened once. Uniqueness is the consumer's job. The primitive supplies the statement id (F6) and `docs/CONSUMER-PATTERN.md` shows the nullifier.
 - Anything about Ethereum activity being private. Ethereum state is public. The attestation path adds no signal beyond it (section 6).
-- Anything about LEZ state on Ethereum. That direction is RFP-022 and is not trustless on LEZ v0.4.0-rc3 (`docs/bridge/TRUST.md`).
+- Anything about LEZ state on Ethereum. That direction is RFP-022 and is not trustless on LEZ v0.4.0-rc3 (`docs/bridge/TRUST.md`). The bridge's chain route proves from LEZ block bytes that a burn transaction is in an unbroken hash chain from a pinned block to a tip and is not listed as reverted; that the tip is on the real, final LEZ chain is attested by one key, and that LEZ executed the chain correctly is trusted, because rc3 blocks are unsigned and carry no state root (`docs/bridge/OUTBOUND.md`, "Chain route").
 
 ## 2. Trust assumptions
 
