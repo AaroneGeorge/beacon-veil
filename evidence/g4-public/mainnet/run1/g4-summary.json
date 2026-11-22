@@ -1,0 +1,87 @@
+{
+  "gate": "G4",
+  "result": "FAIL",
+  "log": "${BUILD}/.tmp/de-run1/mainnet/follower.jsonl",
+  "failures": [
+    "duration 22.19 h < 24.0 h"
+  ],
+  "pids": [
+    1699684
+  ],
+  "start_lines": 1,
+  "start": {
+    "cadence_s": 6144,
+    "chain": "host",
+    "chain_id": 1,
+    "config": "${BUILD}/run/w4/run-d/followerd.toml",
+    "endpoints": [
+      "https://lodestar-mainnet.chainsafe.io",
+      "http://unstable.mainnet.beacon-api.nimbus.team"
+    ],
+    "follower_id": "run-d",
+    "instance": "5KvKTLswk7jQJmxjAvVCgpfpzKP7GjHm3uCHnoPfEdPb",
+    "jitter_max_s": 60,
+    "mode": "public",
+    "payer_balance": "29955251128",
+    "poll_s": 300,
+    "risc0_dev_mode": null,
+    "sequencer": "seq-pub",
+    "source_kind": "logos_module",
+    "verifier": "lc_verify_v3",
+    "version": "0.1.0"
+  },
+  "first_ts": "2026-11-20T02:51:50.525Z",
+  "last_ts": "2026-11-21T01:03:07.885Z",
+  "hours": 22.188,
+  "cadence_s": 6144,
+  "max_gap_s": 312.3,
+  "max_gap_before_line": 134,
+  "submits": 14,
+  "applied": 14,
+  "noops": 0,
+  "superseded": 0,
+  "handoffs": 1,
+  "period_updates": 2,
+  "head_first": 15693184,
+  "head_last": 15699648,
+  "max_applied_gap_s": 6462.4,
+  "beacon_source": "logos_module",
+  "chain": "host",
+  "risc0_dev_mode": "unset",
+  "error_lines": {},
+  "lines": 305,
+  "mode": "public",
+  "sequencer": "seq-pub",
+  "verifier": "lc_verify_v3",
+  "steps_with_cycles": 42,
+  "steps_bounded_by_block": 0,
+  "max_step_block_bound": null,
+  "reverted_steps": 0,
+  "txs": 42,
+  "txs_applied_updates": 42,
+  "txs_per_applied": [
+    3
+  ],
+  "steps_by_name": {
+    "Begin": 14,
+    "Miller": 14,
+    "Finish": 14
+  },
+  "four_step_updates": 0,
+  "max_step_gas_limit": 9000000,
+  "step_cycles": {
+    "min": 2558628,
+    "median": 4378929,
+    "max": 5765201
+  },
+  "max_step_cycles": 5765201,
+  "block_cap_cycles": 10000000,
+  "max_step_share_of_block": 0.577,
+  "max_step_gas_limit_share_of_block": 0.9,
+  "deferrals": 0,
+  "resumes": 0,
+  "failed_steps": 0,
+  "steps_without_cycles": [],
+  "payer_balance_first": 29955251128,
+  "payer_balance_last": 28500616984
+}

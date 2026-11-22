@@ -1,0 +1,56 @@
+{
+  "bootstrap_provider": "https://lodestar-mainnet.chainsafe.io",
+  "bootstrap_ssz_bytes": 25665,
+  "bootstrap_version": "fulu",
+  "config": {
+    "borsh_hex": "01000000000000004b363db94e286120d76eb905340fdd4e54bfe9f06bf33ff6cf5ad27f511bfe955730c65f000000000800000000000000000000000000000000220100000000000100000000360200000000000200000000f602000000000003000000001d04000000000004000000008e05000000000005000000004706000000000006000000ffffffffffffffff070000006594cc53815411f17b5f1d9f6a5eeeeb133433a6c1dc0c8767936ea665070f6c8075ef00000000000100000073b7c27e08e9c88da23e1c69ad1715e7168033f27eac5b6ad5f9d16fb426d6ac5601",
+    "chain_id": 1,
+    "checkpoint_root": "0x6594cc53815411f17b5f1d9f6a5eeeeb133433a6c1dc0c8767936ea665070f6c",
+    "checkpoint_slot": 15693184,
+    "forks": [
+      [
+        0,
+        "0x00000000"
+      ],
+      [
+        74240,
+        "0x01000000"
+      ],
+      [
+        144896,
+        "0x02000000"
+      ],
+      [
+        194048,
+        "0x03000000"
+      ],
+      [
+        269568,
+        "0x04000000"
+      ],
+      [
+        364032,
+        "0x05000000"
+      ],
+      [
+        411392,
+        "0x06000000"
+      ],
+      [
+        18446744073709551615,
+        "0x07000000"
+      ]
+    ],
+    "genesis_time": 1606824023,
+    "genesis_validators_root": "0x4b363db94e286120d76eb905340fdd4e54bfe9f06bf33ff6cf5ad27f511bfe95",
+    "min_participants": 342,
+    "verifiers": [
+      "8niQPec4Ng9yrm17Aj3VFbtebrXPxd6JVhhdZsAXQ1Tq"
+    ]
+  },
+  "cycles": null,
+  "gas": 10000000,
+  "instance": "5KvKTLswk7jQJmxjAvVCgpfpzKP7GjHm3uCHnoPfEdPb",
+  "period": 1915,
+  "tx": "109380e8ac8f3b51db9adc76cb5fb294d9248433e96285034eb10b406ce7e4c0"
+}

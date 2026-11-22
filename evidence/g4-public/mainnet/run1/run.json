@@ -1,0 +1,15 @@
+{
+  "run": "run-d",
+  "started_utc": "2026-11-20T02:51:55.608031+00:00",
+  "pid": 1699684,
+  "binary": "${BUILD}/run/w4/bin/attest-followerd-72cb4f17918e",
+  "binary_sha256": "72cb4f17918e87c1ef1e17a058ba2b649eb802d37844ce7c69ec3e6f13dbfc8e",
+  "config": "${BUILD}/run/w4/run-d/followerd.toml",
+  "config_sha256": "3a7f531c99f3a59ba55d3ca6df84072ed28402cad87014d95356ba7bd4ff3d33",
+  "instance": "5KvKTLswk7jQJmxjAvVCgpfpzKP7GjHm3uCHnoPfEdPb",
+  "beacon_source": "logos_module",
+  "repo_commit": "426660ee56ce8e224b3bdca9d604d9c95a98c0c6",
+  "repo_dirty": false,
+  "machine": "Linux-7.0.0-43-generic-x86_64-with-glibc2.43",
+  "cpu": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz"
+}
