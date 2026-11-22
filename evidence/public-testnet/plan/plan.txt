@@ -1,0 +1,26 @@
+deploy attest_v03 segment 3                    45896 bytes  gas limit    100000  simulated         0  fee      367168
+deploy attest_v03 segment 2                    98696 bytes  gas limit    100000  simulated         0  fee      789568
+deploy attest_v03 segment 1                    98696 bytes  gas limit    100000  simulated         0  fee      789568
+deploy attest_v03 segment 0                    98696 bytes  gas limit    100000  simulated         0  fee      789568
+deploy attest_v03 header                         692 bytes  gas limit    100000  simulated         0  fee        5536
+deploy lc_verify_v3_v03 segment 5              23156 bytes  gas limit    100000  simulated         0  fee      185248
+deploy lc_verify_v3_v03 segment 4              98696 bytes  gas limit    100000  simulated         0  fee      789568
+deploy lc_verify_v3_v03 segment 3              98696 bytes  gas limit    100000  simulated         0  fee      789568
+deploy lc_verify_v3_v03 segment 2              98696 bytes  gas limit    100000  simulated         0  fee      789568
+deploy lc_verify_v3_v03 segment 1              98696 bytes  gas limit    100000  simulated         0  fee      789568
+deploy lc_verify_v3_v03 segment 0              98696 bytes  gas limit    100000  simulated         0  fee      789568
+deploy lc_verify_v3_v03 header                   820 bytes  gas limit    100000  simulated         0  fee        6560
+Init                                           26209 bytes  gas limit   5200251  simulated   5048787  fee    40599968
+updates_1418_2[0] Begin                        53552 bytes  gas limit   4763316  simulated   4624578  fee    37425040
+updates_1418_2[0] Miller                         297 bytes  gas limit   5959504  simulated   5785924  fee    46289768
+updates_1418_2[0] Finish                         906 bytes  gas limit   4576872  simulated   4443564  fee    35555760
+updates_1418_2[1] Begin                        53552 bytes  gas limit   4764101  simulated   4625339  fee    37431128
+updates_1418_2[1] Miller                         297 bytes  gas limit   5959718  simulated   5786132  fee    46291432
+updates_1418_2[1] Finish                         906 bytes  gas limit   4606802  simulated   4472621  fee    35788216
+finality_update_11627936 Begin                 28576 bytes  gas limit   2758128  simulated   2677794  fee    21650960
+finality_update_11627936 Miller                  297 bytes  gas limit   5959552  simulated   5785972  fee    46290152
+finality_update_11627936 Finish                  906 bytes  gas limit   4606804  simulated   4472623  fee    35788232
+Finish again (refusal demo)                  refused, exit 14, 96196 cycles, fee 776816
+
+fee state at block 85012: base fees 8 / 8; 23 transactions; fees at head 390768528; largest reserve 47680120; payer 4kST35tNxNnvQBUdLJga7EMe4DQbeX3Gjfeauw2cAwMm holds 0; funds needed at least 438448648
+4 RPC requests

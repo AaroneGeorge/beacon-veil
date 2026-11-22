@@ -24,8 +24,9 @@ The 0.4 programs remain the deliverable.
 
 ## Measured in simulation
 
-In `lee::V03State` (LEZ v0.3.2's action phase: `plan`, every `apply` and the chained call summed), on the committed
-mainnet, Sepolia and Hoodi fixtures and the 342-signer floor chain (`lez-v03/harness/tests/cap.rs`):
+In `lee::V03State` (LEZ v0.3.2's action phase: `plan`, every `apply` and the chained call summed), with locally built
+guests, on the committed mainnet, Sepolia and Hoodi fixtures and the 342-signer floor chain
+(`lez-v03/harness/tests/cap.rs`):
 
 | Step | Largest, cycles | Note |
 |---|---|---|
@@ -40,20 +41,21 @@ code and are charged less than their limit (`lez-v03/harness/tests/refusals.rs`)
 
 ## The planned run, simulated against the live testnet
 
-`bv-v03 plan` read the testnet at block 84,717 (2026-11-21, both base fees 8) and simulated, sending nothing:
+`bv-v03 plan` with the release guests read the testnet at block 85,012 (2026-11-22, both base fees 8) and simulated,
+sending nothing (`evidence/public-testnet/plan/`):
 
 | Part | Transactions | Simulated cycles |
 |---|---|---|
-| Deployment through the program loader, both headers immutable | 12 | none metered (paid by their 860,860 bytes) |
-| `Init` of a Sepolia instance from checkpoint slot 11,616,256 | 1 | 5,048,842 |
-| Two period updates (`updates_1418_2`), each `Begin`, `Miller`, `Finish` | 6 | 4,443,575 to 5,786,077 per step |
-| One finality update (slot 11,627,936) | 3 | 2,677,761 to 5,785,917 per step |
-| One refusal (a duplicate `Finish`, refused with exit code 14) | 1 | 96,163 |
+| Deployment through the program loader, both headers immutable | 12 | none metered (paid by their 860,132 bytes) |
+| `Init` of a Sepolia instance from checkpoint slot 11,616,256 | 1 | 5,048,787 |
+| Two period updates (`updates_by_range` 1418, 1419), each `Begin`, `Miller`, `Finish` | 6 | 4,443,564 to 5,786,132 per step |
+| One finality update (slot 11,627,936) | 3 | 2,677,794 to 5,785,972 per step |
+| One refusal (a duplicate `Finish`, refused with exit code 14) | 1 | 96,196 |
 
-The 22 that should apply do so in simulation, and the refusal is refused as intended. Fees at the head: 390,772,680
-units; with the reserve of the largest step the payer needs at least 438,452,336 units. Before each send the client simulates again against freshly read accounts, sends only if
-the transaction applies, declares at most 9,000,000 gas, sends one transaction per block and makes at most one RPC
-request a second.
+The 22 that should apply do so in simulation, and the refusal is refused as intended. Fees at the head: 390,768,528
+units; with the reserve of the largest step the payer needs at least 438,448,648 units. Before each send the client
+simulates again against freshly read accounts, sends only if the transaction applies, declares at most 9,000,000 gas,
+sends one transaction per block and makes at most one RPC request a second.
 
 ## Funds
 
@@ -66,7 +68,7 @@ transfer of LEZ testnet units from another holder is the other route. Paying acc
 
 ```sh
 cd lez-v03 && scripts/build_guests.sh local && cargo test --profile host --locked -p v03_harness
-lez-v03/scripts/build_guests.sh docker        # image ids, compare with guests/IMAGE_IDS.v03.expected
+lez-v03/scripts/build_guests.sh docker        # image ids, compare with guests/IMAGE_IDS.v03.expected (built twice, equal)
 ```
 
 After the run: `lez-v03/scripts/verify.sh` (against the testnet) and

@@ -1,0 +1,202 @@
+{
+  "channel_id": "0101010101010101010101010101010101010101010101010101010101010101",
+  "fee_state": {
+    "base_fee_exec": 8,
+    "base_fee_stor": 8,
+    "height": 85012,
+    "max_gas_exec": 10000000,
+    "max_gas_stor": 1000000,
+    "next_base_fee_exec_ceiling": 9,
+    "next_base_fee_stor_ceiling": 9
+  },
+  "fees_at_head": "390768528",
+  "funds_needed": "438448648",
+  "head_block": 85012,
+  "largest_reserve": "47680120",
+  "payer": "4kST35tNxNnvQBUdLJga7EMe4DQbeX3Gjfeauw2cAwMm",
+  "payer_balance": "0",
+  "transactions": [
+    {
+      "bytes": 45896,
+      "fee_at_head": "367168",
+      "gas_limit": 100000,
+      "reserve_at_head": "1167168",
+      "simulated_cycles": 0,
+      "tx": "deploy attest_v03 segment 3"
+    },
+    {
+      "bytes": 98696,
+      "fee_at_head": "789568",
+      "gas_limit": 100000,
+      "reserve_at_head": "1589568",
+      "simulated_cycles": 0,
+      "tx": "deploy attest_v03 segment 2"
+    },
+    {
+      "bytes": 98696,
+      "fee_at_head": "789568",
+      "gas_limit": 100000,
+      "reserve_at_head": "1589568",
+      "simulated_cycles": 0,
+      "tx": "deploy attest_v03 segment 1"
+    },
+    {
+      "bytes": 98696,
+      "fee_at_head": "789568",
+      "gas_limit": 100000,
+      "reserve_at_head": "1589568",
+      "simulated_cycles": 0,
+      "tx": "deploy attest_v03 segment 0"
+    },
+    {
+      "bytes": 692,
+      "fee_at_head": "5536",
+      "gas_limit": 100000,
+      "reserve_at_head": "805536",
+      "simulated_cycles": 0,
+      "tx": "deploy attest_v03 header"
+    },
+    {
+      "bytes": 23156,
+      "fee_at_head": "185248",
+      "gas_limit": 100000,
+      "reserve_at_head": "985248",
+      "simulated_cycles": 0,
+      "tx": "deploy lc_verify_v3_v03 segment 5"
+    },
+    {
+      "bytes": 98696,
+      "fee_at_head": "789568",
+      "gas_limit": 100000,
+      "reserve_at_head": "1589568",
+      "simulated_cycles": 0,
+      "tx": "deploy lc_verify_v3_v03 segment 4"
+    },
+    {
+      "bytes": 98696,
+      "fee_at_head": "789568",
+      "gas_limit": 100000,
+      "reserve_at_head": "1589568",
+      "simulated_cycles": 0,
+      "tx": "deploy lc_verify_v3_v03 segment 3"
+    },
+    {
+      "bytes": 98696,
+      "fee_at_head": "789568",
+      "gas_limit": 100000,
+      "reserve_at_head": "1589568",
+      "simulated_cycles": 0,
+      "tx": "deploy lc_verify_v3_v03 segment 2"
+    },
+    {
+      "bytes": 98696,
+      "fee_at_head": "789568",
+      "gas_limit": 100000,
+      "reserve_at_head": "1589568",
+      "simulated_cycles": 0,
+      "tx": "deploy lc_verify_v3_v03 segment 1"
+    },
+    {
+      "bytes": 98696,
+      "fee_at_head": "789568",
+      "gas_limit": 100000,
+      "reserve_at_head": "1589568",
+      "simulated_cycles": 0,
+      "tx": "deploy lc_verify_v3_v03 segment 0"
+    },
+    {
+      "bytes": 820,
+      "fee_at_head": "6560",
+      "gas_limit": 100000,
+      "reserve_at_head": "806560",
+      "simulated_cycles": 0,
+      "tx": "deploy lc_verify_v3_v03 header"
+    },
+    {
+      "bytes": 26209,
+      "fee_at_head": "40599968",
+      "gas_limit": 5200251,
+      "reserve_at_head": "41811680",
+      "simulated_cycles": 5048787,
+      "tx": "Init"
+    },
+    {
+      "bytes": 53552,
+      "fee_at_head": "37425040",
+      "gas_limit": 4763316,
+      "reserve_at_head": "38534944",
+      "simulated_cycles": 4624578,
+      "tx": "updates_1418_2[0] Begin"
+    },
+    {
+      "bytes": 297,
+      "fee_at_head": "46289768",
+      "gas_limit": 5959504,
+      "reserve_at_head": "47678408",
+      "simulated_cycles": 5785924,
+      "tx": "updates_1418_2[0] Miller"
+    },
+    {
+      "bytes": 906,
+      "fee_at_head": "35555760",
+      "gas_limit": 4576872,
+      "reserve_at_head": "36622224",
+      "simulated_cycles": 4443564,
+      "tx": "updates_1418_2[0] Finish"
+    },
+    {
+      "bytes": 53552,
+      "fee_at_head": "37431128",
+      "gas_limit": 4764101,
+      "reserve_at_head": "38541224",
+      "simulated_cycles": 4625339,
+      "tx": "updates_1418_2[1] Begin"
+    },
+    {
+      "bytes": 297,
+      "fee_at_head": "46291432",
+      "gas_limit": 5959718,
+      "reserve_at_head": "47680120",
+      "simulated_cycles": 5786132,
+      "tx": "updates_1418_2[1] Miller"
+    },
+    {
+      "bytes": 906,
+      "fee_at_head": "35788216",
+      "gas_limit": 4606802,
+      "reserve_at_head": "36861664",
+      "simulated_cycles": 4472621,
+      "tx": "updates_1418_2[1] Finish"
+    },
+    {
+      "bytes": 28576,
+      "fee_at_head": "21650960",
+      "gas_limit": 2758128,
+      "reserve_at_head": "22293632",
+      "simulated_cycles": 2677794,
+      "tx": "finality_update_11627936 Begin"
+    },
+    {
+      "bytes": 297,
+      "fee_at_head": "46290152",
+      "gas_limit": 5959552,
+      "reserve_at_head": "47678792",
+      "simulated_cycles": 5785972,
+      "tx": "finality_update_11627936 Miller"
+    },
+    {
+      "bytes": 906,
+      "fee_at_head": "35788232",
+      "gas_limit": 4606804,
+      "reserve_at_head": "36861680",
+      "simulated_cycles": 4472623,
+      "tx": "finality_update_11627936 Finish"
+    },
+    {
+      "exit": 14,
+      "fee_at_head": "776816",
+      "simulated_cycles": 96196,
+      "tx": "Finish again (refusal demo)"
+    }
+  ]
+}
