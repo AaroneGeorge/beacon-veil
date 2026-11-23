@@ -1,0 +1,849 @@
+{
+  "cases": [
+    {
+      "after_control": false,
+      "case": "A1",
+      "code": "E02",
+      "diff_expected": "E02",
+      "exit_code": 2,
+      "head": {
+        "beacon_root": "36f87b35902dd9c77fdb2a5a046af268060638509f698a3c5dfad0d538ad0c9e",
+        "period": 1914,
+        "slot": 15679488,
+        "store_commitment": "bc46d60cd588449d9b0b21e9cb8d580e0d090febdcd40ea0637c8a28643c4e91"
+      },
+      "instance": "A",
+      "instance_state_unchanged": true,
+      "job": "9GNLyZ4ojKUPsrc6CuBJMmEJYMLCpPJyJrcxUzUUbhCP",
+      "native": {
+        "helios_0_12_0_verify": "ok",
+        "v1": "E02",
+        "v3_staged": {
+          "code": "E02",
+          "step": "Begin"
+        }
+      },
+      "refused_as_predicted": true,
+      "refused_at": "Begin",
+      "source": "mainnet/p1914/handoff/finalized_header_zeroed",
+      "steps": [
+        {
+          "block": 17549,
+          "block_gas_used_exec": 1834875,
+          "block_timestamp_ms": 1795438586063,
+          "charged_equals_executor": true,
+          "charged_gas": 1834875,
+          "charged_txs_in_block": 1,
+          "declared_gas": 10000000,
+          "executor_lc_verify_v3": {
+            "exit": "Halted(2)",
+            "metered_cycles": 1834875
+          },
+          "job_state_unchanged": true,
+          "payer": "5TKdNvpZNZ2w41kKAnp5f2wvQMNhMtW1e8UfeqLf9gv1",
+          "position": 0,
+          "reverted": true,
+          "step": "Begin",
+          "tx": "26897d10a599e1d8272bf4fb8fdd90c63f34eb344edf1820e488e41c7d4a4153",
+          "wallet_message": "A1 Begin: tx 26897d10a599e1d8272bf4fb8fdd90c63f34eb344edf1820e488e41c7d4a4153 reverted in block 17549 (the panic code is in the sequencer log)"
+        }
+      ],
+      "update_bytes": 26923,
+      "update_sha256": "a83ed9b499e4f3b1c1b863fec4502bfb3d8e8b30d8655237474be7c59cc76dba",
+      "what": "finalized header zeroed (unmodified Helios 0.12.0 verify passes this one)"
+    },
+    {
+      "after_control": false,
+      "case": "A2",
+      "code": "E05",
+      "diff_expected": "E05",
+      "exit_code": 5,
+      "head": {
+        "beacon_root": "36f87b35902dd9c77fdb2a5a046af268060638509f698a3c5dfad0d538ad0c9e",
+        "period": 1914,
+        "slot": 15679488,
+        "store_commitment": "bc46d60cd588449d9b0b21e9cb8d580e0d090febdcd40ea0637c8a28643c4e91"
+      },
+      "instance": "A",
+      "instance_state_unchanged": true,
+      "job": "222svqToYmCc46faE7zFphdBrh4gTA1aYCAhyJDok7JC",
+      "native": {
+        "helios_0_12_0_verify": "InvalidNextSyncCommitteeProof",
+        "v1": "E05",
+        "v3_staged": {
+          "code": "E05",
+          "step": "Begin"
+        }
+      },
+      "refused_as_predicted": true,
+      "refused_at": "Begin",
+      "source": "mainnet/p1914/handoff/next_committee_branch_node_changed",
+      "steps": [
+        {
+          "block": 17551,
+          "block_gas_used_exec": 3863506,
+          "block_timestamp_ms": 1795438616063,
+          "charged_equals_executor": true,
+          "charged_gas": 3863506,
+          "charged_txs_in_block": 1,
+          "declared_gas": 10000000,
+          "executor_lc_verify_v3": {
+            "exit": "Halted(5)",
+            "metered_cycles": 3863506
+          },
+          "job_state_unchanged": true,
+          "payer": "5TKdNvpZNZ2w41kKAnp5f2wvQMNhMtW1e8UfeqLf9gv1",
+          "position": 0,
+          "reverted": true,
+          "step": "Begin",
+          "tx": "90eedb834797d0b8f0d6dff17b6252e1c0b526b15a893301f114e033f0ea36e0",
+          "wallet_message": "A2 Begin: tx 90eedb834797d0b8f0d6dff17b6252e1c0b526b15a893301f114e033f0ea36e0 reverted in block 17551 (the panic code is in the sequencer log)"
+        }
+      ],
+      "update_bytes": 26923,
+      "update_sha256": "d32f28444347005bcd9efd00aa3d888db44ed3c2f1dbdfcb9598734457893cd7",
+      "what": "next sync committee branch tampered (one node changed)"
+    },
+    {
+      "after_control": false,
+      "case": "A3",
+      "code": "E15",
+      "diff_expected": "E15",
+      "exit_code": 15,
+      "head": {
+        "beacon_root": "36f87b35902dd9c77fdb2a5a046af268060638509f698a3c5dfad0d538ad0c9e",
+        "period": 1914,
+        "slot": 15679488,
+        "store_commitment": "bc46d60cd588449d9b0b21e9cb8d580e0d090febdcd40ea0637c8a28643c4e91"
+      },
+      "instance": "A",
+      "instance_state_unchanged": true,
+      "job": "BfHDeZmrxqHzndKupsY4W9ZL9JT3T1CwF3u7kfr628gL",
+      "native": {
+        "helios_0_12_0_verify": "InvalidExecutionPayloadProof",
+        "v1": "E15",
+        "v3_staged": {
+          "code": "E15",
+          "step": "Begin"
+        }
+      },
+      "refused_as_predicted": true,
+      "refused_at": "Begin",
+      "source": "mainnet/p1914/handoff/finalized_execution_changed",
+      "steps": [
+        {
+          "block": 17553,
+          "block_gas_used_exec": 2275095,
+          "block_timestamp_ms": 1795438646063,
+          "charged_equals_executor": true,
+          "charged_gas": 2275095,
+          "charged_txs_in_block": 1,
+          "declared_gas": 10000000,
+          "executor_lc_verify_v3": {
+            "exit": "Halted(15)",
+            "metered_cycles": 2275095
+          },
+          "job_state_unchanged": true,
+          "payer": "5TKdNvpZNZ2w41kKAnp5f2wvQMNhMtW1e8UfeqLf9gv1",
+          "position": 0,
+          "reverted": true,
+          "step": "Begin",
+          "tx": "883b92b46d9fb47f7ddae4fb0e344f3250d6571bc49c5a66ef6e5ea244eacca1",
+          "wallet_message": "A3 Begin: tx 883b92b46d9fb47f7ddae4fb0e344f3250d6571bc49c5a66ef6e5ea244eacca1 reverted in block 17553 (the panic code is in the sequencer log)"
+        }
+      ],
+      "update_bytes": 26923,
+      "update_sha256": "7e9bfa93e95e9d3144f8c6db81a5bd8103d4da9c8437246cc2fb821f3657ab3c",
+      "what": "finalized execution payload header changed (no longer matches its branch)"
+    },
+    {
+      "after_control": false,
+      "case": "A4",
+      "code": "E01",
+      "diff_expected": "E01",
+      "exit_code": 1,
+      "head": {
+        "beacon_root": "36f87b35902dd9c77fdb2a5a046af268060638509f698a3c5dfad0d538ad0c9e",
+        "period": 1914,
+        "slot": 15679488,
+        "store_commitment": "bc46d60cd588449d9b0b21e9cb8d580e0d090febdcd40ea0637c8a28643c4e91"
+      },
+      "instance": "A",
+      "instance_state_unchanged": true,
+      "job": "9YrsoLJUas4udyVUMTiVeyDaMEDhRMaCgChgcuDFMXdw",
+      "native": {
+        "helios_0_12_0_verify": "InvalidTimestamp",
+        "v1": "E01",
+        "v3_staged": {
+          "code": "E01",
+          "step": "Begin"
+        }
+      },
+      "refused_as_predicted": true,
+      "refused_at": "Begin",
+      "source": "mainnet/p1914/handoff/signature_slot_not_after_attested",
+      "steps": [
+        {
+          "block": 17555,
+          "block_gas_used_exec": 2124840,
+          "block_timestamp_ms": 1795438676063,
+          "charged_equals_executor": true,
+          "charged_gas": 2124840,
+          "charged_txs_in_block": 1,
+          "declared_gas": 10000000,
+          "executor_lc_verify_v3": {
+            "exit": "Halted(1)",
+            "metered_cycles": 2124840
+          },
+          "job_state_unchanged": true,
+          "payer": "5TKdNvpZNZ2w41kKAnp5f2wvQMNhMtW1e8UfeqLf9gv1",
+          "position": 0,
+          "reverted": true,
+          "step": "Begin",
+          "tx": "706d45bce209e63c22af4a0e98f3500572ec99024eb9206b7aca1ce3eb37d273",
+          "wallet_message": "A4 Begin: tx 706d45bce209e63c22af4a0e98f3500572ec99024eb9206b7aca1ce3eb37d273 reverted in block 17555 (the panic code is in the sequencer log)"
+        }
+      ],
+      "update_bytes": 26923,
+      "update_sha256": "06a79aa204b6f5d913b662aae80255c0d01c8e81aeca2dd82bc8bb616b938cf8",
+      "what": "signature slot set to the attested slot (not after it)"
+    },
+    {
+      "after_control": false,
+      "case": "A5",
+      "code": "E03",
+      "diff_expected": "E03",
+      "exit_code": 3,
+      "head": {
+        "beacon_root": "36f87b35902dd9c77fdb2a5a046af268060638509f698a3c5dfad0d538ad0c9e",
+        "period": 1914,
+        "slot": 15679488,
+        "store_commitment": "bc46d60cd588449d9b0b21e9cb8d580e0d090febdcd40ea0637c8a28643c4e91"
+      },
+      "instance": "A",
+      "instance_state_unchanged": true,
+      "job": "3GJWBj2MwdivYjNuipN5F5cgdnmkMtT79yxVFxhwv9U9",
+      "native": {
+        "helios_0_12_0_verify": "InvalidSignature",
+        "v1": "E03",
+        "v3_staged": {
+          "code": "E03",
+          "step": "Miller"
+        }
+      },
+      "refused_as_predicted": true,
+      "refused_at": "Miller",
+      "source": "mainnet/p1914/handoff/sig_infinity",
+      "steps": [
+        {
+          "block": 17557,
+          "block_gas_used_exec": 4309070,
+          "block_timestamp_ms": 1795438706063,
+          "charged_equals_executor": true,
+          "charged_gas": 4309070,
+          "charged_txs_in_block": 1,
+          "declared_gas": 10000000,
+          "executor_lc_verify_v3": {
+            "exit": "Halted(0)",
+            "metered_cycles": 4309070
+          },
+          "payer": "5TKdNvpZNZ2w41kKAnp5f2wvQMNhMtW1e8UfeqLf9gv1",
+          "position": 0,
+          "reverted": false,
+          "step": "Begin",
+          "tx": "0a62bc16795c065893c5524ea0ea0dc0c2b07c702761038de51b80f94b18ee23"
+        },
+        {
+          "block": 17559,
+          "block_gas_used_exec": 436223,
+          "block_timestamp_ms": 1795438736063,
+          "charged_equals_executor": true,
+          "charged_gas": 436223,
+          "charged_txs_in_block": 1,
+          "declared_gas": 10000000,
+          "executor_lc_verify_v3": {
+            "exit": "Halted(3)",
+            "metered_cycles": 436223
+          },
+          "job_state_unchanged": true,
+          "payer": "5TKdNvpZNZ2w41kKAnp5f2wvQMNhMtW1e8UfeqLf9gv1",
+          "position": 0,
+          "reverted": true,
+          "step": "Miller",
+          "tx": "e5bfd4ad7a92f9dc943443ac943805fb813c8272804c9b5afd9955c4827e8c51",
+          "wallet_message": "A5 Miller: tx e5bfd4ad7a92f9dc943443ac943805fb813c8272804c9b5afd9955c4827e8c51 reverted in block 17559 (the panic code is in the sequencer log)"
+        }
+      ],
+      "update_bytes": 26923,
+      "update_sha256": "0ca1a6d055bf9b5cd4e357c8cbed3698696763336238777bdfb2350f5bc11f67",
+      "what": "aggregate signature replaced by the point at infinity"
+    },
+    {
+      "after_control": false,
+      "case": "A6",
+      "code": "E03",
+      "diff_expected": "E03",
+      "exit_code": 3,
+      "head": {
+        "beacon_root": "36f87b35902dd9c77fdb2a5a046af268060638509f698a3c5dfad0d538ad0c9e",
+        "period": 1914,
+        "slot": 15679488,
+        "store_commitment": "bc46d60cd588449d9b0b21e9cb8d580e0d090febdcd40ea0637c8a28643c4e91"
+      },
+      "instance": "A",
+      "instance_state_unchanged": true,
+      "job": "8FBhZ8WCM3H1UxXgja6kqgqX7dZEzVj6hkc6N6PALnxA",
+      "native": {
+        "helios_0_12_0_verify": "InvalidSignature",
+        "v1": "E03",
+        "v3_staged": {
+          "code": "E03",
+          "step": "Finish"
+        }
+      },
+      "refused_as_predicted": true,
+      "refused_at": "Finish",
+      "source": "mainnet/p1914/handoff/bit_cleared",
+      "steps": [
+        {
+          "block": 17561,
+          "block_gas_used_exec": 4321237,
+          "block_timestamp_ms": 1795438766062,
+          "charged_equals_executor": true,
+          "charged_gas": 4321237,
+          "charged_txs_in_block": 1,
+          "declared_gas": 10000000,
+          "executor_lc_verify_v3": {
+            "exit": "Halted(0)",
+            "metered_cycles": 4321237
+          },
+          "payer": "5TKdNvpZNZ2w41kKAnp5f2wvQMNhMtW1e8UfeqLf9gv1",
+          "position": 0,
+          "reverted": false,
+          "step": "Begin",
+          "tx": "970b49f061fd887e25b1d7d4099a5d15fdf6fa467aaf96c6442d0f408e12c10f"
+        },
+        {
+          "block": 17563,
+          "block_gas_used_exec": 5764775,
+          "block_timestamp_ms": 1795438796064,
+          "charged_equals_executor": true,
+          "charged_gas": 5764775,
+          "charged_txs_in_block": 1,
+          "declared_gas": 10000000,
+          "executor_lc_verify_v3": {
+            "exit": "Halted(0)",
+            "metered_cycles": 5764775
+          },
+          "payer": "5TKdNvpZNZ2w41kKAnp5f2wvQMNhMtW1e8UfeqLf9gv1",
+          "position": 0,
+          "reverted": false,
+          "step": "Miller",
+          "tx": "8704f277c5e7eaf072b11e92831ab08f9395d59d5c079cfa13c8c5ac4d92f208"
+        },
+        {
+          "block": 17565,
+          "block_gas_used_exec": 4273741,
+          "block_timestamp_ms": 1795438826063,
+          "charged_equals_executor": true,
+          "charged_gas": 4273741,
+          "charged_txs_in_block": 1,
+          "declared_gas": 10000000,
+          "executor_lc_verify_v3": {
+            "exit": "Halted(3)",
+            "metered_cycles": 4273741
+          },
+          "job_state_unchanged": true,
+          "payer": "5TKdNvpZNZ2w41kKAnp5f2wvQMNhMtW1e8UfeqLf9gv1",
+          "position": 0,
+          "reverted": true,
+          "step": "Finish",
+          "tx": "96345090a4674e6dc16e36e3cc83e59fa643bbd468967ffc36b83744974a2521",
+          "wallet_message": "A6 Finish: tx 96345090a4674e6dc16e36e3cc83e59fa643bbd468967ffc36b83744974a2521 reverted in block 17565 (the panic code is in the sequencer log)"
+        }
+      ],
+      "update_bytes": 26923,
+      "update_sha256": "b227f2126e0d88f060053c389250e99f2aac75455f639586fbbb12688767382e",
+      "what": "one participation bit cleared: 510 claimed signers, the aggregate signature is of 511"
+    },
+    {
+      "after_control": false,
+      "case": "A7",
+      "code": "E03",
+      "diff_expected": null,
+      "exit_code": 3,
+      "head": {
+        "beacon_root": "36f87b35902dd9c77fdb2a5a046af268060638509f698a3c5dfad0d538ad0c9e",
+        "period": 1914,
+        "slot": 15679488,
+        "store_commitment": "bc46d60cd588449d9b0b21e9cb8d580e0d090febdcd40ea0637c8a28643c4e91"
+      },
+      "instance": "A",
+      "instance_state_unchanged": true,
+      "job": "HPyLKd29X1LzihwoWLiRanEoG9xiKEEEUDeFGsGv5Tw3",
+      "native": {
+        "helios_0_12_0_verify": "InvalidSignature",
+        "v1": "E03",
+        "v3_staged": {
+          "code": "E03",
+          "step": "Finish"
+        }
+      },
+      "refused_as_predicted": true,
+      "refused_at": "Finish",
+      "source": "fabricated period update, as the differential class fab_against_real_store (FabChain seed beacon-veil/diff/v1 impersonating mainnet), built at period 1914, the period of this instance's store",
+      "steps": [
+        {
+          "block": 17567,
+          "block_gas_used_exec": 4282381,
+          "block_timestamp_ms": 1795438856063,
+          "charged_equals_executor": true,
+          "charged_gas": 4282381,
+          "charged_txs_in_block": 1,
+          "declared_gas": 10000000,
+          "executor_lc_verify_v3": {
+            "exit": "Halted(0)",
+            "metered_cycles": 4282381
+          },
+          "payer": "5TKdNvpZNZ2w41kKAnp5f2wvQMNhMtW1e8UfeqLf9gv1",
+          "position": 0,
+          "reverted": false,
+          "step": "Begin",
+          "tx": "d36550c54f63ea558474d18417f81390dc784cc098066ae01e221406f3958553"
+        },
+        {
+          "block": 17569,
+          "block_gas_used_exec": 5765199,
+          "block_timestamp_ms": 1795438886063,
+          "charged_equals_executor": true,
+          "charged_gas": 5765199,
+          "charged_txs_in_block": 1,
+          "declared_gas": 10000000,
+          "executor_lc_verify_v3": {
+            "exit": "Halted(0)",
+            "metered_cycles": 5765199
+          },
+          "payer": "5TKdNvpZNZ2w41kKAnp5f2wvQMNhMtW1e8UfeqLf9gv1",
+          "position": 0,
+          "reverted": false,
+          "step": "Miller",
+          "tx": "b09621e22b7880ad4cd9ebd4b018af55b99987d18b93648480775993e2a1aca4"
+        },
+        {
+          "block": 17571,
+          "block_gas_used_exec": 4273741,
+          "block_timestamp_ms": 1795438916063,
+          "charged_equals_executor": true,
+          "charged_gas": 4273741,
+          "charged_txs_in_block": 1,
+          "declared_gas": 10000000,
+          "executor_lc_verify_v3": {
+            "exit": "Halted(3)",
+            "metered_cycles": 4273741
+          },
+          "job_state_unchanged": true,
+          "payer": "5TKdNvpZNZ2w41kKAnp5f2wvQMNhMtW1e8UfeqLf9gv1",
+          "position": 0,
+          "reverted": true,
+          "step": "Finish",
+          "tx": "97fef6a89cb55e02d466d6e9c022b1c0102150862a29a43f19544fe9eed4b69d",
+          "wallet_message": "A7 Finish: tx 97fef6a89cb55e02d466d6e9c022b1c0102150862a29a43f19544fe9eed4b69d reverted in block 17571 (the panic code is in the sequencer log)"
+        }
+      ],
+      "update_bytes": 26872,
+      "update_sha256": "1a2f43e08fe7e3f3e2830fbb3e97e4673b1bada854d1ecd9c32819e688e23efd",
+      "what": "an update from a fabricated chain (our own keys, all 512 signed) sent to the real mainnet instance"
+    },
+    {
+      "after_control": true,
+      "case": "A8",
+      "code": "E14",
+      "diff_expected": "E14",
+      "exit_code": 14,
+      "head": {
+        "beacon_root": "cd6fec0789ceab089ea24dbed3d6d32a2b106de6a6404e799d1b7b0ef4cf2796",
+        "period": 1914,
+        "slot": 15679520,
+        "store_commitment": "133af17d1531a87fd267b522a2df7dfee218cf6d4b5e1e89a25ee3062007c8c3"
+      },
+      "instance": "A",
+      "instance_state_unchanged": true,
+      "job": "8GKwxRLoqpTxSGxtKLFm7vCnqPnK66pB7XKeFsLADeVV",
+      "native": {
+        "helios_0_12_0_verify": "ok",
+        "v1": "E14",
+        "v3_staged": {
+          "code": "E14",
+          "step": "Begin"
+        }
+      },
+      "refused_as_predicted": true,
+      "refused_at": "Begin",
+      "source": "mainnet/p1914/handoff/replay_after_apply",
+      "steps": [
+        {
+          "block": 17580,
+          "block_gas_used_exec": 3896289,
+          "block_timestamp_ms": 1795439051064,
+          "charged_equals_executor": true,
+          "charged_gas": 3896289,
+          "charged_txs_in_block": 1,
+          "declared_gas": 10000000,
+          "executor_lc_verify_v3": {
+            "exit": "Halted(14)",
+            "metered_cycles": 3896289
+          },
+          "job_state_unchanged": true,
+          "payer": "5TKdNvpZNZ2w41kKAnp5f2wvQMNhMtW1e8UfeqLf9gv1",
+          "position": 0,
+          "reverted": true,
+          "step": "Begin",
+          "tx": "b4182ccddf873a90c724e16ebfa8a8ed2c72ebf7aeb257cf8d23282575130d57",
+          "wallet_message": "A8 Begin: tx b4182ccddf873a90c724e16ebfa8a8ed2c72ebf7aeb257cf8d23282575130d57 reverted in block 17580 (the panic code is in the sequencer log)"
+        }
+      ],
+      "update_bytes": 26923,
+      "update_sha256": "514a3f8b89de55235c96dc94422e886f01535182ed8ca9fbb53c63a6e3113267",
+      "what": "replay: the update the positive control applied, sent again on the store it produced"
+    },
+    {
+      "after_control": false,
+      "case": "B1",
+      "code": "E04",
+      "diff_expected": "E04",
+      "exit_code": 4,
+      "head": {
+        "beacon_root": "65e364e4958f068daa5cedb2f59896bc3ca7111271744e759316abc2b580fc19",
+        "period": 1911,
+        "slot": 15654976,
+        "store_commitment": "6d00b43e883338557f0a76b68113ccfdc9fbd2fea94691bc6bde7473744ab08e"
+      },
+      "instance": "B",
+      "instance_state_unchanged": true,
+      "job": "DjLjL5zb1BWkFRHraffCtjko8DrTNk5PmfCrvyscpNQN",
+      "native": {
+        "helios_0_12_0_verify": "ok",
+        "v1": "E04",
+        "v3_staged": {
+          "code": "E04",
+          "step": "Begin"
+        }
+      },
+      "refused_as_predicted": true,
+      "refused_at": "Begin",
+      "source": "fabricated/participation341",
+      "steps": [
+        {
+          "block": 17584,
+          "block_gas_used_exec": 1997834,
+          "block_timestamp_ms": 1795439111063,
+          "charged_equals_executor": true,
+          "charged_gas": 1997834,
+          "charged_txs_in_block": 1,
+          "declared_gas": 10000000,
+          "executor_lc_verify_v3": {
+            "exit": "Halted(4)",
+            "metered_cycles": 1997834
+          },
+          "job_state_unchanged": true,
+          "payer": "5TKdNvpZNZ2w41kKAnp5f2wvQMNhMtW1e8UfeqLf9gv1",
+          "position": 0,
+          "reverted": true,
+          "step": "Begin",
+          "tx": "fa3766b649edd0fdbb22090efed3bc1b0224a7109b3d3bd100ddb4c794cdbb5c",
+          "wallet_message": "B1 Begin: tx fa3766b649edd0fdbb22090efed3bc1b0224a7109b3d3bd100ddb4c794cdbb5c reverted in block 17584 (the panic code is in the sequencer log)"
+        }
+      ],
+      "update_bytes": 26872,
+      "update_sha256": "2ed4c786d72bb343422310ad8329e9894efe0f72f92873a5f6f118d622264fd6",
+      "what": "341 of 512 signers, correctly signed by the chain's committee (below the 342 floor)"
+    },
+    {
+      "after_control": false,
+      "case": "B2",
+      "code": "E02",
+      "diff_expected": "E02",
+      "exit_code": 2,
+      "head": {
+        "beacon_root": "65e364e4958f068daa5cedb2f59896bc3ca7111271744e759316abc2b580fc19",
+        "period": 1911,
+        "slot": 15654976,
+        "store_commitment": "6d00b43e883338557f0a76b68113ccfdc9fbd2fea94691bc6bde7473744ab08e"
+      },
+      "instance": "B",
+      "instance_state_unchanged": true,
+      "job": "FiyRu31XU3DGTgtW9aSgyvnAVFwpQ3RaeaU9P8bgVE1B",
+      "native": {
+        "helios_0_12_0_verify": "ok",
+        "v1": "E02",
+        "v3_staged": {
+          "code": "E02",
+          "step": "Begin"
+        }
+      },
+      "refused_as_predicted": true,
+      "refused_at": "Begin",
+      "source": "fabricated/empty_finalized_junk_branch",
+      "steps": [
+        {
+          "block": 17586,
+          "block_gas_used_exec": 1830377,
+          "block_timestamp_ms": 1795439141063,
+          "charged_equals_executor": true,
+          "charged_gas": 1830377,
+          "charged_txs_in_block": 1,
+          "declared_gas": 10000000,
+          "executor_lc_verify_v3": {
+            "exit": "Halted(2)",
+            "metered_cycles": 1830377
+          },
+          "job_state_unchanged": true,
+          "payer": "5TKdNvpZNZ2w41kKAnp5f2wvQMNhMtW1e8UfeqLf9gv1",
+          "position": 0,
+          "reverted": true,
+          "step": "Begin",
+          "tx": "5a079d852ec975764c27aaf2dc7d6da42051d1c1ea2ec57dda979704e6a7630c",
+          "wallet_message": "B2 Begin: tx 5a079d852ec975764c27aaf2dc7d6da42051d1c1ea2ec57dda979704e6a7630c reverted in block 17586 (the panic code is in the sequencer log)"
+        }
+      ],
+      "update_bytes": 26872,
+      "update_sha256": "1a3edac2d6bd8f5d0e7b866c60a7944c5d40e0c06efa0b82294e86a4081ae8fe",
+      "what": "empty finalized header with a non-zero finality branch, correctly signed (Helios 0.12.0 verify passes this one)"
+    }
+  ],
+  "controls": [
+    {
+      "applied": true,
+      "case": "control A",
+      "finalized_slot_moved": true,
+      "head_after": {
+        "beacon_root": "cd6fec0789ceab089ea24dbed3d6d32a2b106de6a6404e799d1b7b0ef4cf2796",
+        "period": 1914,
+        "slot": 15679520,
+        "store_commitment": "133af17d1531a87fd267b522a2df7dfee218cf6d4b5e1e89a25ee3062007c8c3"
+      },
+      "head_before": {
+        "beacon_root": "36f87b35902dd9c77fdb2a5a046af268060638509f698a3c5dfad0d538ad0c9e",
+        "period": 1914,
+        "slot": 15679488,
+        "store_commitment": "bc46d60cd588449d9b0b21e9cb8d580e0d090febdcd40ea0637c8a28643c4e91"
+      },
+      "head_equals_v1": true,
+      "instance": "A",
+      "job": "AeUjZTVt6uMhL94jhWnQP3Pv1xJuhJQbcuHeFWkEQs36",
+      "participation": 511,
+      "steps": [
+        {
+          "block": 17573,
+          "block_gas_used_exec": 4309070,
+          "block_timestamp_ms": 1795438946062,
+          "charged_equals_executor": true,
+          "charged_gas": 4309070,
+          "charged_txs_in_block": 1,
+          "declared_gas": 9000000,
+          "executor_lc_verify_v3": {
+            "exit": "Halted(0)",
+            "metered_cycles": 4309070
+          },
+          "metered_cycles_chained_attest": 0,
+          "payer": "5TKdNvpZNZ2w41kKAnp5f2wvQMNhMtW1e8UfeqLf9gv1",
+          "position": 0,
+          "reverted": false,
+          "step": "Begin",
+          "tx": "7eaa486444027034fcd173bdd76d4f7aff027965c1b1da0b7bed082ac6295021"
+        },
+        {
+          "block": 17575,
+          "block_gas_used_exec": 5764775,
+          "block_timestamp_ms": 1795438976063,
+          "charged_equals_executor": true,
+          "charged_gas": 5764775,
+          "charged_txs_in_block": 1,
+          "declared_gas": 7000000,
+          "executor_lc_verify_v3": {
+            "exit": "Halted(0)",
+            "metered_cycles": 5764775
+          },
+          "metered_cycles_chained_attest": 0,
+          "payer": "5TKdNvpZNZ2w41kKAnp5f2wvQMNhMtW1e8UfeqLf9gv1",
+          "position": 0,
+          "reverted": false,
+          "step": "Miller",
+          "tx": "0b553e08e66c154b0b80112b9c1b482ad7c3561a220a83d371e900da86ada081"
+        },
+        {
+          "block": 17577,
+          "block_gas_used_exec": 4378929,
+          "block_timestamp_ms": 1795439006063,
+          "charged_equals_executor": true,
+          "charged_gas": 4378929,
+          "charged_txs_in_block": 1,
+          "declared_gas": 5500000,
+          "executor_lc_verify_v3": {
+            "exit": "Halted(0)",
+            "metered_cycles": 4378929
+          },
+          "metered_cycles_chained_attest": 79012,
+          "payer": "5TKdNvpZNZ2w41kKAnp5f2wvQMNhMtW1e8UfeqLf9gv1",
+          "position": 0,
+          "reverted": false,
+          "step": "Finish",
+          "tx": "79059ea72571b1f2a7db4dbbe6f83e4563294b878eb1e8ab150709897e2383e4"
+        }
+      ],
+      "update": "mainnet/p1914/handoff/valid (the untampered update of the A cases)",
+      "update_sha256": "514a3f8b89de55235c96dc94422e886f01535182ed8ca9fbb53c63a6e3113267"
+    },
+    {
+      "applied": true,
+      "case": "control B",
+      "finalized_slot_moved": true,
+      "head_after": {
+        "beacon_root": "a8363512717596a0defc70917e3c2938d9ab85a05540e01b14cc4a41baeb277d",
+        "period": 1911,
+        "slot": 15655040,
+        "store_commitment": "43bc241a10200132caba33828cd885a3473d4f8c8aff67a2863d33d3fbaf7b2f"
+      },
+      "head_before": {
+        "beacon_root": "65e364e4958f068daa5cedb2f59896bc3ca7111271744e759316abc2b580fc19",
+        "period": 1911,
+        "slot": 15654976,
+        "store_commitment": "6d00b43e883338557f0a76b68113ccfdc9fbd2fea94691bc6bde7473744ab08e"
+      },
+      "head_equals_v1": true,
+      "instance": "B",
+      "job": "MWJYAc9uqBdeqT6RBmS3B9QMuLBg4ScmfX4myitBuNg",
+      "participation": 342,
+      "steps": [
+        {
+          "block": 17588,
+          "block_gas_used_exec": 6327326,
+          "block_timestamp_ms": 1795439171062,
+          "charged_equals_executor": true,
+          "charged_gas": 6327326,
+          "charged_txs_in_block": 1,
+          "declared_gas": 9000000,
+          "executor_lc_verify_v3": {
+            "exit": "Halted(0)",
+            "metered_cycles": 6327326
+          },
+          "metered_cycles_chained_attest": 0,
+          "payer": "5TKdNvpZNZ2w41kKAnp5f2wvQMNhMtW1e8UfeqLf9gv1",
+          "position": 0,
+          "reverted": false,
+          "step": "Begin",
+          "tx": "1da58d41d16f602c90d01a7f5e463dc2dd716f1752502475761b1d7f4790a09c"
+        },
+        {
+          "block": 17590,
+          "block_gas_used_exec": 5765037,
+          "block_timestamp_ms": 1795439201063,
+          "charged_equals_executor": true,
+          "charged_gas": 5765037,
+          "charged_txs_in_block": 1,
+          "declared_gas": 7000000,
+          "executor_lc_verify_v3": {
+            "exit": "Halted(0)",
+            "metered_cycles": 5765037
+          },
+          "metered_cycles_chained_attest": 0,
+          "payer": "5TKdNvpZNZ2w41kKAnp5f2wvQMNhMtW1e8UfeqLf9gv1",
+          "position": 0,
+          "reverted": false,
+          "step": "Miller",
+          "tx": "50e3c6d372f0511a8b5d66284c43942f9132149e43a5d9b5dc74daa3787b01ea"
+        },
+        {
+          "block": 17592,
+          "block_gas_used_exec": 4378929,
+          "block_timestamp_ms": 1795439231063,
+          "charged_equals_executor": true,
+          "charged_gas": 4378929,
+          "charged_txs_in_block": 1,
+          "declared_gas": 5500000,
+          "executor_lc_verify_v3": {
+            "exit": "Halted(0)",
+            "metered_cycles": 4378929
+          },
+          "metered_cycles_chained_attest": 79012,
+          "payer": "5TKdNvpZNZ2w41kKAnp5f2wvQMNhMtW1e8UfeqLf9gv1",
+          "position": 0,
+          "reverted": false,
+          "step": "Finish",
+          "tx": "5b3b9fee660255a47f5816593c9146abd7e1ffb43dc80cb4f8219956d494bdbf"
+        }
+      ],
+      "update": "fabricated/participation342 (the untampered fabricated period update re-signed by the first 342 or all 512 members)",
+      "update_sha256": "2ee8a096f9017034b3312b838edfb0dc431ee8c2cdb546155daf8e128cb67b92"
+    }
+  ],
+  "executor_images": {
+    "attest": "9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d",
+    "lc_verify_v3": "cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510"
+  },
+  "instances": {
+    "A": {
+      "checkpoint_slot": 15679488,
+      "config_chain_id": 1,
+      "final_head": {
+        "beacon_root": "cd6fec0789ceab089ea24dbed3d6d32a2b106de6a6404e799d1b7b0ef4cf2796",
+        "period": 1914,
+        "slot": 15679520,
+        "store_commitment": "133af17d1531a87fd267b522a2df7dfee218cf6d4b5e1e89a25ee3062007c8c3"
+      },
+      "init": {
+        "block": 17547,
+        "tx": "627e8a73e8e6b77a09023dcca8ad20c915da54c5ccaf44f96acbf68cf0658a7e"
+      },
+      "instance": "EN2kJLFScTHMrzP4hjKbSmHm91qVPtKH1tM7ocKtU3hi",
+      "min_participants": 344,
+      "participation_floor": 344,
+      "source": "fixtures/pub/mainnet bootstrap_15679488 (real mainnet checkpoint, first slot of period 1914)",
+      "verifiers": [
+        "lc_verify_v3"
+      ]
+    },
+    "B": {
+      "checkpoint_slot": 15654976,
+      "config_chain_id": 1,
+      "final_head": {
+        "beacon_root": "a8363512717596a0defc70917e3c2938d9ab85a05540e01b14cc4a41baeb277d",
+        "period": 1911,
+        "slot": 15655040,
+        "store_commitment": "43bc241a10200132caba33828cd885a3473d4f8c8aff67a2863d33d3fbaf7b2f"
+      },
+      "init": {
+        "block": 17582,
+        "tx": "75cfbd4aeac12f6c1cecdfc6a228fde27c9d42982f97de86ec2dc89ca49e691a"
+      },
+      "instance": "FtGjSgggk1Yzpz5gZ4wQ79n3d3oeauuPLk6LW99tvmW",
+      "min_participants": 342,
+      "participation_floor": 342,
+      "source": "the differential test's fabricated chain (tests/diff_helios cases.rs fabricated_cases: FabChain seed beacon-veil/diff/v1, impersonating mainnet, checkpoint in period 1911); the store equals the store of the fabricated/* cases",
+      "verifiers": [
+        "lc_verify_v3"
+      ]
+    }
+  },
+  "note": "Codes: lc_verify_v3 refuses by exit code (the EsaError number), which LEZ charges by the cycles used; the sequencer does not log exit codes, so the code of each refused step is the exit of the deployed ELF re-executed in the RISC Zero executor on the same message and the job state read from the chain before the step (executor_lc_verify_v3.exit), and charged_gas equals its metered cycles when the step is alone in its block. native.v3_staged is the program logic (lc_v3::handle) on the same input; native.v1 is V1 (Helios 0.12.0 with our pre-checks) and native.helios_0_12_0_verify is unmodified Helios's verify_* on this instance's store and the same bytes. Refusal steps declare 10,000,000 gas (the refusal tool); the controls go through attest_host::submit_update_staged (9.0M, 7.0M, 5.5M).",
+  "programs": {
+    "attest": "735RSWK5eYrZDnpJVvpVwrkDa93AXQNS7avFjAUeWEH8",
+    "lc_verify_v3": "8niQPec4Ng9yrm17Aj3VFbtebrXPxd6JVhhdZsAXQ1Tq"
+  },
+  "rerun": "scripts/seq.sh pub start (dev mode unset) and the release set deployed (docs/PUBLIC-PATH.md, How to re-run); export BV_IDS=deploy/ids-pub.toml LEE_WALLET_HOME_DIR=<wallet on seq-pub> BV_PAYER=<funded public account> BV_ALLOW_REVERT=1; cargo build -p cost --bin v3_onchain; v3_onchain refusals-onchain --v3-elf <release>/lc_verify_v3.bin --attest-elf <release>/attest.bin --out refusals-onchain.json. Each run makes two fresh instances, so it gives new transaction hashes. v3_onchain check refusals-onchain.json re-reads the recorded transactions.",
+  "sequencer": "seq-pub",
+  "summary": {
+    "controls_applied": 2,
+    "every_refusal_reverted_with_predicted_exit_code": true,
+    "instance_state_unchanged_after_every_refusal": true,
+    "refusal_cases": 10,
+    "refused_at": {
+      "Begin": 7,
+      "Finish": 2,
+      "Miller": 1
+    },
+    "transactions": 21
+  },
+  "tool": "tools/cost v3_onchain refusals-onchain",
+  "what": "tampered light-client updates of the differential test (tests/diff_helios) sent to lc_verify_v3 on the public path (Begin, Miller, Finish; one public transaction each) on seq-pub (LEZ v0.4.0-rc3 standalone, RISC0_DEV_MODE unset: public transactions are executed by the sequencer, no proofs involved). Each case is sent step by step up to the step that refuses; the steps before it land, the refusing step is included and reverted, and the instance state is the same before and after the case. One untampered update per instance is then applied (positive control)."
+}
