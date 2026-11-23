@@ -1,0 +1,204 @@
+{
+ "what": "One real burn on seq-pub released on Sepolia through VaultChain.releaseChain, with the tip attested by CommitteeLezAnchor: 3 of 4 fixed signer keys, no owner. A Groth16 proof of guest burn_chain (unchanged, same image id) verified by the RISC Zero 3.1.0 verifier behind its emergency stop",
+ "label": "measured; Sepolia (chain id 11155111); real burn on seq-pub (dev mode off); stand-in signer set: four test keys, all ours",
+ "proven": "the burn transaction for this note is transaction 0 of LEZ block 6588 (hash 0x1dd1cb16031c1e7d5836420c9fc1f2e49e19efc66134885d4d1b125fc58c787f); the block does not list it as reverted; its bytes show the bridge program delivering Append{instance, token, denom, note} to the instance's accumulator; and blocks 6583..6593 are one unbroken hash chain from the pinned block 6583 (hash 0xd9c5232af729a98d1715a55fb617889b3b83fdbf977784f6b7cf42d628763d33) to the tip 6593 (hash 0xbf864fcacea33edb5c794bcd98353952cef4ac5696b085fd81b4224ef6cb247c)",
+ "attested": "that block 6593 with hash 0xbf864fcacea33edb5c794bcd98353952cef4ac5696b085fd81b4224ef6cb247c is on the real LEZ chain: at least 3 of 4 named keys signed (zone, block id, block hash) for this anchor on this chain (EIP-712); the deployer posted the signatures (anyone may); the anchor accepted the tip 600 s later. No key can change the set, and the anchor has no owner",
+ "not_proven": "that LEZ executed these blocks correctly (so 'not reverted' and 'sent by the bridge program' rest on the sequencer having run and verified the transaction); that the tip is final (our standalone sequencer reports every block as Pending, so there is no finality to read); and which chain is the real one, now on the word of 3 of 4 keys, not 1. All four keys are ours and all four signers read one sequencer, so today this is still one party. The keys are secp256k1 keys made for this test; LEZ's sequencer keys are Ed25519. This does not meet RFP-022's rule of no trusted signers",
+ "no_longer_trusted": "any single key, on this vault",
+ "signer_note": "four keys made for this test: all four keys are ours; four signer runs on one machine reading one sequencer (tools/bridge_cli/committee_sign.sh: each run recomputes every block hash from the served bytes and checks each link back to the pinned block before it signs)",
+ "test_arrangement": "three vaults on one LEZ instance: the same burn was released on vault v4 by the root route (evidence/bridge/real-burn-v4/), on a second test vault by the chain route with the one-key stub (evidence/bridge/chain-anchor/sepolia.json), and here on a third test vault. The nullifier is the same; each vault keeps its own nullifier map and pays from its own deposit, so the burn pays once per vault. This vault holds only the 0.001 ETH deposited for this release. A production instance has one vault, which holds that instance's deposits",
+ "lez": {
+  "sequencer": "seq-pub (LEZ v0.4.0-rc3, dev mode off), read only: getBlockRange, getBlock",
+  "burn_tx": "0x9b8e7dba01b2efe2b0e57d3e6779fad53acb38dc65b1cd309e8456730fd015cc",
+  "burn_block": 6588,
+  "burn_block_hash": "0x1dd1cb16031c1e7d5836420c9fc1f2e49e19efc66134885d4d1b125fc58c787f",
+  "tx_index": 0,
+  "pinned": 6583,
+  "pinned_hash": "0xd9c5232af729a98d1715a55fb617889b3b83fdbf977784f6b7cf42d628763d33",
+  "tip": 6593,
+  "tip_hash": "0xbf864fcacea33edb5c794bcd98353952cef4ac5696b085fd81b4224ef6cb247c",
+  "note": "0x80e26a6dfff9ea0d99becb9de8da4c322212051ade6723464a4a9f59f62b3bc1",
+  "block_bytes": [
+   711,
+   711,
+   711,
+   711,
+   255647,
+   711,
+   711,
+   711,
+   711,
+   53280
+  ]
+ },
+ "guest": {
+  "name": "burn_chain",
+  "image_id": "0x88c00a4e43fc6b8b7b776e7a540422d1c684251751940901ce3256eecbd26dd3",
+  "risc0": "3.1.0",
+  "executor_this_vault": {
+   "cycles_user": 1761615,
+   "segments_po2_20": 4,
+   "input_bytes": 314907,
+   "journal_equals_native": true
+  }
+ },
+ "proof": {
+  "mode": "groth16",
+  "segment_po2": 18,
+  "segments": 16,
+  "cycles_user": 1761615,
+  "prover_seconds": 2740.3,
+  "wall_s": 2740.26,
+  "max_rss_kib_time_v": 2423772,
+  "peak_tree_rss_kib_sampler": 2435800,
+  "cpu_pct": 654,
+  "load1_mean": 9.84,
+  "start_utc": "2026-11-23T11:14:38Z",
+  "end_utc": "2026-11-23T12:00:20Z",
+  "machine": "Intel(R) Core(TM) i5-10300H CPU @ 2.50GHz, 8 threads, 15 GiB RAM, 11 GiB swap, kernel 7.0.0-43-generic, risc0-r0vm 3.0.5",
+  "mem_start": "total 15823 MiB, available 7760 MiB; swap used 4317 MiB of 12147",
+  "memory_note": "time -v and the sampler cover r0vm and its children. The final Groth16 compression runs in RISC Zero's prover container (docker, outside that process tree), not measured here",
+  "alone": "the only proof on the machine, in its own scope under the proving lock, started after the build lock was free; other services kept running, so the wall time is not a quiet-machine figure",
+  "journal_hex": "evidence/bridge/committee-anchor/sepolia-journal.hex",
+  "seal_hex": "evidence/bridge/committee-anchor/sepolia-seal.hex"
+ },
+ "sepolia": {
+  "verifier": "0xA1DCB16cb765b3CA71605339F0C37Bfe0F60bA29",
+  "verifier_note": "RiscZeroVerifierEmergencyStop around RISC Zero Groth16 verifier 3.1.0 (selector 0xe71e6620)",
+  "committee_anchor": "0x095079fcB6F2f8d7A048CFd2dAC8044690aB9e1e",
+  "vault": "0x99899020305403c94d0695D945c6F64514886Bc5",
+  "signers": [
+   "0x81374b8946152e0D274b42d1036ddAD63779468c",
+   "0x9D3ccB2c174Ed7C918454C084fEBc9f3f5970424",
+   "0xbA3497DA38b73775D1A97103a251182578D59090",
+   "0xBb2BDB1e023EdFC75e2467599CEB33585aB616d6"
+  ],
+  "threshold": 3,
+  "delay_s": 600,
+  "zone": "0xab048e18d216e0df67177186e6de3ea106b87fcfd0e21f3e52d405c4473e8ef8",
+  "vault_tip_anchor": "0x095079fcB6F2f8d7A048CFd2dAC8044690aB9e1e",
+  "vault_root_anchor": "0x095079fcB6F2f8d7A048CFd2dAC8044690aB9e1e",
+  "admin": "0x523072A2aC5e5A3E51c107bc17995A3fa03dBD78",
+  "admin_note": "the vault's admin and freezer (as on the other test vaults); it has no role in the anchor",
+  "chain_image_id": "0x88c00a4e43fc6b8b7b776e7a540422d1c684251751940901ce3256eecbd26dd3",
+  "pinned_id": 6583,
+  "pinned_hash": "0xd9c5232af729a98d1715a55fb617889b3b83fdbf977784f6b7cf42d628763d33",
+  "lez_instance": "0xb9c51c4bd7493530202e80cdff38dbcb3cee9fb16ee4a694a4e6ff5adbc4a8c8",
+  "deploy": [
+   {
+    "tx": "0x86c649ebe51493e367dee7c9122d1f35f00e4f42253ca7f5cd5f972515987080",
+    "block": 12195327,
+    "gas": 8558428,
+    "status": 1,
+    "what": "CommitteeLezAnchor",
+    "contract": "0x095079fcb6f2f8d7a048cfd2dac8044690ab9e1e"
+   },
+   {
+    "tx": "0xe2c654ba41915d61fd27a91aa7378e44324ffbf277aaa953258f67814c46f160",
+    "block": 12195328,
+    "gas": 22652664,
+    "status": 1,
+    "what": "VaultChain",
+    "contract": "0x99899020305403c94d0695d945c6f64514886bc5"
+   },
+   {
+    "tx": "0xae96976f32484143a582da447b2d736512327939e758e455c24a4131288f71bd",
+    "block": 12195329,
+    "gas": 683373,
+    "status": 1,
+    "what": "registerToken(ETH)"
+   },
+   {
+    "tx": "0xc138c9c6a7943e576ba48245c49e611ce46a030214581f3473a357225b303d4d",
+    "block": 12195330,
+    "gas": 129523,
+    "status": 1,
+    "what": "bindLezInstance"
+   }
+  ],
+  "deposit": {
+   "tx": "0x66d42a072df7ad293ec48341a1ae6bcefeb899f87c888eac48833a0a69c1f9f8",
+   "block": 12195331,
+   "gas": 520917,
+   "status": 1
+  },
+  "attest_tip": {
+   "tx": "0x10dfc0f67f7480167faba83f1b57f92f594a75f56d68733526e32a5820f5e2cc",
+   "block": 12195555,
+   "gas": 264343,
+   "status": 1,
+   "signatures": 3,
+   "note": "sent by the deployer, which is not a signer"
+  },
+  "refusals": [
+   {
+    "tx": "0xb1af7f310df28ba7637344b522319a222c1b2406c0195871ee4f8acb8b683968",
+    "block": 12195335,
+    "gas": 43928,
+    "status": 0,
+    "what": "attestTip with 2 signatures of the 4",
+    "expected": "TooFewSignatures()"
+   },
+   {
+    "tx": "0x4cc8439dd84efe0bf32e9f88ac8d201495bd4ae8a12b48759b3078e610ceb5b5",
+    "block": 12195336,
+    "gas": 54168,
+    "status": 0,
+    "what": "attestTip with 2 members and a fresh key outside the set (0x31CcfBa911C5BAbd988762A75E1F2D822E4a1911)",
+    "expected": "NotASigner(address)"
+   },
+   {
+    "tx": "0x477da49426b1938d32346e79ce998f92f67438b892b218b1d44fdfa72994f6e4",
+    "block": 12195337,
+    "gas": 54168,
+    "status": 0,
+    "what": "attestTip with one member's signature twice and one other",
+    "expected": "SignersNotAscending()"
+   },
+   {
+    "tx": "0xe938a6c3977b80aff3d9aba136fb38d3bafff531c569e9f42ca5b92314b392e6",
+    "block": 12195338,
+    "gas": 54168,
+    "status": 0,
+    "what": "the tip's 3 valid signatures submitted for block 6592 instead of 6593",
+    "expected": "NotASigner(address)"
+   },
+   {
+    "tx": "0x07cff07d65b9fb4ed3c6688c5ef9b9d1deb02482a78685f8370df1a031933247",
+    "block": 12195556,
+    "gas": 54168,
+    "status": 0,
+    "what": "the same attestTip again after it was accepted",
+    "expected": "AlreadyAttested()"
+   },
+   {
+    "tx": "0xe9aab1b0fea6a1bd4980d07b3e019af4c61af82699ffec4358f55c38c7c16118",
+    "block": 12195557,
+    "gas": 72600,
+    "status": 0,
+    "what": "releaseChain with the real seal before the 600 s delay ended",
+    "expected": "TipNotFinal()"
+   },
+   {
+    "tx": "0xf5fb48693432533e862b3ec43767b624f33c62e5d0fb54aeaacb9463a859db5d",
+    "block": 12195607,
+    "gas": 72600,
+    "status": 0,
+    "what": "the same releaseChain again",
+    "expected": "AlreadyReleased()"
+   }
+  ],
+  "refusals_note": "each refusal was first simulated with cast call and its error selector matched, then sent with a fixed gas limit of 300,000 so that it is mined; a receipt does not carry the revert reason (the flow logs keep the simulated reasons)",
+  "release_chain": {
+   "tx": "0xbae00482e7dd62dfed0ffc03df5b8cb0a86102d04ef1227b6db5b4472b66d135",
+   "block": 12195606,
+   "gas": 654147,
+   "status": 1
+  },
+  "nullifier": "0x459558bea6bf8c11763d8f6d01edc5c8a99edd6b19a6f31152ca720018e7c711",
+  "nullifier_spent": "true",
+  "vault_balance_wei_after": "0",
+  "recipient": "0x523072a2ac5e5a3e51c107bc17995a3fa03dbd78",
+  "fee_to_relayer_wei": 10000000000000
+ }
+}
