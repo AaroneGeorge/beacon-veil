@@ -1,42 +1,58 @@
 G2 CI run: PASS
 repository: github.com/AaroneGeorge/beacon-veil (public; GitHub Actions, GitHub-hosted runners)
-url: https://github.com/AaroneGeorge/beacon-veil/actions/runs/44912393204
+url: https://github.com/AaroneGeorge/beacon-veil/actions/runs/45036470466
 workflow: ci (.github/workflows/ci.yml)
-run id: 44912393204
+run id: 45036470466
 event: push, branch main
-head commit: 2eb64232563bc347f2b6ff8d4fcddae00d936f18
-date: 2026-11-21, started 14:08:40Z, completed 14:26:08Z
+head commit: 233d4f583235ccdbd02d8cb8fde86a0fb3f52e6b
+date: 2026-11-22, started 15:06:43Z, completed 15:23:54Z
 conclusion: success
-runner image: ubuntu-24.04, image version 20261116.133.1 (all three jobs)
+runner image: ubuntu-24.04, image version 20261116.133.1 (forge test; fmt, clippy, nextest),
+              20261116.376.1 (guest build)
 
 jobs:
-  forge test                                        success   59s       (14:08:43Z - 14:09:42Z)
-  guest build (docker r0.1.91.1) + image-id check   success   5m 23s    (14:08:44Z - 14:14:07Z)
-  fmt, clippy, nextest (dev mode)                   success   17m 24s   (14:08:43Z - 14:26:07Z)
+  forge test                                        success   54s       (15:06:46Z - 15:07:40Z)
+  guest build (docker r0.1.91.1) + image-id check   success   5m 23s    (15:06:46Z - 15:12:09Z)
+  fmt, clippy, nextest (dev mode)                   success   17m 06s   (15:06:47Z - 15:23:53Z)
 
 tests:
-  forge test: 2 test suites, 44 tests passed, 0 failed
+  forge test: 4 test suites, 61 tests passed, 0 failed, 0 skipped
+    (Vault.t.sol 39, VaultChain.t.sol 12, BridgeVectors.t.sol 5, VaultChainSepolia.t.sol 5)
+  read-only endpoint tests (tools/seq_read/test_policy.py): 27 tests, OK
   nextest (host, guests skipped): 115 tests run: 115 passed, 4 skipped
   nextest, staged verifier V3 against V1 (e2e_chain --features v3): 15 tests run: 15 passed, 2 skipped
+  lez_chain (own workspace, crates/lez_chain): fmt and clippy clean; cargo test 11 passed, 0 failed
+    (unit 3, tests/fixtures.rs 3, tests/statement.rs 2, tests/synthetic.rs 3; doc-tests 0)
 
 guest build: every guest built from the committed tree by scripts/guests_release.sh in
 risczero/risc0-guest-builder:r0.1.91.1; lc_verify_v3 alone with $BV_V3_CARGO_CONFIG.
-Image ids compared by scripts/check_image_ids.sh against guests/IMAGE_IDS.expected.
+Image ids compared by scripts/check_image_ids.sh against guests/IMAGE_IDS.expected (7 guests).
+burn_proof is built too and not compared: guests/IMAGE_IDS.expected leaves it out on purpose (the vault uses
+its RISC Zero 3.1.0 build). burn_chain is not built in this job: it has its own docker build
+(guests/burn_chain/README.md). Every ELF is under the deployed-ELF cap of 1,966,080 bytes (largest: lc_verify,
+754,956 bytes).
 
-log line, step "Build all guests in the pinned image":
-2026-11-21T14:14:03.7914170Z lc_verify_v3.bin: user ELF 498916 bytes, bin 531340 bytes, image id cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510
+log lines, step "Build all guests in the pinned image":
+2026-11-22T15:06:59.8525189Z building guests of 233d4f583235ccdbd02d8cb8fde86a0fb3f52e6b in r0.1.91.1 (log: /home/runner/work/beacon-veil/.tmp/release-docker-233d4f583235/docker.log)
+2026-11-22T15:12:07.0463766Z lc_verify_v3.bin: user ELF 498916 bytes, bin 531340 bytes, image id cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510
 
 log lines, step "Image ids equal guests/IMAGE_IDS.expected":
-2026-11-21T14:14:03.8073915Z OK       attest 9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d
-2026-11-21T14:14:03.8089937Z OK       lc_verify c7b5f2191f133026017c09072e883217dfe3785450d40d081718b0fd204878ba
-2026-11-21T14:14:03.8105228Z OK       lc_verify_v2 18684beee3e973a2f1391c9bdb9108743c71e6f216bb5fba88bc0443403e8230
-2026-11-21T14:14:03.8119714Z OK       consumer_erc20 3f86d4c96631191e94edb5377fa559c0b24fd2409815c5f97ca752eaa7df0794
-2026-11-21T14:14:03.8134401Z OK       bridge fa3bd9c34fe6c82498396d99f9499688ec57e84463be2fc3abbe0bc944466fc5
-2026-11-21T14:14:03.8148530Z OK       bridge_dev_source 9866d2346df2a2b3cd2214b07777182f5d1e75cac355d88ba45961543ecc3ca5
-2026-11-21T14:14:03.8162904Z OK       lc_verify_v3 cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510
+2026-11-22T15:12:07.0611301Z OK       attest 9db697677084d5c29308f11ab7d1a272c772aedbdd64bad876184dfb5759578d
+2026-11-22T15:12:07.0631492Z OK       lc_verify c7b5f2191f133026017c09072e883217dfe3785450d40d081718b0fd204878ba
+2026-11-22T15:12:07.0651441Z OK       lc_verify_v2 18684beee3e973a2f1391c9bdb9108743c71e6f216bb5fba88bc0443403e8230
+2026-11-22T15:12:07.0671409Z OK       consumer_erc20 3f86d4c96631191e94edb5377fa559c0b24fd2409815c5f97ca752eaa7df0794
+2026-11-22T15:12:07.0691446Z OK       bridge fa3bd9c34fe6c82498396d99f9499688ec57e84463be2fc3abbe0bc944466fc5
+2026-11-22T15:12:07.0711239Z OK       bridge_dev_source 9866d2346df2a2b3cd2214b07777182f5d1e75cac355d88ba45961543ecc3ca5
+2026-11-22T15:12:07.0730972Z OK       lc_verify_v3 cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510
 
 log line, step "lc_verify_v3 built with its shim setting and its image id checked":
-2026-11-21T14:14:03.8416149Z OK       lc_verify_v3 cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510
+2026-11-22T15:12:07.1013899Z OK       lc_verify_v3 cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510
 
-The run is on commit 2eb6423. The commits after it that carry this record change only evidence, broadcast records
-and documentation, no code, test or workflow file.
+log lines, step "forge test" (summary):
+2026-11-22T15:07:01.4697921Z Ran 4 test suites in 20.18ms (37.83ms CPU time): 61 tests passed, 0 failed, 0 skipped (61 total tests)
+
+Earlier record: run 44912393204 on commit 2eb6423 (2026-11-21), also green. The commits after 2eb6423 added
+tests, Foundry suites and the lez_chain CI step, so this run replaces it.
+
+The run is on commit 233d4f5, the head of main when it ran. The commit that carries this record changes only this
+record, README.md and docs/COVERAGE-021.md: no code, test or workflow file.
