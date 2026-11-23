@@ -59,6 +59,5 @@ lez-v03/scripts/build_guests.sh docker                     # image ids, compare 
 cd lez-v03 && scripts/build_guests.sh local && cargo test --profile host --locked -p v03_harness
 ```
 
-The record of the public run is `evidence/public-testnet/`. On 2026-11-23 it holds stage 1 only (deployment and
-`Init`, `run.json` marked `"stage": "deploy+init"`); no update has been sent yet (`docs/PUBLIC-TESTNET.md`, Sent so
-far).
+The record of the public run is `evidence/public-testnet/`. It holds the whole minimal run of 2026-11-23: deployment,
+`Init`, one finality update and one refusal, 17 transactions (`docs/PUBLIC-TESTNET.md`, Sent).

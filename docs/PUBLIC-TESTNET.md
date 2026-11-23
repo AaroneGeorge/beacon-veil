@@ -1,9 +1,9 @@
 # The public update path on LEZ testnet 0.3
 
-Status: written 2026-11-22, updated 2026-11-23. **Partly sent.** Both programs are deployed on the public testnet
-and one Sepolia instance is initialised there (13 transactions, blocks 85,572 to 85,597, 2026-11-23). **No update has
-been applied on the public testnet yet**, and the refusal demo is not sent: the rest of the run waits for funds (see
-"Sent so far"). Everything else on this page is simulation, and says so.
+Status: written 2026-11-22, updated 2026-11-23. **Sent.** Both programs are deployed on the public testnet, one
+Sepolia instance is initialised there, **one finality update is applied** (instance head slot 11,640,832 to 11,641,504)
+and one transaction meant to be refused was refused with the instance unchanged: 17 transactions, blocks 85,572 to
+85,754, 2026-11-23 (see "Sent"). Everything else on this page is simulation, and says so.
 
 ## The network
 
@@ -59,7 +59,7 @@ units; with the reserve of the largest step the payer needs at least 438,448,648
 simulates again against freshly read accounts, sends only if the transaction applies, declares at most 9,000,000 gas,
 sends one transaction per block and makes at most one RPC request a second.
 
-## Sent so far (stage 1 of the minimal run)
+## Sent (the minimal run, in two stages)
 
 The run is sent in the mode `minimal`: deploy both programs, `Init` a Sepolia instance from a checkpoint of the current
 sync-committee period, apply **one** finality update as `Begin`, `Miller`, `Finish`, then send one transaction meant to
@@ -67,8 +67,7 @@ be refused. The faucet pays 100,000,000 units per recipient per 24 h, which cove
 the whole run, so it is sent in two stages.
 
 Stage 1, sent on 2026-11-23 between 12:40 and 13:52 UTC by `bv-v03 deploy` and `bv-v03 init` from the payer
-`4kST35tNxNnvQBUdLJga7EMe4DQbeX3Gjfeauw2cAwMm` (record: `evidence/public-testnet/`, `run.json` marked
-`"stage": "deploy+init"`):
+`4kST35tNxNnvQBUdLJga7EMe4DQbeX3Gjfeauw2cAwMm` (record: `evidence/public-testnet/`):
 
 | Part | Transactions | Blocks | Fee paid, units |
 |---|---|---|---|
@@ -82,26 +81,43 @@ Stage 1, sent on 2026-11-23 between 12:40 and 13:52 UTC by `bv-v03 deploy` and `
 - Fees are read from the payer's balance before and after each transaction (100,000,000 before, 52,518,976 after),
   at base fees 8 and 8. The deployment pays only for its 860,132 bytes. `Init` was charged for 5,048,787 cycles
   (derived from the balance: (fee - bytes x 8) / 8), equal to its simulated cycles.
-- The instance head is still the checkpoint (slot 11,640,832): nothing has moved it yet.
-- `verify.sh` on 2026-11-23 at about 13:58 UTC: 63 checks passed, 0 failed; the sequencer gave each of the 13
-  transactions in the block `txs.tsv` names, and each block contains its bytes. The sequencer showed those 13 blocks
-  as `Pending` on the Logos Blockchain at that time (an older block, 85,012, showed `Finalized`).
-  `verify_offline.py`: 33 checks passed. `mutation_test.sh`: 4 of 4 changes caught.
 - The faucet's status reports the network's LEZ release as `v0.3.1`; Logos's endpoint table says `v0.3.2`. The client
   simulates with LEZ v0.3.2's state machine; all 13 transactions took effect on the testnet as simulated (the two
   headers and the instance state read back as recorded).
 
-Still to send (stage 2): the finality update at slot 11,641,568 as `Begin`, `Miller`, `Finish` (3 transactions) and
-the refusal demo (1 transaction), whose fees simulate to 105,331,440 units at base fees 8 and 8 (`bv-v03 plan` at
-block 85,554), more than the 52,518,976 left. They are sent after the next faucet payment (expected about
-2026-11-24 12:20 UTC); the record in `evidence/public-testnet/` is then replaced by the record of the whole run,
-without the stage marker, and `verify.sh` then checks the update and the refusal as well.
+Stage 2, sent on 2026-11-23 between 18:42 and 19:00 UTC by `bv-v03 update --max 1` and `bv-v03 refuse-demo`:
+
+| Part | Transaction | Block | Bytes | Cycles (simulated = charged) | Fee paid, units |
+|---|---|---|---|---|---|
+| `Begin` of the finality update at attested slot 11,641,568 | `ec330ef5...376634` | 85,746 | 29,344 | 2,780,396 | 22,477,920 |
+| `Miller` | `9854f067...dc021` | 85,748 | 297 | 5,785,760 | 46,288,456 |
+| `Finish`: the update applies; the instance head moves from slot 11,640,832 to 11,641,504 | `c591b135...199f0` | 85,751 | 906 | 4,472,624 | 35,788,240 |
+| The same `Finish` sent again: refused with exit code 14, the instance unchanged (it pays its fee) | `b35b0ba2...9f258a` | 85,754 | 906 | 96,197 | 776,824 |
+| Total | 4 | | | | 105,331,440 |
+
+- Stage 2 cost exactly what `bv-v03 plan` simulated at block 85,554 (105,331,440 units at base fees 8 and 8), and
+  each step was charged its simulated cycles (derived from the payer's balance before and after, as above).
+- After the `Finish`, the instance account on the testnet holds the head slot 11,641,504 and its beacon block root
+  `17dc7af1...bebba3`; `run.json` records the instance state read back from the testnet, and the checkpoint and head
+  records.
+- Funds for stage 2: the payer's own faucet window was still closed, so one faucet payment went to a second account
+  (`ChGA4puYvTfthQT3ZAMLoBGKzg3YJntxYiTDiPord7a8`, claim transaction `fb8fec29...763d7d`) and 95,000,000 units were
+  moved to the payer by a native transfer (`17bbbcb8...97ef7a`, block 85,741; `bv-v03 transfer`). The payer held
+  147,518,976 before stage 2 and 42,187,536 after. `run.json` (`mode_choice`) records both stages and this funding.
+
+Checks of the whole record on 2026-11-23 at about 19:10 UTC:
+- `verify.sh` (against the testnet): 81 checks passed, 0 failed. The sequencer gives each of the 17 transactions in
+  the block `txs.tsv` names, each block contains its bytes, both program headers are immutable with the expected
+  image ids, and the instance state read now equals the recorded one. The sequencer showed all 17 blocks as
+  `Pending` on the Logos Blockchain at that time.
+- `verify_offline.py` (no network): 42 checks passed. `mutation_test.sh`: 4 of 4 changes to a copy of the record
+  caught.
 
 ## Funds
 
 The payer is funded from the LEZ v0.3 testnet claim service (`logos-co/lez-faucet`), which pays 100,000,000 units per
-recipient per 24 h; the first payment arrived on 2026-11-23. Paying account:
-`4kST35tNxNnvQBUdLJga7EMe4DQbeX3Gjfeauw2cAwMm`.
+recipient per 24 h; the first payment arrived on 2026-11-23, and a second payment, to a second account, was moved to
+the payer for stage 2 (see "Sent"). Paying account: `4kST35tNxNnvQBUdLJga7EMe4DQbeX3Gjfeauw2cAwMm`.
 
 ## Re-check
 
@@ -110,8 +126,7 @@ cd lez-v03 && scripts/build_guests.sh local && cargo test --profile host --locke
 lez-v03/scripts/build_guests.sh docker        # image ids, compare with guests/IMAGE_IDS.v03.expected (built twice, equal)
 ```
 
-The record so far: `lez-v03/scripts/verify.sh` (against the testnet),
+The record: `lez-v03/scripts/verify.sh` (against the testnet),
 `python3 -I lez-v03/scripts/verify_offline.py evidence/public-testnet` (no network) and
-`lez-v03/scripts/mutation_test.sh` (four changes to a copy of the record, each must fail `verify.sh`). For a record
-marked `"stage": "deploy+init"`, `verify.sh` checks that it holds the deployment and `Init` only and that the instance
-head is still the checkpoint, in place of the update and refusal checks.
+`lez-v03/scripts/mutation_test.sh` (four changes to a copy of the record, each must fail `verify.sh`). (A record marked
+`"stage": "deploy+init"`, as the stage-1 record was, is checked for the deployment and `Init` only.)

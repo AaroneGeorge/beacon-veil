@@ -100,6 +100,14 @@ enum Cmd {
         #[arg(long)]
         data: PathBuf,
     },
+    /// Move `amount` lepta of the home payer's native balance to `to` (a public native transfer; the home payer
+    /// signs and pays the fee). Used to top up a run's payer from a second funded account.
+    Transfer {
+        #[arg(long)]
+        to: String,
+        #[arg(long)]
+        amount: u128,
+    },
     /// Write the evidence folder from the home's progress and the chain's state.
     Record {
         #[arg(long)]
@@ -1157,6 +1165,27 @@ fn main() -> Result<()> {
         Cmd::Update { data, max } => c.update(data, *max)?,
         Cmd::RefuseDemo { data } => c.refuse_demo(data)?,
         Cmd::Record { data, out } => c.record(data, out)?,
+        Cmd::Transfer { to, amount } => {
+            let to: AccountId = to
+                .trim_start_matches("Public/")
+                .parse()
+                .map_err(|e| anyhow!("--to: {e:?}"))?;
+            ensure!(to != c.payer_id, "--to is the home payer itself");
+            let ix = borsh::to_vec(&lee_core::native_token::Instruction::Transfer { amount: *amount })?;
+            let sel = vec![
+                ProgramShardSelector::new(c.payer_id, lee_core::native_token::NATIVE_TOKEN_PROGRAM_ID),
+                ProgramShardSelector::new(to, lee_core::native_token::NATIVE_TOKEN_PROGRAM_ID),
+            ];
+            let s = c.send(
+                "transfer",
+                lee_core::native_token::NATIVE_TOKEN_PROGRAM_ID,
+                sel,
+                ix,
+                &[],
+                None,
+            )?;
+            println!("{} block {} to {} now {}", s.hash, s.block, to, c.rpc.balance(&to)?);
+        }
     }
     eprintln!("{} RPC requests", c.rpc.calls.get());
     Ok(())
