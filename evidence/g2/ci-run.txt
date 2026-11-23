@@ -33,7 +33,7 @@ its RISC Zero 3.1.0 build). burn_chain is not built in this job: it has its own 
 754,956 bytes).
 
 log lines, step "Build all guests in the pinned image":
-2026-11-22T15:06:59.8525189Z building guests of 233d4f583235ccdbd02d8cb8fde86a0fb3f52e6b in r0.1.91.1 (log: /home/runner/work/beacon-veil/.tmp/release-docker-233d4f583235/docker.log)
+2026-11-22T15:06:59.8525189Z building guests of 233d4f583235ccdbd02d8cb8fde86a0fb3f52e6b in r0.1.91.1 (log: <runner work dir>/.tmp/release-docker-233d4f583235/docker.log)
 2026-11-22T15:12:07.0463766Z lc_verify_v3.bin: user ELF 498916 bytes, bin 531340 bytes, image id cc8acbc5226d77734cef3013f28838f2df268469e95ed2bd680a6620ff934510
 
 log lines, step "Image ids equal guests/IMAGE_IDS.expected":
