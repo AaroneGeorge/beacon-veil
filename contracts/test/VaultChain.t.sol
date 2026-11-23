@@ -9,6 +9,7 @@ import {Vault} from "../src/Vault.sol";
 import {VaultChain} from "../src/VaultChain.sol";
 import {StubLezAnchor} from "../src/StubLezAnchor.sol";
 import {StubLezTipAnchor} from "../src/StubLezTipAnchor.sol";
+import {CommitteeLezAnchor} from "../src/CommitteeLezAnchor.sol";
 import {MockToken} from "./mocks/Tokens.sol";
 
 /// The chain route of `VaultChain` with RISC Zero's mock verifier, and the journals guest `burn_chain` produced in the
@@ -366,5 +367,92 @@ contract VaultChainTest is Test {
         v.releaseChain(_seal(journal), journal);
         assertEq(MockToken(j.token).balanceOf(j.recipient), 100e6);
         assertTrue(v.burnNullifierSpent(j.nullifier));
+    }
+
+    // ---------------------------------------------------------------- the chain route through CommitteeLezAnchor
+
+    /// A vault whose root anchor and tip anchor are both one `CommitteeLezAnchor` (4 test keys, threshold 3), so no
+    /// single key moves either route; the journal names this vault.
+    function _committeeVault() internal returns (VaultChain v, CommitteeLezAnchor c, uint256[] memory pks) {
+        pks = new uint256[](4);
+        address[] memory s = new address[](4);
+        for (uint256 i = 0; i < 4; i++) {
+            pks[i] = 0xC0 + i;
+            s[i] = vm.addr(pks[i]);
+        }
+        for (uint256 i = 1; i < 4; i++) {
+            for (uint256 j = i; j > 0 && s[j] < s[j - 1]; j--) {
+                (s[j], s[j - 1]) = (s[j - 1], s[j]);
+                (pks[j], pks[j - 1]) = (pks[j - 1], pks[j]);
+            }
+        }
+        c = new CommitteeLezAnchor(s, 3, DELAY, LEZ_ZONE);
+        v = new VaultChain(
+            verifier,
+            c,
+            BURN_IMAGE_ID,
+            LEZ_ZONE,
+            LEZ_PROGRAM,
+            admin,
+            1 days,
+            VaultChain.ChainRoute(c, CHAIN_IMAGE_ID, PINNED_ID, PINNED_HASH)
+        );
+        vm.startPrank(admin);
+        v.bindLezInstance(LEZ_INSTANCE);
+        v.registerToken(v.NATIVE(), _denoms(DENOM), 10 ether, 0.02 ether);
+        vm.stopPrank();
+        vm.prank(user);
+        v.deposit{value: DENOM}(v.NATIVE(), 0, bytes32(0));
+    }
+
+    function _committeeAttest(CommitteeLezAnchor c, uint256[] memory pks) internal {
+        bytes32 d = c.tipDigest(TIP_ID, TIP_HASH);
+        bytes[] memory sigs = new bytes[](3);
+        for (uint256 i = 0; i < 3; i++) {
+            (uint8 v_, bytes32 r, bytes32 s_) = vm.sign(pks[i + 1], d);
+            sigs[i] = abi.encodePacked(r, s_, v_);
+        }
+        vm.prank(relayer); // anyone may submit
+        c.attestTip(TIP_ID, TIP_HASH, sigs);
+    }
+
+    function _committeeJournal(VaultChain v) internal view returns (bytes memory) {
+        VaultChain.ChainJournal memory j = _j(keccak256("committee"));
+        j.vault = address(v);
+        return _enc(j);
+    }
+
+    function test_chainReleaseThroughCommitteeAnchor() public {
+        (VaultChain v, CommitteeLezAnchor c, uint256[] memory pks) = _committeeVault();
+        assertEq(address(v.tipAnchor()), address(c));
+        assertEq(address(v.anchor()), address(c));
+        _committeeAttest(c, pks);
+        vm.warp(vm.getBlockTimestamp() + DELAY);
+        bytes memory journal = _committeeJournal(v);
+        bytes memory seal = _seal(journal);
+        uint256 r0 = recipient.balance;
+        vm.prank(relayer);
+        v.releaseChain(seal, journal);
+        assertEq(recipient.balance - r0, DENOM - FEE);
+        assertEq(relayer.balance, FEE);
+        assertTrue(v.burnNullifierSpent(keccak256("committee")));
+        vm.expectRevert(Vault.AlreadyReleased.selector);
+        v.releaseChain(seal, journal);
+    }
+
+    function test_chainReleaseRefusedBeforeCommitteeDelay() public {
+        (VaultChain v, CommitteeLezAnchor c, uint256[] memory pks) = _committeeVault();
+        bytes memory journal = _committeeJournal(v);
+        bytes memory seal = _seal(journal);
+        vm.expectRevert(VaultChain.TipNotFinal.selector); // not attested
+        v.releaseChain(seal, journal);
+        _committeeAttest(c, pks);
+        vm.warp(vm.getBlockTimestamp() + DELAY - 1);
+        vm.expectRevert(VaultChain.TipNotFinal.selector); // inside the delay
+        v.releaseChain(seal, journal);
+        vm.warp(vm.getBlockTimestamp() + 1);
+        vm.prank(relayer);
+        v.releaseChain(seal, journal);
+        assertTrue(v.burnNullifierSpent(keccak256("committee")));
     }
 }
