@@ -14,6 +14,10 @@ Online (--rpc URL), at most one request a second:
      each as Begin, Miller, Finish; the instance head slot is above the checkpoint slot;
   5. the refused transaction (expected_exit set) is in a block and nothing after the last Finish changed the
      instance (its state equals run.json, recorded after the refusal).
+A run sent in stages is recorded after each stage. A record whose run.json says "stage": "deploy+init" (the deployment
+and Init sent, nothing else yet) is checked for exactly that instead of 4 and 5: txs.tsv holds the deployment
+transactions and one Init and nothing else, and the instance head is still the checkpoint. Without "stage" (the record
+of the finished run) every check above applies; any other "stage" fails.
 Offline (--offline): the same files without the network: hashes of the saved raw bytes, blocks containing them,
 block ids, IMAGE_IDS against deployment.json, run.json's instance state decoding to the recorded head.
 """
@@ -197,22 +201,40 @@ def main():
     c.check(head["slot"] == run["head_slot"] and head["store_commitment"] == run["store_commitment"],
             f"run.json instance state decodes to head slot {head['slot']}")
     c.check(cfg["checkpoint_slot"] == run["checkpoint_slot"], f"checkpoint slot {cfg['checkpoint_slot']}")
-    c.check(head["slot"] > cfg["checkpoint_slot"],
-            f"finalized slot moved: {cfg['checkpoint_slot']} -> {head['slot']}")
     c.check(cfg["verifiers"] == [run["lc_verify_v3_v03"]], "the instance's only verifier is lc_verify_v3_v03")
 
-    steps = [t for t in txs if t["step"].split(" ")[-1] in ("Begin", "Miller", "Finish") and t["expected_exit"] == "-"]
-    by_update = {}
-    for t in steps:
-        u, s = t["step"].rsplit(" ", 1)
-        by_update.setdefault(u, []).append(s)
-    full = [u for u, s in by_update.items() if s == ["Begin", "Miller", "Finish"]]
-    mode = run.get("mode")
-    need = {"minimal": 1, "medium": 2, "full": 3}.get(mode, 2)
-    c.check((len(full) == need if mode else len(full) >= need) and len(full) == len(by_update),
-            f"{len(full)} updates applied, each as Begin, Miller, Finish ({', '.join(full)}); mode {mode or '-'} needs {need}")
-    refusals = [t for t in txs if t["expected_exit"] != "-"]
-    c.check(len(refusals) >= 1, f"{len(refusals)} refused transaction(s) recorded")
+    stage = run.get("stage")
+    if stage is None:
+        c.check(head["slot"] > cfg["checkpoint_slot"],
+                f"finalized slot moved: {cfg['checkpoint_slot']} -> {head['slot']}")
+        steps = [t for t in txs
+                 if t["step"].split(" ")[-1] in ("Begin", "Miller", "Finish") and t["expected_exit"] == "-"]
+        by_update = {}
+        for t in steps:
+            u, s = t["step"].rsplit(" ", 1)
+            by_update.setdefault(u, []).append(s)
+        full = [u for u, s in by_update.items() if s == ["Begin", "Miller", "Finish"]]
+        mode = run.get("mode")
+        need = {"minimal": 1, "medium": 2, "full": 3}.get(mode, 2)
+        c.check((len(full) == need if mode else len(full) >= need) and len(full) == len(by_update),
+                f"{len(full)} updates applied, each as Begin, Miller, Finish ({', '.join(full)}); "
+                f"mode {mode or '-'} needs {need}")
+        refusals = [t for t in txs if t["expected_exit"] != "-"]
+        c.check(len(refusals) >= 1, f"{len(refusals)} refused transaction(s) recorded")
+    elif stage == "deploy+init":
+        print("partial record (stage deploy+init): no update and no refusal sent yet; checking exactly that")
+        deploy_hashes = {h for p in dep["programs"].values() for h in p["txs"]}
+        deploy = [t for t in txs if t["step"].startswith("deploy ")]
+        init = [t for t in txs if t["step"] == "Init"]
+        c.check(len(deploy) + len(init) == len(txs) and len(init) == 1
+                and {t["hash"] for t in deploy} == deploy_hashes
+                and all(t["expected_exit"] == "-" for t in txs),
+                f"txs.tsv holds the {len(deploy)} deployment transactions of deployment.json and one Init, "
+                "nothing else")
+        c.check(head["slot"] == cfg["checkpoint_slot"] and head["beacon_root"] == cfg["checkpoint_root"],
+                f"the instance head is the checkpoint (slot {head['slot']}): no update applied")
+    else:
+        c.check(False, f"run.json stage {stage!r} is known")
 
     # Saved bytes.
     for t in txs:

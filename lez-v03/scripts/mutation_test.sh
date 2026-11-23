@@ -39,6 +39,7 @@ d = json.load(open("deployment.json")); p = d["programs"]["lc_verify_v3_v03"]; i
 p["image_id"] = i[:-1] + ("0" if i[-1] != "0" else "1")
 json.dump(d, open("deployment.json", "w"), indent=2)
 l = [x.split() for x in open("IMAGE_IDS") if x.strip()]
-open("IMAGE_IDS", "w").write("".join(f"{n} {p[\"image_id\"] if n == \"lc_verify_v3_v03\" else v}\n" for n, v in l))'
+new = p["image_id"]
+open("IMAGE_IDS", "w").write("".join(n + " " + (new if n == "lc_verify_v3_v03" else v) + "\n" for n, v in l))'
 echo "$((4 - fails)) of 4 changes caught"
 [ "$fails" -eq 0 ]
