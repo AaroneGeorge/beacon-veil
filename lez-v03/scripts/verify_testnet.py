@@ -10,7 +10,8 @@ Online (--rpc URL), at most one request a second:
   2. the instance shard equals run.json instance_state_hex; each record shard equals run.json records[].bytes_hex;
   3. every transaction of txs.tsv: getTransaction(hash) returns it in the block txs.tsv names, its bytes hash to
      the hash, and the block (getBlock) contains its bytes; the block's Bedrock status is printed;
-  4. at least 2 updates applied, each as Begin, Miller, Finish; the instance head slot is above the checkpoint slot;
+  4. exactly the updates of run.json's mode applied (minimal 1, medium 2, full 3; at least 2 when no mode is recorded),
+     each as Begin, Miller, Finish; the instance head slot is above the checkpoint slot;
   5. the refused transaction (expected_exit set) is in a block and nothing after the last Finish changed the
      instance (its state equals run.json, recorded after the refusal).
 Offline (--offline): the same files without the network: hashes of the saved raw bytes, blocks containing them,
@@ -206,8 +207,10 @@ def main():
         u, s = t["step"].rsplit(" ", 1)
         by_update.setdefault(u, []).append(s)
     full = [u for u, s in by_update.items() if s == ["Begin", "Miller", "Finish"]]
-    c.check(len(full) >= 2 and len(full) == len(by_update),
-            f"{len(full)} updates applied, each as Begin, Miller, Finish ({', '.join(full)})")
+    mode = run.get("mode")
+    need = {"minimal": 1, "medium": 2, "full": 3}.get(mode, 2)
+    c.check((len(full) == need if mode else len(full) >= need) and len(full) == len(by_update),
+            f"{len(full)} updates applied, each as Begin, Miller, Finish ({', '.join(full)}); mode {mode or '-'} needs {need}")
     refusals = [t for t in txs if t["expected_exit"] != "-"]
     c.check(len(refusals) >= 1, f"{len(refusals)} refused transaction(s) recorded")
 
