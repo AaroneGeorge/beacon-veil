@@ -6,6 +6,8 @@
 //! v3_onchain check run.json [run.json ...]
 //! v3_onchain check-images <release IMAGE_IDS>
 //! BV_ALLOW_REVERT=1 v3_onchain refusals --out refusals.json     # refused steps as real transactions
+//! BV_ALLOW_REVERT=1 v3_onchain refusals-onchain --v3-elf P --attest-elf P --out refusals-onchain.json
+//!                                                               # tampered updates of the differential test
 //! v3_onchain annotate --v3-elf P --seq-log P FILE...            # read-only: payer, fee, codes into the records
 //! ```
 //!
@@ -18,6 +20,11 @@
 //! block holds, and the metered cycles of the same step re-executed in the RISC Zero executor with the deployed ELFs
 //! (`lc_verify_v3` itself, plus the chained `attest.Apply` and `WriteRecord` for `Finish`). After each update the
 //! instance head on chain must equal V1's (Helios 0.12.0 unmodified, native) head for the same input.
+//!
+//! `refusals-onchain` sends tampered updates taken from the differential test (`tests/diff_helios`) to two fresh
+//! instances, step by step up to the step where the program logic refuses them, and records each transaction, the
+//! exit code of the deployed ELF re-executed on the same message and job state, and that the instance state did not
+//! move; then one untampered update per instance applies (positive control). The cases are [`SPECS`].
 //!
 //! `check` re-reads every recorded transaction from the sequencer RPC: same block, same position, not reverted, same
 //! program and step, same charged gas in the block's fee summary; and the instance head equals the recorded one.
@@ -74,6 +81,8 @@ struct TxInBlock {
     charged_txs: usize,
     to: Actor,
     message: Vec<u8>,
+    /// `(payer, declared gas)` of the transaction's fee declaration.
+    fee: Option<(AccountId, u64)>,
 }
 
 async fn tx_in_block(w: &attest_host::Wallet, hash: &str) -> Result<TxInBlock> {
@@ -97,7 +106,11 @@ async fn tx_in_block(w: &attest_host::Wallet, hash: &str) -> Result<TxInBlock> {
             common::transaction::LeeTransaction::Public(p) => {
                 let ex = &p.message.execution;
                 if i == position {
-                    root = Some((ex.root.to, ex.root.message.clone()));
+                    root = Some((
+                        ex.root.to,
+                        ex.root.message.clone(),
+                        ex.fee.as_ref().map(|f| (f.payer, f.gas_limit)),
+                    ));
                 }
                 if ex.fee.is_some() {
                     charged += 1;
@@ -111,7 +124,7 @@ async fn tx_in_block(w: &attest_host::Wallet, hash: &str) -> Result<TxInBlock> {
             common::transaction::LeeTransaction::PrivacyPreserving(_) => charged += 1,
         }
     }
-    let (to, message) = root.ok_or_else(|| anyhow!("tx {hash} is not a public transaction"))?;
+    let (to, message, fee) = root.ok_or_else(|| anyhow!("tx {hash} is not a public transaction"))?;
     Ok(TxInBlock {
         block: block_id,
         position,
@@ -122,6 +135,7 @@ async fn tx_in_block(w: &attest_host::Wallet, hash: &str) -> Result<TxInBlock> {
         charged_txs: charged,
         to,
         message,
+        fee,
     })
 }
 
@@ -527,6 +541,10 @@ async fn check(paths: &[String]) -> Result<()> {
     let mut n = 0;
     for p in paths {
         let doc: Value = serde_json::from_slice(&std::fs::read(p).with_context(|| p.clone())?)?;
+        if doc.get("cases").is_some() {
+            n += check_refusals(&w, &ids, p, &doc).await?;
+            continue;
+        }
         let v3 = AccountId::from_str(doc["programs"]["lc_verify_v3"].as_str().unwrap_or_default())
             .map_err(|e| anyhow!("{p}: lc_verify_v3 id: {e:?}"))?;
         let instance = AccountId::from_str(doc["instance"].as_str().unwrap_or_default())
@@ -982,6 +1000,717 @@ async fn refusals(args: &[String]) -> Result<()> {
     Ok(())
 }
 
+// ---- refusals-onchain: tampered updates of the differential test as real transactions ----
+
+/// Where the update of a refusal case comes from.
+#[derive(Clone, Copy)]
+enum Source {
+    /// The differential test's case of this id (`tests/diff_helios`, `evidence/diff/cases.tsv`), bytes unchanged.
+    Diff(&'static str),
+    /// The differential test's `fab_against_real_store` construction (our own keys impersonating mainnet, seed
+    /// `beacon-veil/diff/v1`), built at the period of instance A's store so that it is checked against that store's
+    /// committee. The differential case itself is at period 1911, where instance A has no store.
+    FabricatedAtStorePeriod,
+}
+
+/// One refusal case. `instance`: `A`, a fresh instance on the real mainnet checkpoint of `fixtures/pub/mainnet`
+/// (store period 1914; the untampered update `mainnet/p1914/handoff/valid` is the period update it accepts), or `B`, a
+/// fresh instance on the differential test's fabricated chain whose store is the store of the `fabricated/*` cases.
+/// `after_control`: sent after the instance's positive control applied. `step` and `code`: where the program logic
+/// refuses it; checked natively before anything is sent, then on chain.
+struct Spec {
+    instance: char,
+    source: Source,
+    after_control: bool,
+    step: &'static str,
+    code: attest_core::EsaError,
+    what: &'static str,
+}
+
+const SPECS: [Spec; 10] = {
+    use Source::{Diff, FabricatedAtStorePeriod};
+    use attest_core::EsaError::{
+        E01Malformed, E02NotFinalised, E03BadSignature, E04LowParticipation, E05HandoffNotVerified, E14AlreadyApplied,
+        E15HeaderMismatch,
+    };
+    [
+        Spec {
+            instance: 'A',
+            source: Diff("mainnet/p1914/handoff/finalized_header_zeroed"),
+            after_control: false,
+            step: "Begin",
+            code: E02NotFinalised,
+            what: "finalized header zeroed (unmodified Helios 0.12.0 verify passes this one)",
+        },
+        Spec {
+            instance: 'A',
+            source: Diff("mainnet/p1914/handoff/next_committee_branch_node_changed"),
+            after_control: false,
+            step: "Begin",
+            code: E05HandoffNotVerified,
+            what: "next sync committee branch tampered (one node changed)",
+        },
+        Spec {
+            instance: 'A',
+            source: Diff("mainnet/p1914/handoff/finalized_execution_changed"),
+            after_control: false,
+            step: "Begin",
+            code: E15HeaderMismatch,
+            what: "finalized execution payload header changed (no longer matches its branch)",
+        },
+        Spec {
+            instance: 'A',
+            source: Diff("mainnet/p1914/handoff/signature_slot_not_after_attested"),
+            after_control: false,
+            step: "Begin",
+            code: E01Malformed,
+            what: "signature slot set to the attested slot (not after it)",
+        },
+        Spec {
+            instance: 'A',
+            source: Diff("mainnet/p1914/handoff/sig_infinity"),
+            after_control: false,
+            step: "Miller",
+            code: E03BadSignature,
+            what: "aggregate signature replaced by the point at infinity",
+        },
+        Spec {
+            instance: 'A',
+            source: Diff("mainnet/p1914/handoff/bit_cleared"),
+            after_control: false,
+            step: "Finish",
+            code: E03BadSignature,
+            what: "one participation bit cleared: 510 claimed signers, the aggregate signature is of 511",
+        },
+        Spec {
+            instance: 'A',
+            source: FabricatedAtStorePeriod,
+            after_control: false,
+            step: "Finish",
+            code: E03BadSignature,
+            what: "an update from a fabricated chain (our own keys, all 512 signed) sent to the real mainnet instance",
+        },
+        Spec {
+            instance: 'A',
+            source: Diff("mainnet/p1914/handoff/replay_after_apply"),
+            after_control: true,
+            step: "Begin",
+            code: E14AlreadyApplied,
+            what: "replay: the update the positive control applied, sent again on the store it produced",
+        },
+        Spec {
+            instance: 'B',
+            source: Diff("fabricated/participation341"),
+            after_control: false,
+            step: "Begin",
+            code: E04LowParticipation,
+            what: "341 of 512 signers, correctly signed by the chain's committee (below the 342 floor)",
+        },
+        Spec {
+            instance: 'B',
+            source: Diff("fabricated/empty_finalized_junk_branch"),
+            after_control: false,
+            step: "Begin",
+            code: E02NotFinalised,
+            what: "empty finalized header with a non-zero finality branch, correctly signed (Helios 0.12.0 verify passes this one)",
+        },
+    ]
+};
+
+const STEPS: [&str; 3] = ["Begin", "Miller", "Finish"];
+const DIFF_FAB_SEED: &[u8] = b"beacon-veil/diff/v1";
+
+/// One instance of the run: its config (before [`fresh_config`] picks `min_participants`), bootstrap and where they
+/// come from.
+struct Base {
+    config: InstanceConfig,
+    bootstrap: Vec<u8>,
+    source: String,
+}
+
+/// Instances A and B and the differential test's cases.
+fn bases(v3: AccountId) -> Result<(Base, Base, Vec<diff_helios::Case>)> {
+    use fixtures::fabricate::SLOTS_PER_PERIOD;
+    let diff = diff_helios::all_cases()?;
+    let case = |id: &str| -> Result<&diff_helios::Case> {
+        diff.iter()
+            .find(|c| c.id == id)
+            .ok_or_else(|| anyhow!("no differential case {id}"))
+    };
+    let d = pub_data("mainnet", v3)?;
+    ensure!(
+        case("mainnet/p1914/handoff/valid")?.update == d.period_update,
+        "the differential test's mainnet/p1914 update is not the period update of fixtures/pub/mainnet"
+    );
+    let a = Base {
+        config: d.config,
+        bootstrap: d.bootstrap,
+        source: "fixtures/pub/mainnet bootstrap_15679488 (real mainnet checkpoint, first slot of period 1914)".into(),
+    };
+    // The differential test's fabricated chain: the store of its `fabricated/*` cases is the chain's bootstrap.
+    let w0 = &case("fabricated/chain0")?.witness;
+    let period = w0.finalized.slot / SLOTS_PER_PERIOD;
+    let net = diff_helios::load::load_network("mainnet")?;
+    let chain = fab_chain(&net.config, period, DIFF_FAB_SEED);
+    let config = chain.config(vec![v3], 0);
+    let bootstrap = chain.bootstrap.ssz();
+    let (w, _) = lc::init_store(&config, &bootstrap).map_err(|e| anyhow!("fabricated bootstrap: {e}"))?;
+    ensure!(
+        w == *w0,
+        "the fabricated chain's store differs from the differential cases' store"
+    );
+    let b = Base {
+        config,
+        bootstrap,
+        source: format!(
+            "the differential test's fabricated chain (tests/diff_helios cases.rs fabricated_cases: FabChain seed beacon-veil/diff/v1, impersonating mainnet, checkpoint in period {period}); the store equals the store of the fabricated/* cases"
+        ),
+    };
+    Ok((a, b, diff))
+}
+
+/// A case ready to send: its messages, the job they go to and the native verdicts.
+struct RefusalCase {
+    key: String,
+    instance: char,
+    after_control: bool,
+    what: &'static str,
+    source: String,
+    diff_expected: Option<String>,
+    update: Vec<u8>,
+    messages: [LcVerifyV3Message; 3],
+    seed: [u8; 32],
+    job: AccountId,
+    record_slot: u64,
+    refused_at: usize,
+    code: attest_core::EsaError,
+    v1: String,
+    helios: String,
+}
+
+/// Positive control of one instance: an update that applies, sent after that instance's refusals.
+struct Control {
+    instance: char,
+    source: String,
+    update: Vec<u8>,
+}
+
+struct CaseSet {
+    cases: Vec<RefusalCase>,
+    controls: Vec<Control>,
+}
+
+/// Steps `Begin`, `Miller`, `Finish` through the program logic (`lc_v3::handle`, the code the deployed program runs)
+/// on the job state carried between steps: the messages, job, record slot and the first refusal.
+#[allow(clippy::type_complexity)]
+fn staged_native(
+    attest: AccountId,
+    v3: AccountId,
+    instance: AccountId,
+    config: &InstanceConfig,
+    witness: &StoreWitness,
+    update: &[u8],
+) -> (
+    [LcVerifyV3Message; 3],
+    [u8; 32],
+    AccountId,
+    u64,
+    Option<(usize, attest_core::EsaError)>,
+) {
+    use attest_core::lc_v3;
+    let (w3, keys) = diff_helios::v3_inputs(config, witness, update);
+    let pre = w3.commitment().unwrap_or([0u8; 32]);
+    let seed = lc_v3::job_seed(&instance, &pre, update);
+    let job = lc_v3::job_id(&v3, &seed);
+    let messages = [
+        LcVerifyV3Message::Begin {
+            attest_program: attest,
+            instance,
+            config: config.clone(),
+            witness: w3,
+            update_ssz: update.to_vec(),
+            absent_keys: keys,
+        },
+        LcVerifyV3Message::Miller,
+        LcVerifyV3Message::Finish,
+    ];
+    let (mut state, mut record_slot) = (Vec::new(), 0);
+    for (i, m) in messages.iter().enumerate() {
+        match lc_v3::handle(&v3, &job, &state, m.clone()) {
+            Err(e) => return (messages, seed, job, record_slot, Some((i, e))),
+            Ok(eff) => {
+                record_slot = eff.job.outcome.head.slot;
+                if let Some(s) = eff.state {
+                    state = s;
+                }
+            }
+        }
+    }
+    (messages, seed, job, record_slot, None)
+}
+
+/// Every case and control, built and checked natively (no chain): each case must refuse at its [`Spec`] step with its
+/// code, each control must be accepted by V1 and by the staged program logic.
+fn prepare_cases(
+    attest: AccountId,
+    v3: AccountId,
+    (a, b): (&InstanceConfig, &InstanceConfig),
+    (a_boot, b_boot): (&[u8], &[u8]),
+    diff: &[diff_helios::Case],
+) -> Result<CaseSet> {
+    use fixtures::fabricate::SLOTS_PER_PERIOD;
+    let case = |id: &str| -> Result<&diff_helios::Case> {
+        diff.iter()
+            .find(|c| c.id == id)
+            .ok_or_else(|| anyhow!("no differential case {id}"))
+    };
+    let store = |c: &InstanceConfig, boot: &[u8]| -> Result<StoreWitness> {
+        Ok(lc::init_store(c, boot).map_err(|e| anyhow!("init store: {e}"))?.0)
+    };
+    let (wa, wb) = (store(a, a_boot)?, store(b, b_boot)?);
+    let control_a = case("mainnet/p1914/handoff/valid")?.update.clone();
+    // Instance B's control: 342 of 512 (the floor) when the instance's own minimum is not above it, else all 512.
+    let control_b_id = if b.min_participants <= 342 {
+        "fabricated/participation342"
+    } else {
+        "fabricated/chain0"
+    };
+    let control_b = case(control_b_id)?.update.clone();
+    let wa_after = lc::verify_and_apply(a, &wa, &control_a)
+        .map_err(|e| anyhow!("control A refused by V1: {e}"))?
+        .new_witness();
+    let mut cases = Vec::new();
+    let mut n = [0usize; 2];
+    for s in &SPECS {
+        let (config, witness) = match (s.instance, s.after_control) {
+            ('A', false) => (a, &wa),
+            ('A', true) => (a, &wa_after),
+            ('B', false) => (b, &wb),
+            _ => bail!("no store for instance {} after its control", s.instance),
+        };
+        let (update, source, diff_expected) = match s.source {
+            Source::Diff(id) => {
+                let c = case(id)?;
+                (c.update.clone(), id.to_string(), Some(c.expect.short()))
+            }
+            Source::FabricatedAtStorePeriod => {
+                let period = wa.finalized.slot / SLOTS_PER_PERIOD;
+                let chain = fab_chain(a, period, DIFF_FAB_SEED);
+                (
+                    chain.updates[0].ssz(),
+                    format!(
+                        "fabricated period update, as the differential class fab_against_real_store (FabChain seed beacon-veil/diff/v1 impersonating mainnet), built at period {period}, the period of this instance's store"
+                    ),
+                    None,
+                )
+            }
+        };
+        let instance = instance_id(&attest, config);
+        let (messages, seed, job, record_slot, refusal) = staged_native(attest, v3, instance, config, witness, &update);
+        let i = usize::from(s.instance == 'B');
+        n[i] += 1;
+        let key = format!("{}{}", s.instance, n[i]);
+        let (at, code) = refusal.ok_or_else(|| anyhow!("{key} ({source}): the program logic accepts it"))?;
+        ensure!(
+            STEPS[at] == s.step && code == s.code,
+            "{key} ({source}): refused at {} with {}, expected {} with {}",
+            STEPS[at],
+            code.code(),
+            s.step,
+            s.code.code()
+        );
+        if let Some(e) = &diff_expected {
+            ensure!(
+                *e == code.code(),
+                "{key}: the differential case expects {e}, here {}",
+                code.code()
+            );
+        }
+        let v1 = lc::verify_and_apply(config, witness, &update)
+            .err()
+            .map_or("accept".to_string(), |e| e.code().to_string());
+        let probe = diff_helios::Case {
+            id: key.clone(),
+            network: String::new(),
+            fork: "",
+            kind: diff_helios::Kind::Tampered,
+            class: "",
+            crossing: false,
+            source: String::new(),
+            config: config.clone(),
+            witness: witness.clone(),
+            update: update.clone(),
+            expect: diff_helios::Expect::Refuse(code),
+            divergence: None,
+        };
+        cases.push(RefusalCase {
+            key,
+            instance: s.instance,
+            after_control: s.after_control,
+            what: s.what,
+            source,
+            diff_expected,
+            update,
+            messages,
+            seed,
+            job,
+            record_slot,
+            refused_at: at,
+            code,
+            v1,
+            helios: diff_helios::helios_raw(&probe).verify,
+        });
+    }
+    for (name, config, witness, u) in [("A", a, &wa, &control_a), ("B", b, &wb, &control_b)] {
+        let instance = instance_id(&attest, config);
+        let (.., refusal) = staged_native(attest, v3, instance, config, witness, u);
+        ensure!(
+            refusal.is_none(),
+            "control {name} refused by the program logic: {refusal:?}"
+        );
+        lc::verify_and_apply(config, witness, u).map_err(|e| anyhow!("control {name} refused by V1: {e}"))?;
+    }
+    Ok(CaseSet {
+        cases,
+        controls: vec![
+            Control {
+                instance: 'A',
+                source: "mainnet/p1914/handoff/valid (the untampered update of the A cases)".into(),
+                update: control_a,
+            },
+            Control {
+                instance: 'B',
+                source: format!(
+                    "{control_b_id} (the untampered fabricated period update re-signed by the first 342 or all 512 members)"
+                ),
+                update: control_b,
+            },
+        ],
+    })
+}
+
+/// The job account's state under `lc_verify_v3` (empty if the account does not exist).
+async fn read_job(w: &attest_host::Wallet, v3: AccountId, job: AccountId) -> Result<Vec<u8>> {
+    Ok(w.get_account_view(Actor::new(job, v3))
+        .await?
+        .map(|a| a.data.actor_state(v3).to_vec())
+        .unwrap_or_default())
+}
+
+async fn instance_bytes(ids: &DeployedIds, instance: &AccountId) -> Result<Vec<u8>> {
+    let st = attest_host::read_instance(ids, instance)
+        .await?
+        .ok_or_else(|| anyhow!("instance {instance} missing"))?;
+    Ok(borsh::to_vec(&st)?)
+}
+
+fn head_json(h: &attest_core::Head) -> Value {
+    json!({"slot": h.slot, "period": h.period, "beacon_root": hex::encode(h.beacon_root),
+           "store_commitment": hex::encode(h.store_commitment)})
+}
+
+fn step_json(name: &str, hash: &str, t: &TxInBlock, cycles: u64, exit: &str) -> Value {
+    let alone = t.charged_txs == 1;
+    json!({
+        "step": name, "tx": hash, "block": t.block, "position": t.position, "block_timestamp_ms": t.timestamp,
+        "reverted": t.reverted, "payer": t.fee.map(|f| f.0.to_string()), "declared_gas": t.fee.map(|f| f.1),
+        "block_gas_used_exec": t.block_gas_exec, "charged_txs_in_block": t.charged_txs,
+        "charged_gas": if alone { json!(t.block_gas_exec) } else { Value::Null },
+        "executor_lc_verify_v3": {"exit": exit, "metered_cycles": cycles},
+        "charged_equals_executor": if alone { json!(t.block_gas_exec == Some(cycles)) } else { Value::Null },
+    })
+}
+
+async fn refusals_onchain(args: &[String]) -> Result<()> {
+    let arg = |k: &str| args.iter().position(|a| a == k).and_then(|i| args.get(i + 1)).cloned();
+    let out_path = arg("--out").context("--out")?;
+    let v3g = load(&arg("--v3-elf").context("--v3-elf")?)?;
+    let atg = load(&arg("--attest-elf").context("--attest-elf")?)?;
+    ensure!(
+        std::env::var("BV_ALLOW_REVERT").is_ok_and(|v| v == "1"),
+        "set BV_ALLOW_REVERT=1: refused steps must reach the chain"
+    );
+    let ids = DeployedIds::from_env()?;
+    let v3 = attest_host::deployed_program("lc_verify_v3")?;
+    let w = attest_host::open_wallet()?;
+    let (a, b, diff) = bases(v3)?;
+    let (ca, cb) = (
+        fresh_config(&ids, &a.config).await?,
+        fresh_config(&ids, &b.config).await?,
+    );
+    let set = prepare_cases(ids.attest, v3, (&ca, &cb), (&a.bootstrap, &b.bootstrap), &diff)?;
+    println!(
+        "prepared: {} refusal cases and {} controls, all as predicted natively",
+        set.cases.len(),
+        set.controls.len()
+    );
+
+    let mut instances = serde_json::Map::new();
+    let mut case_rows = Vec::new();
+    let mut control_rows = Vec::new();
+    for (name, base, config) in [('A', &a, &ca), ('B', &b, &cb)] {
+        let (instance, init) = attest_host::init(&ids, config, &base.bootstrap).await?;
+        let ib = tx_in_block(&w, &init.tx).await?;
+        println!("instance {name}: {instance} init tx {} block {}", init.tx, ib.block);
+        let witness = lc::init_store(config, &base.bootstrap).map_err(|e| anyhow!("{e}"))?.0;
+        let ours: Vec<&RefusalCase> = set.cases.iter().filter(|c| c.instance == name).collect();
+        for c in ours.iter().filter(|c| !c.after_control) {
+            case_rows.push(send_case(&ids, &w, &v3g, v3, instance, c).await?);
+        }
+        let control = set
+            .controls
+            .iter()
+            .find(|c| c.instance == name)
+            .ok_or_else(|| anyhow!("control {name}"))?;
+        control_rows.push(send_control(&ids, &w, (&v3g, &atg), v3, instance, config, &witness, control).await?);
+        for c in ours.iter().filter(|c| c.after_control) {
+            case_rows.push(send_case(&ids, &w, &v3g, v3, instance, c).await?);
+        }
+        let st = attest_host::read_instance(&ids, &instance)
+            .await?
+            .ok_or_else(|| anyhow!("instance"))?;
+        instances.insert(
+            name.to_string(),
+            json!({
+                "instance": instance.to_string(), "source": base.source, "config_chain_id": config.chain_id,
+                "checkpoint_slot": config.checkpoint_slot, "min_participants": config.min_participants,
+                "participation_floor": config.min_participants.max(342), "verifiers": ["lc_verify_v3"],
+                "init": {"tx": init.tx, "block": ib.block}, "final_head": head_json(&st.head),
+            }),
+        );
+    }
+
+    let refused_steps: Vec<&str> = case_rows.iter().filter_map(|r| r["refused_at"].as_str()).collect();
+    let count = |s: &str| refused_steps.iter().filter(|x| **x == s).count();
+    let txs = case_rows
+        .iter()
+        .chain(&control_rows)
+        .map(|r| r["steps"].as_array().map_or(0, Vec::len))
+        .sum::<usize>();
+    let doc = json!({
+        "tool": "tools/cost v3_onchain refusals-onchain",
+        "what": "tampered light-client updates of the differential test (tests/diff_helios) sent to lc_verify_v3 on the public path (Begin, Miller, Finish; one public transaction each) on seq-pub (LEZ v0.4.0-rc3 standalone, RISC0_DEV_MODE unset: public transactions are executed by the sequencer, no proofs involved). Each case is sent step by step up to the step that refuses; the steps before it land, the refusing step is included and reverted, and the instance state is the same before and after the case. One untampered update per instance is then applied (positive control).",
+        "sequencer": "seq-pub",
+        "programs": {"attest": ids.attest.to_string(), "lc_verify_v3": v3.to_string()},
+        "executor_images": {"lc_verify_v3": v3g.image_id, "attest": atg.image_id},
+        "instances": instances,
+        "cases": case_rows,
+        "controls": control_rows,
+        "summary": {
+            "refusal_cases": case_rows.len(),
+            "refused_at": {"Begin": count("Begin"), "Miller": count("Miller"), "Finish": count("Finish")},
+            "every_refusal_reverted_with_predicted_exit_code": case_rows.iter().all(|r| r["refused_as_predicted"] == true),
+            "instance_state_unchanged_after_every_refusal": case_rows.iter().all(|r| r["instance_state_unchanged"] == true),
+            "controls_applied": control_rows.len(),
+            "transactions": txs,
+        },
+        "note": "Codes: lc_verify_v3 refuses by exit code (the EsaError number), which LEZ charges by the cycles used; the sequencer does not log exit codes, so the code of each refused step is the exit of the deployed ELF re-executed in the RISC Zero executor on the same message and the job state read from the chain before the step (executor_lc_verify_v3.exit), and charged_gas equals its metered cycles when the step is alone in its block. native.v3_staged is the program logic (lc_v3::handle) on the same input; native.v1 is V1 (Helios 0.12.0 with our pre-checks) and native.helios_0_12_0_verify is unmodified Helios's verify_* on this instance's store and the same bytes. Refusal steps declare 10,000,000 gas (the refusal tool); the controls go through attest_host::submit_update_staged (9.0M, 7.0M, 5.5M).",
+        "rerun": "scripts/seq.sh pub start (dev mode unset) and the release set deployed (docs/PUBLIC-PATH.md, How to re-run); export BV_IDS=deploy/ids-pub.toml LEE_WALLET_HOME_DIR=<wallet on seq-pub> BV_PAYER=<funded public account> BV_ALLOW_REVERT=1; cargo build -p cost --bin v3_onchain; v3_onchain refusals-onchain --v3-elf <release>/lc_verify_v3.bin --attest-elf <release>/attest.bin --out refusals-onchain.json. Each run makes two fresh instances, so it gives new transaction hashes. v3_onchain check refusals-onchain.json re-reads the recorded transactions.",
+    });
+    if let Some(dir) = std::path::Path::new(&out_path).parent() {
+        std::fs::create_dir_all(dir)?;
+    }
+    std::fs::write(&out_path, serde_json::to_string_pretty(&doc)? + "\n")?;
+    println!(
+        "wrote {out_path}: {} refusal cases, {txs} transactions",
+        case_rows.len()
+    );
+    Ok(())
+}
+
+fn sha256(b: &[u8]) -> [u8; 32] {
+    use sha2::{Digest, Sha256};
+    Sha256::digest(b).into()
+}
+
+/// Sends one case step by step up to its refusing step and records every transaction.
+async fn send_case(
+    ids: &DeployedIds,
+    w: &attest_host::Wallet,
+    v3g: &Guest,
+    v3: AccountId,
+    instance: AccountId,
+    c: &RefusalCase,
+) -> Result<Value> {
+    let before = instance_bytes(ids, &instance).await?;
+    let mut steps = Vec::new();
+    let mut ok = true;
+    let mut job_unchanged = true;
+    for (i, m) in c.messages.iter().enumerate().take(c.refused_at + 1) {
+        let what = format!("{} {}", c.key, STEPS[i]);
+        let pre_job = read_job(w, v3, c.job).await?;
+        let (hash, reverted, text) = send_step(ids, v3, c.seed, &instance, c.record_slot, m, &what).await?;
+        let t = tx_in_block(w, &hash).await?;
+        let post_job = read_job(w, v3, c.job).await?;
+        let (cycles, exit) = exec_any(
+            v3g,
+            &ReceiveInput {
+                receiver: Actor::new(c.job, v3),
+                from: None,
+                is_authorized: false,
+                pre_state: ActorState::from(pre_job.clone()),
+                message: t.message.clone(),
+            },
+        )?;
+        ensure!(
+            t.to == Actor::new(c.job, v3) && step_name(&t.message) == STEPS[i],
+            "{what}: the transaction is not this step on the job account"
+        );
+        let refusing = i == c.refused_at;
+        let want_exit = if refusing {
+            format!("Halted({})", c.code as u8)
+        } else {
+            "Halted(0)".to_string()
+        };
+        ok &= reverted == refusing && exit == want_exit;
+        if refusing {
+            job_unchanged = pre_job == post_job;
+        }
+        println!(
+            "{what}: tx {hash} block {} reverted {reverted} exit {exit} charged {:?}",
+            t.block, t.block_gas_exec
+        );
+        let mut s = step_json(STEPS[i], &hash, &t, cycles, &exit);
+        if refusing {
+            s["wallet_message"] = json!(text.lines().last().unwrap_or_default());
+            s["job_state_unchanged"] = json!(job_unchanged);
+        }
+        steps.push(s);
+    }
+    let after = instance_bytes(ids, &instance).await?;
+    let unchanged = before == after;
+    let head = attest_core::rules::decode_instance(&after)
+        .map_err(|e| anyhow!("{e}"))?
+        .head;
+    ensure!(unchanged, "{}: the instance state moved after a refused update", c.key);
+    Ok(json!({
+        "case": c.key, "instance": c.instance.to_string(), "what": c.what, "source": c.source,
+        "diff_expected": c.diff_expected, "update_sha256": hex::encode(sha256(&c.update)),
+        "update_bytes": c.update.len(), "job": c.job.to_string(), "after_control": c.after_control,
+        "native": {"v3_staged": {"step": STEPS[c.refused_at], "code": c.code.code()}, "v1": c.v1,
+                   "helios_0_12_0_verify": c.helios},
+        "refused_at": STEPS[c.refused_at], "code": c.code.code(), "exit_code": c.code as u8,
+        "refused_as_predicted": ok && job_unchanged,
+        "steps": steps,
+        "instance_state_unchanged": unchanged, "head": head_json(&head),
+    }))
+}
+
+/// Sends the positive control through `attest_host::submit_update_staged` and checks the head against V1.
+#[allow(clippy::too_many_arguments)]
+async fn send_control(
+    ids: &DeployedIds,
+    w: &attest_host::Wallet,
+    (v3g, atg): (&Guest, &Guest),
+    v3: AccountId,
+    instance: AccountId,
+    config: &InstanceConfig,
+    witness: &StoreWitness,
+    c: &Control,
+) -> Result<Value> {
+    let name = c.instance;
+    let native = lc::verify_and_apply(config, witness, &c.update).map_err(|e| anyhow!("control {name}: {e}"))?;
+    let before = instance_bytes(ids, &instance).await?;
+    let staged = attest_host::submit_update_staged(ids, v3, &instance, &c.update).await?;
+    let head = attest_host::read_head(ids, &instance)
+        .await?
+        .ok_or_else(|| anyhow!("instance missing"))?;
+    // As `run`: attest.Apply replaces the head when the finalized slot moves, else it only sets the commitment.
+    let equal = if native.new_slot {
+        head == native.head
+    } else {
+        head.store_commitment == native.post_store && head.slot == native.head.slot
+    };
+    ensure!(equal, "control {name}: on-chain head differs from V1");
+    let mut job_state = Vec::new();
+    let mut steps = Vec::new();
+    for (step, o) in &staged.steps {
+        let t = tx_in_block(w, &o.tx).await?;
+        ensure!(!t.reverted, "control {name} {step}: reverted");
+        let (cycles, chained, post) = metered(
+            v3g,
+            atg,
+            (&ids.attest, &v3),
+            staged.job,
+            &job_state,
+            instance,
+            &before,
+            &t.message,
+        )?;
+        job_state = post;
+        let mut s = step_json(step, &o.tx, &t, cycles + chained, "Halted(0)");
+        s["metered_cycles_chained_attest"] = json!(chained);
+        println!(
+            "control {name} {step}: tx {} block {} charged {:?}",
+            o.tx, t.block, t.block_gas_exec
+        );
+        steps.push(s);
+    }
+    let head_before = attest_core::rules::decode_instance(&before)
+        .map_err(|e| anyhow!("{e}"))?
+        .head;
+    Ok(json!({
+        "case": format!("control {name}"), "instance": name.to_string(), "update": c.source,
+        "update_sha256": hex::encode(sha256(&c.update)), "participation": native.participation,
+        "job": staged.job.to_string(), "steps": steps, "applied": true,
+        "head_before": head_json(&head_before), "head_after": head_json(&head), "head_equals_v1": equal,
+        "finalized_slot_moved": native.new_slot,
+    }))
+}
+
+/// `check` for a `refusals-onchain` record: every step at its block and position, reverted exactly when recorded,
+/// sent to its job account; each instance's head equals the recorded final head.
+async fn check_refusals(w: &attest_host::Wallet, ids: &DeployedIds, p: &str, doc: &Value) -> Result<usize> {
+    let v3 = AccountId::from_str(doc["programs"]["lc_verify_v3"].as_str().unwrap_or_default())
+        .map_err(|e| anyhow!("{p}: lc_verify_v3 id: {e:?}"))?;
+    let mut n = 0;
+    for r in doc["cases"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .chain(doc["controls"].as_array().into_iter().flatten())
+    {
+        let job = AccountId::from_str(r["job"].as_str().unwrap_or_default()).map_err(|e| anyhow!("job: {e:?}"))?;
+        for s in r["steps"].as_array().into_iter().flatten() {
+            let hash = s["tx"].as_str().unwrap_or_default();
+            let what = format!("{p} {} {} tx {hash}", r["case"], s["step"]);
+            let t = tx_in_block(w, hash).await.with_context(|| what.clone())?;
+            ensure!(
+                Some(t.block) == s["block"].as_u64() && Some(t.position as u64) == s["position"].as_u64(),
+                "{what}: block or position differs"
+            );
+            ensure!(
+                Some(t.reverted) == s["reverted"].as_bool(),
+                "{what}: reverted {} recorded {}",
+                t.reverted,
+                s["reverted"]
+            );
+            ensure!(t.to == Actor::new(job, v3), "{what}: receiver differs");
+            ensure!(
+                Some(step_name(&t.message).as_str()) == s["step"].as_str(),
+                "{what}: step differs"
+            );
+            ensure!(
+                t.block_gas_exec == s["block_gas_used_exec"].as_u64(),
+                "{what}: block gas differs"
+            );
+            n += 1;
+        }
+    }
+    for (name, i) in doc["instances"].as_object().into_iter().flatten() {
+        let instance = AccountId::from_str(i["instance"].as_str().unwrap_or_default())
+            .map_err(|e| anyhow!("{p}: instance {name}: {e:?}"))?;
+        let head = attest_host::read_head(ids, &instance)
+            .await?
+            .ok_or_else(|| anyhow!("{p}: instance {name} missing"))?;
+        ensure!(
+            head_json(&head) == i["final_head"],
+            "{p}: instance {name}: head differs from the recorded final head"
+        );
+    }
+    Ok(n)
+}
+
 // ---- annotate (read-only: blocks over RPC, the executor, native code; no transaction) ----
 
 /// One transaction of a block, as `annotate` needs it.
@@ -1361,6 +2090,7 @@ async fn main() -> Result<()> {
         Some("run") => run(&args[2..]).await,
         Some("check") => check(&args[2..]).await,
         Some("refusals") => refusals(&args[2..]).await,
+        Some("refusals-onchain") => refusals_onchain(&args[2..]).await,
         Some("annotate") => annotate(&args[2..]).await,
         Some("check-images") => check_images(args.get(2).map_or("", String::as_str)).await,
         _ => Err(anyhow!(
@@ -1371,4 +2101,38 @@ async fn main() -> Result<()> {
         eprintln!("FAIL: {e:#}");
     }
     r
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// The cases of `refusals-onchain` without a chain: each refuses at its step with its code in the program logic
+    /// (and with the code its differential case expects), and both controls apply.
+    #[test]
+    fn refusal_cases_refuse_natively_where_specified() {
+        let (attest, v3) = (AccountId::new([0xA7; 32]), AccountId::new([0x33; 32]));
+        let (a, b, diff) = bases(v3).expect("instances and differential cases");
+        let (mut ca, mut cb) = (a.config.clone(), b.config.clone());
+        ca.min_participants = 342;
+        cb.min_participants = 342;
+        let p = prepare_cases(attest, v3, (&ca, &cb), (&a.bootstrap, &b.bootstrap), &diff).expect("cases");
+        assert_eq!(p.cases.len(), SPECS.len());
+        let codes: std::collections::BTreeSet<&str> = p.cases.iter().map(|c| c.code.code()).collect();
+        assert!(codes.len() >= 7, "distinct codes: {codes:?}");
+        for step in STEPS {
+            assert!(
+                p.cases.iter().any(|c| STEPS[c.refused_at] == step),
+                "no case refused at {step}"
+            );
+        }
+        // Unmodified Helios's verify passes the zeroed finalized header and the empty finalized header with a junk
+        // branch; the staged verifier refuses both at Begin.
+        for k in ["A1", "B2"] {
+            let c = p.cases.iter().find(|c| c.key == k).expect("case");
+            assert_eq!(c.helios, "ok", "{k}");
+            assert_eq!(c.v1, "E02", "{k}");
+        }
+        assert!(p.controls[1].source.starts_with("fabricated/participation342"));
+    }
 }

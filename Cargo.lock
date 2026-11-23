@@ -2287,6 +2287,7 @@ dependencies = [
  "bls_bench_guest",
  "borsh",
  "common",
+ "diff_helios",
  "e2e_chain",
  "ethereum_ssz 0.9.1",
  "fixtures",
@@ -2296,6 +2297,7 @@ dependencies = [
  "risc0-zkos-v1compat",
  "risc0-zkvm",
  "serde_json",
+ "sha2 0.10.8",
  "tokio",
 ]
 

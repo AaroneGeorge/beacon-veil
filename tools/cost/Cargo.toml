@@ -26,6 +26,9 @@ ethereum_ssz = "0.9"
 # bench-bls only (guests/bls_bench types and witness builders, fixtures loader).
 bls_bench_guest = { path = "../../guests/bls_bench" }
 fixtures = { path = "../fixtures" }
+# v3_onchain refusals-onchain only: the tampered updates of the differential test (tests/diff_helios cases).
+diff_helios = { path = "../../tests/diff_helios" }
+sha2 = { workspace = true, features = ["std"] }
 # g1_real_proof only (host, wallet to seq-real).
 attest_host.workspace = true
 common.workspace = true

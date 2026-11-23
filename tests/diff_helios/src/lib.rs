@@ -211,7 +211,8 @@ impl Column for V2 {
 
 /// The V3 witness and absent keys a submitter would send for `update_ssz` on the V1 store `witness`.
 #[cfg(feature = "v3")]
-fn v3_inputs(
+#[must_use]
+pub fn v3_inputs(
     config: &InstanceConfig,
     witness: &StoreWitness,
     update_ssz: &[u8],
