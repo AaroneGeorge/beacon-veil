@@ -29,7 +29,7 @@ Vault v4 `0x376Ec2256630029A237Ade83FD428520523dEc56` (`sepolia-v4.json`): verif
 
 ## Chain route with a 3-of-4 tip anchor (`committee-anchor/`)
 
-The same burn, pinned block and tip, on a third test vault whose root and tip anchor is `CommitteeLezAnchor`: 3 of 4 fixed keys, no owner (`docs/bridge/OUTBOUND.md`, "Chain route with a 3-of-4 tip anchor"). One new Groth16 proof (same guest and image id; the journal names the vault), `attestTip` with 3 signatures and `releaseChain` on Sepolia, and seven refusals as mined transactions: `committee-anchor/sepolia.json`. The anvil-fork run with the mock verifier: `committee-anchor/anvil-fork.json`. The signers are a stand-in: four test keys, all ours, four signer runs reading one sequencer. Not LEZ's keys, and not a trustless release.
+The same burn, pinned block and tip, on a third test vault whose root and tip anchor is `CommitteeLezAnchor`: 3 of 4 fixed keys, no owner (`docs/bridge/OUTBOUND.md`, "Chain route with a 3-of-4 tip anchor"). One new Groth16 proof (same guest and image id; the journal names the vault), `attestTip` with 3 signatures and `releaseChain` on Sepolia, and seven refusals as mined transactions: `committee-anchor/sepolia.json`. The anvil-fork run with the mock verifier: `committee-anchor/anvil-fork.json`. The local-EVM gas report of the anchor's tests: `committee-anchor/gas-report.txt`. The signers are a stand-in: four test keys, all ours, four signer runs reading one sequencer. Not LEZ's keys, and not a trustless release.
 
 ## What is real and what is dev mode
 
