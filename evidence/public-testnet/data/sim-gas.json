@@ -1,0 +1,451 @@
+{
+ "what": "cycles per transaction through LEZ v0.3.2 lee::V03State (simulated, local guests), lez-v03/harness tests cap and equal_rc3",
+ "cap": 10000000,
+ "step_limit": 9000000,
+ "max": 6906533,
+ "rows": [
+  {
+   "cycles": 5201564,
+   "instruction_bytes": 26031,
+   "network": "floor",
+   "step": "Init",
+   "update": "init"
+  },
+  {
+   "cycles": 6906533,
+   "instruction_bytes": 68302,
+   "network": "floor",
+   "participation": 342,
+   "step": "Begin",
+   "update": "period_update_342"
+  },
+  {
+   "cycles": 5785867,
+   "instruction_bytes": 7,
+   "network": "floor",
+   "participation": 342,
+   "step": "Miller",
+   "update": "period_update_342"
+  },
+  {
+   "cycles": 4472634,
+   "instruction_bytes": 488,
+   "network": "floor",
+   "participation": 342,
+   "step": "Finish",
+   "update": "period_update_342"
+  },
+  {
+   "cycles": 5201564,
+   "instruction_bytes": 26031,
+   "network": "floor",
+   "step": "Init",
+   "update": "init"
+  },
+  {
+   "cycles": 4717076,
+   "instruction_bytes": 51982,
+   "network": "floor",
+   "participation": 512,
+   "step": "Begin",
+   "update": "update[0]"
+  },
+  {
+   "cycles": 5785705,
+   "instruction_bytes": 7,
+   "network": "floor",
+   "participation": 512,
+   "step": "Miller",
+   "update": "update[0]"
+  },
+  {
+   "cycles": 4472634,
+   "instruction_bytes": 488,
+   "network": "floor",
+   "participation": 512,
+   "step": "Finish",
+   "update": "update[0]"
+  },
+  {
+   "cycles": 4716856,
+   "instruction_bytes": 51982,
+   "network": "floor",
+   "participation": 512,
+   "step": "Begin",
+   "update": "update[1]"
+  },
+  {
+   "cycles": 5785865,
+   "instruction_bytes": 7,
+   "network": "floor",
+   "participation": 512,
+   "step": "Miller",
+   "update": "update[1]"
+  },
+  {
+   "cycles": 4472632,
+   "instruction_bytes": 488,
+   "network": "floor",
+   "participation": 512,
+   "step": "Finish",
+   "update": "update[1]"
+  },
+  {
+   "cycles": 4968358,
+   "instruction_bytes": 43486,
+   "network": "floor",
+   "participation": 342,
+   "step": "Begin",
+   "update": "finality_update_342"
+  },
+  {
+   "cycles": 5786129,
+   "instruction_bytes": 7,
+   "network": "floor",
+   "participation": 342,
+   "step": "Miller",
+   "update": "finality_update_342"
+  },
+  {
+   "cycles": 4472634,
+   "instruction_bytes": 488,
+   "network": "floor",
+   "participation": 342,
+   "step": "Finish",
+   "update": "finality_update_342"
+  },
+  {
+   "cycles": 5228566,
+   "instruction_bytes": 26057,
+   "network": "hoodi",
+   "step": "Init",
+   "update": "init"
+  },
+  {
+   "cycles": 5140942,
+   "instruction_bytes": 55110,
+   "network": "hoodi",
+   "participation": 480,
+   "step": "Begin",
+   "update": "update_537"
+  },
+  {
+   "cycles": 5786129,
+   "instruction_bytes": 7,
+   "network": "hoodi",
+   "participation": 480,
+   "step": "Miller",
+   "update": "update_537"
+  },
+  {
+   "cycles": 4472634,
+   "instruction_bytes": 488,
+   "network": "hoodi",
+   "participation": 480,
+   "step": "Finish",
+   "update": "update_537"
+  },
+  {
+   "cycles": 5161920,
+   "instruction_bytes": 55279,
+   "network": "hoodi",
+   "participation": 478,
+   "step": "Begin",
+   "update": "update_538"
+  },
+  {
+   "cycles": 5786077,
+   "instruction_bytes": 7,
+   "network": "hoodi",
+   "participation": 478,
+   "step": "Miller",
+   "update": "update_538"
+  },
+  {
+   "cycles": 4472632,
+   "instruction_bytes": 488,
+   "network": "hoodi",
+   "participation": 478,
+   "step": "Finish",
+   "update": "update_538"
+  },
+  {
+   "cycles": 3362317,
+   "instruction_bytes": 31637,
+   "network": "hoodi",
+   "participation": 466,
+   "step": "Begin",
+   "update": "finality_update_4409089"
+  },
+  {
+   "cycles": 5786129,
+   "instruction_bytes": 7,
+   "network": "hoodi",
+   "participation": 466,
+   "step": "Miller",
+   "update": "finality_update_4409089"
+  },
+  {
+   "cycles": 4472634,
+   "instruction_bytes": 488,
+   "network": "hoodi",
+   "participation": 466,
+   "step": "Finish",
+   "update": "finality_update_4409089"
+  },
+  {
+   "cycles": 5228435,
+   "instruction_bytes": 26058,
+   "network": "mainnet",
+   "step": "Init",
+   "update": "init"
+  },
+  {
+   "cycles": 4743689,
+   "instruction_bytes": 52120,
+   "network": "mainnet",
+   "participation": 511,
+   "step": "Begin",
+   "update": "update[0]"
+  },
+  {
+   "cycles": 5785867,
+   "instruction_bytes": 7,
+   "network": "mainnet",
+   "participation": 511,
+   "step": "Miller",
+   "update": "update[0]"
+  },
+  {
+   "cycles": 4472634,
+   "instruction_bytes": 488,
+   "network": "mainnet",
+   "participation": 511,
+   "step": "Finish",
+   "update": "update[0]"
+  },
+  {
+   "cycles": 4732576,
+   "instruction_bytes": 52036,
+   "network": "mainnet",
+   "participation": 512,
+   "step": "Begin",
+   "update": "update[1]"
+  },
+  {
+   "cycles": 5786077,
+   "instruction_bytes": 7,
+   "network": "mainnet",
+   "participation": 512,
+   "step": "Miller",
+   "update": "update[1]"
+  },
+  {
+   "cycles": 4472632,
+   "instruction_bytes": 488,
+   "network": "mainnet",
+   "participation": 512,
+   "step": "Finish",
+   "update": "update[1]"
+  },
+  {
+   "cycles": 4744074,
+   "instruction_bytes": 52126,
+   "network": "mainnet",
+   "participation": 511,
+   "step": "Begin",
+   "update": "update[2]"
+  },
+  {
+   "cycles": 5785703,
+   "instruction_bytes": 7,
+   "network": "mainnet",
+   "participation": 511,
+   "step": "Miller",
+   "update": "update[2]"
+  },
+  {
+   "cycles": 4472632,
+   "instruction_bytes": 488,
+   "network": "mainnet",
+   "participation": 511,
+   "step": "Finish",
+   "update": "update[2]"
+  },
+  {
+   "cycles": 4731802,
+   "instruction_bytes": 52032,
+   "network": "mainnet",
+   "participation": 512,
+   "step": "Begin",
+   "update": "update[3]"
+  },
+  {
+   "cycles": 5786127,
+   "instruction_bytes": 7,
+   "network": "mainnet",
+   "participation": 512,
+   "step": "Miller",
+   "update": "update[3]"
+  },
+  {
+   "cycles": 4472632,
+   "instruction_bytes": 488,
+   "network": "mainnet",
+   "participation": 512,
+   "step": "Finish",
+   "update": "update[3]"
+  },
+  {
+   "cycles": 2794896,
+   "instruction_bytes": 27219,
+   "network": "mainnet",
+   "participation": 512,
+   "step": "Begin",
+   "update": "finality_update_15637644"
+  },
+  {
+   "cycles": 5785917,
+   "instruction_bytes": 7,
+   "network": "mainnet",
+   "participation": 512,
+   "step": "Miller",
+   "update": "finality_update_15637644"
+  },
+  {
+   "cycles": 4472634,
+   "instruction_bytes": 488,
+   "network": "mainnet",
+   "participation": 512,
+   "step": "Finish",
+   "update": "finality_update_15637644"
+  },
+  {
+   "cycles": 5048842,
+   "instruction_bytes": 25855,
+   "network": "sepolia",
+   "step": "Init",
+   "update": "init"
+  },
+  {
+   "cycles": 4459873,
+   "instruction_bytes": 52014,
+   "network": "sepolia",
+   "participation": 507,
+   "step": "Begin",
+   "update": "update[0]"
+  },
+  {
+   "cycles": 5785705,
+   "instruction_bytes": 7,
+   "network": "sepolia",
+   "participation": 507,
+   "step": "Miller",
+   "update": "update[0]"
+  },
+  {
+   "cycles": 4472634,
+   "instruction_bytes": 488,
+   "network": "sepolia",
+   "participation": 507,
+   "step": "Finish",
+   "update": "update[0]"
+  },
+  {
+   "cycles": 4446870,
+   "instruction_bytes": 51918,
+   "network": "sepolia",
+   "participation": 508,
+   "step": "Begin",
+   "update": "update[1]"
+  },
+  {
+   "cycles": 5786127,
+   "instruction_bytes": 7,
+   "network": "sepolia",
+   "participation": 508,
+   "step": "Miller",
+   "update": "update[1]"
+  },
+  {
+   "cycles": 4472632,
+   "instruction_bytes": 488,
+   "network": "sepolia",
+   "participation": 508,
+   "step": "Finish",
+   "update": "update[1]"
+  },
+  {
+   "cycles": 4434357,
+   "instruction_bytes": 51822,
+   "network": "sepolia",
+   "participation": 509,
+   "step": "Begin",
+   "update": "update[2]"
+  },
+  {
+   "cycles": 5786077,
+   "instruction_bytes": 7,
+   "network": "sepolia",
+   "participation": 509,
+   "step": "Miller",
+   "update": "update[2]"
+  },
+  {
+   "cycles": 4472632,
+   "instruction_bytes": 488,
+   "network": "sepolia",
+   "participation": 509,
+   "step": "Finish",
+   "update": "update[2]"
+  },
+  {
+   "cycles": 4434278,
+   "instruction_bytes": 51822,
+   "network": "sepolia",
+   "participation": 509,
+   "step": "Begin",
+   "update": "update[3]"
+  },
+  {
+   "cycles": 5786289,
+   "instruction_bytes": 7,
+   "network": "sepolia",
+   "participation": 509,
+   "step": "Miller",
+   "update": "update[3]"
+  },
+  {
+   "cycles": 4472632,
+   "instruction_bytes": 488,
+   "network": "sepolia",
+   "participation": 509,
+   "step": "Finish",
+   "update": "update[3]"
+  },
+  {
+   "cycles": 2486786,
+   "instruction_bytes": 26846,
+   "network": "sepolia",
+   "participation": 509,
+   "step": "Begin",
+   "update": "finality_update_11561824"
+  },
+  {
+   "cycles": 5785917,
+   "instruction_bytes": 7,
+   "network": "sepolia",
+   "participation": 509,
+   "step": "Miller",
+   "update": "finality_update_11561824"
+  },
+  {
+   "cycles": 4472634,
+   "instruction_bytes": 488,
+   "network": "sepolia",
+   "participation": 509,
+   "step": "Finish",
+   "update": "finality_update_11561824"
+  }
+ ]
+}

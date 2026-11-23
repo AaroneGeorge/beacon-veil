@@ -1,0 +1,48 @@
+{
+  "lez_release": "v0.3.2",
+  "programs": {
+    "attest_v03": {
+      "bin_sha256": "37b40a86a043b3abae9d36b481b5a9bdc347801f80ddd31d6c2cd10e4c0ea5ee",
+      "header": "8SXSF3i2Ht8acLuzDYYKitVtDfdkKmg4iAkkhFV1GYM3",
+      "image_id": "6daec75d3529ebdfddacc532babcc3292214ea1addcc7ffe3963c2ebce67aae0",
+      "immutable": true,
+      "segments": [
+        "6Fz477cNMxBmfkcvSARa1Nx3ggz96CpxgykasuA3taaK",
+        "7rXVSgATCScMaSBwEh5aT7WGPJe4opNPJS25GsLUYgU7",
+        "8Wbp6J3mTJpCEMf26ExzckrvbVLD2VMsZiMmBnA1aMFX",
+        "2WQXVaFFg6JPtzqCJHLGUPqJqvFHuJudjDxQWFAdHteT"
+      ],
+      "txs": [
+        "9f78e75d24fc75f796fcbeac1d62cd299dd8933574e1b9d982cb561fbe6c8f4f",
+        "03925872fff564a7ca864f00ee6c90f3083f6f65b0fce99594acfa05d02198fe",
+        "b70b87d82223659c52f0ffb53341225039cfff2ab0a0cb0780538f69dad337b8",
+        "66f5c2354ce9323b23eaf2f89bbebaa05e3085e67820516b9a9b70e140d4cbd6",
+        "ccd50ee315a5bd90d5bb58158f7702d3382ad36480dc19f4c52fa10ea5399df8"
+      ]
+    },
+    "lc_verify_v3_v03": {
+      "bin_sha256": "958210c6e496c7a08685ba6f2f19dfb4fdaf3c875911812a8df0b500973dd3f5",
+      "header": "6DS5234UqhtRk67ZDmVjTFftJQkgdUBWmxsY8vsmbWSU",
+      "image_id": "a7f5cffb4ee2025c93d185b584eca1c8781c548b8f995df4cabca37cd9ac845d",
+      "immutable": true,
+      "segments": [
+        "77mL6GvbArR4isV5dTo1wAt1M7deGVxRxREV7kbFTyGk",
+        "4QdQ22T7m6iBTvJXAKrcMvZAe9ycCGA9T3sw5vZncmAm",
+        "HLRRDBASroxHFS7EHhZxbEkBVb4ZHfmXfH33w3pkiENP",
+        "Bh69b6BWFh9UQSjcW5VpnLgkgMP1vQkw3XLsLDgek2AC",
+        "3BjhUqq3pW8tN8jvV1MACAWfbLzVPjHb2ZMhgrPCde6j",
+        "DTHLDH4LFAFUaAATbLixKjEohXHpxTfJ6zyWJuphYX9z"
+      ],
+      "txs": [
+        "8a7215a264d46078a881158dd1b9e9b2eaa813293ff4dd9eba60a953e603066d",
+        "13baffe1cbc2629de4ed91f0c7f1aed185d6ad38aea30ba6c6b1be416511cc1a",
+        "a3655cc3899286c29d373e9d32875ad0694b97e94f2d22207e690b1633bebbb3",
+        "13d62209428bde82eea3d90a98bff70b6c14d31396c80e4b49d18104e81315da",
+        "42e0adcb492f10eb93279ab1d735d73dbf5a1f3836c08e21578f6dfe40faf938",
+        "6ca41ecdfcf6cc18e8b7ffe3a7aa30eb4788e5cc78f93cb1579e99d30ad7ebee",
+        "68b5025a967a156d0bc8be20ea6a16f7673c51f5dc9491a575858a6e5c90b3e3"
+      ]
+    }
+  },
+  "rpc": "https://testnet.lez.logos.co"
+}
