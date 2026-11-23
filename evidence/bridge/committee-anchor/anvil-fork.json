@@ -1,0 +1,139 @@
+{
+  "what": "VaultChain.releaseChain through CommitteeLezAnchor (3 of 4) on an anvil fork of Sepolia (chain id 31337); nothing sent to Sepolia",
+  "label": "anvil fork; anvil public dev keys as the stand-in signer set; guest burn_chain in the executor (no proof); mock seal for RiscZeroMockVerifier; synthetic burn",
+  "fork_of": "Sepolia",
+  "fork_block": 12195306,
+  "deploy": {
+    "admin": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    "block": 12195306,
+    "chain_id": 31337,
+    "chain_image_id": "0x88c00a4e43fc6b8b7b776e7a540422d1c684251751940901ce3256eecbd26dd3",
+    "committee_anchor": "0x90AC099B8BB2417606812044d02BbbcEB4C76f1a",
+    "delay": 600,
+    "pinned_hash": "0x3c5b777451146a86ee71dc0783169b18ea64243c40de1ca98a005332e8cf7e5a",
+    "pinned_id": 2585,
+    "signers": [
+      "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+      "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+      "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+      "0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc"
+    ],
+    "threshold": 3,
+    "vault": "0x4fDCCDF7F9F32a585c0b89aA8C47a99b9Cc6cfA8",
+    "verifier": "0x046809574B4f3E078d8147d8F3c8899A128eBA34",
+    "zone": "0xab048e18d216e0df67177186e6de3ea106b87fcfd0e21f3e52d405c4473e8ef8"
+  },
+  "guest": {
+    "image_id": "0x88c00a4e43fc6b8b7b776e7a540422d1c684251751940901ce3256eecbd26dd3",
+    "cycles_user": 444061,
+    "segments": 1
+  },
+  "blocks": {
+    "pinned": 2585,
+    "pinned_hash": "0x3c5b777451146a86ee71dc0783169b18ea64243c40de1ca98a005332e8cf7e5a",
+    "tip": 2591,
+    "tip_hash": "0x80424c6e52d67274bcd42df99ef506ed09ce2503fef9ef16c8fc3de1065a321f",
+    "source": "fixtures/lez-chain: synthetic 2586..2591 over real seq-dev 2585; each signer recomputed every hash and link"
+  },
+  "signer_refuses_wrong_pinned_hash": "refused: pinned block 2585: hash 3c5b777451146a86ee71dc0783169b18ea64243c40de1ca98a005332e8cf7e5a is not the pinned 80424c6e52d67274bcd42df99ef506ed09ce2503fef9ef16c8fc3de1065a321f",
+  "deposit": {
+    "tx": "0xd12c8f61c43cc680ef518e2667131a55bd8b2d8b6255406059f0417184a50cbb",
+    "gas": 520929
+  },
+  "attest_tip": {
+    "tx": "0x4b7872b9be6a64b8a2996a49a52f6faebee6832238b27c4f48e2597de97e89b8",
+    "gas": 264331,
+    "status": "0x1",
+    "signatures": 3,
+    "submitted_by": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+    "note": "submitted by the relayer, not a signer: anyone may post the signatures"
+  },
+  "other_anchor": "0x43367631698Cd268Cc72b3B259C2Ba1AC6F3Addc",
+  "refusals": [
+    {
+      "name": "two_signatures",
+      "expected": "TooFewSignatures()",
+      "selector": "0xc993dd80",
+      "simulated": "reverted: TooFewSignatures",
+      "tx": "0xe08ae7a869d3893f0ac301758f26c1a2f7461b8b627842dd3f131975d063c40a",
+      "status": "0x0",
+      "ok": true
+    },
+    {
+      "name": "outside_signer",
+      "expected": "NotASigner(address)",
+      "selector": "0xa0296092",
+      "simulated": "reverted: NotASigner(0x976EA74026E726554dB657fA54763abd0C3a0aa9)",
+      "tx": "0x77f23609951ed1007d9f79252068c567a7c2921be4c892eb81e8bd5d30fc3abc",
+      "status": "0x0",
+      "ok": true
+    },
+    {
+      "name": "same_signer_twice",
+      "expected": "SignersNotAscending()",
+      "selector": "0xaf390151",
+      "simulated": "reverted: SignersNotAscending",
+      "tx": "0x7403f37441a7c82f06b170f93d72b5c94f2f3a4a0f976ad66533df1878a75ef4",
+      "status": "0x0",
+      "ok": true
+    },
+    {
+      "name": "another_anchor",
+      "expected": "NotASigner(address)",
+      "selector": "0xa0296092",
+      "simulated": "reverted: NotASigner(0xF7C2eD94afB22a2Ec24a5323B4559dAb881dFeb9)",
+      "tx": "0x4c1498a6c8ed2c54f7553f3d61d0df5be61cc7fce5886ca9182a54860501bb35",
+      "status": "0x0",
+      "ok": true
+    },
+    {
+      "name": "another_block_id",
+      "expected": "NotASigner(address)",
+      "selector": "0xa0296092",
+      "simulated": "reverted: NotASigner(0x56A132c16BA21180ca0cE92dAcF3a2F2499dFeC4)",
+      "tx": "0xca7209f31f5bf0e7ed8cca6e3e26d087bab8073584d0d88c058d612e12056650",
+      "status": "0x0",
+      "ok": true
+    },
+    {
+      "name": "attest_again",
+      "expected": "AlreadyAttested()",
+      "selector": "0x35d90805",
+      "simulated": "reverted: AlreadyAttested",
+      "tx": "0xf8f7319ba692ee3608f8c50aaa7870aefe5e757d67933df413afe64c478a4c27",
+      "status": "0x0",
+      "ok": true
+    },
+    {
+      "name": "release_before_delay",
+      "expected": "TipNotFinal()",
+      "selector": "0x51311bff",
+      "simulated": "reverted: TipNotFinal",
+      "tx": "0x93bb2d4f86d120fed494b41270286c474dc2330c09be9640ffa9b84a32b5f82d",
+      "status": "0x0",
+      "ok": true
+    },
+    {
+      "name": "second_release",
+      "expected": "AlreadyReleased()",
+      "selector": "0x63b4904e",
+      "simulated": "reverted: AlreadyReleased",
+      "tx": "0x0acb56d6f92a845123636762edf76ea628b000d9ee3a6a7581aaee503620df85",
+      "status": "0x0",
+      "ok": true
+    }
+  ],
+  "tip_final_after_delay": true,
+  "release_chain": {
+    "tx": "0x45ee1444b4a82c1d93bfe82305d0870a0c511fa73786fd5ca3a051eb60743aef",
+    "gas": 627754,
+    "status": "0x1",
+    "gas_note": "mock verifier; the real 3.1.0 Groth16 verify through the emergency stop adds about 260,000 (estimate, evidence/bridge/groth16-release-v3)"
+  },
+  "recipient": "0x5252525252525252525252525252525252525252",
+  "recipient_gain_wei": "990000000000000",
+  "relayer": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+  "relayer_balance_before": "9999999999999991959260",
+  "relayer_balance_after": "9999999999999985053966",
+  "nullifier_spent": true
+}
