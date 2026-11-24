@@ -61,7 +61,7 @@ impl BridgeConfig {
         self.tokens.iter().find(|t| &t.token == token)
     }
 
-    /// Statement id of "vault slot `DEPOSIT_ROOT_SLOT` holds `root`" on this chain (W3's `statement_id_state`).
+    /// Statement id of "vault slot `DEPOSIT_ROOT_SLOT` holds `root`" on this chain (`statement_id_state`).
     #[must_use]
     pub fn root_statement_id(&self, root: &B32) -> B32 {
         statement_id_state(self.chain_id, &self.vault, &DEPOSIT_ROOT_SLOT, root)
@@ -127,7 +127,7 @@ pub fn pda(bridge: &AccountId, seed: &PdaSeed) -> AccountId {
 pub struct AttestCall {
     pub on: AccountId,
     pub record: HeaderRecord,
-    /// `attest_inclusion::Claim::Storage` for the vault's root slot, borsh (W3), opaque here.
+    /// `attest_inclusion::Claim::Storage` for the vault's root slot, borsh, opaque here.
     pub claim: Vec<u8>,
 }
 

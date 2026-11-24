@@ -1,6 +1,6 @@
 [package]
 name = "attest_program"
-description = "LEZ program attest: instances, Apply, write-once header records, Attest (W1)"
+description = "LEZ program attest: instances, Apply, write-once header records, Attest"
 version.workspace = true
 edition.workspace = true
 license.workspace = true

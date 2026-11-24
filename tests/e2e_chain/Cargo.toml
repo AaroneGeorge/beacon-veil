@@ -1,6 +1,6 @@
 [package]
 name = "e2e_chain"
-description = "End-to-end light-client chain on seq-dev: Init, 3 updates, 1 handoff (W1); fixture helpers and the V1 executor harness"
+description = "End-to-end light-client chain on seq-dev: Init, 3 updates, 1 handoff; fixture helpers and the V1 executor harness"
 version.workspace = true
 edition.workspace = true
 license.workspace = true

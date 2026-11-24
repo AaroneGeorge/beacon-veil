@@ -1,6 +1,6 @@
 [package]
 name = "proofgen"
-description = "Build account, storage and receipt-log proofs from Ethereum JSON-RPC (W3)"
+description = "Build account, storage and receipt-log proofs from Ethereum JSON-RPC"
 version.workspace = true
 edition.workspace = true
 license.workspace = true

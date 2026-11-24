@@ -1,4 +1,4 @@
-//! V2 verifier (PLAN.md D4, feature `v2`): the rules of Helios 0.12.0 `verify_generic_update`, in the same order and
+//! V2 verifier (docs/DECISIONS.md D-10, feature `v2`): the rules of Helios 0.12.0 `verify_generic_update`, in the same order and
 //! with the same generalised indices, with ONE function replaced: the sync-committee signature check.
 //!
 //! Transcribed from a16z/helios tag 0.12.0, `ethereum/consensus-core/src/{consensus_core,proof,utils}.rs` and

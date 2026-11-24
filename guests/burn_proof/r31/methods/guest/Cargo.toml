@@ -17,7 +17,7 @@ risc0-zkvm = { version = "=3.1.0", default-features = false, features = ["std"] 
 sha2 = { version = "0.10.8", default-features = false }
 
 [patch.crates-io]
-# RISC Zero accelerated SHA-256, the same fork the root workspace uses (PLAN.md 2.1).
+# RISC Zero accelerated SHA-256, the same fork the root workspace uses (docs/DECISIONS.md D-03).
 sha2 = { git = "https://github.com/risc0/RustCrypto-hashes", tag = "sha2-v0.10.8-risczero.0" }
 
 [profile.release]

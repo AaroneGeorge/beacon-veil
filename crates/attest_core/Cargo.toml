@@ -1,6 +1,6 @@
 [package]
 name = "attest_core"
-description = "Shared types of the beacon-veil interface contract (PLAN.md 2.3): borsh, used by guests and host"
+description = "Shared types of the beacon-veil interface contract (docs/DECISIONS.md D-11): borsh, used by guests and host"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -31,7 +31,7 @@ bls_blst = { workspace = true, optional = true }
 [features]
 default = []
 cycle-trace = ["lc", "dep:bls12_381", "dep:sha2_v09", "dep:risc0-zkvm"]
-# V2 verifier (PLAN.md D4): Helios rules with the signature check replaced (src/lc_v2.rs).
+# V2 verifier (docs/DECISIONS.md D-10): Helios rules with the signature check replaced (src/lc_v2.rs).
 v2 = ["lc", "dep:bls12_381", "dep:sha2_v09"]
 # V3 verifier (public path, staged; src/lc_v3.rs): Helios's rules, blst, raw committees, apply on roots.
 v3 = ["lc", "dep:bls_blst", "dep:risc0-zkvm"]

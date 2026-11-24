@@ -1,4 +1,4 @@
-//! Guest `burn_proof` (PLAN.md 2.4 outbound step 1, owner W5).
+//! Guest `burn_proof` (docs/bridge/OUTBOUND.md, step 1).
 //!
 //! Private input: `borsh(BurnWitness)` as one `Vec<u8>`. Proves that a burn note opening to (secret, recipient, fee)
 //! sits, as leaf (token, denom, note), at some index of a burn-accumulator root, and derives the release nullifier

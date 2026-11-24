@@ -344,7 +344,7 @@ fn exec_lc(args: &[String]) -> Result<()> {
     let doc = json!({
         "tool": "tools/cost exec-lc", "measured": true,
         "executor": "RISC Zero 3.0.5 executor (no proof); user_cycles = LEZ execution gas for public handlers",
-        "fixtures": "fixtures/mainnet (W2): bootstrap_15605760, updates_1905_4, finality_update_15637644",
+        "fixtures": "fixtures/mainnet: bootstrap_15605760, updates_1905_4, finality_update_15637644",
         "guests": {
             "lc_verify": {"path": lcg.path, "elf_bytes": lcg.elf_bytes, "program_binary_bytes": lcg.program.len(), "image_id": lcg.image_id},
             "lc_verify_v2": lc2.as_ref().map(|g| json!({"path": g.path, "elf_bytes": g.elf_bytes, "program_binary_bytes": g.program.len(), "image_id": g.image_id})),

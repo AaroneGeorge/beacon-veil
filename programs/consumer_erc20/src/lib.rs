@@ -1,4 +1,4 @@
-//! `consumer_erc20`: the reference consumer of an attested ERC-20 `Transfer` (021 U6, first case; PLAN.md 2.3 consumer
+//! `consumer_erc20`: the reference consumer of an attested ERC-20 `Transfer` (021 U6, first case; D-14 consumer
 //! rule). Shared types for the guest (`src/bin/consumer_erc20.rs`) and host code.
 //!
 //! # Pattern (what any consumer of `attest` does)

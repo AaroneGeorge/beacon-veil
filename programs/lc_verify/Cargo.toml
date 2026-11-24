@@ -1,6 +1,6 @@
 [package]
 name = "lc_verify_program"
-description = "LEZ program lc_verify: Helios verify + apply, then sync Apply to the instance (W1)"
+description = "LEZ program lc_verify: Helios verify + apply, then sync Apply to the instance"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -25,5 +25,5 @@ ignored = ["risc0-zkvm"]
 [features]
 # Measurement-only build for the B0 per-phase table; never deployed.
 cycle-trace = ["attest_core/cycle-trace"]
-# V2 verifier (PLAN.md D4): a separate build and deployment, a second verifier id in an instance config.
+# V2 verifier (docs/DECISIONS.md D-10): a separate build and deployment, a second verifier id in an instance config.
 v2 = ["attest_core/v2"]

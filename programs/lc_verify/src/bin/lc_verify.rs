@@ -1,4 +1,4 @@
-//! Program `lc_verify` (PLAN.md 2.2 D1/D2, owner W1): Helios `verify_*` + `apply_*` (unmodified, V1), then a sync
+//! Program `lc_verify` (docs/DECISIONS.md D-05, D-10): Helios `verify_*` + `apply_*` (unmodified, V1), then a sync
 //! `Apply` to the instance. Holds no ids of its own and keeps no state.
 //!
 //! Path A: runs in a private actor; the privacy circuit composes its receipt, and the public `attest.Apply` checks

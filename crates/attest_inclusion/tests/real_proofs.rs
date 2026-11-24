@@ -1,7 +1,7 @@
 //! `attest_inclusion` on real mainnet (fulu) and Sepolia (gloas) proofs, plus tampered-node cases.
 //!
 //! Fixtures: `tests/data/*.json`, written by `tools/proofgen/fixtures.sh` from public RPC at the execution blocks of
-//! W2's beacon fixtures (mainnet 26397891, Sepolia 12117875). Each fixture carries the block roots, the RLP execution
+//! the beacon fixtures (mainnet 26397891, Sepolia 12117875). Each fixture carries the block roots, the RLP execution
 //! header, the borsh claim, and the value the RPC reported.
 
 use std::path::Path;
@@ -227,7 +227,7 @@ fn header_must_agree_with_a_full_record() {
 
 #[test]
 fn w2_sepolia_exec_headers_hash_and_decode() {
-    // W2's header files (fixtures/sepolia/exec_headers) are accepted by exec_roots for their own hash.
+    // The header files (fixtures/sepolia/exec_headers) are accepted by exec_roots for their own hash.
     let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../fixtures/sepolia/exec_headers");
     let Ok(rd) = std::fs::read_dir(&dir) else { return };
     let mut n = 0;

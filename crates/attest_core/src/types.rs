@@ -1,4 +1,4 @@
-//! State and record types (PLAN.md 2.3).
+//! State and record types (docs/DECISIONS.md D-11).
 
 use borsh::{BorshDeserialize, BorshSerialize};
 use lee_core::account::AccountId;
@@ -35,7 +35,7 @@ pub struct Head {
     pub store_commitment: Bytes32,
 }
 
-/// Inputs of `store_commitment`. The exact participation fields are W1's to fix by freeze 2.
+/// Inputs of `store_commitment`. The exact participation fields are fixed in `attest_core::lc`.
 #[derive(Debug, Clone, Default, PartialEq, Eq, BorshSerialize, BorshDeserialize)]
 pub struct StoreCommitmentInput {
     pub finalized_header_root: Bytes32,
@@ -99,7 +99,7 @@ pub struct Statement {
     pub slot: u64,
     pub exec_number: u64,
     pub kind: ClaimKind,
-    /// Account: address. Storage: address || slot key. Log: emitter || tx index || log index (layout fixed by W3).
+    /// Account: address. Storage: address || slot key. Log: emitter || tx index || log index (layout fixed in `attest_inclusion`).
     pub subject: Vec<u8>,
     /// Account or storage value, or the full log encoding.
     pub value: Vec<u8>,

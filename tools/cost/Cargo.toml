@@ -1,6 +1,6 @@
 [package]
 name = "cost"
-description = "Cost harness: cycles and gas (cost-exec), proving time and RSS (cost-prove) (W6)"
+description = "Cost harness: cycles and gas (cost-exec), proving time and RSS (cost-prove)"
 version.workspace = true
 edition.workspace = true
 license.workspace = true

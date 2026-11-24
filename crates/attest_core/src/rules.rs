@@ -1,5 +1,5 @@
-//! The checks of program `attest` as pure functions (owner W1). The guest (`programs/attest`) is a thin wrapper
-//! over these, and host tests (W2's G2 suite, `attest_host` dry runs) call the same code.
+//! The checks of program `attest` as pure functions. The guest (`programs/attest`) is a thin wrapper
+//! over these, and host tests (the G2 suite, `attest_host` dry runs) call the same code.
 
 use lee_core::account::AccountId;
 use sha2::{Digest, Sha256};

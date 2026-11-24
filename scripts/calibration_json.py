@@ -47,7 +47,7 @@ entry = {
     "label": "measured",
     "what": "LEZ v0.4.0-rc3 examples/program_deployment run_hello_world_private on seq-real (RISC0_DEV_MODE unset): "
             "deploy hello_world (public txs), then one privacy-preserving tx proven locally through r0vm 3.0.5 (succinct)",
-    "not_k4": "Not the K4 calibration: hello-world segments are small; W6 measures po2=20 segment cost with cycle_bench",
+    "not_k4": "Not the K4 calibration: hello-world segments are small; cycle_bench measures po2=20 segment cost",
     "date_utc": meta.get("date_utc"),
     "machine": meta.get("machine"),
     "r0vm": meta.get("r0vm"),

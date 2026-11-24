@@ -19,8 +19,8 @@
 #   anvil-fork (default)  an anvil fork of Sepolia on 127.0.0.1:8548 (the 3.1.0 emergency-stop wrapper exists there),
 #                         anvil dev key 0 (a public test key). LEZ stages are refused: a fork's deposits cannot be
 #                         attested by a light client of the real chain.
-#   sepolia               Sepolia itself. Needs BV_SEPOLIA_OK=yes and the key in lechu-secret
-#                         (logos LOGOS_SEPOLIA_KEY), read for the forge calls only, never printed or written.
+#   sepolia               Sepolia itself. Needs BV_SEPOLIA_OK=yes and the key in BV_SEPOLIA_KEY
+#                         (an environment variable), read for the forge calls only, never printed or written.
 # Real-proof stages run through tools/cost/prove_job.sh (BV_PROOF_WINDOW_OK=1, proving lock, time -v, RSS samples).
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -72,7 +72,7 @@ key() {
     anvil-fork) echo "$ANVIL_KEY" ;;
     sepolia)
       [ "${BV_SEPOLIA_OK:-}" = yes ] || { echo "Sepolia needs explicit approval (BV_SEPOLIA_OK=yes)" >&2; exit 3; }
-      sudo -n lechu-secret show logos LOGOS_SEPOLIA_KEY ;;
+      printenv BV_SEPOLIA_KEY ;;
   esac
 }
 chain_id() { cast chain-id --rpc-url "$RPC"; }

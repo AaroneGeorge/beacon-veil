@@ -1,6 +1,6 @@
 [package]
 name = "guest_methods"
-description = "Builds every guest for riscv32im-risc0-zkvm-elf and embeds ELF + image id (W0). RISC0_SKIP_BUILD=1 skips; BV_GUEST_DOCKER=1 builds in the pinned Docker image"
+description = "Builds every guest for riscv32im-risc0-zkvm-elf and embeds ELF + image id. RISC0_SKIP_BUILD=1 skips; BV_GUEST_DOCKER=1 builds in the pinned Docker image"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -12,7 +12,7 @@ workspace = true
 [build-dependencies]
 risc0-build.workspace = true
 
-# Package names of the guests embedded here. Do not edit: owned by W0 so that no track edits it.
+# Package names of the guests embedded here. Change only together with the guest build and IMAGE_IDS.expected.
 [package.metadata.risc0]
 methods = [
   "../../programs/attest",

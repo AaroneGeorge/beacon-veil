@@ -1,6 +1,6 @@
 //! Measurement-only cycle trace for `lc_verify` (feature `cycle-trace`, never enabled in a deployed build).
 //!
-//! B0 (PLAN.md D3) asks for cycles per phase. Helios stays unmodified, so the phases inside `verify_*` are measured by
+//! B0 (docs/DECISIONS.md D-09) asks for cycles per phase. Helios stays unmodified, so the phases inside `verify_*` are measured by
 //! running the same library calls Helios makes (bls12_381 risc0 fork: decompression with its torsion check, G2 scalar
 //! multiplication by r, `hash_to_curve` with `ExpandMsgXmd<Sha256>` and the same DST, a 2-term multi-Miller loop and
 //! final exponentiation) once more, on the same inputs, and printing their cycle cost. Figures from this build are

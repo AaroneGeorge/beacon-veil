@@ -113,7 +113,7 @@
     "recover: raw/recover.json found both deposits from the mnemonic and Deposit logs only."
   ],
   "commands": [
-    "forge script script/Deploy.s.sol:Deploy --rpc-url <sepolia> --broadcast --slow  (env: PRIVATE_KEY from lechu-secret logos/LOGOS_SEPOLIA_KEY, VERIFIER, BURN_IMAGE_ID, LEZ_PROGRAM, ANCHOR_DELAY=600)",
+    "forge script script/Deploy.s.sol:Deploy --rpc-url <sepolia> --broadcast --slow  (env: PRIVATE_KEY from the environment, VERIFIER, BURN_IMAGE_ID, LEZ_PROGRAM, ANCHOR_DELAY=600)",
     "bridge_cli config ... ; bridge_cli commitment --index 0|1 ...",
     "forge script script/Deploy.s.sol:DepositOne (TOKEN, DENOM_INDEX=0, COMMITMENT)",
     "bridge_cli recover --dest <w5-claimer> --dest <w5-payer> --gap 5"

@@ -1,4 +1,4 @@
-//! Program `consumer_erc20` (PLAN.md 2.3 consumer rule, 021 U6 first case, owner W3). See the library docs for the
+//! Program `consumer_erc20` (D-14 consumer rule, 021 U6 first case). See the library docs for the
 //! pattern and the error table.
 //!
 //! Dispatch by sender (the runtime's word, not the message's):

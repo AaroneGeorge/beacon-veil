@@ -1,11 +1,11 @@
-//! Inclusion proofs and predicates under a header record's roots (PLAN.md 2.3, owner W3).
+//! Inclusion proofs and predicates under a header record's roots (docs/DECISIONS.md D-11).
 //!
 //! Pure functions, no I/O. The same code runs natively (host dry run, tests, tools) and inside the RISC Zero guest
 //! (`attest` program's `Attest` handler, the bridge's claim).
 //!
 //! # The single entry point
 //!
-//! [`verify_claim`] is what the `attest` program (W1), `attest_host::dry_run_attest` and the bridge (W5) call:
+//! [`verify_claim`] is what the `attest` program, `attest_host::dry_run_attest` and the bridge call:
 //!
 //! ```text
 //! verify_claim(instance, record, claim_bytes, predicate) -> Result<Statement, EsaError>

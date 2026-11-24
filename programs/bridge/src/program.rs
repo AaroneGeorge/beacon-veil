@@ -1,4 +1,4 @@
-//! Handlers of program `bridge` (PLAN.md 2.4, owner W5). The guest binary `src/bin/bridge.rs` only calls [`handle`].
+//! Handlers of program `bridge` (docs/bridge/). The guest binary `src/bin/bridge.rs` only calls [`handle`].
 //! Inbound `Claim` against a vault root attested through RFP-021, a
 //! nullifier per deposit and a wrapped-balance credit; outbound `Burn` into a burn accumulator. See
 //! docs/bridge/INBOUND.md and OUTBOUND.md, and `bridge_program::lez` for accounts and messages.

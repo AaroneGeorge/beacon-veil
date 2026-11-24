@@ -1,4 +1,4 @@
-//! Program messages (PLAN.md 2.3). Borsh-encoded `MessageData` of the `attest` and `lc_verify` programs.
+//! Program messages (docs/DECISIONS.md D-11). Borsh-encoded `MessageData` of the `attest` and `lc_verify` programs.
 
 use borsh::{BorshDeserialize, BorshSerialize};
 use lee_core::account::{AccountId, Actor};
@@ -26,7 +26,7 @@ pub enum AttestMessage {
     /// On any account, public or private: verify inclusion under the record roots, evaluate the predicate
     /// (`attest_inclusion::verify_claim`), sync `CheckHeader` to `record_id(attest, instance, record.slot)`, then sync
     /// the `Statement` (borsh, as the whole message) to the consumer actor `deliver_to`. `claim` is the encoded
-    /// inclusion claim (layout owned by W3 in `attest_inclusion`).
+    /// inclusion claim (layout in `attest_inclusion`).
     Attest {
         instance: AccountId,
         record: HeaderRecord,
@@ -46,7 +46,7 @@ pub enum LcVerifyMessage {
         attest_program: AccountId,
         instance: AccountId,
         config: InstanceConfig,
-        /// Encoded light-client store witness (layout owned by W1).
+        /// Encoded light-client store witness (layout in `attest_core::lc`).
         store_witness: Vec<u8>,
         /// SSZ-encoded `LightClientUpdate` or `LightClientFinalityUpdate`.
         update_ssz: Vec<u8>,

@@ -19,7 +19,7 @@ use sha2::{Digest, Sha256};
 #[derive(Parser)]
 #[command(
     name = "fixtures",
-    about = "Beacon light-client fixtures and the fabricated chain (beacon-veil W2)"
+    about = "Beacon light-client fixtures and the fabricated chain (beacon-veil)"
 )]
 struct Cli {
     #[command(subcommand)]

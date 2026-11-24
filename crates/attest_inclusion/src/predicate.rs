@@ -1,4 +1,4 @@
-//! Predicate evaluation (PLAN.md 2.3).
+//! Predicate evaluation (docs/DECISIONS.md D-11).
 //!
 //! | Predicate | Account claim | Storage claim | Log claim |
 //! |---|---|---|---|

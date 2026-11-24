@@ -17,7 +17,7 @@
 #   again     the same release again, sent with a fixed gas limit: must revert AlreadyReleased
 #   record    evidence/bridge/chain-anchor/sepolia.json
 #
-# Sepolia needs BV_OWNER_D3=yes (the owner's yes); the key comes from lechu-secret and is never printed. Two vaults on
+# Sepolia needs BV_OWNER_D3=yes (the owner's yes); the key comes from BV_SEPOLIA_KEY and is never printed. Two vaults on
 # one LEZ instance (vault v4 and this one) is a test arrangement: it lets one real burn, already released on vault v4,
 # be proven again through the new route. Each vault keeps its own nullifier map, so here the burn pays once per
 # vault; a production instance has one vault, which holds the funds of that instance's deposits.
@@ -44,7 +44,7 @@ exec > >(tee "$LOG") 2>&1
 save() { grep -v "^$1=" "$F" > "$F.tmp" || true; echo "$1=$2" >> "$F.tmp"; mv "$F.tmp" "$F"; }
 key() {
   [ "${BV_OWNER_D3:-}" = yes ] || { echo "Sepolia needs the owner's yes (BV_OWNER_D3=yes)" >&2; exit 3; }
-  sudo -n lechu-secret show logos LOGOS_SEPOLIA_KEY
+  printenv BV_SEPOLIA_KEY || { echo "set BV_SEPOLIA_KEY (the deployer key)" >&2; exit 3; }
 }
 sepolia() { [ "$(cast chain-id --rpc-url "$RPC")" = 11155111 ] || { echo "RPC is not Sepolia" >&2; exit 1; }; }
 send() { # file-stem, cast send args...: tx json saved, then printed as hash, gas, status

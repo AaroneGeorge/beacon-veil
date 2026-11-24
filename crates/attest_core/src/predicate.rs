@@ -1,4 +1,4 @@
-//! Predicates (PLAN.md 2.3). Evaluation lives in `attest_inclusion::eval` (W3).
+//! Predicates (docs/DECISIONS.md D-11). Evaluation lives in `attest_inclusion::eval`.
 
 use borsh::{BorshDeserialize, BorshSerialize};
 

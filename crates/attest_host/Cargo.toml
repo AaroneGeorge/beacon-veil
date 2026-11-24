@@ -1,6 +1,6 @@
 [package]
 name = "attest_host"
-description = "Host library: init, submit updates, read head and records, attest and dry-run attest against a LEZ sequencer (W1)"
+description = "Host library: init, submit updates, read head and records, attest and dry-run attest against a LEZ sequencer"
 version.workspace = true
 edition.workspace = true
 license.workspace = true

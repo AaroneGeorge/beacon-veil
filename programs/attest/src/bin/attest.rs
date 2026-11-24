@@ -1,4 +1,4 @@
-//! Program `attest` (PLAN.md 2.2 D1, 2.3; owner W1): light-client instances, `Apply` from an accepted verifier,
+//! Program `attest` (docs/DECISIONS.md D-11): light-client instances, `Apply` from an accepted verifier,
 //! write-once header records, `CheckHeader`, and `Attest` (inclusion + predicate, then delivery to a consumer).
 //!
 //! Accounts (all under this program):

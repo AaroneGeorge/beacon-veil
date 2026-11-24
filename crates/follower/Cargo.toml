@@ -1,6 +1,6 @@
 [package]
 name = "follower"
-description = "Follower daemon attest-followerd: follows a beacon chain and submits light-client updates (W4)"
+description = "Follower daemon attest-followerd: follows a beacon chain and submits light-client updates"
 version.workspace = true
 edition.workspace = true
 license.workspace = true

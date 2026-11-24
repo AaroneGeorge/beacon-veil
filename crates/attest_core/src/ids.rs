@@ -1,4 +1,4 @@
-//! Account and statement ids (PLAN.md 2.3).
+//! Account and statement ids (docs/DECISIONS.md D-11).
 
 use lee_core::{account::AccountId, program::PdaSeed};
 use sha2::{Digest, Sha256};
@@ -37,7 +37,7 @@ pub fn record_id(attest_program: &AccountId, instance: &AccountId, slot: u64) ->
 }
 
 /// Log statement id: `sha256("esa/stmt/v1" || chain_id || exec_hash || tx_index || log_index || keccak(log))`.
-/// Integers little-endian; `log_keccak` is computed by the caller (W3).
+/// Integers little-endian; `log_keccak` is computed by the caller.
 #[must_use]
 pub fn statement_id_log(
     chain_id: u64,

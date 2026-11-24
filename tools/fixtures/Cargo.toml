@@ -1,6 +1,6 @@
 [package]
 name = "fixtures"
-description = "Fetch Beacon API light-client fixtures with a manifest; fabricated-chain generator (W2)"
+description = "Fetch Beacon API light-client fixtures with a manifest; fabricated-chain generator"
 version.workspace = true
 edition.workspace = true
 license.workspace = true

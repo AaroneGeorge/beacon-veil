@@ -375,7 +375,7 @@ def derive(rows, sizes, b0_phases=None):
         "label": "estimate",
         "rows": [],
         "assumption": "A BLS12-381 precompile would replace the in-guest BLS work (key aggregation with non-signer "
-                      "decompression, hash-to-curve, pairing) by a fixed charge P. Phase cycles come from W1's "
+                      "decompression, hash-to-curve, pairing) by a fixed charge P. Phase cycles come from the "
                       "cycle-trace build when its raw file is present (raw/b0-phases.json); P is unknown: shown at 0 "
                       "(lower bound) and 1,000,000 gas (illustrative).",
     }
@@ -544,7 +544,7 @@ def render_md(doc):
                                      ("of which pairing + subgroup", "pairing_and_subgroup"),
                                      ("precompile charge P", "precompile_charge"),
                                      ("update gas after", "update_gas_after"), ("x cap after", "x_cap_after")])
-               if pd["rows"] else "_Pending: W1's per-phase trace (raw/b0-phases.json) has not landed._\n")
+               if pd["rows"] else "_Pending: the per-phase trace (raw/b0-phases.json) has not landed._\n")
     pb = d.get("path_b_three_public_transactions")
     if pb:
         out.append("\n## 8. Path B measured: three public transactions\n")
@@ -818,11 +818,11 @@ def cmd_import_trace(a):
         st["step"] = ex.group(1) if ex else None
         st["bls_sum"] = sum(st.get(k, 0) for k in BLS_PHASES)
         steps.append(st)
-    doc = {"what": "B0 per-phase cycles of lc_verify V1 (W1 cycle-trace build: Helios's BLS steps run once more on "
+    doc = {"what": "B0 per-phase cycles of lc_verify V1 (cycle-trace build: Helios's BLS steps run once more on "
                    "the same inputs and timed with env::cycle_count; Helios itself unmodified)",
            "label": "measured by duplicate computation", "source_log": os.path.basename(a.log),
            "trace_image_id": img.group(1) if img else None,
-           "note": "The trace ELF predates W1's glue fix (committee root via accelerated sha2, no re-hash of an "
+           "note": "The trace ELF predates the glue fix (committee root via accelerated sha2, no re-hash of an "
                    "unchanged next committee). That fix changes witness_load_and_pre_store and post_store_and_head, "
                    "not the BLS phases or the Helios call.",
            "steps": steps}
@@ -857,7 +857,7 @@ def main():
     j.add_argument("--recursion-lo", type=float, default=0.10)
     j.add_argument("--recursion-hi", type=float, default=0.35)
     j.add_argument("--wrap-s-est", type=float, default=600.0)
-    j.add_argument("--wrap-s", type=float, help="measured privacy-circuit wrap seconds (e.g. W0 hello-world private)")
+    j.add_argument("--wrap-s", type=float, help="measured privacy-circuit wrap seconds (e.g. a hello-world private transaction)")
     j.add_argument("--rec-composite")
     j.add_argument("--rec-succinct")
     j.add_argument("--rec-segments", type=int)

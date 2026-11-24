@@ -1,6 +1,6 @@
 [package]
 name = "lez_smoke"
-description = "W0 smoke test: LEZ rc3 hello_world, public path, with the fee declaration rc3 requires (the rc3 example omits it)"
+description = "Smoke test: LEZ rc3 hello_world, public path, with the fee declaration rc3 requires (the rc3 example omits it)"
 version.workspace = true
 edition.workspace = true
 license.workspace = true

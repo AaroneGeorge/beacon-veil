@@ -1,6 +1,6 @@
 [package]
 name = "bridge_program"
-description = "LEZ program bridge: Claim against an attested vault root, Burn into a burn accumulator (W5)"
+description = "LEZ program bridge: Claim against an attested vault root, Burn into a burn accumulator"
 version.workspace = true
 edition.workspace = true
 license.workspace = true

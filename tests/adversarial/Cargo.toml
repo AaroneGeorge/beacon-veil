@@ -1,6 +1,6 @@
 [package]
 name = "adversarial"
-description = "G2 adversarial suite: fabricated chain and six negative cases, each asserting an error code (W2)"
+description = "G2 adversarial suite: fabricated chain and six negative cases, each asserting an error code"
 version.workspace = true
 edition.workspace = true
 license.workspace = true

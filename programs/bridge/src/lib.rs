@@ -1,4 +1,4 @@
-//! Bridge library (RFP-022 spike, owner W5). Shared by program `bridge`, guest `burn_proof` and `bridge_cli`.
+//! Bridge library (RFP-022 prototype). Shared by program `bridge`, guest `burn_proof` and `bridge_cli`.
 //!
 //! - [`hash`]: every hash of the bridge, with its domain string. These are wire format: the vault (Solidity) and the
 //!   guests compute the same bytes. See docs/bridge/INBOUND.md and OUTBOUND.md.

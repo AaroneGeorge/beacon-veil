@@ -11,7 +11,7 @@
 #   e2e_sepolia.sh prove                                 burn_proof: MODE=execute (default) or MODE=groth16 (window only)
 #   e2e_sepolia.sh release                               Vault.release on Sepolia with the Groth16 seal, gas recorded
 #
-# Key: read from lechu-secret into PRIVATE_KEY for the forge calls only; never printed or written.
+# Key: read from BV_SEPOLIA_KEY into PRIVATE_KEY for the forge calls only; never printed or written.
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 R="$(cd "$here/../.." && pwd)"
@@ -34,7 +34,7 @@ export BV_PAYER="${BV_PAYER:-$(label_id w5-payer)}"
 CLAIMER="$(label_id w5-claimer)"
 DEPLOYER=0x523072A2aC5e5A3E51c107bc17995A3fa03dBD78
 save() { grep -v "^$1=" "$F" > "$F.tmp" || true; echo "$1=$2" >> "$F.tmp"; mv "$F.tmp" "$F"; }
-key() { sudo -n lechu-secret show logos LOGOS_SEPOLIA_KEY; }
+key() { printenv BV_SEPOLIA_KEY || { echo "set BV_SEPOLIA_KEY" >&2; return 1; }; }
 forge_s() { (cd "$R/contracts" && PRIVATE_KEY="$(key)" nice -n 15 forge script "script/Deploy.s.sol:$1" \
   --rpc-url "$BV_ETH_RPC" --broadcast --slow) > "$S/forge-$1-$(date -u +%H%M%S).txt" 2>&1
   cp "$R/contracts/broadcast/Deploy.s.sol/11155111/run-latest.json" "$S/broadcast-$1-$(date -u +%H%M%S).json"

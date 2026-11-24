@@ -1,4 +1,4 @@
-//! Light-client glue around a16z Helios `helios-consensus-core` 0.12.0, used unmodified (PLAN.md D4, V1).
+//! Light-client glue around a16z Helios `helios-consensus-core` 0.12.0, used unmodified (docs/DECISIONS.md D-05, D-10, V1).
 //!
 //! Shared by the `attest` program (`Init`: bootstrap checks), the `lc_verify` program (`Verify`), the host
 //! (`attest_host`, store files) and native tests, so the guest and the host compute the same commitments.
@@ -405,7 +405,7 @@ impl LoadedStore {
 /// Head and record fields from a finalized light-client header. For a gloas header only `exec_hash` is known: it is
 /// the PARENT execution block hash of the finalized beacon block (`bid.parent_block_hash`, gindex 2856), so it lags
 /// by one or more slots; `exec_number`, `exec_state_root` and `exec_receipts_root` are then zero and inclusion takes
-/// the RLP execution header (W3: keccak(rlp) must equal `exec_hash`, else E15).
+/// the RLP execution header (`attest_inclusion`: keccak(rlp) must equal `exec_hash`, else E15).
 #[must_use]
 pub fn head_from(
     config: &InstanceConfig,
@@ -613,7 +613,7 @@ pub fn verify_and_apply(
     verify_and_apply_variant(config, witness, update_ssz, Variant::V1)
 }
 
-/// Which `Verify` variant runs (PLAN.md D4). Same interface and same pre-checks, `apply_*` and commitments.
+/// Which `Verify` variant runs (docs/DECISIONS.md D-10). Same interface and same pre-checks, `apply_*` and commitments.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Variant {
     /// Helios 0.12.0 `verify_update` / `verify_finality_update`, unmodified.

@@ -1,6 +1,6 @@
 [package]
 name = "bridge_cli"
-description = "Bridge CLI: derive secrets, deposit, claim, burn, prove, release, recover (W5)"
+description = "Bridge CLI: derive secrets, deposit, claim, burn, prove, release, recover"
 version.workspace = true
 edition.workspace = true
 license.workspace = true

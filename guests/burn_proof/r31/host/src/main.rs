@@ -51,7 +51,7 @@ fn main() -> Result<()> {
                 }
                 "groth16" => {
                     if std::env::var("RISC0_DEV_MODE").is_ok_and(|v| v != "0" && !v.is_empty()) {
-                        bail!("groth16 needs RISC0_DEV_MODE unset (and a PLAN.md 3.4 proving window)");
+                        bail!("groth16 needs RISC0_DEV_MODE unset (and a proving window, docs/DECISIONS.md D-31)");
                     }
                     let info = default_prover().prove_with_opts(env, BURN_PROOF_ELF, &ProverOpts::groth16())?;
                     info.receipt.verify(image_id)?;

@@ -1,6 +1,6 @@
 [package]
 name = "guest_ids"
-description = "W0: wrap guest user ELFs with the v1compat kernel (risc0-build's ProgramBinary) and print image ids; small deps so CI can run it cheaply"
+description = "Wrap guest user ELFs with the v1compat kernel (risc0-build's ProgramBinary) and print image ids; small deps so CI can run it cheaply"
 version.workspace = true
 edition.workspace = true
 license.workspace = true

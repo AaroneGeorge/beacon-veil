@@ -5,7 +5,7 @@
 #   tools/bridge_cli/committee_anchor_sepolia.sh STAGE
 #
 # Stages, in order (state in $BV_COMMITTEE_FLOW_DIR/flow.env, default $B/run/w6/committee-sepolia):
-#   keys        4 fresh secp256k1 test keys (lechu-secret logos COMMITTEE_TEST_KEY_1..4 and key files, mode 600,
+#   keys        4 fresh secp256k1 test keys (key files, mode 600, outside the repository,
 #               sorted by address); only the addresses are saved and printed
 #   witness     bridge_cli chain-witness for the same burn, pinned and tip blocks as the chain-route flow (read only:
 #               seq-pub getBlockRange); its hashes must equal that flow's
@@ -26,7 +26,7 @@
 #   again       the same release again: AlreadyReleased
 #   record      evidence/bridge/committee-anchor/sepolia.json
 #
-# Sepolia needs BV_OWNER_D3=yes (the owner's yes); the deployer key comes from lechu-secret and is never printed, nor
+# Sepolia needs BV_OWNER_D3=yes (the owner's yes); the deployer key comes from BV_SEPOLIA_KEY and is never printed, nor
 # are the signer keys. Three vaults on one LEZ instance (vault v4, the chain-route test vault and this one) is a test
 # arrangement: each keeps its own nullifier map and pays from its own deposit, so one real burn pays once per vault.
 set -euo pipefail
@@ -53,7 +53,7 @@ exec > >(tee "$LOG") 2>&1
 save() { grep -v "^$1=" "$F" > "$F.tmp" || true; echo "$1=$2" >> "$F.tmp"; mv "$F.tmp" "$F"; }
 key() {
   [ "${BV_OWNER_D3:-}" = yes ] || { echo "Sepolia needs the owner's yes (BV_OWNER_D3=yes)" >&2; exit 3; }
-  sudo -n lechu-secret show logos LOGOS_SEPOLIA_KEY
+  printenv BV_SEPOLIA_KEY || { echo "set BV_SEPOLIA_KEY (the deployer key)" >&2; exit 3; }
 }
 sepolia() { [ "$(cast chain-id --rpc-url "$RPC")" = 11155111 ] || { echo "RPC is not Sepolia" >&2; exit 1; }; }
 send() { # file-stem, cast send args...: tx json saved, then printed as hash, gas, status
@@ -89,14 +89,14 @@ keys)
   mkdir -p "$S/keys"; chmod 700 "$S/keys"
   tmp=$(mktemp -d "$S/keys/new.XXXX")
   for i in 1 2 3 4; do (umask 077; cast wallet new --json | jq -r '.data[0].private_key' > "$tmp/$i"); done
-  # Number the keys by ascending address, then store each in lechu-secret and as a key file.
+  # Number the keys by ascending address, then keep each as a key file (mode 600).
   order=$(for i in 1 2 3 4; do echo "$(cast wallet address --private-key "$(cat "$tmp/$i")") $i"; done \
     | python3 -I -c 'import sys; [print(l.strip()) for l in sorted(sys.stdin, key=lambda l: int(l.split()[0], 16))]')
   n=0; addrs=()
   while read -r a i; do
     n=$((n + 1)); mv "$tmp/$i" "$S/keys/signer-$n.key"; chmod 600 "$S/keys/signer-$n.key"
-    # shellcheck disable=SC2024 # the key file is ours to read; lechu-secret reads it from stdin
-    sudo -n lechu-secret set logos "COMMITTEE_TEST_KEY_$n" < "$S/keys/signer-$n.key" > /dev/null
+    # The key files stay outside the repository; copy them to your own secret store if you keep them.
+    : "signer $n kept in $S/keys/signer-$n.key"
     addrs+=("$a"); echo "signer $n: $a"
   done <<<"$order"
   rmdir "$tmp"
