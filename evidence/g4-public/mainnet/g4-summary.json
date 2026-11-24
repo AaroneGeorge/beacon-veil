@@ -1,7 +1,7 @@
 {
   "gate": "G4",
   "result": "PASS",
-  "log": "${BUILD}/repo/evidence/g4-public/mainnet/follower.jsonl",
+  "log": "${BUILD}/wt-v03/evidence/g4-public/mainnet/follower.jsonl",
   "failures": [],
   "pids": [
     999325
@@ -29,41 +29,43 @@
     "version": "0.1.0"
   },
   "first_ts": "2026-11-21T13:00:27.332Z",
-  "last_ts": "2026-11-22T15:06:16.716Z",
-  "hours": 26.097,
+  "last_ts": "2026-11-24T17:42:40.482Z",
+  "hours": 76.704,
   "cadence_s": 6144,
-  "max_gap_s": 301.7,
-  "max_gap_before_line": 44,
-  "submits": 17,
-  "applied": 17,
+  "max_gap_s": 320.6,
+  "max_gap_before_line": 729,
+  "submits": 49,
+  "applied": 49,
   "noops": 0,
   "superseded": 0,
-  "handoffs": 1,
-  "period_updates": 1,
+  "handoffs": 3,
+  "period_updates": 3,
   "head_first": 15703424,
-  "head_last": 15711104,
-  "max_applied_gap_s": 6464.5,
+  "head_last": 15726400,
+  "max_applied_gap_s": 6480.6,
   "beacon_source": "logos_module",
   "chain": "host",
   "risc0_dev_mode": "unset",
-  "error_lines": {},
-  "lines": 359,
+  "error_lines": {
+    "source_error": 2
+  },
+  "lines": 1048,
   "mode": "public",
   "sequencer": "seq-pub",
   "verifier": "lc_verify_v3",
-  "steps_with_cycles": 51,
+  "steps_with_cycles": 147,
   "steps_bounded_by_block": 0,
   "max_step_block_bound": null,
   "reverted_steps": 0,
-  "txs": 51,
-  "txs_applied_updates": 51,
+  "txs": 147,
+  "txs_applied_updates": 147,
   "txs_per_applied": [
     3
   ],
   "steps_by_name": {
-    "Begin": 17,
-    "Miller": 17,
-    "Finish": 17
+    "Begin": 49,
+    "Miller": 49,
+    "Finish": 49
   },
   "four_step_updates": 0,
   "max_step_gas_limit": 9000000,
@@ -81,5 +83,5 @@
   "failed_steps": 0,
   "steps_without_cycles": [],
   "payer_balance_first": 28500616984,
-  "payer_balance_last": 26734854326
+  "payer_balance_last": 23443562438
 }

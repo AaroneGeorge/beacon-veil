@@ -1,7 +1,7 @@
 {
   "gate": "G4",
   "result": "PASS",
-  "log": "${BUILD}/repo/evidence/g4-public/sepolia/follower.jsonl",
+  "log": "${BUILD}/wt-v03/evidence/g4-public/sepolia/follower.jsonl",
   "failures": [],
   "pids": [
     999589
@@ -29,41 +29,43 @@
     "version": "0.1.0"
   },
   "first_ts": "2026-11-21T13:00:33.644Z",
-  "last_ts": "2026-11-22T15:05:17.118Z",
-  "hours": 26.079,
+  "last_ts": "2026-11-24T17:43:26.181Z",
+  "hours": 76.715,
   "cadence_s": 1536,
-  "max_gap_s": 301.2,
-  "max_gap_before_line": 283,
-  "submits": 51,
-  "applied": 51,
+  "max_gap_s": 320.4,
+  "max_gap_before_line": 683,
+  "submits": 147,
+  "applied": 147,
   "noops": 0,
   "superseded": 0,
-  "handoffs": 2,
-  "period_updates": 2,
+  "handoffs": 4,
+  "period_updates": 4,
   "head_first": 11627616,
-  "head_last": 11635392,
-  "max_applied_gap_s": 1954.5,
+  "head_last": 11650496,
+  "max_applied_gap_s": 1970.7,
   "beacon_source": "logos_module",
   "chain": "host",
   "risc0_dev_mode": "unset",
-  "error_lines": {},
-  "lines": 442,
+  "error_lines": {
+    "source_error": 2
+  },
+  "lines": 1295,
   "mode": "public",
   "sequencer": "seq-pub",
   "verifier": "lc_verify_v3",
-  "steps_with_cycles": 152,
+  "steps_with_cycles": 440,
   "steps_bounded_by_block": 1,
   "max_step_block_bound": 6227904,
   "reverted_steps": 0,
-  "txs": 153,
-  "txs_applied_updates": 153,
+  "txs": 441,
+  "txs_applied_updates": 441,
   "txs_per_applied": [
     3
   ],
   "steps_by_name": {
-    "Begin": 51,
-    "Miller": 51,
-    "Finish": 51
+    "Begin": 147,
+    "Miller": 147,
+    "Finish": 147
   },
   "four_step_updates": 0,
   "max_step_gas_limit": 9000000,
@@ -81,5 +83,5 @@
   "failed_steps": 0,
   "steps_without_cycles": [],
   "payer_balance_first": 95650846976,
-  "payer_balance_last": 90441371422
+  "payer_balance_last": 80669022278
 }

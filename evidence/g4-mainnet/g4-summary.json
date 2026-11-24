@@ -1,7 +1,7 @@
 {
   "gate": "G4",
   "result": "PASS",
-  "log": "${BUILD}/repo/evidence/g4-mainnet/follower.jsonl",
+  "log": "${BUILD}/wt-v03/evidence/g4-mainnet/follower.jsonl",
   "failures": [],
   "pids": [
     1308007
@@ -26,19 +26,19 @@
     "version": "0.1.0"
   },
   "first_ts": "2026-11-17T19:51:27.944Z",
-  "last_ts": "2026-11-22T04:57:40.059Z",
-  "hours": 105.103,
+  "last_ts": "2026-11-24T17:44:39.649Z",
+  "hours": 165.887,
   "cadence_s": 6144,
   "max_gap_s": 320.6,
   "max_gap_before_line": 320,
-  "submits": 66,
-  "applied": 66,
+  "submits": 104,
+  "applied": 104,
   "noops": 0,
   "superseded": 0,
-  "handoffs": 4,
-  "period_updates": 5,
+  "handoffs": 6,
+  "period_updates": 7,
   "head_first": 15676672,
-  "head_last": 15707808,
+  "head_last": 15726368,
   "max_applied_gap_s": 6433.9,
   "beacon_source": "logos_module",
   "chain": "host",
@@ -46,7 +46,7 @@
   "error_lines": {
     "source_error": 5
   },
-  "lines": 1443,
+  "lines": 2274,
   "mode": "private",
   "sequencer": null
 }
