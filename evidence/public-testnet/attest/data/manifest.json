@@ -1,0 +1,60 @@
+{
+  "what": "witnesses of one storage claim under a header record's execution block",
+  "files": {
+    "block.json": {
+      "provider": "ethpandaops",
+      "url": "https://rpc.sepolia.ethpandaops.io",
+      "method": "eth_getBlockByHash(hash,false)",
+      "fetched_at_utc": "2026-11-24T14:21:34Z",
+      "bytes": 16444,
+      "sha256": "7a701a00b50c4ec66489d531c30216afb8b85530e358f8a6f61f468fd9ef972d"
+    },
+    "header.rlp": {
+      "derived_from": "block.json",
+      "keccak256_equals_block_hash": true,
+      "field_order": [
+        "parentHash",
+        "sha3Uncles",
+        "miner",
+        "stateRoot",
+        "transactionsRoot",
+        "receiptsRoot",
+        "logsBloom",
+        "difficulty",
+        "number",
+        "gasLimit",
+        "gasUsed",
+        "timestamp",
+        "extraData",
+        "mixHash",
+        "nonce",
+        "baseFeePerGas",
+        "withdrawalsRoot",
+        "blobGasUsed",
+        "excessBlobGas",
+        "parentBeaconBlockRoot",
+        "requestsHash",
+        "blockAccessListHash",
+        "slotNumber"
+      ],
+      "bytes": 678,
+      "sha256": "989eeace60150742a02b561cd205143c405d00fad73c7c090ebbd8c4be5737f1"
+    },
+    "proof.json": {
+      "provider": "ethpandaops",
+      "url": "https://rpc.sepolia.ethpandaops.io",
+      "fetched_at_utc": "2026-11-24T14:21:35Z",
+      "method": "eth_getProof(0x380be74d9F3dFeBAaFC5F911CD6A45bFbeE3aD27,[0xc48ce8c9c69c089f8e403bb82c6c6a3b0b082f197e29f63d5843b5b37b73a200],0xba31e8)",
+      "bytes": 8897,
+      "sha256": "34770d2f0965e9610cc7918837c12fe8737b40106a000124a12e52b50d016823"
+    },
+    "claim.json": {
+      "derived_from": [
+        "block.json",
+        "proof.json"
+      ],
+      "bytes": 654,
+      "sha256": "5f4502f496de3dd42c05558efcc58e2b34d2e560cc98251e0c4b99629808ae85"
+    }
+  }
+}

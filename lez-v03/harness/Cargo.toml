@@ -12,6 +12,8 @@ workspace = true
 [dependencies]
 anyhow.workspace = true
 attest_core = { workspace = true, features = ["lc", "v3"] }
+attest_fact_v03.workspace = true
+attest_inclusion.workspace = true
 attest_v03.workspace = true
 borsh.workspace = true
 hex.workspace = true

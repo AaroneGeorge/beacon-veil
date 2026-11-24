@@ -39,6 +39,7 @@ use program_loader_core::MAX_SEGMENT_DATA_LEN;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use v03_harness::{
+    attest,
     fixtures::{config_from_beacon, split_updates_by_range},
     steps::{self, Ids, Tx},
     world::STEP_LIMIT,
@@ -80,8 +81,12 @@ enum Cmd {
         #[arg(long)]
         json: Option<PathBuf>,
     },
-    /// Deploy both programs through the program loader, immutable headers.
-    Deploy,
+    /// Deploy programs through the program loader, immutable headers: `--program NAME` (repeatable), default
+    /// `attest_v03` and `lc_verify_v3_v03`.
+    Deploy {
+        #[arg(long = "program")]
+        programs: Vec<String>,
+    },
     /// `Init` of the instance from the data folder's bootstrap.
     Init {
         #[arg(long)]
@@ -108,6 +113,30 @@ enum Cmd {
         to: String,
         #[arg(long)]
         amount: u128,
+    },
+    /// `Attest` of `attest_fact_v03`: the claim folder's storage fact (`tools/fixtures/fetch_claim.py`) under the
+    /// header record that `attest_v03` holds for its beacon slot. `--plan`: deploy `attest_fact_v03` and attest in
+    /// process, from the chain's accounts, and print the fees and the funds needed; sends nothing.
+    Attest {
+        #[arg(long)]
+        data: PathBuf,
+        #[arg(long)]
+        claim: PathBuf,
+        #[arg(long)]
+        plan: bool,
+        #[arg(long)]
+        json: Option<PathBuf>,
+    },
+    /// Add the `attest_fact_v03` deployment and the `Attest` to an evidence folder written by `record`: rows of
+    /// `txs.tsv` and raw bytes for the transactions not yet in it, the program in `deployment.json` and `IMAGE_IDS`,
+    /// `attest` in `run.json`. Nothing else in the folder changes.
+    RecordAttest {
+        #[arg(long)]
+        data: PathBuf,
+        #[arg(long)]
+        claim: PathBuf,
+        #[arg(long)]
+        out: PathBuf,
     },
     /// Write the evidence folder from the home's progress and the chain's state.
     Record {
@@ -325,6 +354,33 @@ fn load_data(dir: &Path, ids: &Ids) -> Result<Data> {
 // ---------------------------------------------------------------------------------------------------------------
 // Transactions
 
+/// One row of `txs.tsv`. `derived_cycles`: the cycles the payer's balance change implies at the row's base fees.
+fn tsv_row(s: &Sent) -> String {
+    let before: u128 = s.payer_before.parse().unwrap_or(0);
+    let after: u128 = s.payer_after.parse().unwrap_or(0);
+    let derived = before
+        .checked_sub(after)
+        .and_then(|delta| delta.checked_sub(u128::from(s.bytes) * u128::from(s.base_fee_stor)))
+        .map(|x| (x / u128::from(s.base_fee_exec.max(1))).to_string())
+        .unwrap_or_else(|| "n/a".into());
+    format!(
+        "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n",
+        s.name,
+        s.hash,
+        s.block,
+        s.bytes,
+        s.gas_limit,
+        s.simulated_cycles,
+        s.expected_exit.map_or_else(|| "-".to_string(), |c| c.to_string()),
+        s.base_fee_exec,
+        s.base_fee_stor,
+        s.payer_before,
+        s.payer_after,
+        derived,
+        s.sent_utc
+    )
+}
+
 struct Fee {
     gas_limit: u64,
     max_fee: u128,
@@ -386,6 +442,72 @@ fn run(
             };
             Err((charge.cycles, code, e.to_string()))
         }
+    }
+}
+
+/// In-process run of a sequence of transactions at the head's fees (`attest --plan`), as `plan`'s steps.
+struct Sim {
+    fee: rpc::FeeState,
+    block: u64,
+    rows: Vec<serde_json::Value>,
+    total_fee: u128,
+    /// The largest (fees before a transaction + its reserve).
+    need: u128,
+}
+
+impl Sim {
+    #[allow(clippy::too_many_arguments)]
+    fn step(
+        &mut self,
+        state: &mut V03State,
+        name: &str,
+        program: AccountId,
+        sel: Vec<ProgramShardSelector>,
+        ix: Vec<u8>,
+        extra: &[&PrivateKey],
+        payer: &PrivateKey,
+    ) -> Result<()> {
+        self.block += 1;
+        let payer_id = id_of(payer);
+        let ts = now_ms();
+        let nonce = |s: &V03State, id| s.get_account_by_id(id).nonce;
+        let mk = |s: &V03State, gas: u64| {
+            let mut signers: Vec<(&PrivateKey, Nonce)> = extra.iter().map(|k| (*k, nonce(s, id_of(k)))).collect();
+            signers.push((payer, nonce(s, payer_id)));
+            signed(
+                program,
+                sel.clone(),
+                ix.clone(),
+                &signers,
+                payer_id,
+                &Fee {
+                    gas_limit: gas,
+                    max_fee: reserve(gas, 200_000, 64, 64),
+                },
+            )
+        };
+        let probe = mk(state, STEP_LIMIT);
+        let cycles =
+            run(&mut state.clone(), &probe, self.block, ts, STEP_LIMIT).map_err(|e| anyhow!("{name}: {e:?}"))?;
+        let gas = if program == PROGRAM_LOADER_ACCOUNT_ID {
+            LOADER_GAS
+        } else {
+            (cycles + cycles.div_ceil(100) * 3).min(STEP_LIMIT)
+        };
+        let tx = mk(state, gas);
+        let bytes = wire_len(&tx);
+        run(state, &tx, self.block, ts, gas).map_err(|e| anyhow!("{name}: {e:?}"))?;
+        let fee_paid = u128::from(cycles.min(gas)) * u128::from(self.fee.base_fee_exec)
+            + u128::from(bytes) * u128::from(self.fee.base_fee_stor);
+        let res = reserve(gas, bytes, self.fee.base_fee_exec, self.fee.base_fee_stor);
+        self.need = self.need.max(self.total_fee + res);
+        self.total_fee += fee_paid;
+        println!("{name:<44} {bytes:>7} bytes  gas limit {gas:>9}  simulated {cycles:>9}  fee {fee_paid:>11}");
+        self.rows.push(
+            json!({"tx": name, "bytes": bytes, "gas_limit": gas, "simulated_cycles": cycles,
+            "fee_at_head": fee_paid.to_string(), "reserve_at_head": res.to_string()}),
+        );
+        Ok(())
     }
 }
 
@@ -602,9 +724,11 @@ impl Client {
 
     // -----------------------------------------------------------------------------------------------------------
 
-    fn deploy(&mut self) -> Result<()> {
+    fn deploy(&mut self, programs: &[String]) -> Result<()> {
         let mut d: Deployment = self.home.load("deploy.json")?;
-        for name in ["attest_v03", "lc_verify_v3_v03"] {
+        let default = ["attest_v03".to_string(), "lc_verify_v3_v03".to_string()];
+        for name in if programs.is_empty() { &default[..] } else { programs } {
+            let name = name.as_str();
             if d.programs
                 .get(name)
                 .is_some_and(|p| !p.txs.is_empty() && p.txs.len() == p.segments.len() + 1)
@@ -1076,29 +1200,7 @@ impl Client {
         for s in &p.sent {
             std::fs::write(out.join(format!("raw/{}.tx.b64", s.hash)), &s.raw_b64)?;
             blocks.insert(s.block);
-            let before: u128 = s.payer_before.parse().unwrap_or(0);
-            let after: u128 = s.payer_after.parse().unwrap_or(0);
-            let derived = before
-                .checked_sub(after)
-                .and_then(|delta| delta.checked_sub(u128::from(s.bytes) * u128::from(s.base_fee_stor)))
-                .map(|x| (x / u128::from(s.base_fee_exec.max(1))).to_string())
-                .unwrap_or_else(|| "n/a".into());
-            tsv.push_str(&format!(
-                "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n",
-                s.name,
-                s.hash,
-                s.block,
-                s.bytes,
-                s.gas_limit,
-                s.simulated_cycles,
-                s.expected_exit.map_or_else(|| "-".to_string(), |c| c.to_string()),
-                s.base_fee_exec,
-                s.base_fee_stor,
-                s.payer_before,
-                s.payer_after,
-                derived,
-                s.sent_utc
-            ));
+            tsv.push_str(&tsv_row(s));
         }
         std::fs::write(out.join("txs.tsv"), tsv)?;
         for b in blocks {
@@ -1146,6 +1248,280 @@ impl Client {
         Ok(())
     }
 
+    /// The id of a deployed program (its program-loader header), from `deploy.json`.
+    fn program_id(&self, name: &str) -> Result<AccountId> {
+        let d: Deployment = self.home.load("deploy.json")?;
+        d.programs
+            .get(name)
+            .filter(|p| !p.txs.is_empty() && p.txs.len() == p.segments.len() + 1)
+            .with_context(|| format!("{name} is not deployed (run deploy --program {name})"))?
+            .header
+            .parse()
+            .map_err(|e| anyhow!("{e:?}"))
+    }
+
+    /// The `attest_v03` instance of `data`'s config, the record account of `slot` and the record bytes the chain
+    /// holds there (empty if none).
+    fn chain_record(&self, ids: &Ids, data: &Path, slot: u64) -> Result<([u8; 32], AccountId, Vec<u8>)> {
+        ensure!(
+            ids.attest == AccountId::new(attest_fact_v03::ATTEST_V03),
+            "deploy.json's attest_v03 ({}) is not the one attest_fact_v03 trusts",
+            ids.attest
+        );
+        let d = load_data(data, ids)?;
+        let inst = steps::instance(ids, &d.config);
+        let rid = steps::record(ids, &inst, slot);
+        let bytes = self.rpc.account(&rid)?.data.shard(ids.attest).clone().into_inner();
+        Ok((*inst.value(), rid, bytes))
+    }
+
+    /// `attest --plan`: `attest_fact_v03` deployed through the program loader and the `Attest`, in a state seeded
+    /// from the chain (payer, record, deployed programs), at the head's base fees. The funds needed are the largest
+    /// (fees of the transactions before one + that one's reserve).
+    fn attest_plan(&mut self, data: &Path, claim: &Path, json_out: Option<&Path>) -> Result<()> {
+        let ids = self.ids()?;
+        let fact = attest::load(claim)?;
+        let (instance, rid, rec_bytes) = self.chain_record(&ids, data, fact.beacon_slot)?;
+        ensure!(
+            !rec_bytes.is_empty(),
+            "no header record of slot {} on chain at {rid}",
+            fact.beacon_slot
+        );
+        let record: attest_core::HeaderRecord = borsh::from_slice(&rec_bytes)?;
+        let fee = self.rpc.fee_state()?;
+        let mut state = self.seeded(&[rid])?;
+        let head = self.rpc.last_block_id()?;
+        let mut sim = Sim {
+            fee,
+            block: head,
+            rows: Vec::new(),
+            total_fee: 0,
+            need: 0,
+        };
+        let bin = self.guest("attest_fact_v03")?;
+        let image_id = risc0_binfmt::compute_image_id(&bin).map_err(|e| anyhow!("{e}"))?;
+        let binary = risc0_binfmt::ProgramBinary::decode(&bin).map_err(|e| anyhow!("{e}"))?;
+        let chunks: Vec<Vec<u8>> = binary
+            .user_elf
+            .chunks(MAX_SEGMENT_DATA_LEN)
+            .map(<[u8]>::to_vec)
+            .collect();
+        let segs: Vec<AccountId> = chunks.iter().map(|_| id_of(&PrivateKey::new_os_random())).collect();
+        let hk = PrivateKey::new_os_random();
+        for i in (0..chunks.len()).rev() {
+            let next = segs.get(i + 1).copied();
+            let mut sel = vec![ProgramShardSelector::new(segs[i], PROGRAM_LOADER_ACCOUNT_ID)];
+            sel.extend(next.map(|n| ProgramShardSelector::new(n, PROGRAM_LOADER_ACCOUNT_ID)));
+            let ix = borsh::to_vec(&program_loader_core::Instruction::WriteSegment {
+                bytecode: chunks[i].clone(),
+                next_segment: next,
+            })?;
+            let name = format!("deploy attest_fact_v03 segment {i}");
+            sim.step(&mut state, &name, PROGRAM_LOADER_ACCOUNT_ID, sel, ix, &[], &self.payer)?;
+        }
+        let mut sel = vec![ProgramShardSelector::new(id_of(&hk), PROGRAM_LOADER_ACCOUNT_ID)];
+        sel.extend(
+            segs.iter()
+                .map(|s| ProgramShardSelector::new(*s, PROGRAM_LOADER_ACCOUNT_ID)),
+        );
+        let ix = borsh::to_vec(&program_loader_core::Instruction::CreateHeader {
+            first_segment: segs[0],
+            immutable: true,
+        })?;
+        sim.step(
+            &mut state,
+            "deploy attest_fact_v03 header",
+            PROGRAM_LOADER_ACCOUNT_ID,
+            sel,
+            ix,
+            &[&hk],
+            &self.payer,
+        )?;
+        let program = id_of(&hk);
+        let (tx, st, fact_acc) = attest::tx(program, &instance, &record, &fact)?;
+        sim.step(
+            &mut state,
+            "Attest",
+            tx.program,
+            tx.selectors,
+            tx.instruction,
+            &[],
+            &self.payer,
+        )?;
+        ensure!(
+            state
+                .get_account_by_id(fact_acc)
+                .data
+                .shard(program)
+                .clone()
+                .into_inner()
+                == borsh::to_vec(&st)?,
+            "Attest applied in process but did not write the statement"
+        );
+        let balance = self.rpc.balance(&self.payer_id)?;
+        println!(
+            "\nattest_fact_v03 image id {image_id}; record slot {} at {rid}; fact {}: slot {} of {} = {}\nfee state at block {}: base fees {} / {}; fees at head {}; payer {} holds {balance}; funds needed {}",
+            record.slot,
+            hex::encode(st.id),
+            hex::encode(fact.slot_key),
+            hex::encode(fact.address),
+            hex::encode(fact.value),
+            fee.height,
+            fee.base_fee_exec,
+            fee.base_fee_stor,
+            sim.total_fee,
+            self.payer_id,
+            sim.need
+        );
+        if let Some(p) = json_out {
+            std::fs::write(
+                p,
+                serde_json::to_string_pretty(&json!({
+                    "fee_state": fee, "payer": self.payer_id.to_string(), "payer_balance": balance.to_string(),
+                    "image_id": image_id.to_string(), "record_slot": record.slot, "record_account": rid.to_string(),
+                    "transactions": sim.rows, "fees_at_head": sim.total_fee.to_string(),
+                    "funds_needed": sim.need.to_string(), "head_block": head,
+                }))?,
+            )?;
+        }
+        Ok(())
+    }
+
+    /// `attest`: the claim folder's fact under the chain's record, sent through `send` (simulated first); then the
+    /// fact account must hold the statement the native `verify_claim` computes.
+    fn attest(&mut self, data: &Path, claim: &Path) -> Result<()> {
+        let ids = self.ids()?;
+        let program = self.program_id("attest_fact_v03")?;
+        let fact = attest::load(claim)?;
+        let (instance, rid, rec_bytes) = self.chain_record(&ids, data, fact.beacon_slot)?;
+        ensure!(
+            !rec_bytes.is_empty(),
+            "no header record of slot {} on chain at {rid}",
+            fact.beacon_slot
+        );
+        let record: attest_core::HeaderRecord = borsh::from_slice(&rec_bytes)?;
+        let (tx, st, fact_acc) = attest::tx(program, &instance, &record, &fact)?;
+        let want = borsh::to_vec(&st)?;
+        let now = self.rpc.account(&fact_acc)?.data.shard(program).clone().into_inner();
+        if !now.is_empty() {
+            ensure!(now == want, "the fact account {fact_acc} holds another statement");
+            eprintln!("attested already: fact {fact_acc}");
+            return Ok(());
+        }
+        self.send("Attest", tx.program, tx.selectors, tx.instruction, &[], None)?;
+        let after = self.rpc.account(&fact_acc)?.data.shard(program).clone().into_inner();
+        ensure!(
+            after == want,
+            "the fact account {fact_acc} does not hold the statement after Attest"
+        );
+        eprintln!(
+            "attested: statement {} at {fact_acc} (record slot {})",
+            hex::encode(st.id),
+            record.slot
+        );
+        Ok(())
+    }
+
+    /// `record-attest`: adds `attest_fact_v03` and the `Attest` to an evidence folder written by `record`.
+    fn record_attest(&mut self, data: &Path, claim: &Path, out: &Path) -> Result<()> {
+        let ids = self.ids()?;
+        let program = self.program_id("attest_fact_v03")?;
+        let dep: Deployment = self.home.load("deploy.json")?;
+        let fp = &dep.programs["attest_fact_v03"];
+        let fact = attest::load(claim)?;
+        let (instance, rid, rec_bytes) = self.chain_record(&ids, data, fact.beacon_slot)?;
+        let record: attest_core::HeaderRecord = borsh::from_slice(&rec_bytes).context("no record on chain")?;
+        let (_, st, fact_acc) = attest::tx(program, &instance, &record, &fact)?;
+        let stored = self.rpc.account(&fact_acc)?.data.shard(program).clone().into_inner();
+        ensure!(
+            stored == borsh::to_vec(&st)?,
+            "the fact account {fact_acc} does not hold the statement"
+        );
+        let p: Progress = self.home.load("progress.json")?;
+        let sent = p
+            .sent
+            .iter()
+            .rev()
+            .find(|s| s.name == "Attest")
+            .context("no Attest in progress.json")?;
+        // txs.tsv and raw bytes: the transactions sent since the folder was recorded.
+        let tsv_path = out.join("txs.tsv");
+        let mut tsv = std::fs::read_to_string(&tsv_path)?;
+        let have: std::collections::BTreeSet<String> = tsv
+            .lines()
+            .filter_map(|l| l.split('\t').nth(1).map(str::to_string))
+            .collect();
+        let mut blocks = std::collections::BTreeSet::new();
+        for s in p.sent.iter().filter(|s| !have.contains(&s.hash)) {
+            std::fs::write(out.join(format!("raw/{}.tx.b64", s.hash)), &s.raw_b64)?;
+            blocks.insert(s.block);
+            tsv.push_str(&tsv_row(s));
+        }
+        std::fs::write(&tsv_path, tsv)?;
+        for b in blocks {
+            if let Some((_, raw)) = self.rpc.block(b)? {
+                std::fs::write(out.join(format!("raw/{b}.block.b64")), raw)?;
+            }
+        }
+        // deployment.json (written by `record`): the program, no key.
+        let dpath = out.join("deployment.json");
+        let mut dj: serde_json::Value = serde_json::from_slice(&std::fs::read(&dpath)?)?;
+        dj["programs"]["attest_fact_v03"] = json!({"header": fp.header, "image_id": fp.image_id,
+            "bin_sha256": fp.elf_sha256, "segments": fp.segments, "txs": fp.txs, "immutable": true});
+        std::fs::write(&dpath, serde_json::to_string_pretty(&dj)?)?;
+        let ipath = out.join("IMAGE_IDS");
+        let mut ids_txt = std::fs::read_to_string(&ipath)?;
+        if !ids_txt.lines().any(|l| l.starts_with("attest_fact_v03 ")) {
+            ids_txt.push_str(&format!("attest_fact_v03 {}\n", fp.image_id));
+            std::fs::write(&ipath, ids_txt)?;
+        }
+        // run.json: `attest`, appended as the last field (the file's other fields are kept byte for byte).
+        let before: u128 = sent.payer_before.parse().unwrap_or(0);
+        let after: u128 = sent.payer_after.parse().unwrap_or(0);
+        let obj = json!({
+            "what": "one Attest of attest_fact_v03: a Sepolia storage slot proven under a header record of attest_v03's instance, the statement written once at the fact account",
+            "program": program.to_string(), "image_id": fp.image_id, "attest_v03": ids.attest.to_string(),
+            "instance": AccountId::new(instance).to_string(),
+            "record": {"slot": record.slot, "account": rid.to_string(), "bytes_hex": hex::encode(&rec_bytes),
+                "exec_hash": hex::encode(record.exec_hash)},
+            "claim": {"kind": "Storage", "chain_id": record.chain_id, "beacon_slot": fact.beacon_slot,
+                "block_hash": hex::encode(fact.block_hash), "block_number": fact.block_number,
+                "address": hex::encode(fact.address), "slot_key": hex::encode(fact.slot_key),
+                "value": hex::encode(fact.value), "predicate": "Eq(Bytes32(value))", "witnesses": "attest/data"},
+            "fact_account": fact_acc.to_string(), "statement_hex": hex::encode(&stored),
+            "statement": {"id": hex::encode(st.id), "chain_id": st.chain_id, "slot": st.slot,
+                "exec_number": st.exec_number, "subject": hex::encode(&st.subject), "value": hex::encode(&st.value),
+                "predicate_hash": hex::encode(st.predicate_hash)},
+            "tx": sent.hash, "block": sent.block, "bytes": sent.bytes, "gas_limit": sent.gas_limit,
+            "simulated_cycles": sent.simulated_cycles,
+            "fee": before.checked_sub(after).map_or_else(|| "n/a".into(), |f| f.to_string()),
+            "deploy_txs": fp.txs, "recorded_utc": utc(),
+        });
+        let rpath = out.join("run.json");
+        let text = std::fs::read_to_string(&rpath)?;
+        ensure!(
+            !text.contains("\n \"attest\": "),
+            "run.json has an attest field already"
+        );
+        let body = text
+            .trim_end()
+            .strip_suffix('}')
+            .context("run.json does not end with }")?;
+        let mut buf = Vec::new();
+        let mut ser =
+            serde_json::Serializer::with_formatter(&mut buf, serde_json::ser::PrettyFormatter::with_indent(b" "));
+        serde::Serialize::serialize(&obj, &mut ser)?;
+        let field = String::from_utf8(buf)?.replace('\n', "\n ");
+        std::fs::write(&rpath, format!("{},\n \"attest\": {field}\n}}\n", body.trim_end()))?;
+        eprintln!(
+            "recorded the Attest {} (block {}) into {}",
+            sent.hash,
+            sent.block,
+            out.display()
+        );
+        Ok(())
+    }
+
     fn rpc_url(&self) -> String {
         self.rpc_url.clone()
     }
@@ -1181,7 +1557,20 @@ fn main() -> Result<()> {
             println!("{} nonce {} balance {}", c.payer_id, a.nonce.0, bal(&a));
         }
         Cmd::Plan { data, json } => c.plan(data, json.as_deref())?,
-        Cmd::Deploy => c.deploy()?,
+        Cmd::Deploy { programs } => c.deploy(programs)?,
+        Cmd::Attest {
+            data,
+            claim,
+            plan,
+            json,
+        } => {
+            if *plan {
+                c.attest_plan(data, claim, json.as_deref())?;
+            } else {
+                c.attest(data, claim)?;
+            }
+        }
+        Cmd::RecordAttest { data, claim, out } => c.record_attest(data, claim, out)?,
         Cmd::Init { data } => c.init(data)?,
         Cmd::Update { data, max } => c.update(data, *max)?,
         Cmd::RefuseDemo { data } => c.refuse_demo(data)?,

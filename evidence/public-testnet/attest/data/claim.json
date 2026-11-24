@@ -1,0 +1,12 @@
+{
+  "chain_id": 11155111,
+  "beacon_slot": 11649024,
+  "block_hash": "0xa80030fefb6c1a558bddb10846436e7aed76575c2a1300c16be446c41eaf8fa0",
+  "block_number": 12202472,
+  "state_root": "0xca7917811c9427d6a865a609e3d431e208470279524e9cf51143ce7ee70aa885",
+  "address": "0x380be74d9F3dFeBAaFC5F911CD6A45bFbeE3aD27",
+  "slot_key": "0xc48ce8c9c69c089f8e403bb82c6c6a3b0b082f197e29f63d5843b5b37b73a200",
+  "value": "0x4d92152ebaec5d12c6a0e4f8845ac1b0ec2b85c1856ff40e18567431d8075407",
+  "storage_hash": "0xa943d1e6b24fa3ce4be348dadf68374d275751cae060e6afdc56054b40a0856d",
+  "note": "beacon-veil vault v3 on Sepolia: depositRoot slot (docs/bridge/INBOUND.md)"
+}

@@ -16,6 +16,7 @@ path = "src/main.rs"
 [dependencies]
 anyhow.workspace = true
 attest_core = { workspace = true, features = ["lc", "v3"] }
+attest_fact_v03.workspace = true
 attest_v03.workspace = true
 base64 = "0.22.1"
 borsh.workspace = true

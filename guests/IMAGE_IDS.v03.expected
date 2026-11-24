@@ -1,7 +1,10 @@
-# Expected RISC Zero image ids of the two LEZ 0.3 guests built by lez-v03/scripts/build_guests.sh docker
+# Expected RISC Zero image ids of the LEZ 0.3 guests built by lez-v03/scripts/build_guests.sh docker
 # (risczero/risc0-guest-builder:r0.1.91.1, from the committed tree). Built twice on 2026-11-22, the second time with
 # no docker cache: the same ids both times. The built tree's lez-v03/, crates/ and programs/ equal those of commit
 # 9e093e0 of this repository (the build preceded a rebase that changed documentation and evidence only).
 # Any change to these guests or their dependency graph changes them: rebuild and update this file in the same commit.
+# attest_fact_v03 (added 2026-11-24, symbols stripped as build_guests.sh does) was built twice from the tree that added
+# it, the second time with no docker cache: the same ELF both times; both builds also gave the two ids above again.
 attest_v03 6daec75d3529ebdfddacc532babcc3292214ea1addcc7ffe3963c2ebce67aae0
 lc_verify_v3_v03 a7f5cffb4ee2025c93d185b584eca1c8781c548b8f995df4cabca37cd9ac845d
+attest_fact_v03 98a3be6ba1156c058cf26515dbbb6ec4d155300f558603bd40fa1ac55899b704

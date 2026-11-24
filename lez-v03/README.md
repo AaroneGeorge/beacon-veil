@@ -9,8 +9,14 @@ unchanged, so the public update path can run on a public Logos network:
 |---|---|---|
 | `lc_verify_v3_v03` | `attest_core::lc_v3::handle` | `Begin`, `Miller`, `Finish` of one update, on a job account (as `lc_verify_v3`) |
 | `attest_v03` | `attest_core::rules::init`, `rules::apply`, `rules::write_record` | `Init`, `Apply` (only as `Finish`'s chained call) |
+| `attest_fact_v03` | `attest_inclusion::verify_claim`, `attest_core::rules::check_header` | `Attest` (an account, storage-slot or log fact under a header record of `attest_v03`; the statement written once) |
 
-Not ported: `Attest`, `CheckHeader`, `VerifyOnce` (the private path), the consumer and the bridge. `crates/attest_core`
+`attest_v03` was deployed immutable before `Attest` was ported, so `Attest` is a third program: it reads the header
+record where `attest_v03` keeps it through LEZ 0.3's inspection of a foreign shard (`Plan::inspect`: its own `apply`
+runs on `attest_v03`'s record shard and may not write it) and checks it as `CheckHeader` does; the `attest_v03` it
+trusts is fixed in its code. Instead of a delivery to a consumer, it writes the `Statement` once at
+`PDA(attest_fact_v03, sha256("esa/fact/v03" || instance || statement id))`. Not ported: `VerifyOnce` (the private
+path), the consumer and the bridge. `crates/attest_core`
 and `crates/bls_blst` are used as they are, by path; nothing outside this folder is changed.
 
 ## What differs from rc3, and the claim pattern

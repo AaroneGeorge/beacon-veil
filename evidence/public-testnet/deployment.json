@@ -1,6 +1,21 @@
 {
   "lez_release": "v0.3.2",
   "programs": {
+    "attest_fact_v03": {
+      "bin_sha256": "ae0fe989225be5ef51eff94b5d7001d56136d3dd17be0daef63b93ab0148e4e3",
+      "header": "77eS8E7V65M7ZbhVXWdxQsPpoiN4fEWPY7qkGyZEpQeb",
+      "image_id": "98a3be6ba1156c058cf26515dbbb6ec4d155300f558603bd40fa1ac55899b704",
+      "immutable": true,
+      "segments": [
+        "867VWFPqxe4om3SBnigMi656UhezNX6eDKn98XWkxRPi",
+        "937ePniK6C6hKw28sp4r3Go6nBMrkGG3h1CDGr1dKF5i"
+      ],
+      "txs": [
+        "0a397cee8cedf2537bce4b6add87ba20f51d56ae04059936e4ab50889a5f7c4e",
+        "74dda4603a2f902fc4be0d6badc0191230ba45e5700bba023e6456d6c59e4dd1",
+        "fdf9b9a2bde89173df22dee5895e63074a23db6314c017a37d6c7930acf59caf"
+      ]
+    },
     "attest_v03": {
       "bin_sha256": "37b40a86a043b3abae9d36b481b5a9bdc347801f80ddd31d6c2cd10e4c0ea5ee",
       "header": "8SXSF3i2Ht8acLuzDYYKitVtDfdkKmg4iAkkhFV1GYM3",

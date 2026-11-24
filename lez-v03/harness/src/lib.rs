@@ -2,6 +2,7 @@
 //! v0.3.2 state (`lee::V03State`) with both programs deployed, which executes public transactions exactly as the
 //! sequencer's action phase does (`ValidatedStateDiff::from_public_transaction_metered`) and reports their cycles.
 
+pub mod attest;
 pub mod fixtures;
 pub mod guests;
 pub mod run;

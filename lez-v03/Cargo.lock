@@ -1044,6 +1044,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "attest_fact_v03"
+version = "0.1.0"
+dependencies = [
+ "attest_core",
+ "attest_inclusion",
+ "borsh",
+ "lee_core 0.1.0 (git+https://github.com/logos-blockchain/logos-execution-zone?tag=v0.3.2)",
+ "risc0-zkvm",
+ "sha2 0.10.8",
+]
+
+[[package]]
+name = "attest_inclusion"
+version = "0.1.0"
+dependencies = [
+ "alloy-primitives",
+ "alloy-rlp",
+ "alloy-trie",
+ "attest_core",
+ "borsh",
+]
+
+[[package]]
 name = "attest_v03"
 version = "0.1.0"
 dependencies = [
@@ -1306,6 +1329,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "attest_core",
+ "attest_fact_v03",
  "attest_v03",
  "base64 0.22.1",
  "borsh",
@@ -5466,6 +5490,8 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "attest_core",
+ "attest_fact_v03",
+ "attest_inclusion",
  "attest_v03",
  "borsh",
  "fixtures",

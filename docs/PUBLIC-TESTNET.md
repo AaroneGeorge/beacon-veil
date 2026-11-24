@@ -4,8 +4,9 @@ Status: written 2026-11-22, updated 2026-11-24. **Sent, then updated in rounds.*
 testnet, one Sepolia instance is initialised there, and **five updates are applied** over 24 hours, the last one across
 the sync-committee period boundary 1421 to 1422 (instance head slot 11,640,832 to 11,649,024, store period 1421 to
 1422); one transaction meant to be refused was refused with the instance unchanged. 29 transactions, blocks 85,572 to
-86,065, 2026-11-23 13:52 UTC to 2026-11-24 13:33 UTC (see "Sent" and "Kept current"). Everything else on this page is
-simulation, and says so.
+86,065, 2026-11-23 13:52 UTC to 2026-11-24 13:33 UTC (see "Sent" and "Kept current"). Then one `Attest` proved a
+Sepolia storage slot against the head's header record (4 transactions, blocks 86,095 to 86,102, see "Attest").
+Everything else on this page is simulation, and says so.
 
 ## The network
 
@@ -21,6 +22,8 @@ LEZ v0.4.0-rc3, whose program model (actors) differs from 0.3's (`plan` + `apply
 - `lc_verify_v3_v03`: one update as `Begin`, `Miller`, `Finish`, through `attest_core::lc_v3::handle`.
 - `attest_v03`: `Init` and `Apply`, through `attest_core::rules::init` and `rules::apply`; `Apply` only as
   `Finish`'s chained call, with the caller checked by rule E12 as on rc3.
+- `attest_fact_v03`: `Attest`, through `attest_inclusion::verify_claim` and `rules::check_header`, against the header
+  records of the deployed `attest_v03` (see "Attest").
 
 The 0.4 programs remain the deliverable.
 
@@ -188,6 +191,60 @@ Over the whole run: 29 transactions in blocks 85,572 to 86,065, five updates app
 units of fees, every step charged the cycles its simulation gave. Funds: six faucet payments of 100,000,000 (one
 directly to the payer, five to fresh accounts moved to the payer by native transfers). One leftover of 3,997,032 units
 was also moved from the first keeper account to the payer (`bv-v03 transfer`, outside the keeper's record).
+
+## Attest (2026-11-24)
+
+`attest_v03` was deployed immutable with `Init` and `Apply` only, so `Attest` is a third program, `attest_fact_v03`
+(`lez-v03/README.md`). Its `plan` runs `attest_inclusion::verify_claim` on the instruction (the execution header
+against the record's block hash, the account and storage proofs, the predicate); its `apply` reads the header record
+on `attest_v03`'s shard through LEZ 0.3's inspection of a foreign shard and refuses unless it equals the instruction's
+record (`CheckHeader`: E02 if absent, E15 if different), then writes the `Statement` once at
+`PDA(attest_fact_v03, sha256("esa/fact/v03" || instance || statement id))`. The `attest_v03` it trusts
+(`8SXSF3i2...GYM3`) is fixed in its code.
+
+What was attested: slot `0xc48ce8c9...3a200` (the deposit root, `docs/bridge/INBOUND.md`) of the beacon-veil vault v3
+on Sepolia, `0x380be74d9F3dFeBAaFC5F911CD6A45bFbeE3aD27`, equals `0x4d92152e...d8075407`, in execution block
+12,202,472 (`0xa80030fe...eaf8fa0`), the execution block of beacon slot 11,649,024, which is the instance's head and
+has a header record on chain (`8siyKPh6oE76HQreEPz8ToBq1fhYeT6z7UX87gRDdSuj`). The record holds the execution block
+hash with zero execution roots, so the claim carries the RLP header and the program checks its keccak against the
+record (`attest_inclusion::exec_roots`). Witnesses: `eth_getBlockByHash` and `eth_getProof` from the Sepolia
+RPCs that `tools/fixtures/fetch.py` already uses (`tools/fixtures/fetch_claim.py`; saved byte for byte in
+`evidence/public-testnet/attest/data/` with a manifest). The statement id, `cb6cc908...5e05311`, is the one the rc3
+`Attest` gave for the same vault root on seq-dev (`evidence/bridge/k9-part2-runB-v3/attest-root.json`): same chain,
+slot and value, same id.
+
+Sent on 2026-11-24 between 14:45 and 14:53 UTC by `bv-v03 deploy --program attest_fact_v03` and `bv-v03 attest`
+(each simulated in LEZ v0.3.2's state machine seeded from the testnet before it was sent), recorded by
+`bv-v03 record-attest`:
+
+| Part | Transactions | Blocks | Bytes | Cycles (simulated = charged) | Fee paid, units |
+|---|---|---|---|---|---|
+| `attest_fact_v03` through the program loader: 2 segments and an immutable header, at `77eS8E7V65M7ZbhVXWdxQsPpoiN4fEWPY7qkGyZEpQeb`, image id `98a3be6b...899b704` | 3 | 86,095 to 86,099 | 175,592 | 0 | 1,404,736 |
+| `Attest`: the statement written at the fact account `6RTsnpeDBTrxPLm9qoRDmiv4k2mmRJzoNUzngBafvHZn` | `11492b1f...575105f5` | 86,102 | 5,547 | 400,531 | 3,248,624 |
+| Total | 4 | | | | 4,653,360 |
+
+- `bv-v03 attest --plan` (deployment and `Attest` in process, from the chain's accounts, at block 86,093) gave the
+  same fees, 4,653,360 at base fees 8 and 8, and a need of 4,749,504 (the `Attest`'s reserve after the deployment's
+  fees); the payer held 5,254,280, above the need plus 10%, so nothing waited for the faucet. `Attest` was charged
+  400,531 cycles (derived from the payer's balance, as above), its simulated cycles, with a gas limit of 412,549.
+- A payment of 4,990,000 units reached the payer while the header was in flight (the account sweep), so that row's
+  derived cycles in `txs.tsv` read `n/a`; its fee is its 564 bytes at 8. The payer held 5,254,280 before and 5,590,920
+  after.
+- The image id is that of the reproducible Docker build (`guests/IMAGE_IDS.v03.expected`), built twice (the second
+  time with no cache) with the same ELF; both builds also gave the two earlier deployed ids again. `attest_fact_v03` is deployed with its symbols stripped, as `build_guests.sh` does for it:
+  the loader charges by the byte (about 308 KB unstripped, 174 KB stripped).
+- In `lee::V03State` (`lez-v03/harness/tests/attest.rs`, on this claim and the testnet's record bytes): `Attest`
+  400,531 cycles; refused by exit code, with nothing changed: no record (E02), a record that is not the stored one
+  (E15), a false predicate (E08), a changed proof node (E07), another record's account (E09), the same fact again
+  (E14).
+- `verify.sh` now also checks the `Attest`: the program's deployment and the `Attest` in `txs.tsv` and on chain, the
+  record used is the instance's record of `run.json` (`attest`), and, without the programs, the recorded Sepolia
+  data proves the fact again (keccak of the header equals the record's block hash; the account and storage proofs
+  verify under its state root and give the value, in stdlib Python), the statement decodes to it with its id and
+  predicate hash recomputed, the fact account is the program's address for it, and, online, holds the statement.
+  Checks after the record (about 15:00 UTC): `verify.sh` 179 passed, 0 failed (33 transactions);
+  `verify_offline.py`: 99 passed; `mutation_test.sh`: 4 of 4 changes caught (the changed block number is the
+  `Attest`'s).
 
 ## Funds
 

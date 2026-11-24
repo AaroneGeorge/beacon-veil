@@ -1,0 +1,28 @@
+[package]
+name = "attest_fact_v03"
+description = "LEZ v0.3 program attest_fact_v03: Attest, one Ethereum fact proven under a header record of the deployed attest_v03, a plan + apply wrapper around attest_inclusion::verify_claim and attest_core::rules::check_header"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "attest_fact_v03"
+path = "src/bin/attest_fact_v03.rs"
+
+[dependencies]
+attest_core.workspace = true
+attest_inclusion.workspace = true
+borsh.workspace = true
+lee_core.workspace = true
+risc0-zkvm.workspace = true
+sha2.workspace = true
+
+[package.metadata.cargo-machete]
+ignored = ["risc0-zkvm"]

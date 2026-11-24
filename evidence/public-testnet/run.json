@@ -293,5 +293,53 @@
   ],
   "claims_used": 5,
   "claims_cap": 12
+ },
+ "attest": {
+  "attest_v03": "8SXSF3i2Ht8acLuzDYYKitVtDfdkKmg4iAkkhFV1GYM3",
+  "block": 86102,
+  "bytes": 5547,
+  "claim": {
+   "address": "380be74d9f3dfebaafc5f911cd6a45bfbee3ad27",
+   "beacon_slot": 11649024,
+   "block_hash": "a80030fefb6c1a558bddb10846436e7aed76575c2a1300c16be446c41eaf8fa0",
+   "block_number": 12202472,
+   "chain_id": 11155111,
+   "kind": "Storage",
+   "predicate": "Eq(Bytes32(value))",
+   "slot_key": "c48ce8c9c69c089f8e403bb82c6c6a3b0b082f197e29f63d5843b5b37b73a200",
+   "value": "4d92152ebaec5d12c6a0e4f8845ac1b0ec2b85c1856ff40e18567431d8075407",
+   "witnesses": "attest/data"
+  },
+  "deploy_txs": [
+   "0a397cee8cedf2537bce4b6add87ba20f51d56ae04059936e4ab50889a5f7c4e",
+   "74dda4603a2f902fc4be0d6badc0191230ba45e5700bba023e6456d6c59e4dd1",
+   "fdf9b9a2bde89173df22dee5895e63074a23db6314c017a37d6c7930acf59caf"
+  ],
+  "fact_account": "6RTsnpeDBTrxPLm9qoRDmiv4k2mmRJzoNUzngBafvHZn",
+  "fee": "3248624",
+  "gas_limit": 412549,
+  "image_id": "98a3be6ba1156c058cf26515dbbb6ec4d155300f558603bd40fa1ac55899b704",
+  "instance": "FAVCkd5avEa6Hz3snkpyUVf6NubtEMHTY89mMj7wSUaR",
+  "program": "77eS8E7V65M7ZbhVXWdxQsPpoiN4fEWPY7qkGyZEpQeb",
+  "record": {
+   "account": "8siyKPh6oE76HQreEPz8ToBq1fhYeT6z7UX87gRDdSuj",
+   "bytes_hex": "a736aa000000000000c0b10000000000a5f802a576c15165dbf01b65bfe2b97a2327ea8638dd3a366f880aca1b20d0060000000000000000a80030fefb6c1a558bddb10846436e7aed76575c2a1300c16be446c41eaf8fa000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+   "exec_hash": "a80030fefb6c1a558bddb10846436e7aed76575c2a1300c16be446c41eaf8fa0",
+   "slot": 11649024
+  },
+  "recorded_utc": "2026-11-24T14:57:31Z",
+  "simulated_cycles": 400531,
+  "statement": {
+   "chain_id": 11155111,
+   "exec_number": 12202472,
+   "id": "cb6cc908ab4415f0c17cdca26b746f915186ff91e2c31e8648267445d5e05311",
+   "predicate_hash": "a22b1a48e780b5074974913e1617cb5b697d9b8ca13e7b0d2b301e2173f1a3d5",
+   "slot": 11649024,
+   "subject": "380be74d9f3dfebaafc5f911cd6a45bfbee3ad27c48ce8c9c69c089f8e403bb82c6c6a3b0b082f197e29f63d5843b5b37b73a200",
+   "value": "4d92152ebaec5d12c6a0e4f8845ac1b0ec2b85c1856ff40e18567431d8075407"
+  },
+  "statement_hex": "d271bba9a85a61c9d39660d7bb59e18ed2da2339334a53e384722629ac4c23e6a736aa000000000000c0b10000000000e831ba00000000000134000000380be74d9f3dfebaafc5f911cd6a45bfbee3ad27c48ce8c9c69c089f8e403bb82c6c6a3b0b082f197e29f63d5843b5b37b73a200200000004d92152ebaec5d12c6a0e4f8845ac1b0ec2b85c1856ff40e18567431d8075407a22b1a48e780b5074974913e1617cb5b697d9b8ca13e7b0d2b301e2173f1a3d5cb6cc908ab4415f0c17cdca26b746f915186ff91e2c31e8648267445d5e05311",
+  "tx": "11492b1fa005d139b30be0f7658c6d9aee88c6c31f1d6e428c1d81f6575105f5",
+  "what": "one Attest of attest_fact_v03: a Sepolia storage slot proven under a header record of attest_v03's instance, the statement written once at the fact account"
  }
 }

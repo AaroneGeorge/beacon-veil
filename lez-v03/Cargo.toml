@@ -16,6 +16,7 @@ resolver = "3"
 members = [
   "programs/lc_verify_v3_v03",
   "programs/attest_v03",
+  "programs/attest_fact_v03",
   "harness",
   "client",
 ]
@@ -23,6 +24,8 @@ members = [
 [workspace.dependencies]
 attest_core = { path = "../crates/attest_core" }
 attest_v03 = { path = "programs/attest_v03" }
+attest_fact_v03 = { path = "programs/attest_fact_v03" }
+attest_inclusion = { path = "../crates/attest_inclusion" }
 lc_verify_v3_v03 = { path = "programs/lc_verify_v3_v03" }
 
 # ---- LEZ v0.3.2 (commit ee6ed4470059d0ac113e2e358dbe25aad3e8b0a9), the version the public testnet runs ----
