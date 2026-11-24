@@ -67,7 +67,7 @@ Terms. A cycle is one RISC-V instruction in the RISC Zero zkVM. Gas on LEZ v0.4.
 | D-57 | `blst` for the public path | build 2026-11-20 | decided, measured |
 | D-58 | Declared gas per V3 step: 9.0M, 7.0M, 5.5M | build 2026-11-20 | decided |
 | D-59 | V3-only instances: `attest init --only-verifier` | build 2026-11-20 | decided |
-| D-60 | The public path on LEZ testnet 0.3: thin 0.3 wrappers and claims in the instruction | build 2026-11-21 | decided, measured in simulation; sent on testnet 0.3: deployed, kept current 24 h across a period boundary (five updates), one refusal |
+| D-60 | The public path on LEZ testnet 0.3: thin 0.3 wrappers and claims in the instruction | build 2026-11-21 | decided, measured in simulation; sent on testnet 0.3: deployed, five updates over 24 h across a period boundary, one refusal |
 
 ## D-01. Runtime target: LEZ v0.4.0-rc3 on a standalone sequencer
 

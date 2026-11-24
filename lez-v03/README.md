@@ -60,5 +60,5 @@ cd lez-v03 && scripts/build_guests.sh local && cargo test --profile host --locke
 ```
 
 The record of the public run is `evidence/public-testnet/`. It holds the minimal run of 2026-11-23 (deployment, `Init`,
-one finality update, one refusal) and the keeper rounds that kept the instance current until 2026-11-24 across the
+one finality update, one refusal) and the keeper rounds that applied four more updates until 2026-11-24, across the
 period boundary 1421 to 1422: 29 transactions (`docs/PUBLIC-TESTNET.md`, Sent and Kept current).

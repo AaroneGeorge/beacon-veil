@@ -1,6 +1,6 @@
 # The public update path on LEZ testnet 0.3
 
-Status: written 2026-11-22, updated 2026-11-24. **Sent and kept current.** Both programs are deployed on the public
+Status: written 2026-11-22, updated 2026-11-24. **Sent, then updated in rounds.** Both programs are deployed on the public
 testnet, one Sepolia instance is initialised there, and **five updates are applied** over 24 hours, the last one across
 the sync-committee period boundary 1421 to 1422 (instance head slot 11,640,832 to 11,649,024, store period 1421 to
 1422); one transaction meant to be refused was refused with the instance unchanged. 29 transactions, blocks 85,572 to
@@ -94,7 +94,7 @@ Stage 2, sent on 2026-11-23 between 18:42 and 19:00 UTC by `bv-v03 update --max 
 | `Begin` of the finality update at attested slot 11,641,568 | `ec330ef5...376634` | 85,746 | 29,344 | 2,780,396 | 22,477,920 |
 | `Miller` | `9854f067...dc021` | 85,748 | 297 | 5,785,760 | 46,288,456 |
 | `Finish`: the update applies; the instance head moves from slot 11,640,832 to 11,641,504 | `c591b135...199f0` | 85,751 | 906 | 4,472,624 | 35,788,240 |
-| The same `Finish` sent again: refused with exit code 14, the instance unchanged (it pays its fee) | `b35b0ba2...9f258a` | 85,754 | 906 | 96,197 | 776,824 |
+| The same `Finish` sent again: refused, the instance unchanged (it pays its fee; exit code 14 in the client's simulation, as the testnet returns no receipt) | `b35b0ba2...9f258a` | 85,754 | 906 | 96,197 | 776,824 |
 | Total | 4 | | | | 105,331,440 |
 
 - Stage 2 cost exactly what `bv-v03 plan` simulated at block 85,554 (105,331,440 units at base fees 8 and 8), and
@@ -119,7 +119,7 @@ Checks of the whole record on 2026-11-23 at about 19:10 UTC:
 
 After the minimal run the instance was kept following Sepolia until 2026-11-24 13:33 UTC, across the sync-committee
 period boundary 1421 to 1422 (slot 11,649,024, 2026-11-24 12:04:48 UTC). A keeper script on our
-machine (not part of the repository; every transaction it sends is a `bv-v03` command) ran one round every ~2.5 h:
+machine (not part of the repository; every transaction it sends is a `bv-v03` command) ran rounds, planned every ~2.5 h; the testnet stall and the faucet outage below made the gaps between sends about 11.3 h, 0.5 h and 6.3 h, so the head lagged Sepolia by up to about 19 h:
 
 1. A fresh data folder: the instance's history (the bootstrap and every update applied so far, in the order applied,
    listed in `manifest.json` `apply_order`) plus the latest finality update from the Beacon API
