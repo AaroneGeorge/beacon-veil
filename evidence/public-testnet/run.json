@@ -1,49 +1,297 @@
 {
- "attest_v03": "8SXSF3i2Ht8acLuzDYYKitVtDfdkKmg4iAkkhFV1GYM3",
- "chain_id": 11155111,
- "checkpoint_root": "49cd05dd2796f3e0539e53797dfd2a9f76c4887b5124eb9bbbf2b7fe8b3efaec",
- "checkpoint_slot": 11640832,
- "head_beacon_root": "17dc7af103852300892ce4b8214e816821f9636a2ea1965535cde68e84bebba3",
- "head_slot": 11641504,
- "instance": "FAVCkd5avEa6Hz3snkpyUVf6NubtEMHTY89mMj7wSUaR",
- "instance_state_hex": "a736aa0000000000d8ea171f3c94aea21ebc42a1ed61052acf3f9209c00e4efbaaddac09ed9b8078607db062000000000800000000000000000000009000006932000000000000009000007064000000000000009000007100de0000000000009000007200060200000000009000007300650300000000009000007400290400000000009000007500630500000000009000007649cd05dd2796f3e0539e53797dfd2a9f76c4887b5124eb9bbbf2b7fe8b3efaec00a0b10000000000010000004d79c010ef2d40c5d0c9bc109021bb2c53f801bf68583778e264e5040b50c7e90000a0a2b1000000000017dc7af103852300892ce4b8214e816821f9636a2ea1965535cde68e84bebba300000000000000002c750abfe5e2512dd6ad1e9b588517653d389ddb86708849d214d9318cd59177000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008d0500000000000026288b78dc2f0b7d18518477a7e715a145776d0c08ec1d665814aae87ef0a1db",
- "lc_verify_v3_v03": "6DS5234UqhtRk67ZDmVjTFftJQkgdUBWmxsY8vsmbWSU",
- "network": "LEZ testnet 0.3 (v0.3.2)",
- "payer": "4kST35tNxNnvQBUdLJga7EMe4DQbeX3Gjfeauw2cAwMm",
- "recorded_utc": "2026-11-23T19:06:48Z",
- "records": [
-  {
-   "account": "3vCBEUmXcqsZ3MTtVZEza1ySJLP8SivWfMHCYAFhdJv6",
-   "bytes_hex": "a736aa000000000000a0b1000000000049cd05dd2796f3e0539e53797dfd2a9f76c4887b5124eb9bbbf2b7fe8b3efaec000000000000000067ed8ae52ac180bd81c5c1b9cb414c59485ceb2fabc57f5a456c2f8bdba415c600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-   "slot": 11640832
+  "attest_v03": "8SXSF3i2Ht8acLuzDYYKitVtDfdkKmg4iAkkhFV1GYM3",
+  "chain_id": 11155111,
+  "checkpoint_root": "49cd05dd2796f3e0539e53797dfd2a9f76c4887b5124eb9bbbf2b7fe8b3efaec",
+  "checkpoint_slot": 11640832,
+  "head_beacon_root": "a5f802a576c15165dbf01b65bfe2b97a2327ea8638dd3a366f880aca1b20d006",
+  "head_slot": 11649024,
+  "instance": "FAVCkd5avEa6Hz3snkpyUVf6NubtEMHTY89mMj7wSUaR",
+  "instance_state_hex": "a736aa0000000000d8ea171f3c94aea21ebc42a1ed61052acf3f9209c00e4efbaaddac09ed9b8078607db062000000000800000000000000000000009000006932000000000000009000007064000000000000009000007100de0000000000009000007200060200000000009000007300650300000000009000007400290400000000009000007500630500000000009000007649cd05dd2796f3e0539e53797dfd2a9f76c4887b5124eb9bbbf2b7fe8b3efaec00a0b10000000000010000004d79c010ef2d40c5d0c9bc109021bb2c53f801bf68583778e264e5040b50c7e9000000c0b10000000000a5f802a576c15165dbf01b65bfe2b97a2327ea8638dd3a366f880aca1b20d0060000000000000000a80030fefb6c1a558bddb10846436e7aed76575c2a1300c16be446c41eaf8fa0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008e0500000000000051f78d7b4f3fd1c8e258525b2c1def2e22ff8614ff371e63afe72230e85be2c4",
+  "lc_verify_v3_v03": "6DS5234UqhtRk67ZDmVjTFftJQkgdUBWmxsY8vsmbWSU",
+  "network": "LEZ testnet 0.3 (v0.3.2)",
+  "payer": "4kST35tNxNnvQBUdLJga7EMe4DQbeX3Gjfeauw2cAwMm",
+  "recorded_utc": "2026-11-24T13:35:29Z",
+  "records": [
+    {
+      "account": "3vCBEUmXcqsZ3MTtVZEza1ySJLP8SivWfMHCYAFhdJv6",
+      "bytes_hex": "a736aa000000000000a0b1000000000049cd05dd2796f3e0539e53797dfd2a9f76c4887b5124eb9bbbf2b7fe8b3efaec000000000000000067ed8ae52ac180bd81c5c1b9cb414c59485ceb2fabc57f5a456c2f8bdba415c600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "slot": 11640832
+    },
+    {
+      "account": "6not3TogDRWwwyc5WsPwnDh6kb8h58GM4xEbba1gbFeQ",
+      "bytes_hex": "a736aa0000000000a0a2b1000000000017dc7af103852300892ce4b8214e816821f9636a2ea1965535cde68e84bebba300000000000000002c750abfe5e2512dd6ad1e9b588517653d389ddb86708849d214d9318cd5917700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "slot": 11641504
+    },
+    {
+      "account": "6GnVJcLxGX4v8fKrWtw56QreHZGtMWxoGVo7oaQUbwDf",
+      "bytes_hex": "a736aa0000000000e0b0b100000000009bd0cbcd46ca301775a3ff9e407eb63ad57ad26fb80a7399a541b82b514d5d250000000000000000794f721d63673259ce7dbe1a3936b6cb3fe18d8db2190e8bf9603faa6a89a50d00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "slot": 11645152
+    },
+    {
+      "account": "HvbCjExe8Ph6AXHFuS5pvpdLrS1Sj9whUJFCCQZszDo1",
+      "bytes_hex": "a736aa000000000020b9b10000000000e178bd795c8023653b6cf0d45c827d871d17413d7ea05abeb6858d209ec95d84000000000000000068bed6f95eb609ffb56333c89833304360d6b5861aa2efb0004d882d3650a6bf00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "slot": 11647264
+    },
+    {
+      "account": "8siyKPh6oE76HQreEPz8ToBq1fhYeT6z7UX87gRDdSuj",
+      "bytes_hex": "a736aa000000000000c0b10000000000a5f802a576c15165dbf01b65bfe2b97a2327ea8638dd3a366f880aca1b20d0060000000000000000a80030fefb6c1a558bddb10846436e7aed76575c2a1300c16be446c41eaf8fa000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "slot": 11649024
+    }
+  ],
+  "rpc": "https://testnet.lez.logos.co",
+  "store_commitment": "51f78d7b4f3fd1c8e258525b2c1def2e22ff8614ff371e63afe72230e85be2c4",
+  "mode": "keeper",
+  "mode_choice": {
+    "mode": "minimal",
+    "staged": true,
+    "stage1": {
+      "balance_before": 100000000,
+      "sent": "12 deploys + Init",
+      "fees": 47481024,
+      "last_block": 85597
+    },
+    "stage2": {
+      "floor": 120000000,
+      "needs_at_8_8_base_fees": 105628064,
+      "balance_before": 147518976,
+      "sent": "one finality update (Begin, Miller, Finish) + refusal demo",
+      "fees": 105331440,
+      "blocks": "85746-85754",
+      "funded_by": "faucet claim to a second account (ChGA4puYvTfthQT3ZAMLoBGKzg3YJntxYiTDiPord7a8, claim tx fb8fec29d625090a9398d4158ad6cb5d98e92b760e9996aaf9955a9350763d7d), then a native transfer of 95,000,000 to the payer (tx 17bbbcb81082834dbd895eb762debc78bd485906095eb263b28036a02797ef7a, block 85741)"
+    },
+    "note": "the faucet pays 100,000,000 per recipient per 24 h, so the minimal run was sent in two stages; each step's reserve is checked by the client before it is sent"
   },
-  {
-   "account": "6not3TogDRWwwyc5WsPwnDh6kb8h58GM4xEbba1gbFeQ",
-   "bytes_hex": "a736aa0000000000a0a2b1000000000017dc7af103852300892ce4b8214e816821f9636a2ea1965535cde68e84bebba300000000000000002c750abfe5e2512dd6ad1e9b588517653d389ddb86708849d214d9318cd5917700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-   "slot": 11641504
+  "keeper": {
+    "what": "after the minimal run, a fresh Sepolia update every ~2.5 h and one as soon as the first finality update of period 1422 existed; each round lists the updates it applied, the instance head before and after, the fees paid and the faucet claims that funded it",
+    "base_mode": "minimal",
+    "base_head_slot": 11641504,
+    "base_period": 1421,
+    "boundary_slot": 11649024,
+    "rounds": [
+      {
+        "round": 1,
+        "kind": "regular",
+        "started_utc": "2026-11-23T23:24:36Z",
+        "data": "keeper/20261123T232436Z",
+        "updates": [
+          "updates_1421_1[0]",
+          "finality_update_11645216"
+        ],
+        "head_slot_before": 11641504,
+        "period_before": 1421,
+        "finalized_slot_fetched": 11645152,
+        "plan_fees": "224644408",
+        "plan_need": "225717856",
+        "funding_claims": [
+          1,
+          2,
+          3
+        ],
+        "payer_before": "339184568",
+        "txs": [
+          {
+            "step": "updates_1421_1[0] Begin",
+            "hash": "22b71c3aa57911bafb3cc6322778fc13618451a1039ca33deba3b8e02076019b",
+            "block": 85863
+          },
+          {
+            "step": "updates_1421_1[0] Miller",
+            "hash": "9d59114570e59ab926753442ccb1bf523fc794438f5df4ac80bf14cefd376b95",
+            "block": 85865
+          },
+          {
+            "step": "updates_1421_1[0] Finish",
+            "hash": "ed8627ec8b866285c9b534f9311c258bcd6edcd3f2dcd943d67a43944823ab20",
+            "block": 85867
+          },
+          {
+            "step": "finality_update_11645216 Begin",
+            "hash": "634462cdeae01b40b6cdd5a35d6b0d1f38fa61d740db9cb8b914fc85dfe9d499",
+            "block": 85869
+          },
+          {
+            "step": "finality_update_11645216 Miller",
+            "hash": "50dad2612292ab71280072ace1c00ddda80ff7e0e07306ab3ba4e413aef8e09c",
+            "block": 85870
+          },
+          {
+            "step": "finality_update_11645216 Finish",
+            "hash": "78fde0bd6c0c904369f4724a4c4cb226ec95d7d5ba6caa8d051233db38f2e19e",
+            "block": 85872
+          }
+        ],
+        "fees": "224644408",
+        "head_slot": 11645152,
+        "period": 1421,
+        "payer_after": "114540160",
+        "finished_utc": "2026-11-24T06:29:20Z",
+        "verify": "119 checks passed, 0 failed; 56 RPC requests"
+      },
+      {
+        "round": 2,
+        "kind": "regular",
+        "started_utc": "2026-11-24T06:30:24Z",
+        "data": "keeper/20261124T063024Z",
+        "updates": [
+          "finality_update_11647328"
+        ],
+        "head_slot_before": 11645152,
+        "period_before": 1421,
+        "finalized_slot_fetched": 11647264,
+        "plan_fees": "104551264",
+        "plan_need": "105624712",
+        "funding_claims": [
+          4
+        ],
+        "payer_before": "213540160",
+        "txs": [
+          {
+            "step": "finality_update_11647328 Begin",
+            "hash": "39c9f287b037fe6bb8ea4f30b173d4198f5a0b2534a36cfe3264f252027a4f3f",
+            "block": 85887
+          },
+          {
+            "step": "finality_update_11647328 Miller",
+            "hash": "72caaded7c4edb678a1ad639296345cdbb81956c3d2bf11c704172eec4d6c9bc",
+            "block": 85889
+          },
+          {
+            "step": "finality_update_11647328 Finish",
+            "hash": "3b5f8eadca898408af7d0d2b5a991ea9deea2f2756dbc6a16fff7db15137a760",
+            "block": 85891
+          }
+        ],
+        "fees": "104551264",
+        "head_slot": 11647264,
+        "period": 1421,
+        "payer_after": "108988896",
+        "finished_utc": "2026-11-24T07:03:24Z",
+        "verify": "135 checks passed, 0 failed; 64 RPC requests"
+      },
+      {
+        "round": 3,
+        "kind": "crossing",
+        "started_utc": "2026-11-24T12:19:50Z",
+        "data": "keeper/20261124T131700Z",
+        "updates": [
+          "finality_update_11649088"
+        ],
+        "head_slot_before": 11647264,
+        "period_before": 1421,
+        "finalized_slot_fetched": 11649024,
+        "plan_fees": "208287176",
+        "plan_need": "209360624",
+        "funding_claims": [],
+        "payer_before": "108988896",
+        "txs": [
+          {
+            "step": "finality_update_11649088 Begin",
+            "hash": "f4d540e455aaf6cd6037ae3cc2094b3f95aa7a25190209f30ca3660b3f38c06b",
+            "block": 86061
+          },
+          {
+            "step": "finality_update_11649088 Miller",
+            "hash": "b94ed18e088beeb52119781c90aaf736b0283d9ebc9a75c1a034df05873c7356",
+            "block": 86063
+          },
+          {
+            "step": "finality_update_11649088 Finish",
+            "hash": "c166efd865dbe11ad25d9dce916ec356858a5de3fcba29515b5e57ed2713619a",
+            "block": 86065
+          }
+        ],
+        "fees": "103734616",
+        "head_slot": 11649024,
+        "period": 1422,
+        "payer_after": "5254280",
+        "finished_utc": "2026-11-24T13:35:30Z"
+      }
+    ],
+    "claims": [
+      {
+        "n": 1,
+        "wallet": "wallet-v03-donor1",
+        "donor": "5LwycENmxtYqPKy3H4BX3v71ehLdK56myRmLC4AJxQCG",
+        "request_id": "44a97d0d-b2c8-475b-be9c-401bf7de6f7f",
+        "started_utc": "2026-11-23T19:30:07Z",
+        "claim_tx": "f8cb69f5a89d68a8a507b2ce1100b899d5ac9fd7213ed16fe10e6f2c65f37238",
+        "claimed": "100000000",
+        "transfer_attempts": {
+          "bd0e339766c0d64c12ff58cf75e159ec974f93103e3275c302e875766fa0fd57": "99000000",
+          "e7c311ee452f22cb1ab9f606b40873e871ac8b26ffc4e7e34fae8481dc4991e8": "95000000",
+          "4e302fe8a346fe6ca83bf299723011b3d21f959ed684c856ee20d5c31ba63b8a": "3997032",
+          "58156adab17e996aef6bc4df2c0c0bd4ea06871d55adda2843eb163d1d03fe7f": "3997032",
+          "86b691fa9dd3970c844a40090b78d7f29176893010d47e4a7aaa72bedbe8780c": "3997032",
+          "04f7d5810687a3bd83f3843963f0e0a65b181b0f997517c1e36707b5a38b55dd": "3997032",
+          "f8c670728f0197a84ca91e2dbf5682d4b9eaba5ebee089ebe698aabb2bb029cd": "3997032",
+          "7d552d1763e598326e58188262a48f4baba5ad3576a76b53cc3f5008cea1d165": "3997032"
+        },
+        "transfer_tx": "e7c311ee452f22cb1ab9f606b40873e871ac8b26ffc4e7e34fae8481dc4991e8",
+        "transfer_block": 85776,
+        "amount": "95000000",
+        "donor_nonce": 2,
+        "finished_utc": "2026-11-24T02:49:33Z"
+      },
+      {
+        "n": 2,
+        "wallet": "wallet-v03-donor2",
+        "donor": "5MvPN4St8EZcxdWxpUGH8H37yrsgrGPB7H3tSQz739vT",
+        "request_id": "ca6b9c04-8add-4013-baf7-d743ea7f6574",
+        "started_utc": "2026-11-24T02:49:36Z",
+        "claim_tx": "85dae4b7c7ae48323bd0aadd76315ed3856da5e4247899cea7d81d13834a883d",
+        "claimed": "100000000",
+        "transfer_attempts": {
+          "1418a9aee14a6f8b31c94c3d2966dc548aad265a5bbacc40c2b677d708c67f01": "99000000"
+        },
+        "transfer_tx": "1418a9aee14a6f8b31c94c3d2966dc548aad265a5bbacc40c2b677d708c67f01",
+        "transfer_block": 85786,
+        "amount": "99000000",
+        "donor_nonce": 1,
+        "finished_utc": "2026-11-24T02:58:48Z"
+      },
+      {
+        "n": 3,
+        "wallet": "wallet-v03-donor3",
+        "donor": "GBN92LkRvM9FTaAQNYX3XwkdwcWAV59Y2j8rUYpsi3AT",
+        "request_id": "a7b125f5-69f4-482d-8a71-3e95d98563ed",
+        "started_utc": "2026-11-24T02:58:51Z",
+        "claim_tx": "336cf1956efd05c4494c8d474b13e1dcd3929f89d4a6bc0cb38f9abe5f8f74f3",
+        "claimed": "100000000",
+        "transfer_attempts": {
+          "5f050ce76e15300e926fdecdc75df2a86b5db01c45fc8869e6d5fd25fb6b011c": "99000000"
+        },
+        "transfer_tx": "5f050ce76e15300e926fdecdc75df2a86b5db01c45fc8869e6d5fd25fb6b011c",
+        "transfer_block": 85861,
+        "amount": "99000000",
+        "donor_nonce": 1,
+        "finished_utc": "2026-11-24T06:02:31Z"
+      },
+      {
+        "n": 4,
+        "wallet": "wallet-v03-donor4",
+        "donor": "Emtd5L6vTyjSkEhH1185jkj1C2RabXfsJkdMb6QVkLQt",
+        "request_id": "0341e637-d66a-42e9-b37a-6f70c6a90e23",
+        "started_utc": "2026-11-24T06:30:46Z",
+        "claim_tx": "934dc2e7a366c6d962cefd5eb59fc95e017f18f3c25e7d1196ab56572ddae4c7",
+        "claimed": "100000000",
+        "transfer_attempts": {
+          "bdb2bb6bd5e15e46e2aaaeec66232d1097c2e2cbbc0187f8eb3a4ddb94e2f79c": "99000000"
+        },
+        "transfer_tx": "bdb2bb6bd5e15e46e2aaaeec66232d1097c2e2cbbc0187f8eb3a4ddb94e2f79c",
+        "transfer_block": 85885,
+        "amount": "99000000",
+        "donor_nonce": 1,
+        "finished_utc": "2026-11-24T06:55:56Z"
+      },
+      {
+        "n": 5,
+        "wallet": "wallet-v03-donor5",
+        "donor": "4mPxHzC7AREJgteKW6sKYrK321Upe3gcv3tEyNfNoRez",
+        "request_id": "d316bd20-1c04-4a66-b606-eef3087e184a",
+        "started_utc": "2026-11-24T09:10:52Z"
+      }
+    ],
+    "claims_used": 5,
+    "claims_cap": 12
   }
- ],
- "rpc": "https://testnet.lez.logos.co",
- "store_commitment": "26288b78dc2f0b7d18518477a7e715a145776d0c08ec1d665814aae87ef0a1db",
- "mode": "minimal",
- "mode_choice": {
-  "mode": "minimal",
-  "staged": true,
-  "stage1": {
-   "balance_before": 100000000,
-   "sent": "12 deploys + Init",
-   "fees": 47481024,
-   "last_block": 85597
-  },
-  "stage2": {
-   "floor": 120000000,
-   "needs_at_8_8_base_fees": 105628064,
-   "balance_before": 147518976,
-   "sent": "one finality update (Begin, Miller, Finish) + refusal demo",
-   "fees": 105331440,
-   "blocks": "85746-85754",
-   "funded_by": "faucet claim to a second account (ChGA4puYvTfthQT3ZAMLoBGKzg3YJntxYiTDiPord7a8, claim tx fb8fec29d625090a9398d4158ad6cb5d98e92b760e9996aaf9955a9350763d7d), then a native transfer of 95,000,000 to the payer (tx 17bbbcb81082834dbd895eb762debc78bd485906095eb263b28036a02797ef7a, block 85741)"
-  },
-  "note": "the faucet pays 100,000,000 per recipient per 24 h, so the minimal run was sent in two stages; each step's reserve is checked by the client before it is sent"
- }
 }

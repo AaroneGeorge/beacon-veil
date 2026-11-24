@@ -10,14 +10,21 @@ Online (--rpc URL), at most one request a second:
   2. the instance shard equals run.json instance_state_hex; each record shard equals run.json records[].bytes_hex;
   3. every transaction of txs.tsv: getTransaction(hash) returns it in the block txs.tsv names, its bytes hash to
      the hash, and the block (getBlock) contains its bytes; the block's Bedrock status is printed;
-  4. exactly the updates of run.json's mode applied (minimal 1, medium 2, full 3; at least 2 when no mode is recorded),
-     each as Begin, Miller, Finish; the instance head slot is above the checkpoint slot;
+  4. exactly the updates of run.json's mode applied (minimal 1, medium 2, full 3; keeper 1 + the updates of every
+     round; at least 2 when no mode is recorded), each as Begin, Miller, Finish; the instance head slot is above the
+     checkpoint slot;
   5. the refused transaction (expected_exit set) is in a block and nothing after the last Finish changed the
      instance (its state equals run.json, recorded after the refusal).
 A run sent in stages is recorded after each stage. A record whose run.json says "stage": "deploy+init" (the deployment
 and Init sent, nothing else yet) is checked for exactly that instead of 4 and 5: txs.tsv holds the deployment
 transactions and one Init and nothing else, and the instance head is still the checkpoint. Without "stage" (the record
 of the finished run) every check above applies; any other "stage" fails.
+Mode "keeper" (the minimal run, then rounds that each applied a fresh Sepolia update; run.json "keeper"): every round's
+updates and transactions are in txs.tsv; the instance head strictly increases from the minimal run's head through
+every round and ends at run.json's head; every round's head has a header record (checked on chain with the others);
+the store's period never goes back, and when it moved (1421 -> 1422) an updates_by_range item (the next sync committee)
+was applied in or before that round; each faucet claim's transfer to the payer has its raw bytes in raw/ and, online,
+is in the block recorded.
 Offline (--offline): the same files without the network: hashes of the saved raw bytes, blocks containing them,
 block ids, IMAGE_IDS against deployment.json, run.json's instance state decoding to the recorded head.
 """
@@ -174,6 +181,70 @@ def tx_hash(lee_tx_bytes):
     return hashlib.sha256(lee_tx_bytes[1:]).hexdigest()
 
 
+def check_keeper(c, run, head, full, txs, ev):
+    """Mode keeper: the rounds after the minimal run (see the module text)."""
+    k = run.get("keeper") or {}
+    rounds = k.get("rounds", [])
+    if not c.check(len(rounds) >= 1, f"keeper: {len(rounds)} round(s) recorded"):
+        return
+    by_hash = {t["hash"]: t for t in txs}
+    labels = [l for r in rounds for l in r["updates"]]
+    c.check(len(set(labels)) == len(labels) and set(labels) <= set(full) and len(full) == 1 + len(labels),
+            f"keeper: the rounds' {len(labels)} updates and the minimal run's one are the {len(full)} applied")
+    for r in rounds:
+        ok = all(by_hash.get(t["hash"], {}).get("block") == str(t["block"])
+                 and by_hash[t["hash"]]["step"] == t["step"] for t in r["txs"])
+        steps = sorted(t["step"] for t in r["txs"])
+        want = sorted(f"{l} {s}" for l in r["updates"] for s in ("Begin", "Miller", "Finish"))
+        c.check(ok and steps == want, f"keeper round {r['round']}: its {len(r['txs'])} transactions are in txs.tsv "
+                f"(blocks {min((t['block'] for t in r['txs']), default='-')}..{max((t['block'] for t in r['txs']), default='-')})")
+    heads = [k["base_head_slot"]] + [r["head_slot"] for r in rounds]
+    c.check(all(a < b for a, b in zip(heads, heads[1:]))
+            and all(r["head_slot_before"] == h for r, h in zip(rounds, heads))
+            and heads[-1] == head["slot"],
+            "keeper: head slot strictly increases " + " -> ".join(map(str, heads)) + " (the instance's head)")
+    rec = {x["slot"] for x in run["records"]}
+    c.check(all(h in rec for h in heads), "keeper: every head has a header record in run.json")
+    periods = [k["base_period"]] + [r["period"] for r in rounds]
+    c.check(all(r["period"] == r["head_slot"] // 8192 for r in rounds)
+            and all(a <= b for a, b in zip(periods, periods[1:])) and periods[-1] == head["period"],
+            "keeper: store period per round " + " -> ".join(map(str, periods)) + ", never back")
+    moved = [r for r in rounds if r["period"] > r["period_before"]]
+    if moved:
+        r = moved[0]
+        before = [l for x in rounds if x["round"] <= r["round"] for l in x["updates"]]
+        c.check(any(l.startswith("updates_") for l in before),
+                f"keeper: period crossing {r['period_before']} -> {r['period']} in round {r['round']} (head "
+                f"{r['head_slot_before']} -> {r['head_slot']}), the next sync committee learned from "
+                + ", ".join(l for l in before if l.startswith("updates_")))
+    else:
+        print(f"info  keeper: no period crossing yet (store period {periods[-1]}, boundary slot "
+              f"{k.get('boundary_slot')})")
+    claims = {x["n"]: x for x in k.get("claims", [])}
+    c.check(all(n in claims for r in rounds for n in r.get("funding_claims", [])),
+            f"keeper: {len(claims)} faucet claim(s) listed, every funded round names its claims")
+    for x in claims.values():
+        if not x.get("transfer_tx"):
+            continue
+        try:
+            raw = base64.b64decode(open(f"{ev}/raw/{x['transfer_tx']}.tx.b64").read())
+            ok = tx_hash(raw) == x["transfer_tx"]
+        except FileNotFoundError:
+            ok = False
+        c.check(ok, f"claim {x['n']}: transfer {x['amount']} from {x['donor']} to the payer, raw bytes hash to "
+                f"{x['transfer_tx'][:16]}...")
+
+
+def check_transfers(c, rpc, run):
+    for x in (run.get("keeper") or {}).get("claims", []):
+        if not x.get("transfer_tx"):
+            continue
+        got = rpc.call("getTransaction", {"tx_hash": x["transfer_tx"]})
+        c.check(bool(got) and got[1] == x["transfer_block"]
+                and tx_hash(base64.b64decode(got[0])) == x["transfer_tx"],
+                f"claim {x['n']}: transfer {x['transfer_tx'][:16]}... in block {x['transfer_block']}")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("evidence")
@@ -216,11 +287,15 @@ def main():
         full = [u for u, s in by_update.items() if s == ["Begin", "Miller", "Finish"]]
         mode = run.get("mode")
         need = {"minimal": 1, "medium": 2, "full": 3}.get(mode, 2)
+        if mode == "keeper":
+            need = 1 + sum(len(r["updates"]) for r in run.get("keeper", {}).get("rounds", []))
         c.check((len(full) == need if mode else len(full) >= need) and len(full) == len(by_update),
                 f"{len(full)} updates applied, each as Begin, Miller, Finish ({', '.join(full)}); "
                 f"mode {mode or '-'} needs {need}")
         refusals = [t for t in txs if t["expected_exit"] != "-"]
         c.check(len(refusals) >= 1, f"{len(refusals)} refused transaction(s) recorded")
+        if mode == "keeper":
+            check_keeper(c, run, head, full, txs, ev)
     elif stage == "deploy+init":
         print("partial record (stage deploy+init): no update and no refusal sent yet; checking exactly that")
         deploy_hashes = {h for p in dep["programs"].values() for h in p["txs"]}
@@ -283,6 +358,8 @@ def main():
             braw = base64.b64decode(rpc.call("getBlock", {"block_id": b}))
             statuses[b] = (braw, block_meta(braw)[2])
         c.check(raw in statuses[b][0], f"{t['step']}: block {b} ({statuses[b][1]}) contains it")
+    if run.get("mode") == "keeper":
+        check_transfers(c, rpc, run)
     final = sum(1 for _, s in statuses.values() if s == "Finalized")
     print(f"\nblocks: {len(statuses)}, Finalized on the Logos Blockchain per the sequencer: {final}; "
           + ", ".join(f"{b}:{s}" for b, (_, s) in sorted(statuses.items())))

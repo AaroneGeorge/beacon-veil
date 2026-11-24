@@ -1,9 +1,11 @@
 # The public update path on LEZ testnet 0.3
 
-Status: written 2026-11-22, updated 2026-11-23. **Sent.** Both programs are deployed on the public testnet, one
-Sepolia instance is initialised there, **one finality update is applied** (instance head slot 11,640,832 to 11,641,504)
-and one transaction meant to be refused was refused with the instance unchanged: 17 transactions, blocks 85,572 to
-85,754, 2026-11-23 (see "Sent"). Everything else on this page is simulation, and says so.
+Status: written 2026-11-22, updated 2026-11-24. **Sent and kept current.** Both programs are deployed on the public
+testnet, one Sepolia instance is initialised there, and **five updates are applied** over 24 hours, the last one across
+the sync-committee period boundary 1421 to 1422 (instance head slot 11,640,832 to 11,649,024, store period 1421 to
+1422); one transaction meant to be refused was refused with the instance unchanged. 29 transactions, blocks 85,572 to
+86,065, 2026-11-23 13:52 UTC to 2026-11-24 13:33 UTC (see "Sent" and "Kept current"). Everything else on this page is
+simulation, and says so.
 
 ## The network
 
@@ -112,6 +114,80 @@ Checks of the whole record on 2026-11-23 at about 19:10 UTC:
   `Pending` on the Logos Blockchain at that time.
 - `verify_offline.py` (no network): 42 checks passed. `mutation_test.sh`: 4 of 4 changes to a copy of the record
   caught.
+
+## Kept current (mode `keeper`, from 2026-11-23 19:30 UTC)
+
+After the minimal run the instance was kept following Sepolia until 2026-11-24 13:33 UTC, across the sync-committee
+period boundary 1421 to 1422 (slot 11,649,024, 2026-11-24 12:04:48 UTC). A keeper script on our
+machine (not part of the repository; every transaction it sends is a `bv-v03` command) ran one round every ~2.5 h:
+
+1. A fresh data folder: the instance's history (the bootstrap and every update applied so far, in the order applied,
+   listed in `manifest.json` `apply_order`) plus the latest finality update from the Beacon API
+   (`tools/fixtures/fetch.py --finality-only`). While the store does not know the next sync committee, the period's
+   `updates_by_range` item is added before it (`tools/fixtures/fetch_range.py --range 1421:1`): it carries the
+   period-1422 committee, which the store must hold to accept updates signed after the boundary.
+2. `bv-v03 plan` simulates the folder; the round needs the largest (fees before a step + that step's reserve) over its
+   pending steps, plus 10%. If the payer holds less, one faucet payment goes to a fresh account and is moved to the
+   payer by `bv-v03 transfer` (at most 12 payments in all; the last 2 are kept for the crossing round).
+3. `bv-v03 update --data <folder> --max <pending>` (each update as `Begin`, `Miller`, `Finish`, every transaction
+   simulated first), then `bv-v03 record` and `verify.sh`.
+
+Near the boundary it waits for the first finality update whose finalized header is in period 1422 and applies it: the
+store hands over to the period-1422 committee (the crossing round). It stops after that round.
+
+`run.json` holds `mode: "keeper"` and a `keeper` object: per round the updates applied, their transactions and blocks,
+the instance head slot and store period before and after, the fees paid, and the faucet payments that funded it (the
+paying account, the claim and transfer transactions; the transfers' raw bytes are in `raw/`). `verify.sh` checks, in
+this mode, that every round's transactions are in `txs.tsv` and on chain, that the head slot strictly increases from
+the minimal run's head through every round to the instance's current head, that every head has its header record on
+chain, that the store's period never goes back, and, once it has moved from 1421 to 1422, that the next committee was
+learned from an `updates_by_range` item in or before that round; and that each transfer to the payer is in the block
+recorded.
+
+Round 1, sent on 2026-11-24 between 06:02 and 06:30 UTC (the testnet produced no block from 20:40 UTC on 2026-11-23
+until about 23:20 UTC, and stalled for 10 to 20 minutes at a time until about 05:10 UTC; the keeper waited each time):
+
+| Part | Transactions | Blocks | Fee paid, units |
+|---|---|---|---|
+| `updates_1421_1[0]` (attested slot 11,640,896): the store learns the period-1422 committee; the head does not move | `22b71c3a...`, `9d591145...`, `ed8627ec...` | 85,863 to 85,867 | 120,093,144 |
+| `finality_update_11645216`: the head moves from slot 11,641,504 to 11,645,152 | `634462cd...`, `50dad261...`, `78fde0bd...` | 85,869 to 85,872 | 104,551,264 |
+| Total | 6 | | 224,644,408 |
+
+- The fees equal those `bv-v03 plan` simulated for the round (224,644,408 at base fees 8 and 8).
+- Funding: three faucet payments to fresh accounts, moved to the payer by native transfers (`e7c311ee...` block
+  85,776, `1418a9ae...` block 85,786, `5f050ce7...` block 85,861). The payer held 339,184,568 before the round and
+  114,540,160 after.
+- `verify.sh` after the round: 119 checks passed, 0 failed; `verify_offline.py`: 64 passed.
+
+Round 2, sent on 2026-11-24 between 06:56 and 07:01 UTC:
+
+| Part | Transactions | Blocks | Fee paid, units |
+|---|---|---|---|
+| `finality_update_11647328`: the head moves from slot 11,645,152 to 11,647,264 | `39c9f287...`, `72caaded...`, `3b5f8ead...` | 85,887 to 85,891 | 104,551,264 |
+
+Funded by one faucet payment to a fresh account (transfer `bdb2bb6b...`, block 85,885). `verify.sh` after the round:
+135 checks passed, 0 failed.
+
+The faucet answered HTTP 502 from about 08:30 UTC on 2026-11-24 until after the crossing round, so no further payment
+arrived (a fifth request was never accepted, and is listed in `run.json` with no claim transaction). The regular rounds
+were stopped after round 2, a round prepared at 09:10 UTC was dropped before it sent anything, and the payer's
+108,988,896 units were kept for the crossing round, which then ran on that balance without the 10% margin (each step's
+reserve is still checked by the client before it is sent).
+
+Round 3, the crossing round, sent on 2026-11-24 between 13:16 and 13:33 UTC:
+
+| Part | Transactions | Blocks | Cycles (simulated = charged) | Fee paid, units |
+|---|---|---|---|---|
+| `finality_update_11649088` (attested slot 11,649,088, signed by the period-1422 committee the store learned in round 1) as `Begin`, `Miller`, `Finish`: the head moves from slot 11,647,264 to 11,649,024, the first slot of period 1422, and the store's period from 1421 to 1422 | `f4d540e4...`, `b94ed18e...`, `c166efd8...` | 86,061 to 86,065 | 2,678,082; 5,786,344; 4,472,622 | 103,734,616 |
+
+- The fees equal those `bv-v03 plan` simulated (103,734,616 at base fees 8 and 8). The payer held 108,988,896 before
+  the round and 5,254,280 after.
+- `verify.sh` after the round: 150 checks passed, 0 failed (against the testnet).
+
+Over the whole run: 29 transactions in blocks 85,572 to 86,065, five updates applied, one refusal, and 585,742,752
+units of fees, every step charged the cycles its simulation gave. Funds: six faucet payments of 100,000,000 (one
+directly to the payer, five to fresh accounts moved to the payer by native transfers). One leftover of 3,997,032 units
+was also moved from the first keeper account to the payer (`bv-v03 transfer`, outside the keeper's record).
 
 ## Funds
 

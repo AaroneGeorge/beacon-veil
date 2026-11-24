@@ -87,8 +87,9 @@ enum Cmd {
         #[arg(long)]
         data: PathBuf,
     },
-    /// Apply the data folder's updates (`updates_by_range`, then finality updates by slot), each as Begin, Miller,
-    /// Finish; resumes from the chain's instance and job state. `--max N` stops after N applied updates.
+    /// Apply the data folder's updates (`updates_by_range`, then finality updates by slot, or the manifest's
+    /// `apply_order`), each as Begin, Miller, Finish; resumes from the chain's instance and job state. `--max N` stops
+    /// after N applied updates.
     Update {
         #[arg(long)]
         data: PathBuf,
@@ -252,7 +253,8 @@ fn utc() -> String {
 struct Data {
     config: InstanceConfig,
     bootstrap: Vec<u8>,
-    /// `(label, update_ssz)`: `updates_by_range` items, then finality updates by attested slot.
+    /// `(label, update_ssz)`: `updates_by_range` items, then finality updates by attested slot; or the manifest's
+    /// `apply_order`.
     updates: Vec<(String, Vec<u8>)>,
 }
 
@@ -279,20 +281,39 @@ fn load_data(dir: &Path, ids: &Ids) -> Result<Data> {
         vec![core_id(&ids.v3)],
         0,
     )?;
-    let mut updates = Vec::new();
-    for (name, _) in pick("updates_") {
-        for (i, u) in split_updates_by_range(&std::fs::read(dir.join(&name))?)?
+    // `apply_order` (written by the keeper, which adds updates over many rounds): the update files in the order they
+    // were applied on chain. Without it: `updates_by_range` items, then finality updates by attested slot.
+    let names: Vec<String> = match manifest.get("apply_order") {
+        Some(order) => order
+            .as_array()
+            .context("manifest.apply_order: a list")?
+            .iter()
+            .map(|n| {
+                let n = n.as_str().context("manifest.apply_order: file names")?;
+                ensure!(
+                    files.contains_key(n),
+                    "manifest.apply_order: {n} is not in manifest.files"
+                );
+                Ok(n.to_string())
+            })
+            .collect::<Result<_>>()?,
+        None => pick("updates_")
             .into_iter()
-            .enumerate()
-        {
-            updates.push((format!("{}[{i}]", name.trim_end_matches(".ssz")), u));
+            .chain(pick("finality_update_"))
+            .map(|(k, _)| k)
+            .collect(),
+    };
+    let mut updates = Vec::new();
+    for name in names {
+        let bytes = std::fs::read(dir.join(&name))?;
+        let label = name.trim_end_matches(".ssz");
+        if name.starts_with("updates_") {
+            for (i, u) in split_updates_by_range(&bytes)?.into_iter().enumerate() {
+                updates.push((format!("{label}[{i}]"), u));
+            }
+        } else {
+            updates.push((label.to_string(), bytes));
         }
-    }
-    for (name, _) in pick("finality_update_") {
-        updates.push((
-            name.trim_end_matches(".ssz").to_string(),
-            std::fs::read(dir.join(&name))?,
-        ));
     }
     Ok(Data {
         config,
