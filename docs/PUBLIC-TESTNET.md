@@ -204,8 +204,9 @@ record (`CheckHeader`: E02 if absent, E15 if different), then writes the `Statem
 
 What was attested: slot `0xc48ce8c9...3a200` (the deposit root, `docs/bridge/INBOUND.md`) of the beacon-veil vault v3
 on Sepolia, `0x380be74d9F3dFeBAaFC5F911CD6A45bFbeE3aD27`, equals `0x4d92152e...d8075407`, in execution block
-12,202,472 (`0xa80030fe...eaf8fa0`), the execution block of beacon slot 11,649,024, which is the instance's head and
-has a header record on chain (`8siyKPh6oE76HQreEPz8ToBq1fhYeT6z7UX87gRDdSuj`). The record holds the execution block
+12,202,472 (`0xa80030fe...eaf8fa0`), the execution block whose hash the header record of beacon slot 11,649,024
+holds (under Gloas a beacon header attests its parent execution block, D-21); slot 11,649,024 is the instance's head
+and has that header record on chain (`8siyKPh6oE76HQreEPz8ToBq1fhYeT6z7UX87gRDdSuj`). The record holds the execution block
 hash with zero execution roots, so the claim carries the RLP header and the program checks its keccak against the
 record (`attest_inclusion::exec_roots`). Witnesses: `eth_getBlockByHash` and `eth_getProof` from the Sepolia
 RPCs that `tools/fixtures/fetch.py` already uses (`tools/fixtures/fetch_claim.py`; saved byte for byte in
