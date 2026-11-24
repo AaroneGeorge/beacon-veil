@@ -18,7 +18,10 @@ every update was applied or deferred as designed. The host now keeps that servic
 2 runs in its own process scope. Run 1 is kept as recorded; it is not merged with run 2, and the hours are never
 summed. The top-level files are run 2, collected on 2026-11-24 at 76.7 h with `run_public.sh <network> collect` (first collect
 2026-11-22 at 26 h): the 24 h check passes on both networks, with dev mode unset and no gap over 321 s; each run logged 2
-transient `source_error` lines (a 20 s beacon-module timeout, recovered at the next poll). Both runs keep going; later collects refresh
+transient `source_error` lines (a 20 s beacon-module timeout, recovered at the next poll).
+Step cycles: run D has an exact count for all 147 steps (largest 5,765,199). Run E has an exact count for 440 of 441
+(largest 5,765,201); for one step the log has only an upper bound, the gas of its block, 6,227,904 (62.3 percent of
+the cap; `steps_bounded_by_block`, `max_step_block_bound` in `sepolia/g4-summary.json`). Both runs keep going; later collects refresh
 these files.
 
 `dry-run-20261120/` is the earlier dry run with two followers on one instance.
