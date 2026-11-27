@@ -2,9 +2,18 @@
 
 Run C is one `attest-followerd` process that follows the **live Ethereum mainnet beacon chain** (chain_id 1). It
 reads light-client updates through the Logos `beacon_api_module` and keeps a beacon-veil instance current. Runs A and
-B (`evidence/g4/`) did the same against Sepolia. Run C was started on 2026-11-17 to run unattended and is meant to
-keep going. The files in this folder are snapshots: the live log is
-`$B/run/w4/run-c/follower.jsonl` (`$B` = the build folder).
+B (`evidence/g4/`) did the same against Sepolia. Run C was started on 2026-11-17 and ran unattended for 195.1 h, until
+the host rebooted for an unattended security update on 2026-11-25 at 23:00 UTC. The process logged a clean `stop`
+line (`clean shutdown`). Its final record is in `run1/`: G4 PASS, 122 of 122 updates applied, 7 live handoffs, one
+process id, longest gap between log lines 320.6 s, 5 transient `source_error` lines. The top-level files are the
+latest collect; today they are the same as `run1/`. The live log is `$B/run/w4/run-c/follower.jsonl` (`$B` = the
+build folder).
+
+**Gap.** No follower ran from 2026-11-25T23:00Z to 2026-11-27T22:45Z (47.8 h), and `seq-main` and `seq-pub` were down over the same time: they restarted at 20:20Z on 27 Nov and replayed their chains until about 22:43Z. The
+instance got no update during the gap. Run C's second segment, a new process on the same instance, started on
+2026-11-27 at 22:45:16 UTC: it read the on-chain head (period 1920, slot 15735040) and sent the period-1921 update at
+once (applied 22:46:12Z). The segments are kept apart and their hours are never summed; once segment 2 passes 24 h,
+a collect writes it to the top-level files and `run2/` keeps it.
 
 ## What it is, and what it is not
 
@@ -27,7 +36,8 @@ keep going. The files in this folder are snapshots: the live log is
 | Item | Value |
 |---|---|
 | Start (the `start` line) | 2026-11-17T19:51:27.944Z |
-| PID | 1308007 (`$B/run/w4/run-c/followerd.pid`) |
+| End (the `stop` line) | 2026-11-25T23:00:00.396Z, host reboot; 195.142 h; head slot 15735040 |
+| PID | 1308007 (segment 1); segment 2 from 2026-11-27T22:45:16Z is a new process |
 | chain_id | 1 (Ethereum mainnet) |
 | Beacon source | `logos_module`: Logos `beacon_api_module` v0.2.0 via logosctl 0.3.2, session `$B/run/w4/logos-session`. Its chain-1 providers, in order: `https://lodestar-mainnet.chainsafe.io`, `http://testing.mainnet.beacon-api.nimbus.team`, `http://unstable.mainnet.beacon-api.nimbus.team` |
 | direct_http fallback endpoints (configured, unused) | `https://lodestar-mainnet.chainsafe.io`, `http://unstable.mainnet.beacon-api.nimbus.team` |
@@ -48,7 +58,9 @@ keep going. The files in this folder are snapshots: the live log is
 - `ids.toml`: the program ids on seq-main.
 - `preflight-status.json`, `preflight-module.txt`: the on-chain store check, and one mainnet probe through the
   module, both taken just before start.
-- `follower.jsonl`: snapshot of the JSONL log (the same format as runs A and B).
+- `run1/`: the final record of segment 1 (`follower.jsonl`, `g4-summary.json`, `run.json`, `followerd.toml`,
+  `instance.json`).
+- `follower.jsonl`: the latest collected JSONL log (the same format as runs A and B).
 - `g4-summary.json`: summary at snapshot time, from `scripts/gate/g4_status.sh`. It holds the G4 checks with no 24 h
   minimum, plus a `status` block: pid alive, last line age, last applied update.
 
@@ -75,5 +87,7 @@ It should trail by no more than one cadence, 6144 s or 512 slots, plus finality 
 ## Dependencies while it runs
 
 The run needs three things to stay up: `seq-main` (`scripts/seq.sh main status`), the logosctl session daemon with
-`beacon_api_module` loaded (`crates/follower/scripts/logos_session.sh status`), and the machine itself. There is no
-auto-restart, by design: a restart writes a `resume` line, and the summary then reports it.
+`beacon_api_module` loaded (`crates/follower/scripts/logos_session.sh status`), and the machine itself. Segment 1 had
+no auto-restart. Since 2026-11-27 the sequencer, the session daemon and the follower run as system services that
+start at boot and restart on failure. Every new process moves the old log aside and starts a new one, so a G4 log
+always holds one process id, and a restart shows up as a new segment, never hidden inside one.

@@ -1,0 +1,87 @@
+{
+  "gate": "G4",
+  "result": "PASS",
+  "log": "${BUILD}/wt-v03/evidence/g4-public/sepolia/follower.jsonl",
+  "failures": [],
+  "pids": [
+    999589
+  ],
+  "start_lines": 1,
+  "start": {
+    "cadence_s": 1536,
+    "chain": "host",
+    "chain_id": 11155111,
+    "config": "${BUILD}/run/w4/run-e/followerd.toml",
+    "endpoints": [
+      "https://lodestar-sepolia.chainsafe.io",
+      "http://unstable.sepolia.beacon-api.nimbus.team"
+    ],
+    "follower_id": "run-e",
+    "instance": "5ydZVRKHVECxKtXBwHnW9N6bndDADwZoGSx5tDsp4UXN",
+    "jitter_max_s": 60,
+    "mode": "public",
+    "payer_balance": "95650846976",
+    "poll_s": 300,
+    "risc0_dev_mode": null,
+    "sequencer": "seq-pub",
+    "source_kind": "logos_module",
+    "verifier": "lc_verify_v3",
+    "version": "0.1.0"
+  },
+  "first_ts": "2026-11-21T13:00:33.644Z",
+  "last_ts": "2026-11-25T23:00:01.296Z",
+  "hours": 105.991,
+  "cadence_s": 1536,
+  "max_gap_s": 320.4,
+  "max_gap_before_line": 683,
+  "submits": 203,
+  "applied": 203,
+  "noops": 0,
+  "superseded": 0,
+  "handoffs": 5,
+  "period_updates": 5,
+  "head_first": 11627616,
+  "head_last": 11659328,
+  "max_applied_gap_s": 1970.7,
+  "beacon_source": "logos_module",
+  "chain": "host",
+  "risc0_dev_mode": "unset",
+  "error_lines": {
+    "source_error": 2
+  },
+  "lines": 1792,
+  "mode": "public",
+  "sequencer": "seq-pub",
+  "verifier": "lc_verify_v3",
+  "steps_with_cycles": 608,
+  "steps_bounded_by_block": 1,
+  "max_step_block_bound": 6227904,
+  "reverted_steps": 0,
+  "txs": 609,
+  "txs_applied_updates": 609,
+  "txs_per_applied": [
+    3
+  ],
+  "steps_by_name": {
+    "Begin": 203,
+    "Miller": 203,
+    "Finish": 203
+  },
+  "four_step_updates": 0,
+  "max_step_gas_limit": 9000000,
+  "step_cycles": {
+    "min": 2434755,
+    "median": 4378928,
+    "max": 5765201
+  },
+  "max_step_cycles": 5765201,
+  "block_cap_cycles": 10000000,
+  "max_step_share_of_block": 0.577,
+  "max_step_gas_limit_share_of_block": 0.9,
+  "deferrals": 0,
+  "resumes": 0,
+  "failed_steps": 0,
+  "steps_without_cycles": [],
+  "payer_balance_first": 95650846976,
+  "payer_balance_last": 74992666220
+}

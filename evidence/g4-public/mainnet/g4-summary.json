@@ -29,19 +29,19 @@
     "version": "0.1.0"
   },
   "first_ts": "2026-11-21T13:00:27.332Z",
-  "last_ts": "2026-11-24T17:42:40.482Z",
-  "hours": 76.704,
+  "last_ts": "2026-11-25T23:00:01.301Z",
+  "hours": 105.993,
   "cadence_s": 6144,
   "max_gap_s": 320.6,
   "max_gap_before_line": 729,
-  "submits": 49,
-  "applied": 49,
+  "submits": 67,
+  "applied": 67,
   "noops": 0,
   "superseded": 0,
-  "handoffs": 3,
-  "period_updates": 3,
+  "handoffs": 4,
+  "period_updates": 4,
   "head_first": 15703424,
-  "head_last": 15726400,
+  "head_last": 15735104,
   "max_applied_gap_s": 6480.6,
   "beacon_source": "logos_module",
   "chain": "host",
@@ -49,23 +49,23 @@
   "error_lines": {
     "source_error": 2
   },
-  "lines": 1048,
+  "lines": 1446,
   "mode": "public",
   "sequencer": "seq-pub",
   "verifier": "lc_verify_v3",
-  "steps_with_cycles": 147,
+  "steps_with_cycles": 201,
   "steps_bounded_by_block": 0,
   "max_step_block_bound": null,
   "reverted_steps": 0,
-  "txs": 147,
-  "txs_applied_updates": 147,
+  "txs": 201,
+  "txs_applied_updates": 201,
   "txs_per_applied": [
     3
   ],
   "steps_by_name": {
-    "Begin": 49,
-    "Miller": 49,
-    "Finish": 49
+    "Begin": 67,
+    "Miller": 67,
+    "Finish": 67
   },
   "four_step_updates": 0,
   "max_step_gas_limit": 9000000,
@@ -83,5 +83,5 @@
   "failed_steps": 0,
   "steps_without_cycles": [],
   "payer_balance_first": 28500616984,
-  "payer_balance_last": 23443562438
+  "payer_balance_last": 21588070254
 }
